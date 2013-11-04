@@ -229,7 +229,7 @@ public class MinecraftDomain implements DomainGenerator{
 		
 		/* TRY TO MOVE : JUMP UP/DOWN IF WE CAN (delta <= 1) */
 		if(MAP[nx][ny][nz] == 1){
-			if (MAP[nx][ny][nz + 1] == 0) {
+			if (nz + 1 < MAXZ && MAP[nx][ny][nz + 1] == 0) {
 				// Jump on top of it
 				nz = nz + 1;
 			}
@@ -241,14 +241,18 @@ public class MinecraftDomain implements DomainGenerator{
 				
 			}
 		}
-		else if (MAP[nx][ny][nz] == 0 && MAP[nx][ny][nz - 1] == 0) {
-			// Hole in direction we're trying to move. If depth is 1, move, otherwise, stay in same spot.
+		else if (MAP[nx][ny][nz] == 0 && nz - 1 >= 0 && MAP[nx][ny][nz - 1] == 0) {
+			// Hole in direction we're trying to move. If depth is 1 or 2, move, otherwise, stay in same spot.
 			if (MAP[nx][ny][nz - 2] == 1) {
 				// Hole depth == 1 -> Move
 				nz = nz - 1;
 			}
-			else if (MAP[nx][ny][nz - 2] == 0) {
-				// Hole depth >= 2 -> Stay
+			else if (nz - 3 >= 0 && MAP[nx][ny][nz - 3] == 1 && MAP[nx][ny][nz - 2] == 0) {
+				// Hole depth == 2 -> Move
+				nz = nz - 2;
+			}
+			else if (nz - 3 >= 0 && MAP[nx][ny][nz - 3] == 0) {
+				// Hole depth >= 3 -> Stay
 				nx = ax;
 				ny = ay;
 				nz = az;
@@ -318,7 +322,9 @@ public class MinecraftDomain implements DomainGenerator{
 		}
 		
 		// Place a block one z beneath the agent, if it can.
-		if (MAP[bx][by][bz] == 0 && bz - 1 > 0 && MAP[bx][by][bz - 1] == 0){
+		if (MAP[bx][by][bz] == 0 && bz - 1 > 0 && MAP[bx][by][bz - 1] == 0 && numAgentsBlocks > 0){
+			
+			// Place block
 			MAP[bx][by][bz - 1] = 1;
 			
 			// Remove the block from the agent's inventory
@@ -328,6 +334,8 @@ public class MinecraftDomain implements DomainGenerator{
 		
 		// Now try placing one on agent's z level
 		if (MAP[bx][by][bz] == 0 && numAgentsBlocks > 0){
+			
+			// Place block
 			MAP[bx][by][bz] = 1;
 			
 			// Remove the block from the agent's inventory
@@ -399,9 +407,7 @@ public class MinecraftDomain implements DomainGenerator{
 		}
 		
 		protected State performActionHelper(State st, String[] params) {
-			
 			destroy(st, 0, 1, 0);
-			
 			System.out.println("Action Performed: " + this.name);
 			return st;
 		}	
@@ -414,9 +420,7 @@ public class MinecraftDomain implements DomainGenerator{
 		}
 		
 		protected State performActionHelper(State st, String[] params) {
-			
 			place(st, 0, 1, 0);
-			
 			System.out.println("Action Performed: " + this.name);
 			return st;
 		}	

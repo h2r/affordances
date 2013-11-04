@@ -119,7 +119,7 @@ def value_iteration(epsilon, discount, botTransition):
 	return utility
 
 def learn(stateSpace, botTransition, curLoc, n):
-# Update botTransition via random exploration of length n
+# Update botTransition via random exploration of n steps
 	for i in range(n):
 		a = actions(curLoc, stateSpace)
 		randAct = random.choice(a)
