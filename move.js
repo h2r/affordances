@@ -1,3 +1,4 @@
+var csv = require("fast-csv");
 var mineflayer = require('../');
 var vec3 = mineflayer.vec3;
 var bot = mineflayer.createBot({
@@ -34,10 +35,18 @@ bot.on('chat', function(username, message) {
   } 
 });
 
+function parsePlan() {
+  csv("plan.csv").on("data", function(data){
+    var a = data;
+  }).on("end", function(){
+  })
+ .parse();
+}
+
 // Called on game init.
 bot.on('login', function() {
   bot.chat("/ci"); // Clears Inventory
-  bot.chat("/give aye_priori 3 2"); // Gives 2 blocks of dirt
+  //bot.chat("/give aye_priori 3 2"); // Gives 2 blocks of dirt
   bot.chat("/time set 10"); // Sets time for lighting
   bot.chat("/weather clear 999999"); // Makes weather clear so we don't get rained on.
 });

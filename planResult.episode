@@ -1,0 +1,738 @@
+#EL#
+1 18 51
+#ES#
+backward
+-1.0
+#EL#
+1 08 51
+#ES#
+left
+-1.0
+#EL#
+0 08 51
+#ES#
+backward
+-1.0
+#EL#
+0 08 51
+#ES#
+left
+-1.0
+#EL#
+0 08 51
+#ES#
+forward
+-1.0
+#EL#
+0 18 51
+#ES#
+backward
+-1.0
+#EL#
+0 08 51
+#ES#
+destroyForward
+-1.0
+#EL#
+0 08 51
+#ES#
+backward
+-1.0
+#EL#
+0 08 51
+#ES#
+left
+-1.0
+#EL#
+0 08 51
+#ES#
+forward
+-1.0
+#EL#
+0 18 51
+#ES#
+right
+-1.0
+#EL#
+1 18 51
+#ES#
+right
+-1.0
+#EL#
+2 18 51
+#ES#
+destroyForward
+-1.0
+#EL#
+2 18 51
+#ES#
+left
+-1.0
+#EL#
+1 18 51
+#ES#
+right
+-1.0
+#EL#
+2 18 51
+#ES#
+backward
+-1.0
+#EL#
+2 08 51
+#ES#
+right
+-1.0
+#EL#
+3 08 51
+#ES#
+forward
+-1.0
+#EL#
+3 18 51
+#ES#
+backward
+-1.0
+#EL#
+3 08 51
+#ES#
+right
+-1.0
+#EL#
+4 08 51
+#ES#
+backward
+-1.0
+#EL#
+4 08 51
+#ES#
+right
+-1.0
+#EL#
+5 08 51
+#ES#
+destroyForward
+-1.0
+#EL#
+5 08 51
+#ES#
+backward
+-1.0
+#EL#
+5 08 51
+#ES#
+right
+-1.0
+#EL#
+6 08 51
+#ES#
+destroyForward
+-1.0
+#EL#
+6 08 51
+#ES#
+forward
+-1.0
+#EL#
+6 18 51
+#ES#
+destroyForward
+-1.0
+#EL#
+6 18 51
+#ES#
+backward
+-1.0
+#EL#
+6 08 51
+#ES#
+left
+-1.0
+#EL#
+5 08 51
+#ES#
+backward
+-1.0
+#EL#
+5 08 51
+#ES#
+right
+-1.0
+#EL#
+6 08 51
+#ES#
+right
+-1.0
+#EL#
+7 08 51
+#ES#
+destroyForward
+-1.0
+#EL#
+7 08 51
+#ES#
+left
+-1.0
+#EL#
+6 08 51
+#ES#
+forward
+-1.0
+#EL#
+6 18 51
+#ES#
+destroyForward
+-1.0
+#EL#
+6 18 51
+#ES#
+destroyForward
+-1.0
+#EL#
+6 18 51
+#ES#
+destroyForward
+-1.0
+#EL#
+6 18 51
+#ES#
+backward
+-1.0
+#EL#
+6 08 51
+#ES#
+left
+-1.0
+#EL#
+5 08 51
+#ES#
+backward
+-1.0
+#EL#
+5 08 51
+#ES#
+right
+-1.0
+#EL#
+6 08 51
+#ES#
+right
+-1.0
+#EL#
+7 08 51
+#ES#
+left
+-1.0
+#EL#
+6 08 51
+#ES#
+backward
+-1.0
+#EL#
+6 08 51
+#ES#
+right
+-1.0
+#EL#
+7 08 51
+#ES#
+destroyForward
+-1.0
+#EL#
+7 08 51
+#ES#
+destroyForward
+-1.0
+#EL#
+7 08 51
+#ES#
+left
+-1.0
+#EL#
+6 08 51
+#ES#
+left
+-1.0
+#EL#
+5 08 51
+#ES#
+backward
+-1.0
+#EL#
+5 08 51
+#ES#
+forward
+-1.0
+#EL#
+5 18 51
+#ES#
+right
+-1.0
+#EL#
+6 18 51
+#ES#
+left
+-1.0
+#EL#
+5 18 51
+#ES#
+destroyForward
+-1.0
+#EL#
+5 18 51
+#ES#
+backward
+-1.0
+#EL#
+5 08 51
+#ES#
+forward
+-1.0
+#EL#
+5 18 51
+#ES#
+backward
+-1.0
+#EL#
+5 08 51
+#ES#
+forward
+-1.0
+#EL#
+5 18 51
+#ES#
+destroyForward
+-1.0
+#EL#
+5 18 51
+#ES#
+backward
+-1.0
+#EL#
+5 08 51
+#ES#
+left
+-1.0
+#EL#
+4 08 51
+#ES#
+forward
+-1.0
+#EL#
+4 18 51
+#ES#
+destroyForward
+-1.0
+#EL#
+4 18 51
+#ES#
+destroyForward
+-1.0
+#EL#
+4 18 51
+#ES#
+left
+-1.0
+#EL#
+3 18 51
+#ES#
+destroyForward
+-1.0
+#EL#
+3 18 51
+#ES#
+right
+-1.0
+#EL#
+4 18 51
+#ES#
+destroyForward
+-1.0
+#EL#
+4 18 51
+#ES#
+left
+-1.0
+#EL#
+3 18 51
+#ES#
+forward
+-1.0
+#EL#
+3 28 51
+#ES#
+right
+-1.0
+#EL#
+4 28 51
+#ES#
+destroyForward
+-1.0
+#EL#
+4 28 51
+#ES#
+left
+-1.0
+#EL#
+3 28 51
+#ES#
+destroyForward
+-1.0
+#EL#
+3 28 51
+#ES#
+forward
+-1.0
+#EL#
+3 38 51
+#ES#
+backward
+-1.0
+#EL#
+3 28 51
+#ES#
+destroyForward
+-1.0
+#EL#
+3 28 51
+#ES#
+forward
+-1.0
+#EL#
+3 38 51
+#ES#
+destroyForward
+-1.0
+#EL#
+3 38 51
+#ES#
+left
+-1.0
+#EL#
+2 38 51
+#ES#
+backward
+-1.0
+#EL#
+2 28 51
+#ES#
+destroyForward
+-1.0
+#EL#
+2 28 51
+#ES#
+destroyForward
+-1.0
+#EL#
+2 28 51
+#ES#
+forward
+-1.0
+#EL#
+2 38 51
+#ES#
+left
+-1.0
+#EL#
+1 38 51
+#ES#
+backward
+-1.0
+#EL#
+1 28 51
+#ES#
+destroyForward
+-1.0
+#EL#
+1 28 51
+#ES#
+right
+-1.0
+#EL#
+2 28 51
+#ES#
+forward
+-1.0
+#EL#
+2 38 51
+#ES#
+left
+-1.0
+#EL#
+1 38 51
+#ES#
+right
+-1.0
+#EL#
+2 38 51
+#ES#
+forward
+-1.0
+#EL#
+2 48 51
+#ES#
+right
+-1.0
+#EL#
+3 48 51
+#ES#
+destroyForward
+-1.0
+#EL#
+3 48 51
+#ES#
+forward
+-1.0
+#EL#
+3 58 51
+#ES#
+forward
+-1.0
+#EL#
+3 68 51
+#ES#
+forward
+-1.0
+#EL#
+3 78 51
+#ES#
+destroyForward
+-1.0
+#EL#
+3 78 51
+#ES#
+backward
+-1.0
+#EL#
+3 68 51
+#ES#
+right
+-1.0
+#EL#
+4 68 51
+#ES#
+left
+-1.0
+#EL#
+3 68 51
+#ES#
+left
+-1.0
+#EL#
+2 68 51
+#ES#
+right
+-1.0
+#EL#
+3 68 51
+#ES#
+right
+-1.0
+#EL#
+4 68 51
+#ES#
+left
+-1.0
+#EL#
+3 68 51
+#ES#
+backward
+-1.0
+#EL#
+3 58 51
+#ES#
+destroyForward
+-1.0
+#EL#
+3 58 51
+#ES#
+forward
+-1.0
+#EL#
+3 68 51
+#ES#
+forward
+-1.0
+#EL#
+3 78 51
+#ES#
+backward
+-1.0
+#EL#
+3 68 51
+#ES#
+left
+-1.0
+#EL#
+2 68 51
+#ES#
+backward
+-1.0
+#EL#
+2 58 51
+#ES#
+right
+-1.0
+#EL#
+3 58 51
+#ES#
+right
+-1.0
+#EL#
+4 58 51
+#ES#
+destroyForward
+-1.0
+#EL#
+4 58 51
+#ES#
+forward
+-1.0
+#EL#
+4 68 51
+#ES#
+left
+-1.0
+#EL#
+3 68 51
+#ES#
+right
+-1.0
+#EL#
+4 68 51
+#ES#
+left
+-1.0
+#EL#
+3 68 51
+#ES#
+backward
+-1.0
+#EL#
+3 58 51
+#ES#
+right
+-1.0
+#EL#
+4 58 51
+#ES#
+left
+-1.0
+#EL#
+3 58 51
+#ES#
+backward
+-1.0
+#EL#
+3 48 51
+#ES#
+right
+-1.0
+#EL#
+4 48 51
+#ES#
+destroyForward
+-1.0
+#EL#
+4 48 51
+#ES#
+forward
+-1.0
+#EL#
+4 58 51
+#ES#
+forward
+-1.0
+#EL#
+4 68 51
+#ES#
+right
+-1.0
+#EL#
+5 68 51
+#ES#
+backward
+-1.0
+#EL#
+5 58 51
+#ES#
+right
+-1.0
+#EL#
+6 58 51
+#ES#
+left
+-1.0
+#EL#
+5 58 51
+#ES#
+right
+-1.0
+#EL#
+6 58 51
+#ES#
+destroyForward
+-1.0
+#EL#
+6 58 51
+#ES#
+right
+-1.0
+#EL#
+7 58 51
+#ES#
+backward
+-1.0
+#EL#
+7 48 51
+#ES#
+forward
+-1.0
+#EL#
+7 58 51
+#ES#
+backward
+-1.0
+#EL#
+7 48 51
+#ES#
+destroyForward
+-1.0
+#EL#
+7 48 51
+#ES#
+forward
+-1.0
+#EL#
+7 58 51
+#ES#
+left
+-1.0
+#EL#
+6 58 51
+#ES#
+left
+-1.0
+#EL#
+5 58 51
+#ES#
+destroyForward
+-1.0
+#EL#
+5 58 51
+#ES#
+right
+-1.0
+#EL#
+6 58 51
+#ES#
+right
+-1.0
+#EL#
+7 58 51
+#ES#
+right
+-1.0
+#EL#
+8 58 51
+#ES#
