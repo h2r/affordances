@@ -29,7 +29,7 @@ public class MinecraftDomain implements DomainGenerator{
 	public static final String					CLASSBLOCK = "block";
 	
 	public static final String					ACTIONFORWARD = "forward";
-	public static final String					ACTIONBACKWARD = "backward";
+	public static final String					ACTIONBACKWARD = "back";
 	public static final String					ACTIONLEFT = "left";
 	public static final String					ACTIONRIGHT = "right";
 	public static final String					ACTIONDESTROYF = "destroyForward";
@@ -38,8 +38,8 @@ public class MinecraftDomain implements DomainGenerator{
 	
 	public static final String					PFATGOAL = "atGoal";
 	
-	public static final int						MAXX = 15;
-	public static final int						MAXY = 15;
+	public static final int						MAXX = 9; // 0 - 9, gives us a 10x10 surface
+	public static final int						MAXY = 9;
 	public static final int						MAXZ = 8;
 	public static final int						MAXBLKNUM = 4;
 	public static AtGoalPF 						AtGoalPF = null;
@@ -172,7 +172,7 @@ public class MinecraftDomain implements DomainGenerator{
 	public static void initBlocks(){
 		// Adds the initial blocks to the world
 		createFloor();
-		addHorizWall(0,MAXX,4,1,2);
+		// addHorizWall(0,MAXX,4,1,2);
 	}
 	
 	// Creates floor and initializes all other blocks to be air

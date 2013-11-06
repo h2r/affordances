@@ -1,10 +1,15 @@
-var csv = require("fast-csv");
+var fs = require('fs');
 var mineflayer = require('../');
 var vec3 = mineflayer.vec3;
 var bot = mineflayer.createBot({
   username: "aye_priori",
     password: "Sprolls5!",
 });
+
+EventEmitter.setMaxListeners(20);
+
+isMoving = false; // Flag to indicate if the bot is currently moving
+
 
 bot.on('chat', function(username, message) {
   
@@ -22,59 +27,67 @@ bot.on('chat', function(username, message) {
     case "R":
       move("right");
       break;
-    case "O":
-      orient();
-      break;
     case "loc":
       botMessage = "curLoc = ( "  + String(Math.floor(bot.entity.position.x)) + ", " + String(Math.floor(bot.entity.position.y)) + ", " + String(Math.floor(bot.entity.position.z)) + " )";
-      bot.chat(botMessage);
+      console.log(botMessage);
       break;
-    case "P":
-      place();
+    case "exec":
+      plan = parsePlan();
+      executePlan(plan);
       break;
   } 
 });
 
 function parsePlan() {
-  csv("plan.csv").on("data", function(data){
-    var a = data;
-  }).on("end", function(){
-  })
- .parse();
+  var lines = fs.readFileSync('plan.p', 'utf8').split(',');
+  var arr = new Array();
+  for (var l in lines){
+      var line = lines[l];
+      arr.push(line);
+  }
+  return arr;
 }
 
-// Called on game init.
-bot.on('login', function() {
-  bot.chat("/ci"); // Clears Inventory
-  //bot.chat("/give aye_priori 3 2"); // Gives 2 blocks of dirt
-  bot.chat("/time set 10"); // Sets time for lighting
-  bot.chat("/weather clear 999999"); // Makes weather clear so we don't get rained on.
-});
-
-
-function orient() {
-  return;
-  //bot.lookAt(Math.floor(bot.entity.position.offset(0, 1, 1)));
+function executePlan(plan) {
+    for (var i=0;i<plan.length;i++) {
+      setTimeout(executePlanStep(i), 500*i);
+    }
 }
 
-function place() {
-  return;
-  //bot.lookAt(Math.floor(bot.entity.position.offset(0, 1, 1)));
+function executePlanStep(i) {
+      console.log(i)
+      if (plan[i] == "destroyForward") {
+        // Do destroy stuff
+        console.log("destroy")
+      }
+      else if (plan[i] == "placeForward") {
+        // Do destroy stuff
+        console.log("place")
+      }
+      else if (plan[i] == "forward" || plan[i] == "back" || plan[i] == "left" || plan[i] == "right") {
+        move(plan[i])
+      }
+      else {
+        console.log("Got odd command: " + plan[i])
+      }
 }
 
 
 function move(dir) {
+  
   bot.setControlState(dir, true);
+  isMoving = true;
 
   var startX = bot.entity.position.x;
   var startY = bot.entity.position.y;
   var startZ = bot.entity.position.z;
-
+  console.log(bot.entity.position)
   bot.on('move', movedOne);
   
   function movedOne() {
     if (Math.abs(bot.entity.position.x - startX) >= 1 || Math.abs(bot.entity.position.z - startZ) >= 1 || Math.abs(bot.entity.position.z - startZ) >= 1) {
       bot.setControlState(dir, false);
+      isMoving = false;
       bot.removeListener('move', movedOne);
     }
   }
