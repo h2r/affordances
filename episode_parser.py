@@ -1,9 +1,8 @@
 episodeFile = file("planResult.episode")
 
-outfile = file("plan.csv","w")
+outfile = file("plan.p","w")
 
 for line in episodeFile:
 	if line[0].isalpha():
-		line = line.strip() + ", "
+		line = line.strip() + ","
 		outfile.write(line)
-
