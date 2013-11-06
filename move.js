@@ -3,7 +3,7 @@ var mineflayer = require('../');
 var vec3 = mineflayer.vec3;
 var bot = mineflayer.createBot({
   username: "aye_priori",
-    password: "Sprolls5!",
+    password: "password",
 });
 
 EventEmitter.setMaxListeners(20);
