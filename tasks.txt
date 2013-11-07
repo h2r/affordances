@@ -1,0 +1,9 @@
+- Basic Movement in a flat plane (VI will complete, A will complete)
+- Basic Movement with obstructions (VI will complete, A will complete)
+- Basic Movement with a Wall (needs destruction/placement)
+	VI will FAIL
+	A will PASS
+- Basic Movement with a hole (VI will complete, A will complete)
+- Basic Movement with a trench (needs to place a bridge)
+	VI will FAIL
+	A will PASS
