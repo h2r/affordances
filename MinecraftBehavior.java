@@ -46,8 +46,8 @@ public class MinecraftBehavior {
 		
 		//set up the initial state of the task
 		initialState = MinecraftDomain.getState(domain);
-		MinecraftDomain.setAgent(initialState, 1, 1, 1, 2);
-		MinecraftDomain.setGoal(initialState, 8, 5, 1);
+		MinecraftDomain.setAgent(initialState, 8, 1, 1, 2);
+		MinecraftDomain.setGoal(initialState, 1, 8, 1);
 		
 		//set up the state hashing system
 		hashingFactory = new DiscreteStateHashFactory();
