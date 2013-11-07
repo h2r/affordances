@@ -2,8 +2,8 @@ var fs = require('fs');
 var mineflayer = require('../');
 var vec3 = mineflayer.vec3;
 var bot = mineflayer.createBot({
-  username: "user",
-    password: "password",
+  username: "aye_priori",
+    password: "Sprolls5!",
 });
 
 goalX = 143;
@@ -27,15 +27,14 @@ bot.on('chat', function(username, message) {
       move("right");
       break;
     case "loc":
-      botMessage = "curLoc = ( "  + String(Math.floor(bot.entity.position.x)) + ", " + String(Math.floor(bot.entity.position.y)) + ", " + String(Math.floor(bot.entity.position.z)) + " )";
-      console.log(botMessage);
+      logBotLoc();
       break;
     case "exec":
       plan = parsePlan();
       executePlanStep(plan, 1);
       break;
     case "reset":
-      bot.chat("/tp aye_priori 150.5 73.0 968.0");
+      bot.chat("/tp aye_priori 150.5 74.0 968.0");
       break;
     case "orient":
       orient();
@@ -43,11 +42,25 @@ bot.on('chat', function(username, message) {
     case "destroy":
       destroy();
       break;
-    case "place":
-      place();
+    case "placeF":
+      place("forward",1);
+      break;
+    case "placeB":
+      place("back",1);
+      break;
+    case "placeL":
+      place("left",1);
+      break;
+    case "placeR":
+      place("right",1);
       break;
   } 
 });
+
+function logBotLoc() {
+  botMessage = "curLoc = ( "  + String(Math.floor(bot.entity.position.x)) + ", " + String(Math.floor(bot.entity.position.y)) + ", " + String(Math.floor(bot.entity.position.z)) + " )";
+  console.log(botMessage);
+}
 
 function isInGoalState() {
 
@@ -78,11 +91,19 @@ function parsePlan() {
 }
 
 function executePlanStep(plan, step) {
-  
-  bot.setControlState(plan[step], true);
   var startX = bot.entity.position.x;
   var startY = bot.entity.position.y;
   var startZ = bot.entity.position.z;
+
+  if (!canMakeMove(plan[step])) {
+    // Movement obstructed or there is a hole.
+    console.log("can't move!");
+    return;
+  }
+
+
+  bot.setControlState(plan[step], true);
+  
   bot.on('move', movedOne);
   
   function movedOne() {
@@ -97,6 +118,33 @@ function executePlanStep(plan, step) {
       }
     }
   }
+}
+
+function canMakeMove(moveDir) {
+  var dx = 0;
+  var dz = 0;
+  switch (moveDir)
+  {
+    case "forward":
+      dz = -1;
+      break;
+    case "back":
+      dz = 1;
+      break;
+    case "left":
+      dx = -1;
+      break;
+    case "right":
+      dx = 1;
+      break;
+  }
+
+  if (bot.blockAt(bot.entity.position.offset(dx,0,dz)).name != "air" || bot.blockAt(bot.entity.position.offset(dx,-1,dz)).name == "air")  {
+    // Movement obstructed or there is a hole
+    return false;
+  }
+  return true;
+
 }
 
 function isBotCommand(cmd) {
@@ -136,15 +184,45 @@ function orient() {
 }
 
 function destroy() {
-  destBlock = bot.blockAt(bot.entity.position.offset(0,0,-1));
-  bot.dig(destBlock);
+  destroyBlock = bot.blockAt(bot.entity.position.offset(0,0,-1));
+  if (bot.canDigBlock(destroyBlock)) {
+    bot.dig(destroyBlock);
+  }
   return;
 }
 
-function place() {
+function place(dir, dist) {
+  // dir = {"left", "right", "forward", "back"}
+  // dist = {1, 2, 3, 4} // TODO: use dist.
+  
+  dx = 0;
+  dy = 0; // TODO: more elegant way of figuring out dy
+  dz = 0;
+
+  if (dir == "left")
+    dx = -1
+  else if (dir == "right")
+    dx = 1
+  else if (dir == "forward")
+    dz = -1
+  else if (dir == "back")
+    dz = 1
+
+  dx = dx * dist;
+  dz = dz * dist;
+
   // Places a block on top of the block directly in front of it.
-  placeBlock = bot.blockAt(bot.entity.position.offset(0,0,-1));
+  placeBlock = bot.blockAt(bot.entity.position.offset(dx,dy,dz));
+  // Finds the first non air block in this coordinate "column" that is within the bots "reach" (3)
+  while (placeBlock.name == "air") {
+    if (dy < -3) {
+      return ;
+    }
+    dy = dy - 1;
+    placeBlock = bot.blockAt(bot.entity.position.offset(dx,dy,dz));
+  }
+
   placeVec = vec3(placeBlock.position.x, placeBlock.position.y + 1, placeBlock.position.z)
-  bot.placeBlock(destBlock);
+  bot.placeBlock(placeBlock, placeVec);
   return;
 }

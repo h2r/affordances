@@ -5,6 +5,7 @@ import burlap.oomdp.core.Domain;
 
 import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.singleagent.RewardFunction;
+import burlap.oomdp.singleagent.common.SingleGoalPFRF;
 import burlap.oomdp.singleagent.common.SinglePFTF;
 import burlap.oomdp.singleagent.common.UniformCostRF;
 import burlap.oomdp.core.State;
@@ -40,14 +41,14 @@ public class MinecraftBehavior {
 		sp = new MinecraftStateParser(domain); 	
 		
 		//define the task
-		rf = new UniformCostRF(); 
+		rf = new SingleGoalPFRF(domain.getPropFunction(MinecraftDomain.PFATGOAL), 10000, -1000); 
 		tf = new SinglePFTF(domain.getPropFunction(MinecraftDomain.PFATGOAL)); 
 		goalCondition = new TFGoalCondition(tf);
 		
 		//set up the initial state of the task
 		initialState = MinecraftDomain.getState(domain);
-		MinecraftDomain.setAgent(initialState, 8, 1, 1, 2);
-		MinecraftDomain.setGoal(initialState, 1, 8, 1);
+		MinecraftDomain.setAgent(initialState, 8, 1, 2, 2);
+		MinecraftDomain.setGoal(initialState, 1, 8, 2);
 		
 		//set up the state hashing system
 		hashingFactory = new DiscreteStateHashFactory();
@@ -62,7 +63,7 @@ public class MinecraftBehavior {
 			outputPath = outputPath + "/";
 		}
 		
-		OOMDPPlanner planner = new ValueIteration(domain, rf, tf, 0.99, hashingFactory, 0.001, 100);
+		OOMDPPlanner planner = new ValueIteration(domain, rf, tf, 0.99, hashingFactory, 0.001, Integer.MAX_VALUE);
 		planner.planFromState(initialState);
 		
 		//create a Q-greedy policy from the planner
