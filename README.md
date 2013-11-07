@@ -3,13 +3,16 @@ affordances
 A collection of files currently beind used in our Affordances project.
 
 Three main sets of files here:
+
 	(1) Minecraft domain in BURLAP.
 		- OOMDP model of Minecraft + Minecraft Bot
 		- Currently runs VI (effectively forward search with k = 100) on basic path planning example
 		- Primarily *.java
+
 	(2) code that interfaces with the Mineflayer API
 		- Additional layer of functionality so that BURLAP can 'easily' interface with Mineflayer
 		- Most code is in move.js
+
 	(3) Miscellaneous other algorithms/papers/bits of the project
 		- Just about everything else
 
