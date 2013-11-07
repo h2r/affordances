@@ -3,13 +3,12 @@ var mineflayer = require('../');
 var vec3 = mineflayer.vec3;
 var bot = mineflayer.createBot({
   username: "aye_priori",
-    password: "password",
+    password: "Sprolls5!",
 });
 
-EventEmitter.setMaxListeners(20);
-
-isMoving = false; // Flag to indicate if the bot is currently moving
-
+goalX = 143;
+goalY = 72;
+goalZ = 960;
 
 bot.on('chat', function(username, message) {
   
@@ -33,10 +32,31 @@ bot.on('chat', function(username, message) {
       break;
     case "exec":
       plan = parsePlan();
-      executePlan(plan);
+      executePlanStep(plan, 1);
+      break;
+    case "reset":
+      bot.chat("/tp aye_priori 150.5 73.0 968.0");
       break;
   } 
 });
+
+function isInGoalState() {
+
+  // For readability
+  botX = bot.entity.position.x;
+  botY = bot.entity.position.y;
+  botZ = bot.entity.position.z;
+
+  if (Math.floor(botX) == goalX && Math.floor(botY) == goalY && Math.floor(botZ) == goalZ) {
+    // console.log("WOOHOO I MADE IT! :)");
+    bot.chat("WOOHOO I MADE IT! :)");
+    return true;
+  }
+  else {
+    return false;
+  }
+
+}
 
 function parsePlan() {
   var lines = fs.readFileSync('plan.p', 'utf8').split(',');
@@ -48,46 +68,55 @@ function parsePlan() {
   return arr;
 }
 
-function executePlan(plan) {
-    for (var i=0;i<plan.length;i++) {
-      setTimeout(executePlanStep(i), 500*i);
-    }
-}
 
-function executePlanStep(i) {
-      console.log(i)
-      if (plan[i] == "destroyForward") {
-        // Do destroy stuff
-        console.log("destroy")
-      }
-      else if (plan[i] == "placeForward") {
-        // Do destroy stuff
-        console.log("place")
-      }
-      else if (plan[i] == "forward" || plan[i] == "back" || plan[i] == "left" || plan[i] == "right") {
-        move(plan[i])
-      }
-      else {
-        console.log("Got odd command: " + plan[i])
-      }
-}
-
-
-function move(dir) {
+function executePlanStep(plan, step) {
   
-  bot.setControlState(dir, true);
-  isMoving = true;
-
+  bot.setControlState(plan[step], true);
   var startX = bot.entity.position.x;
   var startY = bot.entity.position.y;
   var startZ = bot.entity.position.z;
-  console.log(bot.entity.position)
   bot.on('move', movedOne);
   
   function movedOne() {
     if (Math.abs(bot.entity.position.x - startX) >= 1 || Math.abs(bot.entity.position.z - startZ) >= 1 || Math.abs(bot.entity.position.z - startZ) >= 1) {
+      isInGoalState()
+      bot.setControlState(plan[step], false);
+      bot.removeListener('move', movedOne);
+      
+      // Calls the next step of the plan, if there is one
+      if (step <= plan.length && isBotCommand(plan[step + 1])) {
+        executePlanStep(plan, step + 1);
+      }
+    }
+  }
+}
+
+function isBotCommand(cmd) {
+// Takes in a string from the agents plan
+// returns True if the string corresponds to a movement command and FALSE otherwise (for now, later will add place and dig)
+  if (cmd == "forward" || cmd == "back" || cmd == "left" || cmd == "right") {
+    return true;
+  }
+  else {
+    return false;
+  }
+
+}
+
+function move(dir) {
+  
+  bot.setControlState(dir, true);
+
+  var startX = bot.entity.position.x;
+  var startY = bot.entity.position.y;
+  var startZ = bot.entity.position.z;
+
+  bot.on('move', movedOne);
+  
+  function movedOne() {
+    if (Math.abs(bot.entity.position.x - startX) >= 1 || Math.abs(bot.entity.position.z - startZ) >= 1 || Math.abs(bot.entity.position.z - startZ) >= 1) {
+      console.log(isInGoalState());
       bot.setControlState(dir, false);
-      isMoving = false;
       bot.removeListener('move', movedOne);
     }
   }
