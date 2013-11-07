@@ -2,7 +2,7 @@ var fs = require('fs');
 var mineflayer = require('../');
 var vec3 = mineflayer.vec3;
 var bot = mineflayer.createBot({
-  username: "aye_priori",
+  username: "user",
     password: "password",
 });
 
@@ -37,6 +37,15 @@ bot.on('chat', function(username, message) {
     case "reset":
       bot.chat("/tp aye_priori 150.5 73.0 968.0");
       break;
+    case "orient":
+      orient();
+      break;
+    case "destroy":
+      destroy();
+      break;
+    case "place":
+      place();
+      break;
   } 
 });
 
@@ -67,7 +76,6 @@ function parsePlan() {
   }
   return arr;
 }
-
 
 function executePlanStep(plan, step) {
   
@@ -120,4 +128,23 @@ function move(dir) {
       bot.removeListener('move', movedOne);
     }
   }
+}
+
+function orient() {
+  bot.lookAt(bot.entity.position.offset(1,0,0));
+  return;
+}
+
+function destroy() {
+  destBlock = bot.blockAt(bot.entity.position.offset(0,0,-1));
+  bot.dig(destBlock);
+  return;
+}
+
+function place() {
+  // Places a block on top of the block directly in front of it.
+  placeBlock = bot.blockAt(bot.entity.position.offset(0,0,-1));
+  placeVec = vec3(placeBlock.position.x, placeBlock.position.y + 1, placeBlock.position.z)
+  bot.placeBlock(destBlock);
+  return;
 }
