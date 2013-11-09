@@ -8,7 +8,9 @@ import burlap.oomdp.singleagent.RewardFunction;
 import burlap.oomdp.singleagent.common.SingleGoalPFRF;
 import burlap.oomdp.singleagent.common.SinglePFTF;
 import burlap.oomdp.singleagent.common.UniformCostRF;
+import burlap.oomdp.visualizer.Visualizer;
 import burlap.oomdp.core.State;
+import burlap.behavior.singleagent.EpisodeSequenceVisualizer;
 import burlap.behavior.singleagent.Policy;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
 import burlap.behavior.singleagent.planning.QComputablePlanner;
@@ -45,10 +47,11 @@ public class MinecraftBehavior {
 		tf = new SinglePFTF(domain.getPropFunction(MinecraftDomain.PFATGOAL)); 
 		goalCondition = new TFGoalCondition(tf);
 		
+		
 		//set up the initial state of the task
 		initialState = MinecraftDomain.getState(domain);
-		MinecraftDomain.setAgent(initialState, 8, 1, 2, 2);
-		MinecraftDomain.setGoal(initialState, 1, 8, 2);
+		MinecraftDomain.setAgent(initialState, 1, 1, 2, 1);
+		MinecraftDomain.setGoal(initialState, 6, 6, 2);
 		
 		//set up the state hashing system
 		hashingFactory = new DiscreteStateHashFactory();
@@ -63,9 +66,8 @@ public class MinecraftBehavior {
 			outputPath = outputPath + "/";
 		}
 		
-		OOMDPPlanner planner = new ValueIteration(domain, rf, tf, 0.99, hashingFactory, 0.001, Integer.MAX_VALUE);
+		OOMDPPlanner planner = new ValueIteration(domain, rf, tf, 0.99, hashingFactory, 0.000000001, Integer.MAX_VALUE);
 		
-		// TODO: Make sure that this is actually working.
 		planner.planFromState(initialState);
 		
 		//create a Q-greedy policy from the planner
@@ -76,18 +78,21 @@ public class MinecraftBehavior {
 		
 	}
 	
+	public void visualize(String outputPath){
+		Visualizer v = MinecraftVisualizer.getVisualizer(domain, mcdg.getMapForVisualize(2));
+		EpisodeSequenceVisualizer evis = new EpisodeSequenceVisualizer(v, domain, sp, outputPath);
+	}
+	
 	public static void main(String[] args) {
 	
 		MinecraftBehavior mcb = new MinecraftBehavior();
 		String outputPath = "output/"; //directory to record results
 		
 		// We will call planning and learning algorithms here
-		
 		mcb.ValueIterationMC(outputPath);
 		
 		// Run the visualizer
-		// example.visualize(outputPath);
-		
+		mcb.visualize(outputPath);
 	}
 	
 	

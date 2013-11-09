@@ -34,8 +34,8 @@ public class MinecraftStateParser implements StateParser {
 		String ya = MinecraftDomain.ATTY;
 		String za = MinecraftDomain.ATTZ;
 		
-		sbuf.append(a.getDiscValForAttribute(xa)).append(" ").append(a.getDiscValForAttribute(ya));
-		sbuf.append(goal.getDiscValForAttribute(xa)).append(" ").append(goal.getDiscValForAttribute(ya)).append(goal.getDiscValForAttribute(za));
+		sbuf.append(a.getDiscValForAttribute(xa)).append(",").append(a.getDiscValForAttribute(ya)).append(",").append(a.getDiscValForAttribute(za)).append(" ");
+		sbuf.append(goal.getDiscValForAttribute(xa)).append(",").append(goal.getDiscValForAttribute(ya)).append(",").append(goal.getDiscValForAttribute(za)).append(" ");
 		
 		
 		return sbuf.toString();
@@ -43,25 +43,25 @@ public class MinecraftStateParser implements StateParser {
 
 	@Override
 	public State stringToState(String str) {
+		System.out.println(str);
+		String [] obcomps = str.split(" ");
 		
-		String [] obcomps = str.split(", ");
-		
-		String [] acomps = obcomps[0].split(" ");
+		String [] acomps = obcomps[0].split(",");
 		int ax = Integer.parseInt(acomps[0]);
 		int ay = Integer.parseInt(acomps[1]);
-		int az = Integer.parseInt(acomps[2]);
+		//int az = Integer.parseInt(acomps[2]);
 		
-		int nl = obcomps.length - 1;
+		int ng = obcomps.length - 1;
 		
 		State s = MinecraftDomain.getState(domain);
-		MinecraftDomain.setAgent(s, ax, ay, az, 4);
+		MinecraftDomain.setAgent(s, ax, ay, 2, 4);
 		
-		String [] lcomps = obcomps[1].split(" ");
-		int gx = Integer.parseInt(lcomps[0]);
-		int gy = Integer.parseInt(lcomps[1]);
-		int gz = Integer.parseInt(lcomps[2]);
+		String [] gcomps = obcomps[1].split(",");
+		int gx = Integer.parseInt(gcomps[0]);
+		int gy = Integer.parseInt(gcomps[1]);
+		//int gz = Integer.parseInt(lcomps[2]);
 		
-		MinecraftDomain.setGoal(s, gx, gy, gz);
+		MinecraftDomain.setGoal(s, gx, gy, 2);
 		
 		return s;
 	}

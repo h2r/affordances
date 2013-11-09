@@ -14,6 +14,7 @@ import burlap.oomdp.core.State;
 import burlap.oomdp.singleagent.explorer.TerminalExplorer;
 import burlap.oomdp.singleagent.explorer.VisualExplorer;
 import burlap.oomdp.visualizer.Visualizer;
+import java.util.Random;
 
 
 public class MinecraftDomain implements DomainGenerator{
@@ -33,9 +34,9 @@ public class MinecraftDomain implements DomainGenerator{
 	public static final String					ACTIONLEFT = "left";
 	public static final String					ACTIONRIGHT = "right";
 	public static final String					ACTIONPLACEF = "placeForward";
-	public static final String					ACTIONPLACEB = "placeBack";
-	public static final String					ACTIONPLACER = "placeRight";
-	public static final String					ACTIONPLACEL = "placeLeft";
+//	public static final String					ACTIONPLACEB = "placeBack";
+//	public static final String					ACTIONPLACER = "placeRight";
+//	public static final String					ACTIONPLACEL = "placeLeft";
 
 	
 	public static final String					PFATGOAL = "atGoal";
@@ -105,9 +106,9 @@ public class MinecraftDomain implements DomainGenerator{
 
 		// Placement
 		Action placeF = new PlaceActionF(ACTIONPLACEF, DOMAIN, "");
-		Action placeB = new PlaceActionB(ACTIONPLACEB, DOMAIN, "");
-		Action placeR = new PlaceActionL(ACTIONPLACER, DOMAIN, "");
-		Action placeL = new PlaceActionR(ACTIONPLACEL, DOMAIN, "");
+//		Action placeB = new PlaceActionB(ACTIONPLACEB, DOMAIN, "");
+//		Action placeR = new PlaceActionL(ACTIONPLACER, DOMAIN, "");
+//		Action placeL = new PlaceActionR(ACTIONPLACEL, DOMAIN, "");
 		
 		// CREATE PROPOSITIONAL FUNCTIONS
 		PropositionalFunction atGoal = new AtGoalPF(PFATGOAL, DOMAIN,
@@ -174,7 +175,7 @@ public class MinecraftDomain implements DomainGenerator{
 	public static void initBlocks(){
 		// Adds the initial blocks to the world
 		createFloor();
-		addHorizTrench(0,MAXX,4,2,1);
+		//addHorizTrench(0,MAXX,4,2,1);
 	}
 	
 	// Creates floor and initializes all other blocks to be air
@@ -194,7 +195,7 @@ public class MinecraftDomain implements DomainGenerator{
 	protected static void addHorizTrench(int startX, int endX, int y, int z, int trenchDepth) {
 		
 		if (trenchDepth < 0) {
-			// Trying to make a trench that is deeper than the world, squish it to maxDepth.
+			// Trying to make a trench that is deeper than the world, squish it to the bottom of the world.
 			trenchDepth = 0;
 		}
 		
@@ -400,50 +401,53 @@ public class MinecraftDomain implements DomainGenerator{
 		}
 		
 		protected State performActionHelper(State st, String[] params) {
+//			Random rand = new Random();
+//			int randomNum = rand.nextInt((MAXX - 0) + 1);
+//			MAP[randomNum][4][2] = 1; // HACK TO CHECK SOMETHING
 			place(st, 0, 1, 0);
 			System.out.println("Action Performed: " + this.name);
 			return st;
-		}	
+		}
 	}
 	
-	public static class PlaceActionB extends Action{
-
-		public PlaceActionB(String name, Domain domain, String parameterClasses){
-			super(name, domain, parameterClasses);
-		}
-		
-		protected State performActionHelper(State st, String[] params) {
-			place(st, 0, -1, 0);
-			System.out.println("Action Performed: " + this.name);
-			return st;
-		}	
-	}
-	
-	public static class PlaceActionR extends Action{
-
-		public PlaceActionR(String name, Domain domain, String parameterClasses){
-			super(name, domain, parameterClasses);
-		}
-		
-		protected State performActionHelper(State st, String[] params) {
-			place(st, -1, 0, 0);
-			System.out.println("Action Performed: " + this.name);
-			return st;
-		}	
-	}
-	
-	public static class PlaceActionL extends Action{
-
-		public PlaceActionL(String name, Domain domain, String parameterClasses){
-			super(name, domain, parameterClasses);
-		}
-		
-		protected State performActionHelper(State st, String[] params) {
-			place(st, 1, 0, 0);
-			System.out.println("Action Performed: " + this.name);
-			return st;
-		}	
-	}
+//	public static class PlaceActionB extends Action{
+//
+//		public PlaceActionB(String name, Domain domain, String parameterClasses){
+//			super(name, domain, parameterClasses);
+//		}
+//		
+//		protected State performActionHelper(State st, String[] params) {
+//			place(st, 0, -1, 0);
+//			System.out.println("Action Performed: " + this.name);
+//			return st;
+//		}	
+//	}
+//	
+//	public static class PlaceActionR extends Action{
+//
+//		public PlaceActionR(String name, Domain domain, String parameterClasses){
+//			super(name, domain, parameterClasses);
+//		}
+//		
+//		protected State performActionHelper(State st, String[] params) {
+//			place(st, -1, 0, 0);
+//			System.out.println("Action Performed: " + this.name);
+//			return st;
+//		}	
+//	}
+//	
+//	public static class PlaceActionL extends Action{
+//
+//		public PlaceActionL(String name, Domain domain, String parameterClasses){
+//			super(name, domain, parameterClasses);
+//		}
+//		
+//		protected State performActionHelper(State st, String[] params) {
+//			place(st, 1, 0, 0);
+//			System.out.println("Action Performed: " + this.name);
+//			return st;
+//		}	
+//	}
 	
 	/* ==== Propositional Functions ==== */
 	
@@ -471,8 +475,10 @@ public class MinecraftDomain implements DomainGenerator{
 			int gz = goal.getDiscValForAttribute(ATTZ);
 			
 			if(ax == gx && ay == gy && az == gz){
+//				System.out.println("goal FOUND");
 				return true;
 			}
+//			System.out.println("goal FAILED");
 			
 			return false;
 		}
@@ -496,8 +502,8 @@ public class MinecraftDomain implements DomainGenerator{
 		agent.setValue(ATTBLKNUM, 2);
 
 		ObjectInstance goal = s.getObjectsOfTrueClass(CLASSGOAL).get(0);
-		goal.setValue(ATTX, 5);
-		goal.setValue(ATTY, 8);
+		goal.setValue(ATTX, 6);
+		goal.setValue(ATTY, 6);
 		goal.setValue(ATTZ, 2);
 
 			
@@ -507,11 +513,30 @@ public class MinecraftDomain implements DomainGenerator{
 		exp.addActionShortHand("r", ACTIONRIGHT);
 		exp.addActionShortHand("l", ACTIONLEFT);
 		exp.addActionShortHand("pf", ACTIONPLACEF);
-		exp.addActionShortHand("pb", ACTIONPLACEB);
-		exp.addActionShortHand("pr", ACTIONPLACER);
-		exp.addActionShortHand("pl", ACTIONPLACEL);
+//		exp.addActionShortHand("pb", ACTIONPLACEB);
+//		exp.addActionShortHand("pr", ACTIONPLACER);
+//		exp.addActionShortHand("pl", ACTIONPLACEL);
 				
 		exp.exploreFromState(s);
+	}
+
+	public static int[][] getMapForVisualize(int height) {
+		// Returns the 2d slice of the map @ z = height
+		int[][] newMap = new int[MAP.length][MAP[0].length];
+		System.out.println(MAP.length);
+		System.out.println(MAP[0].length);
+		for (int x=0;x<MAP.length;x++) {
+			for (int y=0;y<MAP[x].length;y++) {
+				
+				newMap[x][y] = MAP[x][y][height];
+			}
+		}
+		
+		return newMap;
+	}
+	
+	public int[][][] getMap() {
+		return MAP;
 	}
 
 	
