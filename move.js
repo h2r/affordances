@@ -193,7 +193,7 @@ function destroy() {
 
 function place(dir, dist) {
   // dir = {"left", "right", "forward", "back"}
-  // dist = {1, 2, 3, 4} // TODO: use dist.
+  // dist = {1, 2, 3, 4} // TODO: implement dist.
   
   dx = 0;
   dy = 0; // TODO: more elegant way of figuring out dy
@@ -213,6 +213,7 @@ function place(dir, dist) {
 
   // Places a block on top of the block directly in front of it.
   placeBlock = bot.blockAt(bot.entity.position.offset(dx,dy,dz));
+
   // Finds the first non air block in this coordinate "column" that is within the bots "reach" (3)
   while (placeBlock.name == "air") {
     if (dy < -3) {

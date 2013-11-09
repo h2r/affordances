@@ -64,6 +64,8 @@ public class MinecraftBehavior {
 		}
 		
 		OOMDPPlanner planner = new ValueIteration(domain, rf, tf, 0.99, hashingFactory, 0.001, Integer.MAX_VALUE);
+		
+		// TODO: Make sure that this is actually working.
 		planner.planFromState(initialState);
 		
 		//create a Q-greedy policy from the planner
