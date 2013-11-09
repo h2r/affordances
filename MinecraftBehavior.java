@@ -1,5 +1,8 @@
 package burlap.domain.singleagent.minecraft;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import burlap.oomdp.singleagent.SADomain;
 import burlap.oomdp.core.Domain;
 
@@ -47,9 +50,28 @@ public class MinecraftBehavior {
 		tf = new SinglePFTF(domain.getPropFunction(MinecraftDomain.PFATGOAL)); 
 		goalCondition = new TFGoalCondition(tf);
 		
+		// === Build Initial State=== //
 		
-		//set up the initial state of the task
-		initialState = MinecraftDomain.getState(domain);
+		// -- Blocks --
+		int MAXX = 10;
+		int MAXY = 10;
+		List <Integer> blockX = new ArrayList<Integer>();
+		List <Integer> blockY = new ArrayList<Integer>();
+		
+		// Row i will have blocks in all 10 locations
+		for (int i = 0; i < MAXX; i++){
+			// Place a trench @ x = 4
+//			if (i == 4)
+//			{
+//				continue;
+//			}
+			blockX.add(i);
+			blockY.add(MAXY);
+		}
+		
+		initialState = MinecraftDomain.getCleanState(domain, blockX, blockY);
+		
+		// -- Agent & Goal --
 		MinecraftDomain.setAgent(initialState, 1, 1, 2, 1);
 		MinecraftDomain.setGoal(initialState, 6, 6, 2);
 		
@@ -66,7 +88,7 @@ public class MinecraftBehavior {
 			outputPath = outputPath + "/";
 		}
 		
-		OOMDPPlanner planner = new ValueIteration(domain, rf, tf, 0.99, hashingFactory, 0.000000001, Integer.MAX_VALUE);
+		OOMDPPlanner planner = new ValueIteration(domain, rf, tf, 0.95, hashingFactory, 0.001, Integer.MAX_VALUE);
 		
 		planner.planFromState(initialState);
 		
@@ -78,11 +100,6 @@ public class MinecraftBehavior {
 		
 	}
 	
-	public void visualize(String outputPath){
-		Visualizer v = MinecraftVisualizer.getVisualizer(domain, mcdg.getMapForVisualize(2));
-		EpisodeSequenceVisualizer evis = new EpisodeSequenceVisualizer(v, domain, sp, outputPath);
-	}
-	
 	public static void main(String[] args) {
 	
 		MinecraftBehavior mcb = new MinecraftBehavior();
@@ -90,9 +107,7 @@ public class MinecraftBehavior {
 		
 		// We will call planning and learning algorithms here
 		mcb.ValueIterationMC(outputPath);
-		
-		// Run the visualizer
-		mcb.visualize(outputPath);
+
 	}
 	
 	

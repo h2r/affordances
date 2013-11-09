@@ -53,7 +53,7 @@ public class MinecraftStateParser implements StateParser {
 		
 		int ng = obcomps.length - 1;
 		
-		State s = MinecraftDomain.getState(domain);
+		State s = MinecraftDomain.getCleanState(domain, null, null);
 		MinecraftDomain.setAgent(s, ax, ay, 2, 4);
 		
 		String [] gcomps = obcomps[1].split(",");

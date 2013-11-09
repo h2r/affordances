@@ -14,6 +14,9 @@ import burlap.oomdp.core.State;
 import burlap.oomdp.singleagent.explorer.TerminalExplorer;
 import burlap.oomdp.singleagent.explorer.VisualExplorer;
 import burlap.oomdp.visualizer.Visualizer;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -23,6 +26,7 @@ public class MinecraftDomain implements DomainGenerator{
 	public static final String					ATTX = "x";
 	public static final String					ATTY = "y";
 	public static final String					ATTZ = "z";
+	public static final String					BLKTYPE = "blkType";
 	public static final String					ATTBLKNUM = "bNum";
 	
 	public static final String					CLASSAGENT = "agent";
@@ -34,9 +38,9 @@ public class MinecraftDomain implements DomainGenerator{
 	public static final String					ACTIONLEFT = "left";
 	public static final String					ACTIONRIGHT = "right";
 	public static final String					ACTIONPLACEF = "placeForward";
-//	public static final String					ACTIONPLACEB = "placeBack";
-//	public static final String					ACTIONPLACER = "placeRight";
-//	public static final String					ACTIONPLACEL = "placeLeft";
+	public static final String					ACTIONPLACEB = "placeBack";
+	public static final String					ACTIONPLACER = "placeRight";
+	public static final String					ACTIONPLACEL = "placeLeft";
 
 	
 	public static final String					PFATGOAL = "atGoal";
@@ -67,7 +71,6 @@ public class MinecraftDomain implements DomainGenerator{
 		
 		DOMAIN = new SADomain();
 		
-		generateMap();
 		
 		// CREATE ATTRIBUTES
 		Attribute xatt = new Attribute(DOMAIN, ATTX, Attribute.AttributeType.DISC);
@@ -79,7 +82,7 @@ public class MinecraftDomain implements DomainGenerator{
 		Attribute zatt = new Attribute(DOMAIN, ATTZ, Attribute.AttributeType.DISC);
 		zatt.setDiscValuesForRange(0, MAXZ, 1);
 		
-		// Number of blocks the agent is carrying
+		// Number of blocks the agent may carry
 		Attribute blknumatt = new Attribute(DOMAIN, ATTBLKNUM, Attribute.AttributeType.DISC);
 		blknumatt.setDiscValuesForRange(0, MAXBLKNUM, 1);
 
@@ -95,6 +98,12 @@ public class MinecraftDomain implements DomainGenerator{
 		goalClass.addAttribute(xatt);
 		goalClass.addAttribute(yatt);
 		goalClass.addAttribute(zatt);
+		
+		// CREATE BLOCKS
+		ObjectClass blockClass = new ObjectClass(DOMAIN, CLASSBLOCK);
+		blockClass.addAttribute(xatt);
+		blockClass.addAttribute(yatt);
+		blockClass.addAttribute(zatt);
 		
 		// ==== CREATE ACTIONS ====
 		
@@ -114,8 +123,46 @@ public class MinecraftDomain implements DomainGenerator{
 		PropositionalFunction atGoal = new AtGoalPF(PFATGOAL, DOMAIN,
 				new String[]{CLASSAGENT, CLASSGOAL});
 		
+		
 		return DOMAIN;
 	}
+	
+	/**
+	 * Will return a state object with a single agent object and a single goal object, and the blocks placed in the world.
+	 * @param d the domain object that is used to specify the min/max dimensions
+	 * @return a state object with a single agent object and a single goal object
+	 */
+	public static State getCleanState(Domain domain, List <Integer> blockX, List <Integer> blockY){
+		
+		State s = new State();
+		
+		//start by creating the block objects
+		for(int i = 0; i < blockX.size(); i++){
+
+			for(int j = 0;j < blockY.get(i); j++) {
+				int x = blockX.get(i);
+				int y = j;
+				
+				ObjectInstance block = new ObjectInstance(domain.getObjectClass(CLASSBLOCK), CLASSBLOCK+x+y+1);
+				block.setValue(ATTX, x);
+				block.setValue(ATTY, y);
+				block.setValue(ATTZ, 1); // NOTE: ASSUMING BLOCKS CAN ONLY BE PLACED @ z=1 CURRENTLY
+				s.addObject(block);
+			}
+		}
+		
+		//create exit
+		s.addObject(new ObjectInstance(domain.getObjectClass(CLASSGOAL), CLASSGOAL+0));
+		
+		//create agent
+		s.addObject(new ObjectInstance(domain.getObjectClass(CLASSAGENT), CLASSAGENT+0));
+		
+		return s;
+		
+	}
+	
+	
+	/* === Mutators === */
 	
 	/**
 	 * Sets the first agent object in s to the specified x,y,z position.
@@ -148,83 +195,43 @@ public class MinecraftDomain implements DomainGenerator{
 		o.setValue(ATTZ, z);
 	}
 	
-	/**
-	 * Will return a state object with a single agent object and a single goal object
-	 * @param d the domain object that is used to specify the min/max dimensions
-	 * @return a state object with a single agent object and a single goal object
-	 */
-	public static State getState(Domain d){
-		State s = new State();
-		
-		s.addObject(new ObjectInstance(d.getObjectClass(CLASSAGENT), CLASSAGENT+0));
-		s.addObject(new ObjectInstance(d.getObjectClass(CLASSGOAL), CLASSGOAL+0));
-		
-		return s;
+	public static void setBlock(State s, int i, int x, int y, int z){
+		ObjectInstance block = s.getObjectsOfTrueClass(CLASSBLOCK).get(i);
+		block.setValue(ATTX, x);
+		block.setValue(ATTY, y);
+		block.setValue(ATTZ, z);
 	}
 	
-	/* ==== MapCreation ==== */
-
-	public static void generateMap(){
-		
-		//Initializes the map two-dimensional array to be [13][13]
-		MAP = new int[MAXX+1][MAXY+1][MAXZ + 1]; //+1 to handle zero base
-		initBlocks();
-			
-	}
-				
-	public static void initBlocks(){
-		// Adds the initial blocks to the world
-		createFloor();
-		//addHorizTrench(0,MAXX,4,2,1);
+	public static void addBlock(State s, int x, int y, int z){
+		ObjectInstance block = new ObjectInstance(DOMAIN.getObjectClass(CLASSBLOCK), CLASSBLOCK+x+y+z);
+		block.setValue(ATTX, x);
+		block.setValue(ATTY, y);
+		block.setValue(ATTZ, z);
+		s.addObject(block);
 	}
 	
-	// Creates floor and initializes all other blocks to be air
-	protected static void createFloor() {
-		for (int x = 0; x <= MAXX; x++) {
-			for (int y = 0; y <= MAXY; y++) {
-				MAP[x][y][0] = 1;  // 1 is a non-air block
-				MAP[x][y][1] = 1;  // 1 is a non-air block
-				for (int z = 2; z <=MAXZ; z++) {
-					MAP[x][y][z] = 0;  // Everything else is air upon world creation
-				}
+	/* === Class Accessors === */
+	
+	private static ObjectInstance getBlockAt(State s, int x, int y, int z){
+		
+		List<ObjectInstance> blocks = s.getObjectsOfTrueClass(CLASSBLOCK);
+		for(ObjectInstance block : blocks){
+			int bx = block.getDiscValForAttribute(ATTX);
+			int by = block.getDiscValForAttribute(ATTY);
+			int bz = block.getDiscValForAttribute(ATTZ);
+			if(bx == x && by == y && bz == z){
+				return block;
 			}
 		}
+		
+		return null;
 	}
 	
-	// Creates a trench of air blocks in the map starting at height z and down to trenchDepth
-	protected static void addHorizTrench(int startX, int endX, int y, int z, int trenchDepth) {
-		
-		if (trenchDepth < 0) {
-			// Trying to make a trench that is deeper than the world, squish it to the bottom of the world.
-			trenchDepth = 0;
-		}
-		
-		for (int x=startX;x <= endX; x++) {
-			for(int h = trenchDepth; h <= z; h++) {
-				MAP[x][y][h] = 0; // Set to air block
-			}
-		}
-	}
-	
-	// Creates floor and initializes all other blocks to be air
-	protected static void addHorizWall(int startX, int endX, int y, int z, int wallHeight) {
-		
-		if (wallHeight > MAXZ) {
-			// Trying to make a wall that is larger than the world, shrink.
-			wallHeight = MAXZ;
-		}
-		
-		for (int x=startX;x <= endX; x++) {
-			for(int h = z; h <= wallHeight; h++) {
-				MAP[x][y][h] = 1; // Set to non-air block
-			}
-		}
-	}
 	
 	/* =====ACTIONS===== */
 	
 	/**
-	 * Attempts to move the agent into the given position, taking into account blocks (holes and walls)
+	 * Attempts to move the agent into the given position, taking into account blocks in the world (holes and walls)
 	 * @param the current state
 	 * @param the attempted new X position of the agent
 	 * @param the attempted new Y position of the agent
@@ -246,48 +253,21 @@ public class MinecraftDomain implements DomainGenerator{
 			return;
 		}
 		
-		if (MAP[nx][ny][nz] == 0 && MAP[nx][ny][nz - 1] == 1) {
+		if (nz - 1 > 0 && getBlockAt(s, nx, ny, nz - 1) == null) {
+			// There is no block under us, return.
+			return;
+		}
+		else if (getBlockAt(s, nx, ny, nz) != null) {
+			// There is a block where we are trying to move, return.
+			return;
+		}
+		else {
 			// Place we're moving is unobstructed and there is solid ground below us, move
 			agent.setValue(ATTX, nx);
 			agent.setValue(ATTY, ny);
 			agent.setValue(ATTZ, nz);
 		}
-		else {
-			// Can't move - obstructed or there's a hole
-//			System.out.println("Can't move in that direction, obstruction or hole");
-			return;
-		}
 
-	}
-	
-	public static void destroy(State s, int dx, int dy, int dz) {
-		
-		// Agent's global coordinates
-		ObjectInstance agent = s.getObjectsOfTrueClass(CLASSAGENT).get(0);
-		int ax = agent.getDiscValForAttribute(ATTX);
-		int ay = agent.getDiscValForAttribute(ATTY);
-		int az = agent.getDiscValForAttribute(ATTZ);
-		
-		// Get global coordinates of the block to be destroyed
-		int bx = ax+dx;
-		int by = ay+dy;
-		int bz = az+dz;
-		
-		if (bx < 0 || bx > MAXX || by < 0 || by > MAXY || bz < 0 || bz > MAXZ) {
-			// Trying to destroy an out of bounds block.
-			return;
-		}
-		
-		// If there is a block in the new coordinates, destroy it. Otherwise, do nothing.
-		if (MAP[bx][by][bz] == 1) {
-			MAP[bx][by][bz] = 0;
-		}
-		
-		// Also destroy one above in case of height 2 (simplifying assumption, currently).
-		if (bz + 1 < MAXZ && MAP[bx][by][bz + 1] == 1) {
-			MAP[bx][by][bz + 1] = 0;
-		}
-		
 	}
 	
 	public static void place(State s, int dx, int dy, int dz) {
@@ -308,7 +288,7 @@ public class MinecraftDomain implements DomainGenerator{
 		// Get global coordinates of the loc to place the block
 		int bx = ax+dx;
 		int by = ay+dy;
-		int bz = az+dz;
+		int bz = az+dz; // Try one below, first
 		
 		
 		// Make sure we are placing a block in bounds
@@ -316,21 +296,20 @@ public class MinecraftDomain implements DomainGenerator{
 			return;
 		}
 		
-		// Place a block one z beneath the agent, if it can.
-		if (MAP[bx][by][bz] == 0 && bz - 1 > 0 && MAP[bx][by][bz - 1] == 0 && numAgentsBlocks > 0){
+		// If block loc is empty (z-1 from bot), and the loc above is empty (i.e. we can "see" the bottom loc), place it.
+		if (bz - 1 > 0 && getBlockAt(s,bx,by,bz - 1) == null && getBlockAt(s,bx,by,bz) == null){
 			
-			// Place block
-			MAP[bx][by][bz - 1] = 1;
+			addBlock(s, bx, by, bz - 1);
 			
 			// Remove the block from the agent's inventory
 			agent.setValue(ATTBLKNUM, numAgentsBlocks - 1);
 			numAgentsBlocks = numAgentsBlocks - 1;
 		}
 		// Now try placing one on agent's z level if it couldn't place one at z - 1
-		else if (MAP[bx][by][bz] == 0 && numAgentsBlocks > 0){
+		else if (getBlockAt(s, bz, by, bz) == null && numAgentsBlocks > 0){
 			
 			// Place block
-			MAP[bx][by][bz] = 1;
+			addBlock(s, bx, by, bz);
 			
 			// Remove the block from the agent's inventory
 			agent.setValue(ATTBLKNUM, numAgentsBlocks - 1);
@@ -401,53 +380,50 @@ public class MinecraftDomain implements DomainGenerator{
 		}
 		
 		protected State performActionHelper(State st, String[] params) {
-//			Random rand = new Random();
-//			int randomNum = rand.nextInt((MAXX - 0) + 1);
-//			MAP[randomNum][4][2] = 1; // HACK TO CHECK SOMETHING
 			place(st, 0, 1, 0);
 			System.out.println("Action Performed: " + this.name);
 			return st;
 		}
 	}
 	
-//	public static class PlaceActionB extends Action{
-//
-//		public PlaceActionB(String name, Domain domain, String parameterClasses){
-//			super(name, domain, parameterClasses);
-//		}
-//		
-//		protected State performActionHelper(State st, String[] params) {
-//			place(st, 0, -1, 0);
-//			System.out.println("Action Performed: " + this.name);
-//			return st;
-//		}	
-//	}
-//	
-//	public static class PlaceActionR extends Action{
-//
-//		public PlaceActionR(String name, Domain domain, String parameterClasses){
-//			super(name, domain, parameterClasses);
-//		}
-//		
-//		protected State performActionHelper(State st, String[] params) {
-//			place(st, -1, 0, 0);
-//			System.out.println("Action Performed: " + this.name);
-//			return st;
-//		}	
-//	}
-//	
-//	public static class PlaceActionL extends Action{
-//
-//		public PlaceActionL(String name, Domain domain, String parameterClasses){
-//			super(name, domain, parameterClasses);
-//		}
-//		
-//		protected State performActionHelper(State st, String[] params) {
-//			place(st, 1, 0, 0);
-//			System.out.println("Action Performed: " + this.name);
-//			return st;
-//		}	
-//	}
+	public static class PlaceActionB extends Action{
+
+		public PlaceActionB(String name, Domain domain, String parameterClasses){
+			super(name, domain, parameterClasses);
+		}
+		
+		protected State performActionHelper(State st, String[] params) {
+			place(st, 0, -1, 0);
+			System.out.println("Action Performed: " + this.name);
+			return st;
+		}	
+	}
+	
+	public static class PlaceActionR extends Action{
+
+		public PlaceActionR(String name, Domain domain, String parameterClasses){
+			super(name, domain, parameterClasses);
+		}
+		
+		protected State performActionHelper(State st, String[] params) {
+			place(st, -1, 0, 0);
+			System.out.println("Action Performed: " + this.name);
+			return st;
+		}	
+	}
+	
+	public static class PlaceActionL extends Action{
+
+		public PlaceActionL(String name, Domain domain, String parameterClasses){
+			super(name, domain, parameterClasses);
+		}
+		
+		protected State performActionHelper(State st, String[] params) {
+			place(st, 1, 0, 0);
+			System.out.println("Action Performed: " + this.name);
+			return st;
+		}	
+	}
 	
 	/* ==== Propositional Functions ==== */
 	
@@ -475,14 +451,13 @@ public class MinecraftDomain implements DomainGenerator{
 			int gz = goal.getDiscValForAttribute(ATTZ);
 			
 			if(ax == gx && ay == gy && az == gz){
-//				System.out.println("goal FOUND");
 				return true;
 			}
-//			System.out.println("goal FAILED");
 			
 			return false;
 		}
 	}
+	
 	
 	public static void main(String[] args) {
 		
@@ -490,11 +465,24 @@ public class MinecraftDomain implements DomainGenerator{
 		
 		Domain d = mcd.generateDomain();
 		
-		State s = new State();
+		// === Build Map === //
+		List <Integer> blockX = new ArrayList<Integer>();
+		List <Integer> blockY = new ArrayList<Integer>();
 		
-		s.addObject(new ObjectInstance(DOMAIN.getObjectClass(CLASSAGENT), CLASSAGENT+0));
-		s.addObject(new ObjectInstance(DOMAIN.getObjectClass(CLASSGOAL), CLASSGOAL+0));
-
+		// Row i will have blocks in all 10 locations
+		for (int i = 0; i < MAXX; i++){
+			// Place a trench @ x = 4
+//			if (i == 4)
+//			{
+//				continue;
+//			}
+			blockX.add(i);
+			blockY.add(MAXY);
+		}
+		
+		State s = getCleanState(d, blockX, blockY);
+		
+		// === Add agent and goal === //
 		ObjectInstance agent = s.getObjectsOfTrueClass(CLASSAGENT).get(0);
 		agent.setValue(ATTX, 1);
 		agent.setValue(ATTY, 1);
@@ -505,38 +493,23 @@ public class MinecraftDomain implements DomainGenerator{
 		goal.setValue(ATTX, 6);
 		goal.setValue(ATTY, 6);
 		goal.setValue(ATTZ, 2);
-
+		
+		s.addObject(new ObjectInstance(DOMAIN.getObjectClass(CLASSAGENT), CLASSAGENT+0));
+		s.addObject(new ObjectInstance(DOMAIN.getObjectClass(CLASSGOAL), CLASSGOAL+0));
 			
+		
+		// Explorer for testing
 		TerminalExplorer exp = new TerminalExplorer(d);
 		exp.addActionShortHand("f", ACTIONFORWARD);
 		exp.addActionShortHand("b", ACTIONBACKWARD);
 		exp.addActionShortHand("r", ACTIONRIGHT);
 		exp.addActionShortHand("l", ACTIONLEFT);
 		exp.addActionShortHand("pf", ACTIONPLACEF);
-//		exp.addActionShortHand("pb", ACTIONPLACEB);
-//		exp.addActionShortHand("pr", ACTIONPLACER);
-//		exp.addActionShortHand("pl", ACTIONPLACEL);
+		exp.addActionShortHand("pb", ACTIONPLACEB);
+		exp.addActionShortHand("pr", ACTIONPLACER);
+		exp.addActionShortHand("pl", ACTIONPLACEL);
 				
 		exp.exploreFromState(s);
-	}
-
-	public static int[][] getMapForVisualize(int height) {
-		// Returns the 2d slice of the map @ z = height
-		int[][] newMap = new int[MAP.length][MAP[0].length];
-		System.out.println(MAP.length);
-		System.out.println(MAP[0].length);
-		for (int x=0;x<MAP.length;x++) {
-			for (int y=0;y<MAP[x].length;y++) {
-				
-				newMap[x][y] = MAP[x][y][height];
-			}
-		}
-		
-		return newMap;
-	}
-	
-	public int[][][] getMap() {
-		return MAP;
 	}
 
 	
