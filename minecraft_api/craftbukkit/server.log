@@ -1,0 +1,1855 @@
+2013-09-22 20:40:37 [INFO] Starting minecraft server version 1.6.2
+2013-09-22 20:40:37 [INFO] Loading properties
+2013-09-22 20:40:37 [WARNING] server.properties does not exist
+2013-09-22 20:40:37 [INFO] Generating new properties file
+2013-09-22 20:40:38 [INFO] Default game type: SURVIVAL
+2013-09-22 20:40:38 [INFO] Generating keypair
+2013-09-22 20:40:38 [INFO] Starting Minecraft server on *:25565
+2013-09-22 20:40:38 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-b2879jnks (MC: 1.6.2) (Implementing API version 1.6.2-R1.0)
+2013-09-22 20:40:38 [WARNING] Failed to load operators list: java.io.FileNotFoundException: ./ops.txt (No such file or directory)
+2013-09-22 20:40:38 [WARNING] Failed to load white-list: java.io.FileNotFoundException: ./white-list.txt (No such file or directory)
+2013-09-22 20:40:38 [INFO] Preparing level "world"
+2013-09-22 20:40:39 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-09-22 20:40:40 [INFO] Preparing spawn area: 8%
+2013-09-22 20:40:41 [INFO] Preparing spawn area: 21%
+2013-09-22 20:40:42 [INFO] Preparing spawn area: 31%
+2013-09-22 20:40:43 [INFO] Preparing spawn area: 41%
+2013-09-22 20:40:44 [INFO] Preparing spawn area: 51%
+2013-09-22 20:40:45 [INFO] Preparing spawn area: 59%
+2013-09-22 20:40:46 [INFO] Preparing spawn area: 68%
+2013-09-22 20:40:47 [INFO] Preparing spawn area: 79%
+2013-09-22 20:40:48 [INFO] Preparing spawn area: 88%
+2013-09-22 20:40:49 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-09-22 20:40:50 [INFO] Preparing spawn area: 12%
+2013-09-22 20:40:51 [INFO] Preparing spawn area: 17%
+2013-09-22 20:40:52 [INFO] Preparing spawn area: 32%
+2013-09-22 20:40:53 [INFO] Preparing spawn area: 39%
+2013-09-22 20:40:54 [INFO] Preparing spawn area: 52%
+2013-09-22 20:40:56 [INFO] Preparing spawn area: 57%
+2013-09-22 20:40:57 [INFO] Preparing spawn area: 71%
+2013-09-22 20:40:58 [INFO] Preparing spawn area: 80%
+2013-09-22 20:40:59 [INFO] Preparing spawn area: 86%
+2013-09-22 20:41:00 [INFO] Preparing spawn area: 95%
+2013-09-22 20:41:01 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-09-22 20:41:02 [INFO] Preparing spawn area: 22%
+2013-09-22 20:41:03 [INFO] Preparing spawn area: 57%
+2013-09-22 20:41:04 [INFO] Preparing spawn area: 95%
+2013-09-22 20:41:04 [INFO] Done (25.652s)! For help, type "help" or "?"
+2013-09-22 20:42:28 [INFO] [0;33;1m--------- [0;37;1mHelp: Index [0;33;1m---------------------------[m
+2013-09-22 20:42:28 [INFO] [0;37;22mUse /help [n] to get page n of help.[m
+2013-09-22 20:42:28 [INFO] [0;33;22mAliases: [0;37;1mLists command aliases[m
+2013-09-22 20:42:28 [INFO] [0;33;22mBukkit: [0;37;1mAll commands for Bukkit[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/ban: [0;37;1mPrevents the specified player from using this server[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/ban-ip: [0;37;1mPrevents the specified IP address from using this server[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/banlist: [0;37;1mView all players banned from this server[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/clear: [0;37;1mClears the player's inventory. Can specify item and data filters too.[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/defaultgamemode: [0;37;1mSet the default gamemode[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/deop: [0;37;1mTakes the specified player's operator status[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/difficulty: [0;37;1mSets the game difficulty[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/effect: [0;37;1mAdds/Removes effects on players[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/enchant: [0;37;1mAdds enchantments to the item the player is currently holding. Specify 0 for the level to remove an enchantment. Specify force to ignore normal enchantment restrictions[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/gamemode: [0;37;1mChanges the player to a specific game mode[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/gamerule: [0;37;1mSets a server's game rules[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/give: [0;37;1mGives the specified player a certain amount of items[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/help: [0;37;1mShows the help menu[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/kick: [0;37;1mRemoves the specified player from the server[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/kill: [0;37;1mCommits suicide, only usable as a player[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/list: [0;37;1mLists all online players[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/me: [0;37;1mPerforms the specified action in chat[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/op: [0;37;1mGives the specified player operator status[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/pardon: [0;37;1mAllows the specified player to use this server[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/pardon-ip: [0;37;1mAllows the specified IP address to use this server[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/playsound: [0;37;1mPlays a sound to a given player[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/plugins: [0;37;1mGets a list of plugins running on the server[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/reload: [0;37;1mReloads the server configuration and plugins[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/save-all: [0;37;1mSaves the server to disk[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/save-off: [0;37;1mDisables server autosaving[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/save-on: [0;37;1mEnables server autosaving[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/say: [0;37;1mBroadcasts the given message as the console[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/scoreboard: [0;37;1mScoreboard control[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/seed: [0;37;1mShows the world seed[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/spawnpoint: [0;37;1mSets a player's spawn point[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/spreadplayers: [0;37;1mSpreads players around a point[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/stop: [0;37;1mStops the server with optional reason[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/tell: [0;37;1mSends a private message to the given player[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/testfor: [0;37;1mTests whether a specifed player is online[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/time: [0;37;1mChanges the time on each world[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/timings: [0;37;1mRecords timings for all plugin events[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/toggledownfall: [0;37;1mToggles rain on/off on a given world[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/tp: [0;37;1mTeleports the given player (or yourself) to another player or coordinates[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/version: [0;37;1mGets the version of this server including any plugins in use[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/weather: [0;37;1mChanges the weather[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/whitelist: [0;37;1mManages the list of players allowed to use this server[m
+2013-09-22 20:42:28 [INFO] [0;33;22m/xp: [0;37;1mGives the specified player a certain amount of experience. Specify <amount>L to give levels instead, with a negative amount resulting in taking levels.[m
+2013-09-22 20:47:11 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-b2879jnks (MC: 1.6.2) (Implementing API version 1.6.2-R1.0)[m
+2013-09-22 20:50:25 [INFO] CONSOLE: Stopping the server..[m
+2013-09-22 20:50:25 [INFO] Stopping server
+2013-09-22 20:50:25 [WARNING] DSCT: Socket closed
+2013-09-22 20:50:25 [INFO] Closing listening thread
+2013-09-22 20:50:25 [INFO] Saving players
+2013-09-22 20:50:25 [INFO] Saving worlds
+2013-09-22 20:50:25 [INFO] Saving chunks for level 'world'/Overworld
+2013-09-22 20:50:25 [INFO] Saving chunks for level 'world_nether'/Nether
+2013-09-22 20:50:25 [INFO] Saving chunks for level 'world_the_end'/The End
+2013-09-22 20:50:25 [INFO] Stopping server
+2013-09-22 20:57:10 [INFO] Starting minecraft server version 1.5.2
+2013-09-22 20:57:10 [INFO] Loading properties
+2013-09-22 20:57:10 [INFO] Default game type: SURVIVAL
+2013-09-22 20:57:10 [INFO] Generating keypair
+2013-09-22 20:57:10 [INFO] Starting Minecraft server on *:25565
+2013-09-22 20:57:11 [INFO] This server is running CraftBukkit version git-Bukkit-1.5.2-R1.0-b2788jnks (MC: 1.5.2) (Implementing API version 1.5.2-R1.0)
+2013-09-22 20:57:11 [INFO] Preparing level "world"
+2013-09-22 20:57:11 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-09-22 20:57:11 [WARNING] ----- Bukkit Auto Updater -----
+2013-09-22 20:57:11 [WARNING] Your version of CraftBukkit is out of date. Version 1.6.2-R1.0 (build #2879) was released on Wed Sep 11 02:02:22 EDT 2013.
+2013-09-22 20:57:11 [WARNING] Details: /downloads/craftbukkit/view/02342_1.6.2-R1.0/
+2013-09-22 20:57:11 [WARNING] Download: /downloads/craftbukkit/get/02342_1.6.2-R1.0/craftbukkit.jar
+2013-09-22 20:57:11 [WARNING] ----- ------------------- -----
+2013-09-22 20:57:12 [INFO] Preparing spawn area: 99%
+2013-09-22 20:57:12 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-09-22 20:57:13 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-09-22 20:57:13 [INFO] Preparing spawn area: 45%
+2013-09-22 20:57:13 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-09-22 20:57:14 [INFO] Done (2.684s)! For help, type "help" or "?"
+2013-09-22 20:57:53 [INFO] aye_priori[/127.0.0.1:42121] logged in with entity id 98 at ([world] 213.5, 64.0, 127.5)
+2013-09-22 20:58:49 [INFO] Connection reset
+2013-09-22 20:58:49 [INFO] aye_priori lost connection: disconnect.quitting
+2013-09-22 21:01:42 [INFO] [0;33;1m--------- [0;37;1mHelp: Index [0;33;1m---------------------------[m
+2013-09-22 21:01:42 [INFO] [0;37;22mUse /help [n] to get page n of help.[m
+2013-09-22 21:01:42 [INFO] [0;33;22mAliases: [0;37;1mLists command aliases[m
+2013-09-22 21:01:42 [INFO] [0;33;22mBukkit: [0;37;1mAll commands for Bukkit[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/ban: [0;37;1mPrevents the specified player from using this server[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/ban-ip: [0;37;1mPrevents the specified IP address from using this server[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/banlist: [0;37;1mView all players banned from this server[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/clear: [0;37;1mClears the player's inventory. Can specify item and data filters too.[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/defaultgamemode: [0;37;1mSet the default gamemode[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/deop: [0;37;1mTakes the specified player's operator status[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/difficulty: [0;37;1mSets the game difficulty[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/effect: [0;37;1mAdds/Removes effects on players[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/enchant: [0;37;1mAdds enchantments to the item the player is currently holding. Specify 0 for the level to remove an enchantment. Specify force to ignore normal enchantment restrictions[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/gamemode: [0;37;1mChanges the player to a specific game mode[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/gamerule: [0;37;1mSets a server's game rules[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/give: [0;37;1mGives the specified player a certain amount of items[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/help: [0;37;1mShows the help menu[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/kick: [0;37;1mRemoves the specified player from the server[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/kill: [0;37;1mCommits suicide, only usable as a player[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/list: [0;37;1mLists all online players[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/me: [0;37;1mPerforms the specified action in chat[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/op: [0;37;1mGives the specified player operator status[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/pardon: [0;37;1mAllows the specified player to use this server[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/pardon-ip: [0;37;1mAllows the specified IP address to use this server[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/plugins: [0;37;1mGets a list of plugins running on the server[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/reload: [0;37;1mReloads the server configuration and plugins[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/save-all: [0;37;1mSaves the server to disk[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/save-off: [0;37;1mDisables server autosaving[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/save-on: [0;37;1mEnables server autosaving[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/say: [0;37;1mBroadcasts the given message as the console[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/scoreboard: [0;37;1mScoreboard control[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/seed: [0;37;1mShows the world seed[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/spawnpoint: [0;37;1mSets a player's spawn point[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/stop: [0;37;1mStops the server with optional reason[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/tell: [0;37;1mSends a private message to the given player[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/testfor: [0;37;1mTests whether a specifed player is online[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/time: [0;37;1mChanges the time on each world[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/timings: [0;37;1mRecords timings for all plugin events[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/toggledownfall: [0;37;1mToggles rain on/off on a given world[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/tp: [0;37;1mTeleports the given player (or yourself) to another player or coordinates[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/version: [0;37;1mGets the version of this server including any plugins in use[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/weather: [0;37;1mChanges the weather[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/whitelist: [0;37;1mManages the list of players allowed to use this server[m
+2013-09-22 21:01:42 [INFO] [0;33;22m/xp: [0;37;1mGives the specified player a certain amount of experience. Specify <amount>L to give levels instead, with a negative amount resulting in taking levels.[m
+2013-09-22 21:01:47 [INFO] 229 recipes
+2013-09-22 21:01:48 [INFO] [RaspberryJuice] Loading RaspberryJuice v1.2
+2013-09-22 21:01:48 [INFO] [RaspberryJuice] Enabling RaspberryJuice v1.2
+2013-09-22 21:01:48 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-09-22 21:01:48 [INFO] CONSOLE: [0;32;1mReload complete.[m
+2013-09-22 21:15:04 [INFO] [0;31;1mUsage: /gamemode <mode> [player][m
+2013-09-22 21:16:45 [INFO] aye_priori[/127.0.0.1:42428] logged in with entity id 942 at ([world] 214.838601042769, 64.0, 131.4727380028121)
+2013-09-22 21:17:17 [INFO] Starting input thread!
+2013-09-22 21:17:17 [INFO] Starting output thread!
+2013-09-22 21:17:17 [INFO] [RaspberryJuice] Opened connection to/127.0.0.1:51124.
+2013-09-22 21:17:17 [INFO] [RaspberryJuice] Closed connection to/127.0.0.1:51124.
+2013-09-22 21:18:47 [INFO] Starting input thread!
+2013-09-22 21:18:47 [INFO] [RaspberryJuice] Opened connection to/127.0.0.1:51128.
+2013-09-22 21:18:47 [INFO] Starting output thread!
+2013-09-22 21:20:02 [INFO] aye_priori suffocated in a wall
+2013-09-22 21:20:41 [INFO] Unknown command. Type "help" for help.[m
+2013-09-22 21:20:46 [INFO] aye_priori drowned
+2013-09-22 21:20:50 [INFO] Connection reset
+2013-09-22 21:20:50 [INFO] aye_priori lost connection: disconnect.quitting
+2013-09-22 21:20:55 [INFO] CONSOLE: Stopping the server..[m
+2013-09-22 21:20:55 [INFO] Stopping server
+2013-09-22 21:20:55 [INFO] [RaspberryJuice] Disabling RaspberryJuice v1.2
+2013-09-22 21:20:55 [SEVERE] java.net.SocketException: Socket closed
+2013-09-22 21:20:55 [SEVERE] 	at java.net.PlainSocketImpl.socketAccept(Native Method)
+2013-09-22 21:20:55 [SEVERE] 	at java.net.AbstractPlainSocketImpl.accept(AbstractPlainSocketImpl.java:375)
+2013-09-22 21:20:55 [SEVERE] 	at java.net.ServerSocket.implAccept(ServerSocket.java:478)
+2013-09-22 21:20:55 [SEVERE] 	at java.net.ServerSocket.accept(ServerSocket.java:446)
+2013-09-22 21:20:55 [SEVERE] 	at net.zhuoweizhang.raspberryjuice.ServerListenerThread.run(ServerListenerThread.java:27)
+2013-09-22 21:20:55 [SEVERE] 	at java.lang.Thread.run(Thread.java:679)
+2013-09-22 21:20:55 [INFO] [RaspberryJuice] Closed connection to/127.0.0.1:51128.
+2013-09-22 21:20:55 [SEVERE] java.net.SocketException: Socket closed
+2013-09-22 21:20:55 [SEVERE] 	at java.net.SocketInputStream.socketRead0(Native Method)
+2013-09-22 21:20:55 [SEVERE] 	at java.net.SocketInputStream.read(SocketInputStream.java:146)
+2013-09-22 21:20:55 [INFO] Saving players
+2013-09-22 21:20:55 [SEVERE] 	at sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:282)
+2013-09-22 21:20:55 [WARNING] DSCT: Socket closed
+2013-09-22 21:20:55 [INFO] Saving worlds
+2013-09-22 21:20:55 [INFO] Saving chunks for level 'world'/Overworld
+2013-09-22 21:20:55 [SEVERE] 	at sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:324)
+2013-09-22 21:20:55 [INFO] Closing listening thread
+2013-09-22 21:20:55 [SEVERE] 	at sun.nio.cs.StreamDecoder.read(StreamDecoder.java:176)
+2013-09-22 21:20:55 [SEVERE] 	at java.io.InputStreamReader.read(InputStreamReader.java:184)
+2013-09-22 21:20:55 [SEVERE] 	at java.io.BufferedReader.fill(BufferedReader.java:153)
+2013-09-22 21:20:55 [SEVERE] 	at java.io.BufferedReader.readLine(BufferedReader.java:316)
+2013-09-22 21:20:55 [SEVERE] 	at java.io.BufferedReader.readLine(BufferedReader.java:379)
+2013-09-22 21:20:55 [SEVERE] 	at net.zhuoweizhang.raspberryjuice.RemoteSession$InputThread.run(RemoteSession.java:287)
+2013-09-22 21:20:55 [SEVERE] 	at java.lang.Thread.run(Thread.java:679)
+2013-09-22 21:20:56 [INFO] Saving chunks for level 'world_nether'/Nether
+2013-09-22 21:20:56 [INFO] Saving chunks for level 'world_the_end'/The End
+2013-09-22 21:22:52 [INFO] Starting minecraft server version 1.5.2
+2013-09-22 21:22:52 [INFO] Loading properties
+2013-09-22 21:22:52 [INFO] Default game type: SURVIVAL
+2013-09-22 21:22:52 [INFO] Generating keypair
+2013-09-22 21:22:52 [INFO] Starting Minecraft server on *:25565
+2013-09-22 21:22:52 [INFO] This server is running CraftBukkit version git-Bukkit-1.5.2-R1.0-b2788jnks (MC: 1.5.2) (Implementing API version 1.5.2-R1.0)
+2013-09-22 21:22:53 [INFO] [AlwaysDay] Loading AlwaysDay v2.2.7
+2013-09-22 21:22:53 [INFO] [RaspberryJuice] Loading RaspberryJuice v1.2
+2013-09-22 21:22:53 [INFO] Preparing level "world"
+2013-09-22 21:22:53 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-09-22 21:22:53 [WARNING] ----- Bukkit Auto Updater -----
+2013-09-22 21:22:53 [WARNING] Your version of CraftBukkit is out of date. Version 1.6.2-R1.0 (build #2879) was released on Wed Sep 11 02:02:22 EDT 2013.
+2013-09-22 21:22:53 [WARNING] Details: /downloads/craftbukkit/view/02342_1.6.2-R1.0/
+2013-09-22 21:22:53 [WARNING] Download: /downloads/craftbukkit/get/02342_1.6.2-R1.0/craftbukkit.jar
+2013-09-22 21:22:53 [WARNING] ----- ------------------- -----
+2013-09-22 21:22:54 [INFO] Preparing spawn area: 87%
+2013-09-22 21:22:54 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-09-22 21:22:55 [INFO] Preparing spawn area: 95%
+2013-09-22 21:22:55 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-09-22 21:22:55 [INFO] [AlwaysDay] Enabling AlwaysDay v2.2.7
+2013-09-22 21:22:55 [INFO] [AlwaysDay] AlwaysDay v2.2.7 is now enabled.
+2013-09-22 21:22:55 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-09-22 21:22:55 [INFO] [RaspberryJuice] Enabling RaspberryJuice v1.2
+2013-09-22 21:22:55 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-09-22 21:22:56 [INFO] Done (2.903s)! For help, type "help" or "?"
+2013-09-22 21:29:26 [INFO] /127.0.0.1:43009 lost connection
+2013-09-22 21:29:35 [INFO] aye_priori[/127.0.0.1:43010] logged in with entity id 272 at ([world] 203.3101124327569, 60.0, 138.0780439709241)
+2013-09-22 21:30:18 [INFO] aye_priori was blown up by Creeper
+2013-09-22 21:30:35 [INFO] Unknown command. Type "help" for help.[m
+2013-09-22 21:30:36 [INFO] [0;33;1m--------- [0;37;1mHelp: Index [0;33;1m---------------------------[m
+2013-09-22 21:30:36 [INFO] [0;37;22mUse /help [n] to get page n of help.[m
+2013-09-22 21:30:36 [INFO] [0;33;22mAliases: [0;37;1mLists command aliases[m
+2013-09-22 21:30:36 [INFO] [0;33;22mAlwaysDay: [0;37;1mAll commands for AlwaysDay[m
+2013-09-22 21:30:36 [INFO] [0;33;22mBukkit: [0;37;1mAll commands for Bukkit[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/ad: [0;37;1mEnables/disables AlwaysDay. Also turns off AlwaysDay for a world (Shorthand)[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/alwaysday: [0;37;1mEnables/disables AlwaysDay. Also turns off AlwaysDay for a world[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/ban: [0;37;1mPrevents the specified player from using this server[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/ban-ip: [0;37;1mPrevents the specified IP address from using this server[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/banlist: [0;37;1mView all players banned from this server[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/calm: [0;37;1mKeeps the good weather in a world[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/clear: [0;37;1mClears the player's inventory. Can specify item and data filters too.[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/day: [0;37;1mKeeps it day.[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/defaultgamemode: [0;37;1mSet the default gamemode[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/deop: [0;37;1mTakes the specified player's operator status[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/difficulty: [0;37;1mSets the game difficulty[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/effect: [0;37;1mAdds/Removes effects on players[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/enchant: [0;37;1mAdds enchantments to the item the player is currently holding. Specify 0 for the level to remove an enchantment. Specify force to ignore normal enchantment restrictions[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/gamemode: [0;37;1mChanges the player to a specific game mode[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/gamerule: [0;37;1mSets a server's game rules[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/give: [0;37;1mGives the specified player a certain amount of items[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/help: [0;37;1mShows the help menu[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/kick: [0;37;1mRemoves the specified player from the server[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/kill: [0;37;1mCommits suicide, only usable as a player[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/list: [0;37;1mLists all online players[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/me: [0;37;1mPerforms the specified action in chat[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/night: [0;37;1mKeeps it night.[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/op: [0;37;1mGives the specified player operator status[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/pardon: [0;37;1mAllows the specified player to use this server[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/pardon-ip: [0;37;1mAllows the specified IP address to use this server[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/plugins: [0;37;1mGets a list of plugins running on the server[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/rain: [0;37;1mKeeps the bad weather in a world[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/reload: [0;37;1mReloads the server configuration and plugins[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/save-all: [0;37;1mSaves the server to disk[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/save-off: [0;37;1mDisables server autosaving[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/save-on: [0;37;1mEnables server autosaving[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/say: [0;37;1mBroadcasts the given message as the console[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/scoreboard: [0;37;1mScoreboard control[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/seed: [0;37;1mShows the world seed[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/spawnpoint: [0;37;1mSets a player's spawn point[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/stop: [0;37;1mStops the server with optional reason[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/tell: [0;37;1mSends a private message to the given player[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/testfor: [0;37;1mTests whether a specifed player is online[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/time: [0;37;1mChanges the time on each world[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/timings: [0;37;1mRecords timings for all plugin events[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/toggledownfall: [0;37;1mToggles rain on/off on a given world[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/tp: [0;37;1mTeleports the given player (or yourself) to another player or coordinates[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/version: [0;37;1mGets the version of this server including any plugins in use[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/weather: [0;37;1mChanges the weather[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/whitelist: [0;37;1mManages the list of players allowed to use this server[m
+2013-09-22 21:30:36 [INFO] [0;33;22m/xp: [0;37;1mGives the specified player a certain amount of experience. Specify <amount>L to give levels instead, with a negative amount resulting in taking levels.[m
+2013-09-22 21:30:51 [INFO] Unknown command. Type "help" for help.[m
+2013-09-22 21:30:57 [WARNING] Unexpected exception while parsing console command "alwaysday"
+org.bukkit.command.CommandException: Unhandled exception executing command 'alwaysday' in plugin AlwaysDay v2.2.7
+	at org.bukkit.command.PluginCommand.execute(PluginCommand.java:46)
+	at org.bukkit.command.SimpleCommandMap.dispatch(SimpleCommandMap.java:189)
+	at org.bukkit.craftbukkit.v1_5_R3.CraftServer.dispatchCommand(CraftServer.java:523)
+	at org.bukkit.craftbukkit.v1_5_R3.CraftServer.dispatchServerCommand(CraftServer.java:512)
+	at net.minecraft.server.v1_5_R3.DedicatedServer.an(DedicatedServer.java:262)
+	at net.minecraft.server.v1_5_R3.DedicatedServer.r(DedicatedServer.java:227)
+	at net.minecraft.server.v1_5_R3.MinecraftServer.q(MinecraftServer.java:477)
+	at net.minecraft.server.v1_5_R3.MinecraftServer.run(MinecraftServer.java:410)
+	at net.minecraft.server.v1_5_R3.ThreadServerApplication.run(SourceFile:573)
+Caused by: java.lang.ArrayIndexOutOfBoundsException: 0
+	at me.LlamaGoingNorth.alwaysday.AlwaysDay.onCommand(AlwaysDay.java:80)
+	at org.bukkit.command.PluginCommand.execute(PluginCommand.java:44)
+	... 8 more
+2013-09-22 21:31:00 [INFO] [0;33;1m--------- [0;37;1mHelp: Index [0;33;1m---------------------------[m
+2013-09-22 21:31:00 [INFO] [0;37;22mUse /help [n] to get page n of help.[m
+2013-09-22 21:31:00 [INFO] [0;33;22mAliases: [0;37;1mLists command aliases[m
+2013-09-22 21:31:00 [INFO] [0;33;22mAlwaysDay: [0;37;1mAll commands for AlwaysDay[m
+2013-09-22 21:31:00 [INFO] [0;33;22mBukkit: [0;37;1mAll commands for Bukkit[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/ad: [0;37;1mEnables/disables AlwaysDay. Also turns off AlwaysDay for a world (Shorthand)[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/alwaysday: [0;37;1mEnables/disables AlwaysDay. Also turns off AlwaysDay for a world[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/ban: [0;37;1mPrevents the specified player from using this server[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/ban-ip: [0;37;1mPrevents the specified IP address from using this server[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/banlist: [0;37;1mView all players banned from this server[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/calm: [0;37;1mKeeps the good weather in a world[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/clear: [0;37;1mClears the player's inventory. Can specify item and data filters too.[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/day: [0;37;1mKeeps it day.[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/defaultgamemode: [0;37;1mSet the default gamemode[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/deop: [0;37;1mTakes the specified player's operator status[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/difficulty: [0;37;1mSets the game difficulty[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/effect: [0;37;1mAdds/Removes effects on players[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/enchant: [0;37;1mAdds enchantments to the item the player is currently holding. Specify 0 for the level to remove an enchantment. Specify force to ignore normal enchantment restrictions[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/gamemode: [0;37;1mChanges the player to a specific game mode[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/gamerule: [0;37;1mSets a server's game rules[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/give: [0;37;1mGives the specified player a certain amount of items[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/help: [0;37;1mShows the help menu[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/kick: [0;37;1mRemoves the specified player from the server[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/kill: [0;37;1mCommits suicide, only usable as a player[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/list: [0;37;1mLists all online players[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/me: [0;37;1mPerforms the specified action in chat[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/night: [0;37;1mKeeps it night.[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/op: [0;37;1mGives the specified player operator status[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/pardon: [0;37;1mAllows the specified player to use this server[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/pardon-ip: [0;37;1mAllows the specified IP address to use this server[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/plugins: [0;37;1mGets a list of plugins running on the server[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/rain: [0;37;1mKeeps the bad weather in a world[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/reload: [0;37;1mReloads the server configuration and plugins[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/save-all: [0;37;1mSaves the server to disk[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/save-off: [0;37;1mDisables server autosaving[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/save-on: [0;37;1mEnables server autosaving[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/say: [0;37;1mBroadcasts the given message as the console[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/scoreboard: [0;37;1mScoreboard control[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/seed: [0;37;1mShows the world seed[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/spawnpoint: [0;37;1mSets a player's spawn point[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/stop: [0;37;1mStops the server with optional reason[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/tell: [0;37;1mSends a private message to the given player[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/testfor: [0;37;1mTests whether a specifed player is online[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/time: [0;37;1mChanges the time on each world[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/timings: [0;37;1mRecords timings for all plugin events[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/toggledownfall: [0;37;1mToggles rain on/off on a given world[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/tp: [0;37;1mTeleports the given player (or yourself) to another player or coordinates[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/version: [0;37;1mGets the version of this server including any plugins in use[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/weather: [0;37;1mChanges the weather[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/whitelist: [0;37;1mManages the list of players allowed to use this server[m
+2013-09-22 21:31:00 [INFO] [0;33;22m/xp: [0;37;1mGives the specified player a certain amount of experience. Specify <amount>L to give levels instead, with a negative amount resulting in taking levels.[m
+2013-09-22 21:31:40 [INFO] [0;31;1mUsage: /give <player> <item> [amount [data]][m
+2013-09-22 21:31:45 [INFO] Unknown command. Type "help" for help.[m
+2013-09-22 21:31:56 [INFO] There's no item called wooden-pickaxe[m
+2013-09-22 21:32:03 [INFO] [0;33;1m--------- [0;37;1mHelp: /give [0;33;1m---------------------------[m
+2013-09-22 21:32:03 [INFO] [0;33;22mDescription: [0;37;1mGives the specified player a certain amount of items[m
+2013-09-22 21:32:03 [INFO] [0;33;22mUsage: [0;37;1m/give <player> <item> [amount [data]][m
+2013-09-22 21:32:14 [INFO] There's no item called ironpickaxe[m
+2013-09-22 21:32:18 [INFO] There's no item called ironshovel[m
+2013-09-22 21:32:21 [INFO] There's no item called ironshovel[m
+2013-09-22 21:32:26 [INFO] There's no item called iron-shovel[m
+2013-09-22 21:32:37 [INFO] There's no item called -h[m
+2013-09-22 21:32:39 [INFO] [0;31;1mUsage: /give <player> <item> [amount [data]][m
+2013-09-22 21:32:43 [INFO] [0;33;1m--------- [0;37;1mHelp: Index [0;33;1m---------------------------[m
+2013-09-22 21:32:43 [INFO] [0;37;22mUse /help [n] to get page n of help.[m
+2013-09-22 21:32:43 [INFO] [0;33;22mAliases: [0;37;1mLists command aliases[m
+2013-09-22 21:32:43 [INFO] [0;33;22mAlwaysDay: [0;37;1mAll commands for AlwaysDay[m
+2013-09-22 21:32:43 [INFO] [0;33;22mBukkit: [0;37;1mAll commands for Bukkit[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/ad: [0;37;1mEnables/disables AlwaysDay. Also turns off AlwaysDay for a world (Shorthand)[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/alwaysday: [0;37;1mEnables/disables AlwaysDay. Also turns off AlwaysDay for a world[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/ban: [0;37;1mPrevents the specified player from using this server[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/ban-ip: [0;37;1mPrevents the specified IP address from using this server[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/banlist: [0;37;1mView all players banned from this server[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/calm: [0;37;1mKeeps the good weather in a world[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/clear: [0;37;1mClears the player's inventory. Can specify item and data filters too.[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/day: [0;37;1mKeeps it day.[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/defaultgamemode: [0;37;1mSet the default gamemode[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/deop: [0;37;1mTakes the specified player's operator status[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/difficulty: [0;37;1mSets the game difficulty[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/effect: [0;37;1mAdds/Removes effects on players[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/enchant: [0;37;1mAdds enchantments to the item the player is currently holding. Specify 0 for the level to remove an enchantment. Specify force to ignore normal enchantment restrictions[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/gamemode: [0;37;1mChanges the player to a specific game mode[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/gamerule: [0;37;1mSets a server's game rules[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/give: [0;37;1mGives the specified player a certain amount of items[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/help: [0;37;1mShows the help menu[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/kick: [0;37;1mRemoves the specified player from the server[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/kill: [0;37;1mCommits suicide, only usable as a player[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/list: [0;37;1mLists all online players[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/me: [0;37;1mPerforms the specified action in chat[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/night: [0;37;1mKeeps it night.[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/op: [0;37;1mGives the specified player operator status[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/pardon: [0;37;1mAllows the specified player to use this server[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/pardon-ip: [0;37;1mAllows the specified IP address to use this server[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/plugins: [0;37;1mGets a list of plugins running on the server[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/rain: [0;37;1mKeeps the bad weather in a world[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/reload: [0;37;1mReloads the server configuration and plugins[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/save-all: [0;37;1mSaves the server to disk[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/save-off: [0;37;1mDisables server autosaving[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/save-on: [0;37;1mEnables server autosaving[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/say: [0;37;1mBroadcasts the given message as the console[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/scoreboard: [0;37;1mScoreboard control[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/seed: [0;37;1mShows the world seed[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/spawnpoint: [0;37;1mSets a player's spawn point[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/stop: [0;37;1mStops the server with optional reason[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/tell: [0;37;1mSends a private message to the given player[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/testfor: [0;37;1mTests whether a specifed player is online[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/time: [0;37;1mChanges the time on each world[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/timings: [0;37;1mRecords timings for all plugin events[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/toggledownfall: [0;37;1mToggles rain on/off on a given world[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/tp: [0;37;1mTeleports the given player (or yourself) to another player or coordinates[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/version: [0;37;1mGets the version of this server including any plugins in use[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/weather: [0;37;1mChanges the weather[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/whitelist: [0;37;1mManages the list of players allowed to use this server[m
+2013-09-22 21:32:43 [INFO] [0;33;22m/xp: [0;37;1mGives the specified player a certain amount of experience. Specify <amount>L to give levels instead, with a negative amount resulting in taking levels.[m
+2013-09-22 21:33:22 [INFO] Unknown command. Type "help" for help.[m
+2013-09-22 21:33:25 [INFO] [0;33;1m--------- [0;37;1mHelp: Bukkit [0;33;1m--------------------------[m
+2013-09-22 21:33:25 [INFO] [0;37;22mBelow is a list of all Bukkit commands:[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/ban: [0;37;1mPrevents the specified player from using this server[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/ban-ip: [0;37;1mPrevents the specified IP address from using this server[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/banlist: [0;37;1mView all players banned from this server[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/clear: [0;37;1mClears the player's inventory. Can specify item and data filters too.[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/defaultgamemode: [0;37;1mSet the default gamemode[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/deop: [0;37;1mTakes the specified player's operator status[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/difficulty: [0;37;1mSets the game difficulty[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/effect: [0;37;1mAdds/Removes effects on players[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/enchant: [0;37;1mAdds enchantments to the item the player is currently holding. Specify 0 for the level to remove an enchantment. Specify force to ignore normal enchantment restrictions[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/gamemode: [0;37;1mChanges the player to a specific game mode[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/gamerule: [0;37;1mSets a server's game rules[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/give: [0;37;1mGives the specified player a certain amount of items[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/help: [0;37;1mShows the help menu[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/kick: [0;37;1mRemoves the specified player from the server[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/kill: [0;37;1mCommits suicide, only usable as a player[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/list: [0;37;1mLists all online players[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/me: [0;37;1mPerforms the specified action in chat[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/op: [0;37;1mGives the specified player operator status[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/pardon: [0;37;1mAllows the specified player to use this server[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/pardon-ip: [0;37;1mAllows the specified IP address to use this server[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/plugins: [0;37;1mGets a list of plugins running on the server[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/reload: [0;37;1mReloads the server configuration and plugins[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/save-all: [0;37;1mSaves the server to disk[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/save-off: [0;37;1mDisables server autosaving[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/save-on: [0;37;1mEnables server autosaving[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/say: [0;37;1mBroadcasts the given message as the console[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/scoreboard: [0;37;1mScoreboard control[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/seed: [0;37;1mShows the world seed[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/spawnpoint: [0;37;1mSets a player's spawn point[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/stop: [0;37;1mStops the server with optional reason[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/tell: [0;37;1mSends a private message to the given player[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/testfor: [0;37;1mTests whether a specifed player is online[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/time: [0;37;1mChanges the time on each world[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/timings: [0;37;1mRecords timings for all plugin events[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/toggledownfall: [0;37;1mToggles rain on/off on a given world[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/tp: [0;37;1mTeleports the given player (or yourself) to another player or coordinates[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/version: [0;37;1mGets the version of this server including any plugins in use[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/weather: [0;37;1mChanges the weather[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/whitelist: [0;37;1mManages the list of players allowed to use this server[m
+2013-09-22 21:33:25 [INFO] [0;33;22m/xp: [0;37;1mGives the specified player a certain amount of experience. Specify <amount>L to give levels instead, with a negative amount resulting in taking levels.[m
+2013-09-22 21:33:41 [INFO] [0;33;1m--------- [0;37;1mHelp: Index [0;33;1m---------------------------[m
+2013-09-22 21:33:41 [INFO] [0;37;22mUse /help [n] to get page n of help.[m
+2013-09-22 21:33:41 [INFO] [0;33;22mAliases: [0;37;1mLists command aliases[m
+2013-09-22 21:33:41 [INFO] [0;33;22mAlwaysDay: [0;37;1mAll commands for AlwaysDay[m
+2013-09-22 21:33:41 [INFO] [0;33;22mBukkit: [0;37;1mAll commands for Bukkit[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/ad: [0;37;1mEnables/disables AlwaysDay. Also turns off AlwaysDay for a world (Shorthand)[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/alwaysday: [0;37;1mEnables/disables AlwaysDay. Also turns off AlwaysDay for a world[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/ban: [0;37;1mPrevents the specified player from using this server[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/ban-ip: [0;37;1mPrevents the specified IP address from using this server[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/banlist: [0;37;1mView all players banned from this server[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/calm: [0;37;1mKeeps the good weather in a world[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/clear: [0;37;1mClears the player's inventory. Can specify item and data filters too.[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/day: [0;37;1mKeeps it day.[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/defaultgamemode: [0;37;1mSet the default gamemode[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/deop: [0;37;1mTakes the specified player's operator status[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/difficulty: [0;37;1mSets the game difficulty[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/effect: [0;37;1mAdds/Removes effects on players[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/enchant: [0;37;1mAdds enchantments to the item the player is currently holding. Specify 0 for the level to remove an enchantment. Specify force to ignore normal enchantment restrictions[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/gamemode: [0;37;1mChanges the player to a specific game mode[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/gamerule: [0;37;1mSets a server's game rules[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/give: [0;37;1mGives the specified player a certain amount of items[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/help: [0;37;1mShows the help menu[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/kick: [0;37;1mRemoves the specified player from the server[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/kill: [0;37;1mCommits suicide, only usable as a player[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/list: [0;37;1mLists all online players[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/me: [0;37;1mPerforms the specified action in chat[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/night: [0;37;1mKeeps it night.[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/op: [0;37;1mGives the specified player operator status[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/pardon: [0;37;1mAllows the specified player to use this server[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/pardon-ip: [0;37;1mAllows the specified IP address to use this server[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/plugins: [0;37;1mGets a list of plugins running on the server[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/rain: [0;37;1mKeeps the bad weather in a world[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/reload: [0;37;1mReloads the server configuration and plugins[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/save-all: [0;37;1mSaves the server to disk[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/save-off: [0;37;1mDisables server autosaving[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/save-on: [0;37;1mEnables server autosaving[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/say: [0;37;1mBroadcasts the given message as the console[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/scoreboard: [0;37;1mScoreboard control[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/seed: [0;37;1mShows the world seed[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/spawnpoint: [0;37;1mSets a player's spawn point[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/stop: [0;37;1mStops the server with optional reason[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/tell: [0;37;1mSends a private message to the given player[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/testfor: [0;37;1mTests whether a specifed player is online[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/time: [0;37;1mChanges the time on each world[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/timings: [0;37;1mRecords timings for all plugin events[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/toggledownfall: [0;37;1mToggles rain on/off on a given world[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/tp: [0;37;1mTeleports the given player (or yourself) to another player or coordinates[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/version: [0;37;1mGets the version of this server including any plugins in use[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/weather: [0;37;1mChanges the weather[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/whitelist: [0;37;1mManages the list of players allowed to use this server[m
+2013-09-22 21:33:41 [INFO] [0;33;22m/xp: [0;37;1mGives the specified player a certain amount of experience. Specify <amount>L to give levels instead, with a negative amount resulting in taking levels.[m
+2013-09-22 21:33:44 [INFO] [0;33;1m--------- [0;37;1mHelp: Bukkit [0;33;1m--------------------------[m
+2013-09-22 21:33:44 [INFO] [0;37;22mBelow is a list of all Bukkit commands:[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/ban: [0;37;1mPrevents the specified player from using this server[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/ban-ip: [0;37;1mPrevents the specified IP address from using this server[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/banlist: [0;37;1mView all players banned from this server[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/clear: [0;37;1mClears the player's inventory. Can specify item and data filters too.[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/defaultgamemode: [0;37;1mSet the default gamemode[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/deop: [0;37;1mTakes the specified player's operator status[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/difficulty: [0;37;1mSets the game difficulty[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/effect: [0;37;1mAdds/Removes effects on players[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/enchant: [0;37;1mAdds enchantments to the item the player is currently holding. Specify 0 for the level to remove an enchantment. Specify force to ignore normal enchantment restrictions[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/gamemode: [0;37;1mChanges the player to a specific game mode[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/gamerule: [0;37;1mSets a server's game rules[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/give: [0;37;1mGives the specified player a certain amount of items[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/help: [0;37;1mShows the help menu[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/kick: [0;37;1mRemoves the specified player from the server[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/kill: [0;37;1mCommits suicide, only usable as a player[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/list: [0;37;1mLists all online players[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/me: [0;37;1mPerforms the specified action in chat[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/op: [0;37;1mGives the specified player operator status[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/pardon: [0;37;1mAllows the specified player to use this server[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/pardon-ip: [0;37;1mAllows the specified IP address to use this server[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/plugins: [0;37;1mGets a list of plugins running on the server[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/reload: [0;37;1mReloads the server configuration and plugins[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/save-all: [0;37;1mSaves the server to disk[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/save-off: [0;37;1mDisables server autosaving[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/save-on: [0;37;1mEnables server autosaving[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/say: [0;37;1mBroadcasts the given message as the console[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/scoreboard: [0;37;1mScoreboard control[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/seed: [0;37;1mShows the world seed[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/spawnpoint: [0;37;1mSets a player's spawn point[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/stop: [0;37;1mStops the server with optional reason[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/tell: [0;37;1mSends a private message to the given player[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/testfor: [0;37;1mTests whether a specifed player is online[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/time: [0;37;1mChanges the time on each world[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/timings: [0;37;1mRecords timings for all plugin events[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/toggledownfall: [0;37;1mToggles rain on/off on a given world[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/tp: [0;37;1mTeleports the given player (or yourself) to another player or coordinates[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/version: [0;37;1mGets the version of this server including any plugins in use[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/weather: [0;37;1mChanges the weather[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/whitelist: [0;37;1mManages the list of players allowed to use this server[m
+2013-09-22 21:33:44 [INFO] [0;33;22m/xp: [0;37;1mGives the specified player a certain amount of experience. Specify <amount>L to give levels instead, with a negative amount resulting in taking levels.[m
+2013-09-22 21:34:14 [INFO] CONSOLE: Gave aye_priori some 1 (STONE)[m
+2013-09-22 21:34:18 [INFO] CONSOLE: Gave aye_priori some 5 (WOOD)[m
+2013-09-22 21:34:21 [INFO] There's no item called woodenplank[m
+2013-09-22 21:34:23 [INFO] There's no item called woodenplanks[m
+2013-09-22 21:34:27 [INFO] There's no item called woodplank[m
+2013-09-22 21:34:32 [INFO] There's no item called wooden_plank[m
+2013-09-22 21:34:35 [INFO] There's no item called wooden_planks[m
+2013-09-22 21:34:45 [INFO] CONSOLE: Gave aye_priori some 1 (STONE)[m
+2013-09-22 21:35:00 [INFO] CONSOLE: Gave aye_priori some 5 (WOOD)[m
+2013-09-22 21:35:04 [INFO] CONSOLE: Gave aye_priori some 5 (WOOD)[m
+2013-09-22 21:35:05 [INFO] CONSOLE: Gave aye_priori some 5 (WOOD)[m
+2013-09-22 21:35:09 [INFO] There's no item called tree[m
+2013-09-22 21:35:44 [INFO] CONSOLE: Gave aye_priori some 5 (WOOD)[m
+2013-09-22 21:36:06 [INFO] CONSOLE: Gave aye_priori some 5 (WOOD)[m
+2013-09-22 21:36:52 [INFO] CONSOLE: Gave aye_priori some 280 (STICK)[m
+2013-09-22 21:37:28 [INFO] CONSOLE: Gave aye_priori some 261 (BOW)[m
+2013-09-22 21:37:35 [INFO] Can't find player aye_prio[m
+2013-09-22 21:37:43 [INFO] CONSOLE: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-09-22 21:40:24 [INFO] Connection reset
+2013-09-22 21:40:24 [INFO] aye_priori lost connection: disconnect.quitting
+2013-09-22 21:44:11 [INFO] Starting input thread!
+2013-09-22 21:44:11 [INFO] [RaspberryJuice] Opened connection to/127.0.0.1:51735.
+2013-09-22 21:44:11 [INFO] Starting output thread!
+2013-09-22 21:44:17 [INFO] aye_priori[/127.0.0.1:43046] logged in with entity id 1208 at ([world] 210.40534438182075, 64.0, 132.87188692209722)
+2013-09-22 21:49:01 [SEVERE] camera.setPos has not been implemented.
+2013-09-22 21:49:40 [SEVERE] camera.mode.setFollow has not been implemented.
+2013-09-22 21:49:50 [SEVERE] camera.mode.setFixed has not been implemented.
+2013-09-22 21:52:42 [INFO] [0;31;1mUsage: /give <player> <item> [amount [data]][m
+2013-09-22 21:52:52 [INFO] There's no item called sword[m
+2013-09-22 21:53:22 [INFO] CONSOLE: Gave aye_priori some 267 (IRON_SWORD)[m
+2013-09-22 21:54:17 [INFO] CONSOLE: Gave aye_priori some 268 (WOOD_SWORD)[m
+2013-09-22 21:55:52 [INFO] aye_priori lost connection: disconnect.quitting
+2013-09-22 21:55:52 [INFO] Connection reset
+2013-09-22 22:14:07 [INFO] CONSOLE: Stopping the server..[m
+2013-09-22 22:14:08 [INFO] Stopping server
+2013-09-22 22:14:08 [INFO] [RaspberryJuice] Disabling RaspberryJuice v1.2
+2013-09-22 22:14:08 [SEVERE] java.net.SocketException: Socket closed
+2013-09-22 22:14:08 [SEVERE] 	at java.net.PlainSocketImpl.socketAccept(Native Method)
+2013-09-22 22:14:08 [SEVERE] 	at java.net.AbstractPlainSocketImpl.accept(AbstractPlainSocketImpl.java:375)
+2013-09-22 22:14:08 [SEVERE] 	at java.net.ServerSocket.implAccept(ServerSocket.java:478)
+2013-09-22 22:14:08 [SEVERE] 	at java.net.ServerSocket.accept(ServerSocket.java:446)
+2013-09-22 22:14:08 [SEVERE] 	at net.zhuoweizhang.raspberryjuice.ServerListenerThread.run(ServerListenerThread.java:27)
+2013-09-22 22:14:08 [SEVERE] 	at java.lang.Thread.run(Thread.java:679)
+2013-09-22 22:14:08 [SEVERE] java.net.SocketException: Socket closed
+2013-09-22 22:14:08 [INFO] [RaspberryJuice] Closed connection to/127.0.0.1:51735.
+2013-09-22 22:14:08 [SEVERE] 	at java.net.SocketInputStream.socketRead0(Native Method)
+2013-09-22 22:14:08 [SEVERE] 	at java.net.SocketInputStream.read(SocketInputStream.java:146)
+2013-09-22 22:14:08 [SEVERE] 	at sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:282)
+2013-09-22 22:14:08 [SEVERE] 	at sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:324)
+2013-09-22 22:14:08 [SEVERE] 	at sun.nio.cs.StreamDecoder.read(StreamDecoder.java:176)
+2013-09-22 22:14:08 [SEVERE] 	at java.io.InputStreamReader.read(InputStreamReader.java:184)
+2013-09-22 22:14:08 [SEVERE] 	at java.io.BufferedReader.fill(BufferedReader.java:153)
+2013-09-22 22:14:08 [SEVERE] 	at java.io.BufferedReader.readLine(BufferedReader.java:316)
+2013-09-22 22:14:08 [SEVERE] 	at java.io.BufferedReader.readLine(BufferedReader.java:379)
+2013-09-22 22:14:08 [SEVERE] 	at net.zhuoweizhang.raspberryjuice.RemoteSession$InputThread.run(RemoteSession.java:287)
+2013-09-22 22:14:08 [SEVERE] 	at java.lang.Thread.run(Thread.java:679)
+2013-09-22 22:14:08 [INFO] [AlwaysDay] Disabling AlwaysDay v2.2.7
+2013-09-22 22:14:08 [INFO] [AlwaysDay] AlwaysDay v2.2.7 is now disabled.
+2013-09-22 22:14:08 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-09-22 22:14:08 [INFO] Saving players
+2013-09-22 22:14:08 [WARNING] DSCT: Socket closed
+2013-09-22 22:14:08 [INFO] Saving worlds
+2013-09-22 22:14:08 [INFO] Closing listening thread
+2013-09-22 22:14:08 [INFO] Saving chunks for level 'world'/Overworld
+2013-09-22 22:14:09 [INFO] Saving chunks for level 'world_nether'/Nether
+2013-09-22 22:14:09 [INFO] Saving chunks for level 'world_the_end'/The End
+2013-09-22 22:14:09 [INFO] Stopping server
+2013-09-22 22:14:09 [INFO] Saving players
+2013-09-22 22:14:09 [INFO] Saving worlds
+2013-09-22 22:14:09 [INFO] Saving chunks for level 'world'/Overworld
+2013-09-22 22:33:05 [INFO] Starting minecraft server version 1.5.2
+2013-09-22 22:33:05 [INFO] Loading properties
+2013-09-22 22:33:05 [INFO] Default game type: SURVIVAL
+2013-09-22 22:33:05 [INFO] Generating keypair
+2013-09-22 22:33:05 [INFO] Starting Minecraft server on *:25565
+2013-09-22 22:33:06 [INFO] This server is running CraftBukkit version git-Bukkit-1.5.2-R1.0-b2788jnks (MC: 1.5.2) (Implementing API version 1.5.2-R1.0)
+2013-09-22 22:33:06 [INFO] [AlwaysDay] Loading AlwaysDay v2.2.7
+2013-09-22 22:33:06 [INFO] [RaspberryJuice] Loading RaspberryJuice v1.2
+2013-09-22 22:33:06 [INFO] Preparing level "world"
+2013-09-22 22:33:06 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-09-22 22:33:06 [WARNING] ----- Bukkit Auto Updater -----
+2013-09-22 22:33:06 [WARNING] Your version of CraftBukkit is out of date. Version 1.6.2-R1.0 (build #2879) was released on Wed Sep 11 02:02:22 EDT 2013.
+2013-09-22 22:33:06 [WARNING] Details: /downloads/craftbukkit/view/02342_1.6.2-R1.0/
+2013-09-22 22:33:06 [WARNING] Download: /downloads/craftbukkit/get/02342_1.6.2-R1.0/craftbukkit.jar
+2013-09-22 22:33:06 [WARNING] ----- ------------------- -----
+2013-09-22 22:33:07 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-09-22 22:33:07 [INFO] Preparing spawn area: 0%
+2013-09-22 22:33:08 [INFO] Preparing spawn area: 99%
+2013-09-22 22:33:08 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-09-22 22:33:08 [INFO] [AlwaysDay] Enabling AlwaysDay v2.2.7
+2013-09-22 22:33:08 [INFO] [AlwaysDay] AlwaysDay v2.2.7 is now enabled.
+2013-09-22 22:33:08 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-09-22 22:33:08 [INFO] [RaspberryJuice] Enabling RaspberryJuice v1.2
+2013-09-22 22:33:08 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-09-22 22:33:09 [INFO] Done (2.748s)! For help, type "help" or "?"
+2013-09-22 22:33:15 [INFO] Disconnecting player [/127.0.0.1:43968]: Outdated server!
+2013-09-22 22:33:17 [INFO] Connection reset
+2013-09-22 22:33:38 [INFO] aye_priori[/127.0.0.1:43969] logged in with entity id 92 at ([world] 204.01555349110606, 64.0, 98.32999585276683)
+2013-09-22 22:34:07 [INFO] Stopping server
+2013-09-22 22:35:33 [INFO] Starting minecraft server version 1.6.2
+2013-09-22 22:35:34 [INFO] Loading properties
+2013-09-22 22:35:34 [INFO] Default game type: SURVIVAL
+2013-09-22 22:35:34 [INFO] Generating keypair
+2013-09-22 22:35:34 [INFO] Starting Minecraft server on *:25565
+2013-09-22 22:35:34 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-b2879jnks (MC: 1.6.2) (Implementing API version 1.6.2-R1.0)
+2013-09-22 22:35:34 [INFO] [AlwaysDay] Loading AlwaysDay v2.2.7
+2013-09-22 22:35:34 [INFO] [RaspberryJuice] Loading RaspberryJuice v1.2
+2013-09-22 22:35:34 [INFO] Preparing level "world"
+2013-09-22 22:35:35 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-09-22 22:35:35 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-09-22 22:35:36 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-09-22 22:35:36 [INFO] [AlwaysDay] Enabling AlwaysDay v2.2.7
+2013-09-22 22:35:36 [INFO] [AlwaysDay] AlwaysDay v2.2.7 is now enabled.
+2013-09-22 22:35:36 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-09-22 22:35:36 [INFO] [RaspberryJuice] Enabling RaspberryJuice v1.2
+2013-09-22 22:35:36 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-09-22 22:35:37 [INFO] Done (2.101s)! For help, type "help" or "?"
+2013-09-22 22:35:40 [INFO] Disconnecting player [/127.0.0.1:43980]: Failed to verify username!
+2013-09-22 22:35:42 [INFO] Connection reset
+2013-09-22 22:36:05 [INFO] Disconnecting player [/127.0.0.1:43985]: Failed to verify username!
+2013-09-22 22:36:07 [INFO] Connection reset
+2013-09-22 22:37:19 [INFO] aye_priori[/127.0.0.1:43988] logged in with entity id 91 at ([world] 204.01555349110606, 64.0, 98.32999585276683)
+2013-09-22 22:37:19 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-09-22 22:37:19 [INFO] ?eaye_priori left the game.
+2013-09-22 22:37:27 [INFO] Stopping server
+2013-09-22 22:38:27 [INFO] Starting minecraft server version 1.6.2
+2013-09-22 22:38:27 [INFO] Loading properties
+2013-09-22 22:38:27 [INFO] Default game type: SURVIVAL
+2013-09-22 22:38:27 [INFO] Generating keypair
+2013-09-22 22:38:27 [INFO] Starting Minecraft server on *:25565
+2013-09-22 22:38:28 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-b2879jnks (MC: 1.6.2) (Implementing API version 1.6.2-R1.0)
+2013-09-22 22:38:28 [INFO] [AlwaysDay] Loading AlwaysDay v2.2.7
+2013-09-22 22:38:28 [INFO] [RaspberryJuice] Loading RaspberryJuice v1.2
+2013-09-22 22:38:28 [INFO] Preparing level "world"
+2013-09-22 22:38:28 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-09-22 22:38:29 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-09-22 22:38:30 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-09-22 22:38:30 [INFO] [AlwaysDay] Enabling AlwaysDay v2.2.7
+2013-09-22 22:38:30 [INFO] [AlwaysDay] AlwaysDay v2.2.7 is now enabled.
+2013-09-22 22:38:30 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-09-22 22:38:30 [INFO] [RaspberryJuice] Enabling RaspberryJuice v1.2
+2013-09-22 22:38:30 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-09-22 22:38:30 [INFO] Done (2.360s)! For help, type "help" or "?"
+2013-09-22 22:39:09 [INFO] aye_priori[/127.0.0.1:44061] logged in with entity id 89 at ([world] 204.01555349110606, 64.0, 98.32999585276683)
+2013-09-22 22:39:09 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-09-22 22:39:09 [INFO] ?eaye_priori left the game.
+2013-10-01 13:22:18 [INFO] Starting minecraft server version 1.6.2
+2013-10-01 13:22:18 [INFO] Loading properties
+2013-10-01 13:22:18 [INFO] Default game type: SURVIVAL
+2013-10-01 13:22:18 [INFO] Generating keypair
+2013-10-01 13:22:19 [INFO] Starting Minecraft server on *:25565
+2013-10-01 13:22:19 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-b2879jnks (MC: 1.6.2) (Implementing API version 1.6.2-R1.0)
+2013-10-01 13:22:19 [INFO] [AlwaysDay] Loading AlwaysDay v2.2.7
+2013-10-01 13:22:19 [INFO] [RaspberryJuice] Loading RaspberryJuice v1.2
+2013-10-01 13:22:19 [INFO] Preparing level "world"
+2013-10-01 13:22:20 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-10-01 13:22:21 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-10-01 13:22:22 [INFO] Preparing spawn area: 68%
+2013-10-01 13:22:22 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-10-01 13:22:22 [INFO] [AlwaysDay] Enabling AlwaysDay v2.2.7
+2013-10-01 13:22:23 [INFO] [AlwaysDay] AlwaysDay v2.2.7 is now enabled.
+2013-10-01 13:22:23 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-10-01 13:22:23 [INFO] [RaspberryJuice] Enabling RaspberryJuice v1.2
+2013-10-01 13:22:23 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-10-01 13:22:23 [INFO] Done (3.419s)! For help, type "help" or "?"
+2013-10-01 13:22:45 [INFO] Starting minecraft server version 1.6.2
+2013-10-01 13:22:45 [INFO] Loading properties
+2013-10-01 13:22:45 [INFO] Default game type: SURVIVAL
+2013-10-01 13:22:45 [INFO] Generating keypair
+2013-10-01 13:22:46 [INFO] Starting Minecraft server on *:25565
+2013-10-01 13:22:46 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-b2879jnks (MC: 1.6.2) (Implementing API version 1.6.2-R1.0)
+2013-10-01 13:22:46 [INFO] [AlwaysDay] Loading AlwaysDay v2.2.7
+2013-10-01 13:22:47 [INFO] Preparing level "world"
+2013-10-01 13:22:47 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-10-01 13:22:48 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-10-01 13:22:48 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-10-01 13:22:49 [INFO] [AlwaysDay] Enabling AlwaysDay v2.2.7
+2013-10-01 13:22:49 [INFO] [AlwaysDay] AlwaysDay v2.2.7 is now enabled.
+2013-10-01 13:22:49 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-10-01 13:22:49 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-10-01 13:22:49 [INFO] Done (2.111s)! For help, type "help" or "?"
+2013-10-01 13:22:58 [INFO] CONSOLE: Stopping the server..[m
+2013-10-01 13:22:58 [INFO] Stopping server
+2013-10-01 13:22:58 [INFO] [AlwaysDay] Disabling AlwaysDay v2.2.7
+2013-10-01 13:22:58 [INFO] [AlwaysDay] AlwaysDay v2.2.7 is now disabled.
+2013-10-01 13:22:58 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-10-01 13:22:58 [INFO] Saving players
+2013-10-01 13:22:58 [WARNING] DSCT: Socket closed
+2013-10-01 13:22:58 [INFO] Saving worlds
+2013-10-01 13:22:58 [INFO] Closing listening thread
+2013-10-01 13:22:58 [INFO] Saving chunks for level 'world'/Overworld
+2013-10-01 13:22:58 [INFO] Saving chunks for level 'world_nether'/Nether
+2013-10-01 13:22:59 [INFO] Saving chunks for level 'world_the_end'/The End
+2013-10-01 13:23:13 [INFO] Starting minecraft server version 1.6.2
+2013-10-01 13:23:13 [INFO] Loading properties
+2013-10-01 13:23:13 [INFO] Default game type: SURVIVAL
+2013-10-01 13:23:13 [INFO] Generating keypair
+2013-10-01 13:23:14 [INFO] Starting Minecraft server on *:25565
+2013-10-01 13:23:14 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-b2879jnks (MC: 1.6.2) (Implementing API version 1.6.2-R1.0)
+2013-10-01 13:23:14 [INFO] [AlwaysDay] Loading AlwaysDay v2.2.7
+2013-10-01 13:23:14 [INFO] [Spectate] Loading Spectate v1.11.1
+2013-10-01 13:23:14 [INFO] Preparing level "world"
+2013-10-01 13:23:14 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-10-01 13:23:15 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-10-01 13:23:15 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-10-01 13:23:16 [INFO] [AlwaysDay] Enabling AlwaysDay v2.2.7
+2013-10-01 13:23:16 [INFO] [AlwaysDay] AlwaysDay v2.2.7 is now enabled.
+2013-10-01 13:23:16 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-10-01 13:23:16 [INFO] [Spectate] Enabling Spectate v1.11.1
+2013-10-01 13:23:16 [INFO] [Spectate] Spectate v1.11.1 enabled!
+2013-10-01 13:23:16 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-10-01 13:23:16 [INFO] Done (1.549s)! For help, type "help" or "?"
+2013-10-01 13:24:02 [INFO] aye_priori[/127.0.0.1:52728] logged in with entity id 89 at ([world] 204.01555349110606, 64.0, 98.32999585276683)
+2013-10-01 13:24:03 [INFO] <aye_priori> game mode is survival[m
+2013-10-01 13:24:03 [INFO] <aye_priori> game mode is survival[m
+2013-10-01 13:24:03 [INFO] Connection reset
+2013-10-01 13:24:03 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-01 13:24:03 [INFO] ?eaye_priori left the game.
+2013-10-01 13:24:33 [INFO] aye_priori[/127.0.0.1:52736] logged in with entity id 121 at ([world] 204.01555349110606, 64.0, 98.32999585276683)
+2013-10-01 13:24:33 [INFO] Connection reset
+2013-10-01 13:24:33 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-01 13:24:33 [INFO] ?eaye_priori left the game.
+2013-10-05 14:37:39 [INFO] Starting minecraft server version 1.6.4
+2013-10-05 14:37:39 [INFO] Loading properties
+2013-10-05 14:37:39 [INFO] Default game type: SURVIVAL
+2013-10-05 14:37:39 [INFO] Generating keypair
+2013-10-05 14:37:39 [INFO] Starting Minecraft server on *:25565
+2013-10-05 14:37:40 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-3-g9532cb6-b2889jnks (MC: 1.6.4) (Implementing API version 1.6.4-R0.1-SNAPSHOT)
+2013-10-05 14:37:40 [INFO] [AlwaysDay] Loading AlwaysDay v2.2.7
+2013-10-05 14:37:40 [INFO] [Spectate] Loading Spectate v1.11.1
+2013-10-05 14:37:40 [INFO] [Spectator] Loading Spectator v1.0
+2013-10-05 14:37:40 [INFO] [TerrainControl] Loading TerrainControl v2.5.0
+2013-10-05 14:37:40 [INFO] [TerrainControl] Enabling TerrainControl v2.5.0
+2013-10-05 14:37:40 [INFO] [TerrainControl] 0 global custom objects loaded.
+2013-10-05 14:37:40 [INFO] [TerrainControl] Global objects loaded, waiting for worlds to load
+2013-10-05 14:37:40 [INFO] ----- Bukkit Auto Updater -----
+2013-10-05 14:37:40 [INFO] It appears that you're running a Development Build, when you've specified in bukkit.yml that you prefer to run Recommended Builds.
+2013-10-05 14:37:40 [INFO] If you would like to be kept informed about new Development Build releases, it is recommended that you change 'preferred-channel' in your bukkit.yml to 'dev'.
+2013-10-05 14:37:40 [INFO] With that set, you will be told whenever a new version is available for download, so that you can always keep up to date and secure with the latest fixes.
+2013-10-05 14:37:40 [INFO] If you would like to disable this warning, simply set 'suggest-channels' to false in bukkit.yml.
+2013-10-05 14:37:40 [INFO] ----- ------------------- -----
+2013-10-05 14:37:40 [INFO] Preparing level "world"
+2013-10-05 14:37:41 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-10-05 14:37:42 [INFO] Preparing spawn area: 96%
+2013-10-05 14:37:42 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-10-05 14:37:43 [INFO] Preparing spawn area: 89%
+2013-10-05 14:37:43 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-10-05 14:37:43 [INFO] [AlwaysDay] Enabling AlwaysDay v2.2.7
+2013-10-05 14:37:43 [INFO] [AlwaysDay] AlwaysDay v2.2.7 is now enabled.
+2013-10-05 14:37:43 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-10-05 14:37:44 [INFO] [Spectate] Enabling Spectate v1.11.1
+2013-10-05 14:37:44 [INFO] [Spectate] Spectate v1.11.1 enabled!
+2013-10-05 14:37:44 [INFO] [Spectator] Enabling Spectator v1.0
+2013-10-05 14:37:44 [INFO] [Specator] Plugin activated!
+2013-10-05 14:37:44 [INFO] [Specator] Plugin by bubbleguj
+2013-10-05 14:37:44 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-10-05 14:37:44 [INFO] Done (3.320s)! For help, type "help" or "?"
+2013-10-05 14:37:45 [INFO] About to download update: AlwaysDay v2.2.8
+2013-10-05 14:37:45 [INFO] Downloaded 100% of 20604 bytes.
+2013-10-05 14:37:45 [INFO] Finished updating, please use the 'reload' command to complete the update
+2013-10-05 14:38:11 [INFO] Unknown command. Type "help" for help.[m
+2013-10-05 14:38:15 [INFO] [0;33;1m--------- [0;37;1mHelp: /tc [0;33;1m-----------------------------[m
+2013-10-05 14:38:15 [INFO] [0;33;22mDescription: [0;37;1mTerrainControl commands[m
+2013-10-05 14:38:15 [INFO] [0;33;22mUsage: [0;37;1m/tc <check> [world] - Checks TC is enable for this world.[m
+2013-10-05 14:38:15 [INFO] [0;37;1m/tc <reload> [world] - Reload config[m
+2013-10-05 14:38:15 [INFO] [0;37;1m/tc <biome> [-f] - Show current chunk biome and block stats[m
+2013-10-05 14:38:15 [INFO] [0;37;1m[m
+2013-10-05 14:38:15 [INFO] [0;33;22mAliases: [0;37;1m[0;37;1mterraincontrol[m
+2013-10-09 14:26:28 [INFO] Starting minecraft server version 1.6.4
+2013-10-09 14:26:28 [INFO] Loading properties
+2013-10-09 14:26:28 [INFO] Default game type: SURVIVAL
+2013-10-09 14:26:28 [INFO] Generating keypair
+2013-10-09 14:26:28 [INFO] Starting Minecraft server on *:25565
+2013-10-09 14:26:29 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-3-g9532cb6-b2889jnks (MC: 1.6.4) (Implementing API version 1.6.4-R0.1-SNAPSHOT)
+2013-10-09 14:26:29 [INFO] [AlwaysDay] Loading AlwaysDay v2.2.8
+2013-10-09 14:26:29 [INFO] [Spectate] Loading Spectate v1.11.1
+2013-10-09 14:26:29 [INFO] [Spectator] Loading Spectator v1.0
+2013-10-09 14:26:29 [INFO] [TerrainControl] Loading TerrainControl v2.5.0
+2013-10-09 14:26:29 [INFO] [TerrainControl] Enabling TerrainControl v2.5.0
+2013-10-09 14:26:29 [INFO] [TerrainControl] 0 global custom objects loaded.
+2013-10-09 14:26:29 [INFO] [TerrainControl] Global objects loaded, waiting for worlds to load
+2013-10-09 14:26:29 [INFO] ----- Bukkit Auto Updater -----
+2013-10-09 14:26:29 [INFO] It appears that you're running a Development Build, when you've specified in bukkit.yml that you prefer to run Recommended Builds.
+2013-10-09 14:26:29 [INFO] If you would like to be kept informed about new Development Build releases, it is recommended that you change 'preferred-channel' in your bukkit.yml to 'dev'.
+2013-10-09 14:26:29 [INFO] With that set, you will be told whenever a new version is available for download, so that you can always keep up to date and secure with the latest fixes.
+2013-10-09 14:26:29 [INFO] If you would like to disable this warning, simply set 'suggest-channels' to false in bukkit.yml.
+2013-10-09 14:26:29 [INFO] ----- ------------------- -----
+2013-10-09 14:26:29 [INFO] Preparing level "world"
+2013-10-09 14:26:30 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-10-09 14:26:31 [INFO] Preparing spawn area: 97%
+2013-10-09 14:26:31 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-10-09 14:26:32 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-10-09 14:26:32 [INFO] [AlwaysDay] Enabling AlwaysDay v2.2.8
+2013-10-09 14:26:33 [INFO] [AlwaysDay] AlwaysDay v2.2.8 is now enabled.
+2013-10-09 14:26:33 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-10-09 14:26:33 [INFO] [Spectate] Enabling Spectate v1.11.1
+2013-10-09 14:26:33 [INFO] [Spectate] Spectate v1.11.1 enabled!
+2013-10-09 14:26:33 [INFO] [Spectator] Enabling Spectator v1.0
+2013-10-09 14:26:33 [INFO] [Specator] Plugin activated!
+2013-10-09 14:26:33 [INFO] [Specator] Plugin by bubbleguj
+2013-10-09 14:26:33 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-10-09 14:26:33 [INFO] Done (3.246s)! For help, type "help" or "?"
+2013-10-09 14:27:16 [INFO] aye_priori[/127.0.0.1:33305] logged in with entity id 163 at ([world] 214.32132, 61.001, 126.67968)
+2013-10-09 14:27:16 [INFO] <aye_priori> game mode is survival[m
+2013-10-09 14:27:16 [INFO] <aye_priori> game mode is survival[m
+2013-10-09 14:27:16 [INFO] aye_priori issued server command: /give aye_priori 2 10
+2013-10-09 14:27:16 [INFO] aye_priori: Gave aye_priori some 2 (GRASS)[m
+2013-10-09 14:27:16 [INFO] aye_priori issued server command: /give aye_priori 2 10
+2013-10-09 14:27:16 [INFO] aye_priori: Gave aye_priori some 2 (GRASS)[m
+2013-10-09 14:27:31 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-09 14:27:31 [INFO] ?eaye_priori left the game.
+2013-10-09 14:27:49 [INFO] aye_priori[/127.0.0.1:33309] logged in with entity id 208 at ([world] 214.32132, 61.001, 126.67968)
+2013-10-09 14:27:49 [INFO] <aye_priori> game mode is survival[m
+2013-10-09 14:27:49 [INFO] <aye_priori> game mode is survival[m
+2013-10-09 14:27:49 [INFO] aye_priori issued server command: /give aye_priori 3
+2013-10-09 14:27:49 [INFO] aye_priori: Gave aye_priori some 3 (DIRT)[m
+2013-10-09 14:27:49 [INFO] aye_priori issued server command: /give aye_priori 3
+2013-10-09 14:27:49 [INFO] aye_priori: Gave aye_priori some 3 (DIRT)[m
+2013-10-09 14:28:01 [INFO] [0;33;1m--------- [0;37;1mHelp: Index [0;33;1m---------------------------[m
+2013-10-09 14:28:01 [INFO] [0;37;22mUse /help [n] to get page n of help.[m
+2013-10-09 14:28:01 [INFO] [0;33;22mAliases: [0;37;1mLists command aliases[m
+2013-10-09 14:28:01 [INFO] [0;33;22mAlwaysDay: [0;37;1mAll commands for AlwaysDay[m
+2013-10-09 14:28:01 [INFO] [0;33;22mBukkit: [0;37;1mAll commands for Bukkit[m
+2013-10-09 14:28:01 [INFO] [0;33;22mSpectate: [0;37;1mAll commands for Spectate[m
+2013-10-09 14:28:01 [INFO] [0;33;22mSpectator: [0;37;1mAll commands for Spectator[m
+2013-10-09 14:28:01 [INFO] [0;33;22mTerrainControl: [0;37;1mAll commands for TerrainControl[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/ad: [0;37;1mEnables/disables AlwaysDay. Also turns off AlwaysDay for a world (Shorthand)[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/alwaysday: [0;37;1mEnables/disables AlwaysDay. Also turns off AlwaysDay for a world[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/ban: [0;37;1mPrevents the specified player from using this server[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/ban-ip: [0;37;1mPrevents the specified IP address from using this server[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/banlist: [0;37;1mView all players banned from this server[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/calm: [0;37;1mKeeps the good weather in a world[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/clear: [0;37;1mClears the player's inventory. Can specify item and data filters too.[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/control: [0;37;1mLets you control another user[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/day: [0;37;1mKeeps it day.[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/defaultgamemode: [0;37;1mSet the default gamemode[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/deop: [0;37;1mTakes the specified player's operator status[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/difficulty: [0;37;1mSets the game difficulty[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/effect: [0;37;1mAdds/Removes effects on players[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/enchant: [0;37;1mAdds enchantments to the item the player is currently holding. Specify 0 for the level to remove an enchantment. Specify force to ignore normal enchantment restrictions[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/gamemode: [0;37;1mChanges the player to a specific game mode[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/gamerule: [0;37;1mSets a server's game rules[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/give: [0;37;1mGives the specified player a certain amount of items[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/help: [0;37;1mShows the help menu[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/kick: [0;37;1mRemoves the specified player from the server[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/kill: [0;37;1mCommits suicide, only usable as a player[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/list: [0;37;1mLists all online players[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/me: [0;37;1mPerforms the specified action in chat[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/night: [0;37;1mKeeps it night.[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/op: [0;37;1mGives the specified player operator status[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/pardon: [0;37;1mAllows the specified player to use this server[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/pardon-ip: [0;37;1mAllows the specified IP address to use this server[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/playsound: [0;37;1mPlays a sound to a given player[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/plugins: [0;37;1mGets a list of plugins running on the server[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/rain: [0;37;1mKeeps the bad weather in a world[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/reload: [0;37;1mReloads the server configuration and plugins[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/save-all: [0;37;1mSaves the server to disk[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/save-off: [0;37;1mDisables server autosaving[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/save-on: [0;37;1mEnables server autosaving[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/say: [0;37;1mBroadcasts the given message as the console[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/scoreboard: [0;37;1mScoreboard control[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/seed: [0;37;1mShows the world seed[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/spawnpoint: [0;37;1mSets a player's spawn point[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/spectate: [0;37;1mLets you spectate another user[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/spectateoff: [0;37;1m[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/spectateon: [0;37;1m[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/spreadplayers: [0;37;1mSpreads players around a point[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/stop: [0;37;1mStops the server with optional reason[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/tc: [0;37;1mTerrainControl commands[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/tell: [0;37;1mSends a private message to the given player[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/testfor: [0;37;1mTests whether a specifed player is online[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/time: [0;37;1mChanges the time on each world[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/timings: [0;37;1mRecords timings for all plugin events[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/toggledownfall: [0;37;1mToggles rain on/off on a given world[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/tp: [0;37;1mTeleports the given player (or yourself) to another player or coordinates[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/version: [0;37;1mGets the version of this server including any plugins in use[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/weather: [0;37;1mChanges the weather[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/whitelist: [0;37;1mManages the list of players allowed to use this server[m
+2013-10-09 14:28:01 [INFO] [0;33;22m/xp: [0;37;1mGives the specified player a certain amount of experience. Specify <amount>L to give levels instead, with a negative amount resulting in taking levels.[m
+2013-10-09 14:28:23 [INFO] [0;33;1m--------- [0;37;1mHelp: /give [0;33;1m---------------------------[m
+2013-10-09 14:28:23 [INFO] [0;33;22mDescription: [0;37;1mGives the specified player a certain amount of items[m
+2013-10-09 14:28:23 [INFO] [0;33;22mUsage: [0;37;1m/give <player> <item> [amount [data]][m
+2013-10-09 14:28:35 [INFO] Unknown command. Type "help" for help.[m
+2013-10-09 14:28:40 [INFO] CONSOLE: Gave aye_priori some 3 (DIRT)[m
+2013-10-09 14:28:45 [INFO] CONSOLE: Gave aye_priori some 3 (DIRT)[m
+2013-10-09 14:28:48 [INFO] CONSOLE: Gave aye_priori some 3 (DIRT)[m
+2013-10-09 14:29:07 [INFO] Stopping server
+2013-10-09 14:30:36 [INFO] Starting minecraft server version 1.6.4
+2013-10-09 14:30:36 [INFO] Loading properties
+2013-10-09 14:30:36 [INFO] Default game type: SURVIVAL
+2013-10-09 14:30:36 [INFO] Generating keypair
+2013-10-09 14:30:36 [INFO] Starting Minecraft server on *:25565
+2013-10-09 14:30:36 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-3-g9532cb6-b2889jnks (MC: 1.6.4) (Implementing API version 1.6.4-R0.1-SNAPSHOT)
+2013-10-09 14:30:36 [INFO] [AlwaysDay] Loading AlwaysDay v2.2.8
+2013-10-09 14:30:36 [INFO] [Spectate] Loading Spectate v1.11.1
+2013-10-09 14:30:37 [INFO] [Spectator] Loading Spectator v1.0
+2013-10-09 14:30:37 [INFO] [TerrainControl] Loading TerrainControl v2.5.0
+2013-10-09 14:30:37 [INFO] [TerrainControl] Enabling TerrainControl v2.5.0
+2013-10-09 14:30:37 [INFO] [TerrainControl] 0 global custom objects loaded.
+2013-10-09 14:30:37 [INFO] [TerrainControl] Global objects loaded, waiting for worlds to load
+2013-10-09 14:30:37 [INFO] Preparing level "world"
+2013-10-09 14:30:37 [INFO] ----- Bukkit Auto Updater -----
+2013-10-09 14:30:37 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-10-09 14:30:37 [INFO] It appears that you're running a Development Build, when you've specified in bukkit.yml that you prefer to run Recommended Builds.
+2013-10-09 14:30:37 [INFO] If you would like to be kept informed about new Development Build releases, it is recommended that you change 'preferred-channel' in your bukkit.yml to 'dev'.
+2013-10-09 14:30:37 [INFO] With that set, you will be told whenever a new version is available for download, so that you can always keep up to date and secure with the latest fixes.
+2013-10-09 14:30:37 [INFO] If you would like to disable this warning, simply set 'suggest-channels' to false in bukkit.yml.
+2013-10-09 14:30:37 [INFO] ----- ------------------- -----
+2013-10-09 14:30:37 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-10-09 14:30:38 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-10-09 14:30:38 [INFO] [AlwaysDay] Enabling AlwaysDay v2.2.8
+2013-10-09 14:30:38 [INFO] [AlwaysDay] AlwaysDay v2.2.8 is now enabled.
+2013-10-09 14:30:38 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-10-09 14:30:38 [INFO] [Spectate] Enabling Spectate v1.11.1
+2013-10-09 14:30:38 [INFO] [Spectate] Spectate v1.11.1 enabled!
+2013-10-09 14:30:38 [INFO] [Spectator] Enabling Spectator v1.0
+2013-10-09 14:30:38 [INFO] [Specator] Plugin activated!
+2013-10-09 14:30:38 [INFO] [Specator] Plugin by bubbleguj
+2013-10-09 14:30:38 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-10-09 14:30:38 [INFO] Done (1.591s)! For help, type "help" or "?"
+2013-10-09 14:30:57 [INFO] /127.0.0.1:33352 lost connection
+2013-10-09 14:31:03 [INFO] aye_priori[/127.0.0.1:33353] logged in with entity id 163 at ([world] 214.32132, 61.001, 126.67968)
+2013-10-09 14:31:26 [INFO] aye_priori issued server command: /give aye_priori 4
+2013-10-09 14:31:26 [INFO] aye_priori: Gave aye_priori some 4 (COBBLESTONE)[m
+2013-10-09 14:31:31 [INFO] aye_priori issued server command: /give aye_priori 4 2
+2013-10-09 14:31:31 [INFO] aye_priori: Gave aye_priori some 4 (COBBLESTONE)[m
+2013-10-09 14:31:40 [INFO] Connection reset
+2013-10-09 14:31:40 [INFO] aye_priori lost connection: disconnect.quitting
+2013-10-09 14:31:40 [INFO] ?eaye_priori left the game.
+2013-10-09 14:51:55 [INFO] aye_priori[/127.0.0.1:33536] logged in with entity id 204 at ([world] 214.83279059973356, 64.0, 133.36324133543863)
+2013-10-09 14:51:55 [INFO] <aye_priori> game mode is survival[m
+2013-10-09 14:51:55 [INFO] <aye_priori> game mode is survival[m
+2013-10-09 14:51:55 [INFO] aye_priori issued server command: /give aye_priori 3 4
+2013-10-09 14:51:55 [INFO] aye_priori: Gave aye_priori some 3 (DIRT)[m
+2013-10-09 14:51:55 [INFO] aye_priori issued server command: /give aye_priori 3 4
+2013-10-09 14:51:55 [INFO] aye_priori: Gave aye_priori some 3 (DIRT)[m
+2013-10-09 14:52:18 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-09 14:52:18 [INFO] ?eaye_priori left the game.
+2013-10-09 14:52:22 [INFO] [0;31;1mPlease provide a player![m
+2013-10-09 14:52:24 [INFO] Unknown command. Type "help" for help.[m
+2013-10-09 14:52:25 [INFO] Unknown command. Type "help" for help.[m
+2013-10-09 14:52:25 [INFO] Unknown command. Type "help" for help.[m
+2013-10-09 14:52:25 [INFO] Unknown command. Type "help" for help.[m
+2013-10-09 14:52:25 [INFO] Unknown command. Type "help" for help.[m
+2013-10-09 14:52:25 [INFO] Unknown command. Type "help" for help.[m
+2013-10-09 14:52:25 [INFO] Unknown command. Type "help" for help.[m
+2013-10-09 14:52:25 [INFO] Unknown command. Type "help" for help.[m
+2013-10-09 14:52:26 [INFO] Unknown command. Type "help" for help.[m
+2013-10-09 14:52:26 [INFO] Unknown command. Type "help" for help.[m
+2013-10-09 14:52:26 [INFO] Unknown command. Type "help" for help.[m
+2013-10-09 14:52:26 [INFO] Unknown command. Type "help" for help.[m
+2013-10-09 14:52:26 [INFO] Unknown command. Type "help" for help.[m
+2013-10-09 14:52:32 [INFO] Starting minecraft server version 1.6.4
+2013-10-09 14:52:32 [INFO] Loading properties
+2013-10-09 14:52:32 [INFO] Default game type: SURVIVAL
+2013-10-09 14:52:32 [INFO] Generating keypair
+2013-10-09 14:52:33 [INFO] Starting Minecraft server on *:25565
+2013-10-09 14:52:33 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-3-g9532cb6-b2889jnks (MC: 1.6.4) (Implementing API version 1.6.4-R0.1-SNAPSHOT)
+2013-10-09 14:52:33 [INFO] [AlwaysDay] Loading AlwaysDay v2.2.8
+2013-10-09 14:52:33 [INFO] [Spectate] Loading Spectate v1.11.1
+2013-10-09 14:52:33 [INFO] [Spectator] Loading Spectator v1.0
+2013-10-09 14:52:33 [INFO] [TerrainControl] Loading TerrainControl v2.5.0
+2013-10-09 14:52:33 [INFO] [TerrainControl] Enabling TerrainControl v2.5.0
+2013-10-09 14:52:33 [INFO] [TerrainControl] 0 global custom objects loaded.
+2013-10-09 14:52:33 [INFO] [TerrainControl] Global objects loaded, waiting for worlds to load
+2013-10-09 14:52:33 [INFO] Preparing level "world"
+2013-10-09 14:52:33 [INFO] ----- Bukkit Auto Updater -----
+2013-10-09 14:52:33 [INFO] It appears that you're running a Development Build, when you've specified in bukkit.yml that you prefer to run Recommended Builds.
+2013-10-09 14:52:33 [INFO] If you would like to be kept informed about new Development Build releases, it is recommended that you change 'preferred-channel' in your bukkit.yml to 'dev'.
+2013-10-09 14:52:33 [INFO] With that set, you will be told whenever a new version is available for download, so that you can always keep up to date and secure with the latest fixes.
+2013-10-09 14:52:33 [INFO] If you would like to disable this warning, simply set 'suggest-channels' to false in bukkit.yml.
+2013-10-09 14:52:33 [INFO] ----- ------------------- -----
+2013-10-09 14:52:33 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-10-09 14:52:34 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-10-09 14:52:34 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-10-09 14:52:35 [INFO] [AlwaysDay] Enabling AlwaysDay v2.2.8
+2013-10-09 14:52:35 [INFO] [AlwaysDay] AlwaysDay v2.2.8 is now enabled.
+2013-10-09 14:52:35 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-10-09 14:52:35 [INFO] [Spectate] Enabling Spectate v1.11.1
+2013-10-09 14:52:35 [INFO] [Spectate] Spectate v1.11.1 enabled!
+2013-10-09 14:52:35 [INFO] [Spectator] Enabling Spectator v1.0
+2013-10-09 14:52:35 [INFO] [Specator] Plugin activated!
+2013-10-09 14:52:35 [INFO] [Specator] Plugin by bubbleguj
+2013-10-09 14:52:35 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-10-09 14:52:35 [INFO] Done (1.734s)! For help, type "help" or "?"
+2013-10-09 14:52:40 [INFO] aye_priori[/127.0.0.1:33545] logged in with entity id 96 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-09 14:52:40 [INFO] <aye_priori> game mode is survival[m
+2013-10-09 14:52:40 [INFO] <aye_priori> game mode is survival[m
+2013-10-09 14:52:40 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-09 14:52:40 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-09 14:52:40 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-09 14:52:40 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-09 14:52:40 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-09 14:52:40 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-09 14:52:40 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-09 14:52:40 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-09 14:52:40 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-09 14:52:40 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-09 14:52:40 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-09 14:52:40 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-09 14:52:40 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-09 14:52:40 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-09 14:52:40 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-09 14:52:40 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-09 14:52:40 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-09 14:52:40 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-09 14:52:40 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-09 14:52:40 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-09 14:52:40 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-09 14:52:40 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-09 14:52:40 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-09 14:52:40 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-09 14:52:40 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-09 14:52:40 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-09 14:52:40 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-09 14:52:40 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-09 14:54:17 [INFO] Stopping server
+2013-10-09 14:54:19 [INFO] Starting minecraft server version 1.6.4
+2013-10-09 14:54:19 [INFO] Loading properties
+2013-10-09 14:54:19 [INFO] Default game type: SURVIVAL
+2013-10-09 14:54:19 [INFO] Generating keypair
+2013-10-09 14:54:20 [INFO] Starting Minecraft server on *:25565
+2013-10-09 14:54:20 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-3-g9532cb6-b2889jnks (MC: 1.6.4) (Implementing API version 1.6.4-R0.1-SNAPSHOT)
+2013-10-09 14:54:20 [INFO] [AlwaysDay] Loading AlwaysDay v2.2.8
+2013-10-09 14:54:20 [INFO] [Spectate] Loading Spectate v1.11.1
+2013-10-09 14:54:20 [INFO] [Spectator] Loading Spectator v1.0
+2013-10-09 14:54:20 [INFO] [TerrainControl] Loading TerrainControl v2.5.0
+2013-10-09 14:54:20 [INFO] [TerrainControl] Enabling TerrainControl v2.5.0
+2013-10-09 14:54:20 [INFO] [TerrainControl] 0 global custom objects loaded.
+2013-10-09 14:54:20 [INFO] [TerrainControl] Global objects loaded, waiting for worlds to load
+2013-10-09 14:54:20 [INFO] Preparing level "world"
+2013-10-09 14:54:20 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-10-09 14:54:20 [INFO] ----- Bukkit Auto Updater -----
+2013-10-09 14:54:20 [INFO] It appears that you're running a Development Build, when you've specified in bukkit.yml that you prefer to run Recommended Builds.
+2013-10-09 14:54:20 [INFO] If you would like to be kept informed about new Development Build releases, it is recommended that you change 'preferred-channel' in your bukkit.yml to 'dev'.
+2013-10-09 14:54:20 [INFO] With that set, you will be told whenever a new version is available for download, so that you can always keep up to date and secure with the latest fixes.
+2013-10-09 14:54:20 [INFO] If you would like to disable this warning, simply set 'suggest-channels' to false in bukkit.yml.
+2013-10-09 14:54:20 [INFO] ----- ------------------- -----
+2013-10-09 14:54:21 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-10-09 14:54:21 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-10-09 14:54:22 [INFO] [AlwaysDay] Enabling AlwaysDay v2.2.8
+2013-10-09 14:54:22 [INFO] [AlwaysDay] AlwaysDay v2.2.8 is now enabled.
+2013-10-09 14:54:22 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-10-09 14:54:22 [INFO] [Spectate] Enabling Spectate v1.11.1
+2013-10-09 14:54:22 [INFO] [Spectate] Spectate v1.11.1 enabled!
+2013-10-09 14:54:22 [INFO] [Spectator] Enabling Spectator v1.0
+2013-10-09 14:54:22 [INFO] [Specator] Plugin activated!
+2013-10-09 14:54:22 [INFO] [Specator] Plugin by bubbleguj
+2013-10-09 14:54:22 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-10-09 14:54:22 [INFO] Done (1.535s)! For help, type "help" or "?"
+2013-10-09 14:54:24 [INFO] aye_priori[/127.0.0.1:33560] logged in with entity id 96 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-09 14:54:24 [INFO] <aye_priori> game mode is survival[m
+2013-10-09 14:54:24 [INFO] <aye_priori> game mode is survival[m
+2013-10-09 14:54:24 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-09 14:54:24 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-09 14:54:24 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-09 14:54:24 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-09 14:54:24 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-09 14:54:24 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-09 14:54:24 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-09 14:54:24 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-09 14:54:24 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-09 14:54:24 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-09 14:54:24 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-09 14:54:24 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-09 14:54:24 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-09 14:54:24 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-09 14:54:24 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-09 14:54:24 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-09 14:54:24 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-09 14:54:24 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-09 14:54:24 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-09 14:54:24 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-09 14:54:24 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-09 14:54:24 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-09 14:54:24 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-09 14:54:24 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-09 14:54:24 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-09 14:54:24 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-09 14:54:24 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-09 14:54:24 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:45:59 [INFO] Starting minecraft server version 1.6.4
+2013-10-13 14:45:59 [INFO] Loading properties
+2013-10-13 14:45:59 [INFO] Default game type: SURVIVAL
+2013-10-13 14:45:59 [INFO] Generating keypair
+2013-10-13 14:46:00 [INFO] Starting Minecraft server on *:25565
+2013-10-13 14:46:00 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-3-g9532cb6-b2889jnks (MC: 1.6.4) (Implementing API version 1.6.4-R0.1-SNAPSHOT)
+2013-10-13 14:46:00 [INFO] [AlwaysDay] Loading AlwaysDay v2.2.8
+2013-10-13 14:46:00 [INFO] [Spectate] Loading Spectate v1.11.1
+2013-10-13 14:46:00 [INFO] [Spectator] Loading Spectator v1.0
+2013-10-13 14:46:00 [INFO] [TerrainControl] Loading TerrainControl v2.5.0
+2013-10-13 14:46:00 [INFO] [TerrainControl] Enabling TerrainControl v2.5.0
+2013-10-13 14:46:01 [INFO] [TerrainControl] 0 global custom objects loaded.
+2013-10-13 14:46:01 [INFO] [TerrainControl] Global objects loaded, waiting for worlds to load
+2013-10-13 14:46:01 [INFO] ----- Bukkit Auto Updater -----
+2013-10-13 14:46:01 [INFO] It appears that you're running a Development Build, when you've specified in bukkit.yml that you prefer to run Recommended Builds.
+2013-10-13 14:46:01 [INFO] If you would like to be kept informed about new Development Build releases, it is recommended that you change 'preferred-channel' in your bukkit.yml to 'dev'.
+2013-10-13 14:46:01 [INFO] With that set, you will be told whenever a new version is available for download, so that you can always keep up to date and secure with the latest fixes.
+2013-10-13 14:46:01 [INFO] If you would like to disable this warning, simply set 'suggest-channels' to false in bukkit.yml.
+2013-10-13 14:46:01 [INFO] ----- ------------------- -----
+2013-10-13 14:46:01 [INFO] Preparing level "world"
+2013-10-13 14:46:01 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-10-13 14:46:02 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-10-13 14:46:03 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-10-13 14:46:04 [INFO] [AlwaysDay] Enabling AlwaysDay v2.2.8
+2013-10-13 14:46:04 [INFO] [AlwaysDay] AlwaysDay v2.2.8 is now enabled.
+2013-10-13 14:46:04 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-10-13 14:46:04 [INFO] [Spectate] Enabling Spectate v1.11.1
+2013-10-13 14:46:04 [INFO] [Spectate] Spectate v1.11.1 enabled!
+2013-10-13 14:46:04 [INFO] [Spectator] Enabling Spectator v1.0
+2013-10-13 14:46:04 [INFO] [Specator] Plugin activated!
+2013-10-13 14:46:04 [INFO] [Specator] Plugin by bubbleguj
+2013-10-13 14:46:04 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-10-13 14:46:04 [INFO] Done (3.293s)! For help, type "help" or "?"
+2013-10-13 14:47:43 [INFO] aye_priori[/127.0.0.1:46708] logged in with entity id 96 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 14:47:43 [INFO] <aye_priori> game mode is survival[m
+2013-10-13 14:47:43 [INFO] Connection reset
+2013-10-13 14:47:43 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 14:47:44 [INFO] ?eaye_priori left the game.
+2013-10-13 14:47:55 [INFO] aye_priori[/127.0.0.1:46713] logged in with entity id 106 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 14:47:55 [INFO] <aye_priori> game mode is survival[m
+2013-10-13 14:47:55 [INFO] <aye_priori> game mode is survival[m
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:47:55 [INFO] aye_priori: Set own game mode to CREATIVE mode[m
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:47:55 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:47:55 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:47:55 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:47:55 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:47:55 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:47:55 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:47:55 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:47:55 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:47:55 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:47:55 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:47:55 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:47:55 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:47:55 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:47:55 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:47:55 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:47:55 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 14:47:55 [INFO] ?eaye_priori left the game.
+2013-10-13 14:48:05 [INFO] aye_priori[/127.0.0.1:46720] logged in with entity id 116 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 14:48:05 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 14:48:05 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:48:05 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:48:05 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:48:05 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:48:05 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:48:05 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:48:05 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:48:05 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:48:05 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:48:05 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:48:05 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:48:05 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:48:05 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:48:05 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:48:05 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:48:05 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:48:50 [INFO] Unknown command. Type "help" for help.[m
+2013-10-13 14:49:40 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 14:49:40 [INFO] ?eaye_priori left the game.
+2013-10-13 14:49:42 [INFO] aye_priori[/127.0.0.1:46724] logged in with entity id 304 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 14:49:42 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:49:42 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:49:42 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:49:42 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:49:42 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:49:42 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:49:42 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:49:42 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:49:42 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:49:42 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:49:42 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:49:42 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:49:42 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:49:42 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:49:42 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:49:42 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:49:42 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:50:06 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 14:50:06 [INFO] ?eaye_priori left the game.
+2013-10-13 14:50:21 [INFO] aye_priori[/127.0.0.1:46729] logged in with entity id 323 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 14:50:21 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:50:21 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:50:21 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:50:21 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:50:21 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:50:21 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 14:50:21 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:50:21 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:50:21 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:50:21 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:50:21 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:50:21 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:50:21 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:50:21 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:50:21 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:50:21 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:50:21 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:50:50 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 14:50:50 [INFO] ?eaye_priori left the game.
+2013-10-13 14:50:52 [INFO] aye_priori[/127.0.0.1:46733] logged in with entity id 343 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 14:50:52 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:50:52 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 14:50:52 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:50:52 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:50:52 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:50:52 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:50:52 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:50:52 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:50:52 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:50:52 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:50:52 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:50:52 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:50:52 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:50:52 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:50:52 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:50:52 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:50:52 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:51:05 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 14:51:05 [INFO] ?eaye_priori left the game.
+2013-10-13 14:51:06 [INFO] aye_priori[/127.0.0.1:46737] logged in with entity id 360 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 14:51:07 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 14:51:07 [INFO] Connection reset
+2013-10-13 14:51:07 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:51:07 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:51:07 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:51:07 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:51:07 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:51:07 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:51:07 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:51:07 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:51:07 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:51:07 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:51:07 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:51:07 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:51:07 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:51:07 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:51:07 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:51:07 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 14:51:07 [INFO] ?eaye_priori left the game.
+2013-10-13 14:51:16 [INFO] aye_priori[/127.0.0.1:46741] logged in with entity id 369 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 14:51:16 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 14:51:16 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:51:16 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:51:16 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:51:16 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:51:16 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:51:16 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:51:16 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:51:16 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:51:16 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:51:16 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:51:16 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:51:16 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:51:16 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:51:16 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:51:16 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:51:16 [INFO] Connection reset
+2013-10-13 14:51:16 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 14:51:16 [INFO] ?eaye_priori left the game.
+2013-10-13 14:51:33 [INFO] aye_priori[/127.0.0.1:46745] logged in with entity id 378 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 14:51:33 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:51:33 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:51:33 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:51:33 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:51:33 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:51:33 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:51:33 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:51:33 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:51:33 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:51:33 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:51:33 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:51:33 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:51:33 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:51:33 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:51:33 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:51:33 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:51:33 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:53:03 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 14:53:04 [INFO] ?eaye_priori left the game.
+2013-10-13 14:53:05 [INFO] aye_priori[/127.0.0.1:46751] logged in with entity id 568 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 14:53:05 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 14:53:05 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:53:05 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:53:05 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:53:05 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:53:05 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:53:05 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:53:05 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:53:05 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 14:53:05 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 14:53:05 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 14:53:05 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 14:53:05 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 14:53:05 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 14:53:05 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 14:53:05 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 14:53:05 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 14:53:07 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 14:53:07 [INFO] ?eaye_priori left the game.
+2013-10-13 15:03:40 [INFO] Althonse[/127.0.0.1:47491] logged in with entity id 582 at ([world] 214.71011528561982, 62.0, 124.44786168401984)
+2013-10-13 15:03:54 [INFO] aye_priori[/127.0.0.1:47497] logged in with entity id 627 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 15:03:54 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:03:54 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:03:54 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:03:54 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:03:54 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:03:54 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:03:54 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:03:54 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:03:54 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:03:54 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:03:54 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:03:54 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:03:54 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:03:54 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:03:54 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:03:54 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:03:54 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:04:22 [INFO] Connection reset
+2013-10-13 15:04:22 [INFO] aye_priori lost connection: disconnect.genericReason
+2013-10-13 15:04:23 [INFO] ?eaye_priori left the game.
+2013-10-13 15:04:24 [INFO] aye_priori[/127.0.0.1:47504] logged in with entity id 644 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 15:04:24 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:04:24 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:04:24 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:04:24 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:04:24 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:04:24 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:04:24 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:04:24 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:04:24 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:04:24 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:04:24 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:04:24 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:04:24 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:04:24 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:04:24 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:04:24 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:04:24 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:04:29 [INFO] <Althonse> ID[m
+2013-10-13 15:04:56 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 15:04:56 [INFO] ?eaye_priori left the game.
+2013-10-13 15:04:58 [INFO] aye_priori[/127.0.0.1:47508] logged in with entity id 681 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 15:04:58 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:04:58 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:04:58 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:04:58 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:04:58 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:04:58 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:04:58 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:04:58 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:04:58 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:04:58 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:04:58 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:04:58 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:04:58 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:04:58 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:04:58 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:04:58 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:04:58 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:05:04 [INFO] <Althonse> ID[m
+2013-10-13 15:05:04 [INFO] <aye_priori> sand[m
+2013-10-13 15:09:46 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 15:09:46 [INFO] ?eaye_priori left the game.
+2013-10-13 15:09:57 [INFO] aye_priori[/127.0.0.1:47553] logged in with entity id 1043 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 15:09:57 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:09:57 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:09:57 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:09:57 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:09:57 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:09:57 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:09:57 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:09:57 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:09:57 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:09:57 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:09:57 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:09:57 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:09:57 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:09:57 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:09:57 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:09:57 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:09:57 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:10:01 [INFO] <Althonse> N[m
+2013-10-13 15:10:01 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 15:10:01 [INFO] ?eaye_priori left the game.
+2013-10-13 15:10:16 [INFO] aye_priori[/127.0.0.1:47557] logged in with entity id 1062 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 15:10:16 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:10:16 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:10:16 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:10:16 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:10:16 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:10:16 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:10:16 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:10:16 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:10:16 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:10:16 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:10:16 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:10:16 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:10:16 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:10:16 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:10:16 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:10:16 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:10:16 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:10:18 [INFO] <Althonse> N[m
+2013-10-13 15:10:18 [INFO] Connection reset
+2013-10-13 15:10:18 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 15:10:19 [INFO] ?eaye_priori left the game.
+2013-10-13 15:13:51 [INFO] aye_priori[/127.0.0.1:47604] logged in with entity id 1305 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 15:13:51 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:13:51 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:13:51 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:13:51 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:13:51 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:13:51 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:13:51 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:13:51 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:13:51 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:13:51 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:13:51 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:13:51 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:13:51 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:13:51 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:13:51 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:13:51 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:13:51 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:13:55 [INFO] <Althonse> N[m
+2013-10-13 15:14:03 [INFO] <Althonse> E[m
+2013-10-13 15:14:05 [INFO] <Althonse> S[m
+2013-10-13 15:14:07 [INFO] <Althonse> W[m
+2013-10-13 15:15:48 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 15:15:48 [INFO] ?eaye_priori left the game.
+2013-10-13 15:15:49 [INFO] aye_priori[/127.0.0.1:47610] logged in with entity id 1446 at ([world] 214.83279059973356, 64.001, 133.36324133543863)
+2013-10-13 15:15:49 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:15:50 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:15:50 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:15:50 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:15:50 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:15:50 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:15:50 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:15:50 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:15:50 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:15:50 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:15:50 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:15:50 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:15:50 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:15:50 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:15:50 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:15:50 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:15:50 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:15:53 [INFO] <Althonse> F[m
+2013-10-13 15:16:32 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-13 15:16:32 [INFO] ?eaye_priori left the game.
+2013-10-13 15:16:34 [INFO] aye_priori[/127.0.0.1:47629] logged in with entity id 1480 at ([world] 230.67968, 63.001, 133.36324133543863)
+2013-10-13 15:16:34 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:16:34 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:16:34 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:16:34 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:16:34 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:16:34 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:16:34 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:16:34 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:16:34 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:16:34 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:16:34 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:16:35 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:16:35 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:16:35 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:16:35 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:16:35 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:16:35 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:16:35 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:16:35 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:16:35 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:16:35 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:16:35 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:16:35 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:16:35 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:16:35 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:16:35 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:16:35 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:16:35 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:16:35 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:16:35 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:16:35 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:16:35 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:16:40 [INFO] <Althonse> F[m
+2013-10-13 15:17:04 [INFO] Althonse issued server command: /tl aye_priori althonse
+2013-10-13 15:17:17 [INFO] Althonse issued server command: /tp aye_priori althonse
+2013-10-13 15:17:17 [INFO] Althonse: Teleported aye_priori to Althonse[m
+2013-10-13 15:17:26 [INFO] Connection reset
+2013-10-13 15:17:26 [INFO] aye_priori lost connection: disconnect.genericReason
+2013-10-13 15:17:27 [INFO] ?eaye_priori left the game.
+2013-10-13 15:17:28 [INFO] aye_priori[/127.0.0.1:47659] logged in with entity id 1670 at ([world] 219.67968, 63.001, 135.2915247949742)
+2013-10-13 15:17:28 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:17:28 [INFO] <aye_priori> game mode is creative[m
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:17:28 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:17:28 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:17:28 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:17:28 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:17:28 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:17:28 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:17:28 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /gamemode 1
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /give aye_priori 5 64
+2013-10-13 15:17:28 [INFO] aye_priori: Gave aye_priori some 5 (WOOD)[m
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /give aye_priori 270 2
+2013-10-13 15:17:28 [INFO] aye_priori: Gave aye_priori some 270 (WOOD_PICKAXE)[m
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /give aye_priori 257 2
+2013-10-13 15:17:28 [INFO] aye_priori: Gave aye_priori some 257 (IRON_PICKAXE)[m
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /give aye_priori 269 2
+2013-10-13 15:17:28 [INFO] aye_priori: Gave aye_priori some 269 (WOOD_SPADE)[m
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /give aye_priori 256 2
+2013-10-13 15:17:28 [INFO] aye_priori: Gave aye_priori some 256 (IRON_SPADE)[m
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /give aye_priori 271 2
+2013-10-13 15:17:28 [INFO] aye_priori: Gave aye_priori some 271 (WOOD_AXE)[m
+2013-10-13 15:17:28 [INFO] aye_priori issued server command: /give aye_priori 258 2
+2013-10-13 15:17:28 [INFO] aye_priori: Gave aye_priori some 258 (IRON_AXE)[m
+2013-10-13 15:17:34 [INFO] <Althonse> F[m
+2013-10-13 15:17:40 [INFO] <Althonse> F[m
+2013-10-13 15:41:36 [INFO] Althonse lost connection: disconnect.quitting
+2013-10-13 15:41:36 [INFO] Connection reset
+2013-10-13 15:41:36 [INFO] ?eAlthonse left the game.
+2013-10-14 17:06:22 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-10-14 17:06:22 [INFO] ?eaye_priori left the game.
+2013-11-04 14:51:36 [INFO] Starting minecraft server version 1.6.2
+2013-11-04 14:51:36 [INFO] Loading properties
+2013-11-04 14:51:36 [INFO] Default game type: SURVIVAL
+2013-11-04 14:51:36 [INFO] Generating keypair
+2013-11-04 14:51:36 [INFO] Starting Minecraft server on *:25565
+2013-11-04 14:51:36 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-b2879jnks (MC: 1.6.2) (Implementing API version 1.6.2-R1.0)
+2013-11-04 14:51:36 [INFO] [AlwaysDay] Loading AlwaysDay v2.2.8
+2013-11-04 14:51:37 [INFO] [Spectate] Loading Spectate v1.11.1
+2013-11-04 14:51:37 [INFO] [Spectator] Loading Spectator v1.0
+2013-11-04 14:51:37 [INFO] [TerrainControl] Loading TerrainControl v2.5.0
+2013-11-04 14:51:37 [INFO] [TerrainControl] Enabling TerrainControl v2.5.0
+2013-11-04 14:51:37 [SEVERE] Error occurred while enabling TerrainControl v2.5.0 (Is it up to date?)
+java.lang.NoClassDefFoundError: net/minecraft/server/v1_6_R3/WorldGenFactory
+	at com.khorn.terraincontrol.bukkit.TCPlugin.onEnable(TCPlugin.java:99)
+	at org.bukkit.plugin.java.JavaPlugin.setEnabled(JavaPlugin.java:217)
+	at org.bukkit.plugin.java.JavaPluginLoader.enablePlugin(JavaPluginLoader.java:457)
+	at org.bukkit.plugin.SimplePluginManager.enablePlugin(SimplePluginManager.java:381)
+	at org.bukkit.craftbukkit.v1_6_R2.CraftServer.loadPlugin(CraftServer.java:282)
+	at org.bukkit.craftbukkit.v1_6_R2.CraftServer.enablePlugins(CraftServer.java:264)
+	at org.bukkit.craftbukkit.v1_6_R2.CraftServer.<init>(CraftServer.java:218)
+	at net.minecraft.server.v1_6_R2.PlayerList.<init>(PlayerList.java:56)
+	at net.minecraft.server.v1_6_R2.DedicatedPlayerList.<init>(SourceFile:11)
+	at net.minecraft.server.v1_6_R2.DedicatedServer.init(DedicatedServer.java:106)
+	at net.minecraft.server.v1_6_R2.MinecraftServer.run(MinecraftServer.java:391)
+	at net.minecraft.server.v1_6_R2.ThreadServerApplication.run(SourceFile:582)
+Caused by: java.lang.ClassNotFoundException: net.minecraft.server.v1_6_R3.WorldGenFactory
+	at org.bukkit.plugin.java.PluginClassLoader.findClass0(PluginClassLoader.java:70)
+	at org.bukkit.plugin.java.PluginClassLoader.findClass(PluginClassLoader.java:53)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:321)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:266)
+	... 12 more
+2013-11-04 14:51:37 [WARNING] ----- Bukkit Auto Updater -----
+2013-11-04 14:51:37 [WARNING] Your version of CraftBukkit is out of date. Version 1.6.4-R2.0 (build #2918) was released on Wed Oct 30 23:39:40 EDT 2013.
+2013-11-04 14:51:37 [WARNING] Details: /downloads/craftbukkit/view/02389_1.6.4-R2.0/
+2013-11-04 14:51:37 [WARNING] Download: /downloads/craftbukkit/get/02389_1.6.4-R2.0/craftbukkit.jar
+2013-11-04 14:51:37 [WARNING] ----- ------------------- -----
+2013-11-04 14:51:37 [INFO] Preparing level "world"
+2013-11-04 14:51:37 [INFO] Preparing start region for level 0 (Seed: 5037105547538476828)
+2013-11-04 14:51:38 [INFO] Preparing start region for level 1 (Seed: 5037105547538476828)
+2013-11-04 14:51:39 [INFO] Preparing spawn area: 63%
+2013-11-04 14:51:40 [INFO] Preparing spawn area: 65%
+2013-11-04 14:51:40 [INFO] Preparing start region for level 2 (Seed: 5037105547538476828)
+2013-11-04 14:51:41 [INFO] [AlwaysDay] Enabling AlwaysDay v2.2.8
+2013-11-04 14:51:42 [INFO] [AlwaysDay] AlwaysDay v2.2.8 is now enabled.
+2013-11-04 14:51:42 [INFO] Please donate at the AlwaysDay page (http://dev.bukkit.org/server-mods/always-day/) if you are enjoying this plugin! Any contributions are greatly appreciated!
+2013-11-04 14:51:42 [INFO] [Spectate] Enabling Spectate v1.11.1
+2013-11-04 14:51:42 [INFO] [Spectate] Spectate v1.11.1 enabled!
+2013-11-04 14:51:42 [INFO] [Spectator] Enabling Spectator v1.0
+2013-11-04 14:51:42 [INFO] [Specator] Plugin activated!
+2013-11-04 14:51:42 [INFO] [Specator] Plugin by bubbleguj
+2013-11-04 14:51:42 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-11-04 14:51:42 [INFO] Done (4.981s)! For help, type "help" or "?"
+2013-11-04 14:53:21 [INFO] /127.0.0.1:33240 lost connection
+2013-11-04 14:53:23 [INFO] Althonse[/127.0.0.1:33241] logged in with entity id 109 at ([world] 228.84454694499453, 63.0, 133.30000001192093)
+2013-11-04 14:53:56 [INFO] Disconnecting aye_priori [/127.0.0.1:33247]: Outdated server!
+2013-11-04 14:53:58 [INFO] Connection reset
