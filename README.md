@@ -1,6 +1,6 @@
 affordances
 ===========
-A collection of files currently beind used in our Affordances project.
+A collection of files currently being used in our Affordances project.
 
 Four main sets of files here:
 
@@ -22,8 +22,11 @@ Four main sets of files here:
 
 TO USE:
 	[a] run sh start_server.sh in located in /minecraft_api
+
 	[b] run the minecraft client ./minecraft-1.6.4.jar
+
 	[c] run move.js in /minecraft_api/mineflayer/affordances/ with node
+
 	[d] See commands listed in move.js (ex: "plan1", "F", "reset", etc.)
 
 Contact Dave Abel for any questions @ David_Abel@brown.edu
