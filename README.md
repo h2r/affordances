@@ -21,6 +21,7 @@ Four main sets of files here:
 		- Collection of supplementary material for the project
 
 TO USE:
+	
 	[a] run sh start_server.sh in located in /minecraft_api
 
 	[b] run the minecraft client ./minecraft-1.6.4.jar
