@@ -12,8 +12,10 @@ goalZ = 960;
 
 blockNum = 2;
 
+actionKillSwitch = false;
+
 bot.on('chat', function(username, message) {
-  
+  actionKillSwitch = false;
   switch (message)
   {
     case "F":
@@ -33,11 +35,13 @@ bot.on('chat', function(username, message) {
       break;
     case "r":
       bot.chat("/tp aye_priori 150.7 74.0 968.0");
-      bot.chat("/time set 10000");
+      bot.chat("/time set 1000");
+      actionKillSwitch = true;
       break;
     case "reset":
       bot.chat("/tp aye_priori 150.7 74.0 968.0");
       bot.chat("/time set 10000");
+      actionKillSwitch = true;
       break;
     case "destroy":
       destroy();
@@ -94,10 +98,15 @@ function parsePlan(worldNum) {
       var line = lines[l];
       arr.push(line);
   }
+  actionKillSwitch = false;
   return arr;
 }
 
 function executePlanStep(plan, step) {
+  if(actionKillSwitch == true) {
+    return;
+  }
+
   var startX = bot.entity.position.x;
   var startY = bot.entity.position.y;
   var startZ = bot.entity.position.z;
