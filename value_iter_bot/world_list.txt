@@ -1,0 +1,9 @@
+world1 = flat area
+
+world2 = rivine width 2, already a bridge
+
+world3 = rivine width 1, need to build a bridge
+
+world4 = rivine width 2, need to build a bridge length 2
+
+world5 = rivine width 3, need to build a bridge length 3
