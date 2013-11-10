@@ -1,6 +1,10 @@
-episodeFile = file("planResult.episode")
+import sys
 
-outfile = file("plan.p","w")
+worldNum = sys.argv[1]
+
+episodeFile = file("planResult_world" + worldNum + ".episode")
+
+outfile = file("plan_world" + worldNum + ".plan","w")
 
 for line in episodeFile:
 	if line[0].isalpha():
