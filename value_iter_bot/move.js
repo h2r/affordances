@@ -3,7 +3,7 @@ var mineflayer = require('../minecraft_api/mineflayer/');
 var vec3 = mineflayer.vec3;
 var bot = mineflayer.createBot({
   username: "aye_priori",
-    password: "password",
+    password: "Sprolls5!",
 });
 
 goalX = 143;
