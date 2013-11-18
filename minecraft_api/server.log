@@ -11042,3 +11042,17 @@ java.io.IOException: Input/output error
 2013-11-12 00:33:04 [INFO] Althonse: Set time to 1000[m
 2013-11-12 00:58:44 [INFO] Althonse lost connection: disconnect.endOfStream
 2013-11-12 00:58:44 [INFO] ¤eAlthonse left the game.
+2013-11-12 01:06:39 [SEVERE] null
+java.io.IOException: Input/output error
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:220)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	at java.io.FilterInputStream.read(FilterInputStream.java:66)
+	at org.bukkit.craftbukkit.libs.jline.console.ConsoleReader$1.read(ConsoleReader.java:167)
+	at org.bukkit.craftbukkit.libs.jline.internal.InputStreamReader.read(InputStreamReader.java:267)
+	at org.bukkit.craftbukkit.libs.jline.internal.InputStreamReader.read(InputStreamReader.java:204)
+	at org.bukkit.craftbukkit.libs.jline.console.ConsoleReader.readCharacter(ConsoleReader.java:995)
+	at org.bukkit.craftbukkit.libs.jline.console.ConsoleReader.readLine(ConsoleReader.java:1167)
+	at net.minecraft.server.v1_6_R3.ThreadCommandReader.run(ThreadCommandReader.java:31)
+2013-11-12 01:06:39 [INFO] Stopping server
