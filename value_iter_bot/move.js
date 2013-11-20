@@ -6,11 +6,13 @@ var bot = mineflayer.createBot({
     password: "Sprolls5!",
 });
 
+MAXBLOCKS = 2;
+
 goalX = 143;
 goalY = 72;
 goalZ = 960;
 
-blockNum = 2;
+blockNum = MAXBLOCKS;
 
 actionKillSwitch = false;
 
@@ -37,11 +39,13 @@ bot.on('chat', function(username, message) {
       bot.chat("/tp aye_priori 150.7 74.0 968.0");
       bot.chat("/time set 1000");
       actionKillSwitch = true;
+      blockNum = MAXBLOCKS;
       break;
     case "reset":
       bot.chat("/tp aye_priori 150.7 74.0 968.0");
       bot.chat("/time set 10000");
       actionKillSwitch = true;
+      blockNum = MAXBLOCKS;
       break;
     case "destroy":
       destroy();
@@ -91,8 +95,7 @@ function isInGoalState() {
 }
 
 function parsePlan(worldNum) {
-  console.log('plan_world' + worldNum + '.plan');
-  var lines = fs.readFileSync('plan_world' + worldNum + '.plan', 'utf8').split(',');
+  var lines = fs.readFileSync('plan_world' + worldNum + '.p', 'utf8').split(',');
   var arr = new Array();
   for (var l in lines){
       var line = lines[l];
@@ -103,6 +106,7 @@ function parsePlan(worldNum) {
 }
 
 function executePlanStep(plan, step) {
+  
   if(actionKillSwitch == true) {
     return;
   }
@@ -112,33 +116,43 @@ function executePlanStep(plan, step) {
   var startZ = bot.entity.position.z;
 
   if(plan[step] == "placeForward") {
-    place("forward",1);
-    movedOne(true);
+    var loc = place("forward",1,movedOne);
+
+    x = loc[0];
+    y = loc[1];
+    z = loc[2];
+    
   }
   else if (canMakeMove(plan[step])) {
     // Movement obstructed or there is a hole.
+    console.log("moving: " + plan[step])
     bot.setControlState(plan[step], true);
+    bot.on('move', movedOne, false);
   }
   else {
     // Try the next move, anyways
-    console.log("skipped a step" + plan[step]);
+    console.log("Can't move :(")
+
     movedOne(true);
   }
-
-
-  
-  bot.on('move', movedOne, false);
   
   function movedOne(skipFlag) {
     if (Math.abs(bot.entity.position.x - startX) >= 1 || Math.abs(bot.entity.position.z - startZ) >= 1 || Math.abs(bot.entity.position.z - startZ) >= 1 || skipFlag == true) {
+      // Prints a celebratory message to the screen if we're in the goal state
+      console.log("in MovedOne")
       isInGoalState()
+
+      // If we moved, remove listeners & clear control states.
       if (plan[step] != "placeForward") {
         bot.setControlState(plan[step], false);
         bot.removeListener('move', movedOne);        
       }
+      else {
+        bot.removeListener('blockUpdate',movedOne);
+
+      }
+
       // Calls the next step of the plan, if there is one
-      
-      console.log(isBotCommand(plan[step + 1]))
       if (step <= plan.length && isBotCommand(plan[step + 1])) {
         executePlanStep(plan, step + 1);
       }
@@ -154,16 +168,16 @@ function canMakeMove(moveDir) {
   switch (moveDir)
   {
     case "forward":
-      dz = -1.3;
+      dz = -1;
       break;
     case "back":
-      dz = 1.3;
+      dz = 1;
       break;
     case "left":
-      dx = -1.3;
+      dx = -1;
       break;
     case "right":
-      dx = 1.3;
+      dx = 1;
       break;
   }
 
@@ -184,7 +198,6 @@ function isBotCommand(cmd) {
   else {
     return false;
   }
-
 }
 
 function move(dir) {
@@ -214,10 +227,11 @@ function destroy() {
   return;
 }
 
-function place(dir, dist) {
+function place(dir, dist,callback) {
   // dir = {"left", "right", "forward", "back"}
   // dist = {1, 2, 3, 4} // TODO: use dist.
-  
+
+  // Bot doesn't have any more blocks!
   if (blockNum  <= 0) {
     return;
   }
@@ -227,32 +241,43 @@ function place(dir, dist) {
   dz = 0;
 
   if (dir == "left")
-    dx = -1
+    dx = -1.1
   else if (dir == "right")
-    dx = 1
+    dx = 1.1
   else if (dir == "forward")
-    dz = -1
+    dz = -1.1
   else if (dir == "back")
-    dz = 1
+    dz = 1.1
 
   dx = dx * dist;
   dz = dz * dist;
 
   // Places a block on top of the block directly in front of it.
   placeBlock = bot.blockAt(bot.entity.position.offset(dx,dy,dz));
+
   // Finds the first non air block in this coordinate "column" that is within the bots "reach" (3)
   while (placeBlock.name == "air") {
-    if (dy < -3) {
-      return ;
-    }
     dy = dy - 1;
     placeBlock = bot.blockAt(bot.entity.position.offset(dx,dy,dz));
+    if (dy == -2) {
+      break;
+    }
   }
 
+  x = bot.entity.position.offset(dx,dy,dz)["x"]
+  y = bot.entity.position.offset(dx,dy + 1,dz)["y"] // Gets the actual coordinate of the block to be changed 
+  z = bot.entity.position.offset(dx,dy,dz)["z"]
+
+
+  bot.on('blockUpdate', function(point) { callback(true)} );
+
+    // Todo: remove this listener
+  // bot.on('blockUpdate(' + x + ',' + y + ',' + z + ')',function () {console.log("howdy");}, true);
+
+  // Always placing on the top face (for now)
   placeVec = vec3(placeBlock.position.x, placeBlock.position.y + 1, placeBlock.position.z)
   bot.placeBlock(placeBlock, placeVec);
 
   blockNum = blockNum - 1;
-
-  return;
+  return [dx, dy, dz];
 }

@@ -1,2 +1,5 @@
 *.pyc
 *.class
+*.mca
+*.dat
+minecraft_api/world*

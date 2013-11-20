@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 # Updated 11/11/13 1:29 PM by Minecraft 1.6.4
+=======
+# Updated 11/11/13 11:54 PM by Minecraft 1.6.4
+>>>>>>> dd707cbd6b1d7d76e7b706277b89aa632543273c
 # victim name | ban date | banned by | banned until | reason
 
