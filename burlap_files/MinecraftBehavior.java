@@ -18,6 +18,7 @@ import burlap.behavior.singleagent.Policy;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
 import burlap.behavior.singleagent.planning.QComputablePlanner;
 import burlap.behavior.singleagent.planning.StateConditionTest;
+import burlap.behavior.singleagent.planning.ValueFunctionPlanner;
 import burlap.behavior.singleagent.planning.stochastic.valueiteration.*;
 import burlap.oomdp.auxiliary.StateParser;
 import burlap.oomdp.core.TerminalFunction;
@@ -46,7 +47,7 @@ public class MinecraftBehavior {
 		sp = new MinecraftStateParser(domain); 	
 		
 		//define the task
-		rf = new SingleGoalPFRF(domain.getPropFunction(MinecraftDomain.PFATGOAL), 10000, -1000); 
+		rf = new SingleGoalPFRF(domain.getPropFunction(MinecraftDomain.PFATGOAL), 100, -1); 
 		tf = new SinglePFTF(domain.getPropFunction(MinecraftDomain.PFATGOAL)); 
 		goalCondition = new TFGoalCondition(tf);
 		
@@ -60,20 +61,24 @@ public class MinecraftBehavior {
 		
 		// Row i will have blocks in all 10 locations
 		for (int i = 0; i < MAXX; i++){
-			// Place a trench @ x = 4
-//			if (i == 4)
-//			{
-//				continue;
-//			}
+//			 Place a width 2 trench @ x = 4 and x = 5
+			if (i == 5 || i == 6 || i == 4)
+			{
+				continue;
+			}
 			blockX.add(i);
 			blockY.add(MAXY);
 		}
 		
 		initialState = MinecraftDomain.getCleanState(domain, blockX, blockY);
+
+//		MinecraftDomain.addBlock(initialState, 4, 4, 1); // Adds a bridge over the trench
+//		MinecraftDomain.addBlock(initialState, 5, 4, 1); // Adds a bridge over the trench
+//		
 		
 		// -- Agent & Goal --
-		MinecraftDomain.setAgent(initialState, 1, 1, 2, 1);
-		MinecraftDomain.setGoal(initialState, 6, 6, 2);
+		MinecraftDomain.setAgent(initialState, 8, 1, 2, 3);
+		MinecraftDomain.setGoal(initialState, 1, 8, 2);
 		
 		//set up the state hashing system
 		hashingFactory = new DiscreteStateHashFactory();
@@ -82,23 +87,49 @@ public class MinecraftBehavior {
 		
 	}
 	
+	
+	// Older working version if basic bad VI
 	public void ValueIterationMC(String outputPath){
 		
 		if(!outputPath.endsWith("/")){
 			outputPath = outputPath + "/";
 		}
 		
-		OOMDPPlanner planner = new ValueIteration(domain, rf, tf, 0.95, hashingFactory, 0.001, Integer.MAX_VALUE);
+		OOMDPPlanner planner = new ValueIteration(domain, rf, tf, 0.99, hashingFactory, 1, Integer.MAX_VALUE);
 		
 		planner.planFromState(initialState);
-		
+		System.out.println(((ValueFunctionPlanner) planner).value(initialState));
 		//create a Q-greedy policy from the planner
 		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
 		
+		int maxIterations = 150;
+		
 		//record the plan results to a file
-		p.evaluateBehavior(initialState, rf, tf).writeToFile(outputPath + "planResult", sp);
+		p.evaluateBehaviorThreshold(initialState, rf, tf, maxIterations).writeToFile(outputPath + "planResult", sp);
 		
 	}
+	
+	// This is the version that leverages our affordance stuff
+	public void AffordanceValueIterationMC(String outputPath){
+		
+		if(!outputPath.endsWith("/")){
+			outputPath = outputPath + "/";
+		}
+		
+		OOMDPPlanner planner = new ValueIteration(domain, rf, tf, 0.99, hashingFactory, 1, Integer.MAX_VALUE);
+		
+		planner.planFromState(initialState);
+		System.out.println(((ValueFunctionPlanner) planner).value(initialState));
+		//create a Q-greedy policy from the planner
+		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
+		
+		int maxIterations = 150;
+		
+		//record the plan results to a file
+		p.evaluateBehaviorThreshold(initialState, rf, tf, maxIterations).writeToFile(outputPath + "planResult", sp);
+		
+	}
+	
 	
 	public static void main(String[] args) {
 	
