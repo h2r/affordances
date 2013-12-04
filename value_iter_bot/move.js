@@ -37,7 +37,7 @@ bot.on('chat', function(username, message) {
       break;
     case "r":
       bot.chat("/tp aye_priori 150.7 74.0 968.0");
-      bot.chat("/time set 1000");
+      bot.chat("/time set 10000");
       actionKillSwitch = true;
       blockNum = MAXBLOCKS;
       break;

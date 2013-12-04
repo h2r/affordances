@@ -11135,3 +11135,191 @@ java.io.IOException: Input/output error
 	at net.minecraft.server.v1_6_R3.ThreadCommandReader.run(ThreadCommandReader.java:31)
 2013-11-12 01:06:39 [INFO] Stopping server
 >>>>>>> dd707cbd6b1d7d76e7b706277b89aa632543273c
+2013-11-24 18:19:20 [INFO] Starting minecraft server version 1.6.4
+2013-11-24 18:19:20 [INFO] Loading properties
+2013-11-24 18:19:20 [INFO] Default game type: CREATIVE
+2013-11-24 18:19:20 [INFO] Generating keypair
+2013-11-24 18:19:21 [INFO] Starting Minecraft server on *:25565
+2013-11-24 18:19:21 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-3-g9532cb6-b2889jnks (MC: 1.6.4) (Implementing API version 1.6.4-R0.1-SNAPSHOT)
+2013-11-24 18:19:21 [INFO] Preparing level "world"
+2013-11-24 18:19:21 [INFO] Preparing start region for level 0 (Seed: -9012370949578142817)
+2013-11-24 18:19:22 [INFO] Preparing start region for level 1 (Seed: -9012370949578142817)
+2013-11-24 18:19:22 [WARNING] ----- Bukkit Auto Updater -----
+2013-11-24 18:19:22 [WARNING] Your version of CraftBukkit is out of date. Version 1.6.4-R2.0 (build #2918) was released on Wed Oct 30 23:39:40 EDT 2013.
+2013-11-24 18:19:22 [WARNING] Details: /downloads/craftbukkit/view/02389_1.6.4-R2.0/
+2013-11-24 18:19:22 [WARNING] Download: /downloads/craftbukkit/get/02389_1.6.4-R2.0/craftbukkit.jar
+2013-11-24 18:19:22 [WARNING] ----- ------------------- -----
+2013-11-24 18:19:22 [INFO] Preparing start region for level 2 (Seed: -9012370949578142817)
+2013-11-24 18:19:22 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-11-24 18:19:22 [INFO] Done (1.190s)! For help, type "help" or "?"
+2013-11-24 18:19:28 [INFO] Althonse[/127.0.0.1:62736] logged in with entity id 246 at ([world] 148.29424463667016, 73.0, 965.6999999880791)
+2013-11-24 18:19:35 [INFO] <Althonse> asd[m
+2013-11-24 18:20:01 [INFO] aye_priori[/127.0.0.1:62743] logged in with entity id 258 at ([world] 148.39072277379165, 73.001, 967.8113530907458)
+2013-11-24 18:20:04 [INFO] <Althonse> r[m
+2013-11-24 18:20:04 [INFO] aye_priori issued server command: /tp aye_priori 150.7 74.0 968.0
+2013-11-24 18:20:04 [INFO] aye_priori: Teleported aye_priori to 150.70, 74.00, 968.00[m
+2013-11-24 18:20:04 [INFO] aye_priori issued server command: /time set 1000
+2013-11-24 18:20:04 [INFO] aye_priori: Set time to 1000[m
+2013-11-24 18:20:07 [INFO] <Althonse> plan3[m
+2013-11-24 18:20:21 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-11-24 18:20:21 [INFO] ¤eaye_priori left the game.
+2013-11-24 18:29:56 [INFO] Althonse lost connection: disconnect.endOfStream
+2013-11-24 18:29:56 [INFO] ¤eAlthonse left the game.
+2013-11-24 18:52:25 [WARNING] Can't keep up! Did the system time change, or is the server overloaded?
+2013-11-24 18:56:49 [WARNING] Can't keep up! Did the system time change, or is the server overloaded?
+2013-11-24 19:11:29 [WARNING] Can't keep up! Did the system time change, or is the server overloaded?
+2013-11-24 22:14:42 [WARNING] Can't keep up! Did the system time change, or is the server overloaded?
+2013-11-25 00:04:59 [WARNING] Can't keep up! Did the system time change, or is the server overloaded?
+2013-11-25 00:05:33 [SEVERE] null
+java.io.IOException: Input/output error
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:220)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	at java.io.FilterInputStream.read(FilterInputStream.java:66)
+	at org.bukkit.craftbukkit.libs.jline.console.ConsoleReader$1.read(ConsoleReader.java:167)
+	at org.bukkit.craftbukkit.libs.jline.internal.InputStreamReader.read(InputStreamReader.java:267)
+	at org.bukkit.craftbukkit.libs.jline.internal.InputStreamReader.read(InputStreamReader.java:204)
+	at org.bukkit.craftbukkit.libs.jline.console.ConsoleReader.readCharacter(ConsoleReader.java:995)
+	at org.bukkit.craftbukkit.libs.jline.console.ConsoleReader.readLine(ConsoleReader.java:1167)
+	at net.minecraft.server.v1_6_R3.ThreadCommandReader.run(ThreadCommandReader.java:31)
+2013-11-25 09:27:30 [INFO] Starting minecraft server version 1.6.4
+2013-11-25 09:27:30 [INFO] Loading properties
+2013-11-25 09:27:30 [INFO] Default game type: CREATIVE
+2013-11-25 09:27:30 [INFO] Generating keypair
+2013-11-25 09:27:30 [INFO] Starting Minecraft server on *:25565
+2013-11-25 09:27:30 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-3-g9532cb6-b2889jnks (MC: 1.6.4) (Implementing API version 1.6.4-R0.1-SNAPSHOT)
+2013-11-25 09:27:30 [INFO] Preparing level "world"
+2013-11-25 09:27:30 [INFO] Preparing start region for level 0 (Seed: -9012370949578142817)
+2013-11-25 09:27:31 [INFO] Preparing start region for level 1 (Seed: -9012370949578142817)
+2013-11-25 09:27:31 [WARNING] ----- Bukkit Auto Updater -----
+2013-11-25 09:27:31 [WARNING] Your version of CraftBukkit is out of date. Version 1.6.4-R2.0 (build #2918) was released on Wed Oct 30 23:39:40 EDT 2013.
+2013-11-25 09:27:31 [WARNING] Details: /downloads/craftbukkit/view/02389_1.6.4-R2.0/
+2013-11-25 09:27:31 [WARNING] Download: /downloads/craftbukkit/get/02389_1.6.4-R2.0/craftbukkit.jar
+2013-11-25 09:27:31 [WARNING] ----- ------------------- -----
+2013-11-25 09:27:32 [INFO] Preparing start region for level 2 (Seed: -9012370949578142817)
+2013-11-25 09:27:32 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2013-11-25 09:27:32 [INFO] Done (1.675s)! For help, type "help" or "?"
+2013-11-25 09:27:45 [INFO] Althonse[/127.0.0.1:65430] logged in with entity id 163 at ([world] 145.6836204052583, 79.20000004768372, 968.6999999880791)
+2013-11-25 09:28:04 [INFO] aye_priori[/127.0.0.1:65436] logged in with entity id 208 at ([world] 143.1592028638023, 73.001, 959.388786000311)
+2013-11-25 09:28:08 [INFO] <Althonse> r[m
+2013-11-25 09:28:08 [INFO] aye_priori issued server command: /tp aye_priori 150.7 74.0 968.0
+2013-11-25 09:28:08 [INFO] aye_priori: Teleported aye_priori to 150.70, 74.00, 968.00[m
+2013-11-25 09:28:08 [INFO] aye_priori issued server command: /time set 1000
+2013-11-25 09:28:08 [INFO] aye_priori: Set time to 1000[m
+2013-11-25 09:28:14 [INFO] Althonse issued server command: /time set 10000
+2013-11-25 09:28:14 [INFO] Althonse: Set time to 10000[m
+2013-11-25 09:28:21 [INFO] Althonse issued server command: /weather clear 1000
+2013-11-25 09:28:21 [INFO] Althonse: Changed weather to clear for 1000 seconds.[m
+2013-11-25 09:28:26 [INFO] Althonse issued server command: /weather clear 1000000
+2013-11-25 09:28:26 [INFO] Althonse: Changed weather to clear for 1000000 seconds.[m
+2013-11-25 09:28:47 [INFO] <Althonse> plan5[m
+2013-11-25 09:28:49 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-11-25 09:28:49 [INFO] ¤eaye_priori left the game.
+2013-11-25 09:28:55 [INFO] <Althonse> r[m
+2013-11-25 09:37:09 [INFO] <Althonse> r[m
+2013-11-25 09:37:13 [INFO] <Althonse> r[m
+2013-11-25 09:37:26 [INFO] Althonse issued server command: /settime 10000
+2013-11-25 09:37:31 [INFO] Althonse issued server command: /time 10000
+2013-11-25 09:37:35 [INFO] Althonse issued server command: /time set 10000
+2013-11-25 09:37:35 [INFO] Althonse: Set time to 10000[m
+2013-11-25 09:39:07 [INFO] <Althonse> r[m
+2013-11-25 09:39:14 [INFO] <Althonse> r[m
+2013-11-25 09:39:51 [INFO] <Althonse> r[m
+2013-11-25 09:40:17 [INFO] Althonse issued server command: /time set 10000
+2013-11-25 09:40:17 [INFO] Althonse: Set time to 10000[m
+2013-11-25 09:46:44 [INFO] Althonse lost connection: disconnect.endOfStream
+2013-11-25 09:46:44 [INFO] ¤eAlthonse left the game.
+2013-11-25 09:48:12 [INFO] Althonse[/127.0.0.1:49237] logged in with entity id 1567 at ([world] 148.4180901746255, 73.57404890241621, 967.6559604286275)
+2013-11-25 09:48:17 [INFO] Althonse issued server command: /time set 1000000
+2013-11-25 09:48:17 [INFO] Althonse: Set time to 1000000[m
+2013-11-25 09:48:20 [INFO] Althonse issued server command: /time set 1000
+2013-11-25 09:48:20 [INFO] Althonse: Set time to 1000[m
+2013-11-25 09:48:42 [INFO] aye_priori[/127.0.0.1:49243] logged in with entity id 1603 at ([world] 143.4577199999998, 73.001, 968.0)
+2013-11-25 09:48:44 [INFO] <Althonse> r[m
+2013-11-25 09:48:44 [INFO] aye_priori issued server command: /tp aye_priori 150.7 74.0 968.0
+2013-11-25 09:48:44 [INFO] aye_priori: Teleported aye_priori to 150.70, 74.00, 968.00[m
+2013-11-25 09:48:44 [INFO] aye_priori issued server command: /time set 1000
+2013-11-25 09:48:44 [INFO] aye_priori: Set time to 1000[m
+2013-11-25 09:49:01 [INFO] <Althonse> plan1[m
+2013-11-25 09:49:07 [INFO] <Althonse> r[m
+2013-11-25 09:49:07 [INFO] aye_priori issued server command: /tp aye_priori 150.7 74.0 968.0
+2013-11-25 09:49:07 [INFO] aye_priori: Teleported aye_priori to 150.70, 74.00, 968.00[m
+2013-11-25 09:49:07 [INFO] aye_priori issued server command: /time set 1000
+2013-11-25 09:49:07 [INFO] aye_priori: Set time to 1000[m
+2013-11-25 09:49:08 [INFO] <Althonse> plan2[m
+2013-11-25 09:49:34 [INFO] <Althonse> r[m
+2013-11-25 09:49:34 [INFO] aye_priori issued server command: /tp aye_priori 150.7 74.0 968.0
+2013-11-25 09:49:34 [INFO] aye_priori: Teleported aye_priori to 150.70, 74.00, 968.00[m
+2013-11-25 09:49:34 [INFO] aye_priori issued server command: /time set 1000
+2013-11-25 09:49:34 [INFO] aye_priori: Set time to 1000[m
+2013-11-25 09:49:36 [INFO] <Althonse> plan3[m
+2013-11-25 09:49:45 [INFO] <Althonse> r[m
+2013-11-25 09:49:45 [INFO] aye_priori issued server command: /tp aye_priori 150.7 74.0 968.0
+2013-11-25 09:49:45 [INFO] aye_priori: Teleported aye_priori to 150.70, 74.00, 968.00[m
+2013-11-25 09:49:45 [INFO] aye_priori issued server command: /time set 1000
+2013-11-25 09:49:45 [INFO] aye_priori: Set time to 1000[m
+2013-11-25 09:49:48 [INFO] <Althonse> plan4[m
+2013-11-25 09:49:50 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-11-25 09:49:50 [INFO] ¤eaye_priori left the game.
+2013-11-25 09:55:09 [INFO] aye_priori[/127.0.0.1:49259] logged in with entity id 2141 at ([world] 149.74042756321313, 73.001, 965.7967027467719)
+2013-11-25 09:55:12 [INFO] <Althonse> r[m
+2013-11-25 09:55:12 [INFO] aye_priori issued server command: /tp aye_priori 150.7 74.0 968.0
+2013-11-25 09:55:12 [INFO] aye_priori: Teleported aye_priori to 150.70, 74.00, 968.00[m
+2013-11-25 09:55:12 [INFO] aye_priori issued server command: /time set 1000
+2013-11-25 09:55:12 [INFO] aye_priori: Set time to 1000[m
+2013-11-25 09:55:14 [INFO] <Althonse> plan3[m
+2013-11-25 09:55:19 [INFO] <Althonse> r[m
+2013-11-25 09:55:19 [INFO] aye_priori issued server command: /tp aye_priori 150.7 74.0 968.0
+2013-11-25 09:55:19 [INFO] aye_priori: Teleported aye_priori to 150.70, 74.00, 968.00[m
+2013-11-25 09:55:19 [INFO] aye_priori issued server command: /time set 1000
+2013-11-25 09:55:19 [INFO] aye_priori: Set time to 1000[m
+2013-11-25 09:56:00 [INFO] <Althonse> r[m
+2013-11-25 09:56:00 [INFO] aye_priori issued server command: /tp aye_priori 150.7 74.0 968.0
+2013-11-25 09:56:00 [INFO] aye_priori: Teleported aye_priori to 150.70, 74.00, 968.00[m
+2013-11-25 09:56:00 [INFO] aye_priori issued server command: /time set 1000
+2013-11-25 09:56:00 [INFO] aye_priori: Set time to 1000[m
+2013-11-25 09:56:11 [INFO] <Althonse> plan3[m
+2013-11-25 09:56:16 [INFO] <Althonse> r[m
+2013-11-25 09:56:16 [INFO] aye_priori issued server command: /tp aye_priori 150.7 74.0 968.0
+2013-11-25 09:56:16 [INFO] aye_priori: Teleported aye_priori to 150.70, 74.00, 968.00[m
+2013-11-25 09:56:16 [INFO] aye_priori issued server command: /time set 1000
+2013-11-25 09:56:16 [INFO] aye_priori: Set time to 1000[m
+2013-11-25 09:56:29 [INFO] Althonse lost connection: disconnect.quitting
+2013-11-25 09:56:29 [INFO] Connection reset
+2013-11-25 09:56:29 [INFO] ¤eAlthonse left the game.
+2013-11-25 09:56:32 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-11-25 09:56:32 [INFO] ¤eaye_priori left the game.
+2013-11-25 10:01:48 [INFO] Althonse[/127.0.0.1:49447] logged in with entity id 2199 at ([world] 149.4813824508376, 73.4131994571466, 964.5285958970026)
+2013-11-25 10:06:11 [INFO] Althonse issued server command: /time set 1000
+2013-11-25 10:06:11 [INFO] Althonse: Set time to 1000[m
+2013-11-25 10:06:22 [INFO] aye_priori[/127.0.0.1:49485] logged in with entity id 2630 at ([world] 150.7, 73.001, 968.0)
+2013-11-25 10:06:24 [INFO] <Althonse> d[m
+2013-11-25 10:06:47 [INFO] <Althonse> F[m
+2013-11-25 10:06:49 [INFO] <Althonse> F[m
+2013-11-25 10:06:50 [INFO] <Althonse> L[m
+2013-11-25 10:06:51 [INFO] <Althonse> r[m
+2013-11-25 10:06:51 [INFO] aye_priori issued server command: /tp aye_priori 150.7 74.0 968.0
+2013-11-25 10:06:51 [INFO] aye_priori: Teleported aye_priori to 150.70, 74.00, 968.00[m
+2013-11-25 10:06:51 [INFO] aye_priori issued server command: /time set 10000
+2013-11-25 10:06:51 [INFO] aye_priori: Set time to 10000[m
+2013-11-25 10:06:57 [INFO] <Althonse> plan1[m
+2013-11-25 10:09:07 [INFO] Althonse issued server command: /time set 10000
+2013-11-25 10:09:07 [INFO] Althonse: Set time to 10000[m
+2013-11-25 10:09:20 [INFO] <Althonse> plan3[m
+2013-11-25 10:09:22 [INFO] <Althonse> r[m
+2013-11-25 10:09:22 [INFO] aye_priori issued server command: /tp aye_priori 150.7 74.0 968.0
+2013-11-25 10:09:22 [INFO] aye_priori: Teleported aye_priori to 150.70, 74.00, 968.00[m
+2013-11-25 10:09:22 [INFO] aye_priori issued server command: /time set 10000
+2013-11-25 10:09:22 [INFO] aye_priori: Set time to 10000[m
+2013-11-25 10:09:24 [INFO] <Althonse> plan3[m
+2013-11-25 10:10:10 [INFO] <Althonse> r[m
+2013-11-25 10:10:10 [INFO] aye_priori issued server command: /tp aye_priori 150.7 74.0 968.0
+2013-11-25 10:10:10 [INFO] aye_priori: Teleported aye_priori to 150.70, 74.00, 968.00[m
+2013-11-25 10:10:10 [INFO] aye_priori issued server command: /time set 10000
+2013-11-25 10:10:10 [INFO] aye_priori: Set time to 10000[m
+2013-11-25 11:50:27 [WARNING] Can't keep up! Did the system time change, or is the server overloaded?
+2013-11-25 11:51:09 [INFO] Althonse lost connection: disconnect.endOfStream
+2013-11-25 11:51:09 [INFO] ¤eAlthonse left the game.
+2013-11-25 11:51:12 [INFO] aye_priori lost connection: disconnect.endOfStream
+2013-11-25 11:51:12 [INFO] ¤eaye_priori left the game.
