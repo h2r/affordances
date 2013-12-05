@@ -47,7 +47,7 @@ public class MinecraftBehavior {
 		sp = new MinecraftStateParser(domain); 	
 		
 		//define the task
-		rf = new SingleGoalPFRF(domain.getPropFunction(MinecraftDomain.PFATGOAL), 100, -1); 
+		rf = new SingleGoalPFRF(domain.getPropFunction(MinecraftDomain.PFATGOAL), 10, -1); 
 		tf = new SinglePFTF(domain.getPropFunction(MinecraftDomain.PFATGOAL)); 
 		goalCondition = new TFGoalCondition(tf);
 		
@@ -62,10 +62,10 @@ public class MinecraftBehavior {
 		// Row i will have blocks in all 10 locations
 		for (int i = 0; i < MAXX; i++){
 //			 Place a width 2 trench @ x = 4 and x = 5
-			if (i == 5 || i == 6 || i == 4)
-			{
-				continue;
-			}
+//			if (i == 5 || i == 6 || i == 4)
+//			{
+//				continue;
+//			}
 			blockX.add(i);
 			blockY.add(MAXY);
 		}
@@ -77,8 +77,8 @@ public class MinecraftBehavior {
 //		
 		
 		// -- Agent & Goal --
-		MinecraftDomain.setAgent(initialState, 8, 1, 2, 3);
-		MinecraftDomain.setGoal(initialState, 1, 8, 2);
+		MinecraftDomain.setAgent(initialState, 1, 1, 2, 10);
+		MinecraftDomain.setGoal(initialState, 8, 8, 2);
 		
 		//set up the state hashing system
 		hashingFactory = new DiscreteStateHashFactory();
@@ -98,28 +98,7 @@ public class MinecraftBehavior {
 		OOMDPPlanner planner = new ValueIteration(domain, rf, tf, 0.99, hashingFactory, 1, Integer.MAX_VALUE);
 		
 		planner.planFromState(initialState);
-		System.out.println(((ValueFunctionPlanner) planner).value(initialState));
-		//create a Q-greedy policy from the planner
-		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
-		
-		int maxIterations = 150;
-		
-		//record the plan results to a file
-		p.evaluateBehaviorThreshold(initialState, rf, tf, maxIterations).writeToFile(outputPath + "planResult", sp);
-		
-	}
-	
-	// This is the version that leverages our affordance stuff
-	public void AffordanceValueIterationMC(String outputPath){
-		
-		if(!outputPath.endsWith("/")){
-			outputPath = outputPath + "/";
-		}
-		
-		OOMDPPlanner planner = new ValueIteration(domain, rf, tf, 0.99, hashingFactory, 1, Integer.MAX_VALUE);
-		
-		planner.planFromState(initialState);
-		System.out.println(((ValueFunctionPlanner) planner).value(initialState));
+//		System.out.println(((ValueFunctionPlanner) planner).value(initialState));
 		//create a Q-greedy policy from the planner
 		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
 		

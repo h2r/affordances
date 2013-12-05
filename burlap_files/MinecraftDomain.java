@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
+import java.util.HashMap;
 
 
 public class MinecraftDomain implements DomainGenerator{
@@ -46,6 +47,10 @@ public class MinecraftDomain implements DomainGenerator{
 	
 	public static final String					PFATGOAL = "atGoal";
 	public static final String					ISWALK = "isWalkable";
+	public static final String					ISXLESS = "isAgentXLess";
+	public static final String					ISYLESS = "isAgentYLess";
+	public static final String					ISXMORE = "isAgentXMore";
+	public static final String					ISYMORE = "isAgentYMore";
 	
 	public static final int						MAXX = 9; // 0 - 9, gives us a 10x10 surface
 	public static final int						MAXY = 9;
@@ -54,7 +59,7 @@ public class MinecraftDomain implements DomainGenerator{
 	public static AtGoalPF 						AtGoalPF = null;
 	
 	public static int[][][]						MAP;
-	public static List<Node>					affordances;
+	public static HashMap<String,Affordance>	affordances;
 	public static Stack<Subgoal>				goalStack;
 	
 	private ObjectClass 						agentClass = null;
@@ -126,8 +131,16 @@ public class MinecraftDomain implements DomainGenerator{
 		// CREATE PROPOSITIONAL FUNCTIONS
 		PropositionalFunction atGoal = new AtGoalPF(PFATGOAL, DOMAIN,
 				new String[]{CLASSAGENT, CLASSGOAL});
-//		PropositionalFunction isWalkable = new AtGoalPF(ISWALK, DOMAIN,
-//				new String[]{Integer, Integer, Integer});
+		PropositionalFunction isWalkable = new IsWalkablePF(ISWALK, DOMAIN,
+				new String[]{"Integer", "Integer", "Integer"});
+		PropositionalFunction isXLess = new IsAgentXLess(ISXLESS, DOMAIN,
+				new String[]{"Integer", "Integer"});
+		PropositionalFunction isYLess = new IsAgentYLess(ISYLESS, DOMAIN,
+				new String[]{"Integer", "Integer"});
+		PropositionalFunction isXMore = new IsAgentXMore(ISXMORE, DOMAIN,
+				new String[]{"Integer", "Integer"});
+		PropositionalFunction isYMore = new IsAgentYMore(ISYMORE, DOMAIN,
+				new String[]{"Integer", "Integer"});
 		
 		/* TODO:
 		 * Affordance list
@@ -136,33 +149,62 @@ public class MinecraftDomain implements DomainGenerator{
 		 * Subgoal Class
 		 */
 		
-		List<Node> affordances = new ArrayList<Node>();
+		// === Set up affordance list ===
+		HashMap<String,Affordance> affordances = new HashMap<String,Affordance>();
 		
-		Affordance dPosX = new Affordance("dPosX");
-		dPosX.addAction(right);
+//		// Create subgoals
+//		Subgoal isWalkPX = new Subgoal("isWalkPX", isWalkable);
+//		Subgoal isWalkNX = new Subgoal("isWalkNX", isWalkable);
+//		Subgoal isWalkPY = new Subgoal("isWalkPY", isWalkable);
+//		Subgoal isWalkNY = new Subgoal("isWalkNY", isWalkable);
 		
-		Affordance dNegX = new Affordance("dNegX");
-		dPosX.addAction(left);
+		// Subgoals that we should not try to satisfy (basically just preconditions, if they're true, then proceed)
+		Subgoal isXLessSG = new Subgoal("isXLess", isXLess, false);
+		Subgoal isYLessSG = new Subgoal("isYLess", isYLess, false);
+		Subgoal isXMoreSG = new Subgoal("isXMore", isXMore, false);
+		Subgoal isYMoreSG = new Subgoal("isYMore", isYMore, false);
 		
-		Affordance dPosY = new Affordance("dPosY");
-		dPosX.addAction(forward);
+		// Add actions to subgoals
+		isXLessSG.addAction(right);
+		isXMoreSG.addAction(left);
+		isYLessSG.addAction(forward);
+		isYMoreSG.addAction(backward);
 		
-		Affordance dNegY = new Affordance("dNegY");
-		dPosX.addAction(backward);
+		// Add subgoals to affordances
+//		Affordance dPosX = new Affordance("dPosX");
+//		dPosX.addChild(isWalkNX);
+//		isXLessSG.addAffordance(dPosX);
+//		
+//		Affordance dNegX = new Affordance("dNegX");
+//		dNegX.addChild(isWalkPX);
+//		isXMoreSG.addAffordance(dNegX);
+//		
+//		Affordance dPosY = new Affordance("dPosY");
+//		dPosY.addChild(isWalkNY);
+//		isYLessSG.addAffordance(dPosY);
+//		
+//		Affordance dNegY = new Affordance("dNegY");
+//		dNegY.addChild(isWalkPY);
+//		isYMoreSG.addAffordance(dNegY);
 		
-		Affordance dIsAdjacent = new Affordance("dIsAdjacent");
-		dIsAdjacent.addChild(dPosX);
-		dIsAdjacent.addChild(dNegX);
-		dIsAdjacent.addChild(dPosY);
-		dIsAdjacent.addChild(dNegY);
+		Affordance dIsAtLocation = new Affordance("dIsAtLocation");
+		dIsAtLocation.addChild(isXLessSG);
+		dIsAtLocation.addChild(isXMoreSG);
+		dIsAtLocation.addChild(isYLessSG);
+		dIsAtLocation.addChild(isYMoreSG);
+		
+		// Add affordances to list
+		affordances.put("dIsAtLocation", dIsAtLocation);
 
-		affordances.add(dPosX);
-		affordances.add(dNegX);
-		affordances.add(dPosY);
-		affordances.add(dNegY);
+		// === Set up subogal stack ===
 
 		Stack<Subgoal> goalStack = new Stack<Subgoal>();
+		Subgoal goal = new Subgoal("IsAtLocation", atGoal);
+		goalStack.push(goal);
 		
+		// Add to domain
+		DOMAIN.setAffordances(affordances);
+		DOMAIN.setGoalStack(goalStack);
 		
 		return DOMAIN;
 	}
@@ -201,7 +243,7 @@ public class MinecraftDomain implements DomainGenerator{
 		
 	}
 	
-	public List<Node> getAffordances() {
+	public HashMap<String,Affordance> getAffordances() {
 		return affordances;
 	}
 	
@@ -481,6 +523,89 @@ public class MinecraftDomain implements DomainGenerator{
 	}
 	
 	/* ==== Propositional Functions ==== */
+	public static class IsAgentXLess extends PropositionalFunction{
+		
+		public IsAgentXLess(String name, Domain domain, String[] parameterClasses) {
+			super(name, domain, parameterClasses);
+		}
+		
+		public boolean isTrue(State st, String[] params) {
+			ObjectInstance agent = st.getObject(CLASSAGENT + "0");
+			
+			//get the agent coordinates
+			int ax = agent.getDiscValForAttribute(ATTX);
+			
+			ObjectInstance goal = st.getObject(CLASSGOAL + "0");
+			
+			//get the goal coordinates
+			int gx = goal.getDiscValForAttribute(ATTX);
+			
+			return (ax < gx);
+		}
+	}
+	
+	public static class IsAgentXMore extends PropositionalFunction{
+		
+		public IsAgentXMore(String name, Domain domain, String[] parameterClasses) {
+			super(name, domain, parameterClasses);
+		}
+		
+		public boolean isTrue(State st, String[] params) {
+			ObjectInstance agent = st.getObject(CLASSAGENT + "0");
+			
+			//get the agent coordinates
+			int ax = agent.getDiscValForAttribute(ATTX);
+			
+			ObjectInstance goal = st.getObject(CLASSGOAL + "0");
+			
+			//get the goal coordinates
+			int gx = goal.getDiscValForAttribute(ATTX);
+			
+			return (ax > gx);
+		}
+	}
+	
+	public static class IsAgentYLess extends PropositionalFunction{
+		
+		public IsAgentYLess(String name, Domain domain, String[] parameterClasses) {
+			super(name, domain, parameterClasses);
+		}
+		
+		public boolean isTrue(State st, String[] params) {
+			ObjectInstance agent = st.getObject(CLASSAGENT + "0");
+			
+			//get the agent coordinates
+			int ay = agent.getDiscValForAttribute(ATTY);
+			
+			ObjectInstance goal = st.getObject(CLASSGOAL + "0");
+			
+			//get the goal coordinates
+			int gy = goal.getDiscValForAttribute(ATTY);
+			
+			return (ay < gy);
+		}
+	}
+	
+	public static class IsAgentYMore extends PropositionalFunction{
+		
+		public IsAgentYMore(String name, Domain domain, String[] parameterClasses) {
+			super(name, domain, parameterClasses);
+		}
+		
+		public boolean isTrue(State st, String[] params) {
+			ObjectInstance agent = st.getObject(CLASSAGENT + "0");
+			
+			//get the agent coordinates
+			int ay = agent.getDiscValForAttribute(ATTY);
+			
+			ObjectInstance goal = st.getObject(CLASSGOAL + "0");
+			
+			//get the goal coordinates
+			int gy = goal.getDiscValForAttribute(ATTY);
+			
+			return (ay > gy);
+		}
+	}
 	
 	public static class AtGoalPF extends PropositionalFunction{
 
@@ -490,15 +615,14 @@ public class MinecraftDomain implements DomainGenerator{
 
 		@Override
 		public boolean isTrue(State st, String[] params) {
-			
-			ObjectInstance agent = st.getObject(params[0]);
+			ObjectInstance agent = st.getObject(CLASSAGENT + "0");
 			
 			//get the agent coordinates
 			int ax = agent.getDiscValForAttribute(ATTX);
 			int ay = agent.getDiscValForAttribute(ATTY);
 			int az = agent.getDiscValForAttribute(ATTZ);
 			
-			ObjectInstance goal = st.getObject(params[1]);
+			ObjectInstance goal = st.getObject(CLASSGOAL + "0");
 			
 			//get the goal coordinates
 			int gx = goal.getDiscValForAttribute(ATTX);
@@ -512,16 +636,17 @@ public class MinecraftDomain implements DomainGenerator{
 			return false;
 		}
 		
+		// Returns the x,y,z delta(s) needed to satisfy the atGoalPF
 		public int[] delta(State st, String[] params) {
 			
-			ObjectInstance agent = st.getObject(params[0]);
+			ObjectInstance agent = st.getObject(CLASSAGENT + "0");
 			
 			//get the agent coordinates
 			int ax = agent.getDiscValForAttribute(ATTX);
 			int ay = agent.getDiscValForAttribute(ATTY);
 			int az = agent.getDiscValForAttribute(ATTZ);
 			
-			ObjectInstance goal = st.getObject(params[1]);
+			ObjectInstance goal = st.getObject(CLASSGOAL + "0");
 			
 			//get the goal coordinates
 			int gx = goal.getDiscValForAttribute(ATTX);
@@ -537,14 +662,16 @@ public class MinecraftDomain implements DomainGenerator{
 		}
 	}
 	
-//	public static class IsWalkablePF extends PropositionalFunction {
-//
-//		public IsWalkablePF(String name, Domain domain, String[] parameterClasses) {
-//			super(name, domain, parameterClasses);
-//		}
-//		
-//		@Override
-//		public boolean isTrue(State st, String[] params) {
+	public static class IsWalkablePF extends PropositionalFunction {
+
+		public IsWalkablePF(String name, Domain domain, String[] parameterClasses) {
+			super(name, domain, parameterClasses);
+		}
+		
+		@Override
+		public boolean isTrue(State st, String[] params) {
+			// Assume everything is walkable for now.
+			return true;
 //			// The first three elements of params are the amount of change
 //			// in the x, y, and z directions
 //			ObjectInstance agent = st.getObjectsOfTrueClass(CLASSAGENT).get(0);
@@ -570,9 +697,9 @@ public class MinecraftDomain implements DomainGenerator{
 //				return false;
 //			}
 //			return true;
-//		}
-//		
-//	}
+		}
+		
+	}
 	
 	public static void main(String[] args) {
 		
@@ -587,10 +714,10 @@ public class MinecraftDomain implements DomainGenerator{
 		// Row i will have blocks in all 10 locations
 		for (int i = 0; i < MAXX; i++){
 			// Place a trench @ x = 4
-			if (i == 4)
-			{
-				continue;
-			}
+//			if (i == 4)
+//			{
+//				continue;
+//			}
 			blockX.add(i);
 			blockY.add(MAXY);
 		}
@@ -599,14 +726,14 @@ public class MinecraftDomain implements DomainGenerator{
 		
 		// === Add agent and goal === //
 		ObjectInstance agent = s.getObjectsOfTrueClass(CLASSAGENT).get(0);
-		agent.setValue(ATTX, 8);
+		agent.setValue(ATTX, 1);
 		agent.setValue(ATTY, 1);
 		agent.setValue(ATTZ, 2);
 		agent.setValue(ATTBLKNUM, 2);
 
 		ObjectInstance goal = s.getObjectsOfTrueClass(CLASSGOAL).get(0);
-		goal.setValue(ATTX, 1);
-		goal.setValue(ATTY, 8);
+		goal.setValue(ATTX, 2);
+		goal.setValue(ATTY, 2);
 		goal.setValue(ATTZ, 2);
 		
 		s.addObject(new ObjectInstance(DOMAIN.getObjectClass(CLASSAGENT), CLASSAGENT+0));
