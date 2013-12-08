@@ -155,20 +155,27 @@ public class MinecraftDomain implements DomainGenerator{
 //		// Create subgoals
 //		Subgoal isWalkPX = new Subgoal("isWalkPX", isWalkable);
 //		Subgoal isWalkNX = new Subgoal("isWalkNX", isWalkable);
-//		Subgoal isWalkPY = new Subgoal("isWalkPY", isWalkable);
+		Subgoal isWalkPY = new Subgoal("isWalkPY", isWalkable);
 //		Subgoal isWalkNY = new Subgoal("isWalkNY", isWalkable);
 		
 		// Subgoals that we should not try to satisfy (basically just preconditions, if they're true, then proceed)
-		Subgoal isXLessSG = new Subgoal("isXLess", isXLess, false);
-		Subgoal isYLessSG = new Subgoal("isYLess", isYLess, false);
-		Subgoal isXMoreSG = new Subgoal("isXMore", isXMore, false);
-		Subgoal isYMoreSG = new Subgoal("isYMore", isYMore, false);
+		Subgoal isXLessSG = new Subgoal(ISXLESS, isXLess, false);
+		Subgoal isYLessSG = new Subgoal(ISYLESS, isYLess, false);
+		Subgoal isXMoreSG = new Subgoal(ISXMORE, isXMore, false);
+		Subgoal isYMoreSG = new Subgoal(ISYMORE, isYMore, false);
+		
+		Affordance dPosY = new Affordance("dPosY");
+		dPosY.addChild(isWalkPY);
 		
 		// Add actions to subgoals
-		isXLessSG.addAction(right);
-		isXMoreSG.addAction(left);
-		isYLessSG.addAction(forward);
-		isYMoreSG.addAction(backward);
+		isXLessSG.setAction(right);
+		isXMoreSG.setAction(left);
+//		isYLessSG.setAction(forward);
+		isWalkPY.setAction(forward);
+		isYMoreSG.setAction(backward);
+		
+		// Add affordances to subgoals
+		isYLessSG.setAffordance(dPosY);
 		
 		// Add subgoals to affordances
 //		Affordance dPosX = new Affordance("dPosX");
@@ -179,8 +186,6 @@ public class MinecraftDomain implements DomainGenerator{
 //		dNegX.addChild(isWalkPX);
 //		isXMoreSG.addAffordance(dNegX);
 //		
-//		Affordance dPosY = new Affordance("dPosY");
-//		dPosY.addChild(isWalkNY);
 //		isYLessSG.addAffordance(dPosY);
 //		
 //		Affordance dNegY = new Affordance("dNegY");
@@ -678,7 +683,7 @@ public class MinecraftDomain implements DomainGenerator{
 //			int ax = agent.getDiscValForAttribute(ATTX);
 //			int ay = agent.getDiscValForAttribute(ATTY);
 //			int az = agent.getDiscValForAttribute(ATTZ);
-//			
+//
 //			int nx = ax + Integer.parseInt(params[0]);
 //			int ny = ay + Integer.parseInt(params[1]);
 //			int nz = az + Integer.parseInt(params[2]);

@@ -10,23 +10,29 @@ public class Subgoal{
 	
 	private String name;
 	private PropositionalFunction pf;
-	private HashMap<String,Action> actionList;
-	private HashMap<String,Affordance> affordanceList;
+//	private HashMap<String,Action> actionMap;
+//	private HashMap<String,Affordance> affordanceMap;
+	private Action action;
+	private Affordance affordance;
 	private boolean tryToSatisfy = true; // Determines if we should try and satisfy this, when false, or if we should just keep searching other subgoals.
 	
 	public Subgoal(String name, PropositionalFunction pf) {
 		this.name = name;
 		this.pf = pf;
-		this.actionList = new HashMap<String,Action>();
-		this.affordanceList = new HashMap<String,Affordance>();
+		this.action = action;
+		this.affordance = affordance;
+//		this.actionMap = new HashMap<String,Action>();
+//		this.affordanceMap = new HashMap<String,Affordance>();
 	}
 	
 	public Subgoal(String name, PropositionalFunction pf, boolean tryToSatisfy) {
 		this.tryToSatisfy = tryToSatisfy;
 		this.name = name;
 		this.pf = pf;
-		this.actionList = new HashMap<String,Action>();
-		this.affordanceList = new HashMap<String,Affordance>();
+		this.action = action;
+		this.affordance = affordance;
+//		this.actionMap = new HashMap<String,Action>();
+//		this.affordanceMap = new HashMap<String,Affordance>();
 	}
 	
 	public boolean isTrue(State st, String[] params) {
@@ -38,23 +44,32 @@ public class Subgoal{
 	}
 
 	public boolean inActions(String name) {
-		return (this.actionList.get(name) != null);	
+//		return (this.actionMap.get(name) != null);
+		return (this.action != null && this.action.getName().equals(name));
 	}
 	
-	public HashMap<String,Affordance> getAffordances() {
-		return this.affordanceList;
+	public Affordance getAffordance() {
+//		return this.affordanceMap;
+		return this.affordance;
 	}
 	
-	public void addAction(Action a) {
-		this.actionList.put(a.getName(), a);
+	public void setAction(Action a) {
+//		this.actionMap.put(a.getName(), a);
+		this.action = a;
 	}
 	
-	public void addAffordance(Affordance a) {
-		this.affordanceList.put(a.getName(), a);
+	public void setAffordance(Affordance a) {
+//		this.affordanceMap.put(a.getName(), a);
+		this.affordance = a;
 	}
 	
 	public boolean isActionListEmpty() {
-		return this.actionList.isEmpty();
+//		return this.actionMap.isEmpty();
+		return this.action == null;
+	}
+	
+	public boolean hasAffordance() {
+		return this.affordance != null;
 	}
 	
 	public boolean shouldSatisfy() {
