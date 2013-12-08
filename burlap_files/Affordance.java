@@ -31,5 +31,11 @@ public class Affordance{
 		return new ArrayList<Subgoal>(children.values());
 	}
 	
+	public void setSubGoalParams(String[] sgParams) {
+		for(String s: children.keySet()) {
+			children.get(s).setParams(sgParams);
+		}
+	}
+	
 }
 //

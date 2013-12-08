@@ -11,8 +11,10 @@ import java.util.Queue;
 import java.util.Stack;
 
 import burlap.domain.singleagent.minecraft.Affordance;
+import burlap.domain.singleagent.minecraft.MinecraftDomain;
 import burlap.domain.singleagent.minecraft.Subgoal;
 import burlap.oomdp.core.Domain;
+import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.State;
 import burlap.oomdp.core.TransitionProbability;
 
@@ -100,16 +102,14 @@ public abstract class Action {
 	}
 	
 	
-	public final boolean applicableInState(State st, String params, Domain domain){
+	public final boolean applicableInState(State st, Domain domain){
 		if(!domain.affordanceMode) {
 			return true;
 		}
 		
-		String[] splitParams = params.split(",");
-		
 		// Get relevant Affordance based on subgoal.
 		
-		Affordance curAfford = getRelevAffordance(st, splitParams, domain);
+		Affordance curAfford = getRelevAffordance(st, domain);
 		List<Subgoal> subgoals = curAfford.getSubgoals();
 		
 		// Breadth first search through affordance space
@@ -122,7 +122,7 @@ public abstract class Action {
 //		Iterator itr = subgoals.keySet().iterator();
 		while(!bfsQ.isEmpty()) {
 			Subgoal sg = bfsQ.remove();
-			if (sg.isTrue(st, splitParams)) {
+			if (sg.isTrue(st)) {
 				if (sg.inActions(this.name)) {
 					// This action is associated with a relevant subgoal, return true.
 					return true;
@@ -132,10 +132,44 @@ public abstract class Action {
 					// so let's try to follow it (later)
 					Affordance af = sg.getAffordance();
 					for (Subgoal afSG: af.getSubgoals()) {
-						if (afSG.isTrue(st, splitParams) || !afSG.shouldSatisfy()) {
+						if (afSG.isTrue(st) || !afSG.shouldSatisfy()) {
 							// Either Subgoal is true or isn't a big deal so we take care of it now
+							// Consider adding: if subGoal.inActions(this.name), return true
+//							if (afSG.inActions(this.name)) {
+//								return true;
+//							}
+//							else {
 							bfsQ.add(afSG);
+//							}
 						}
+						else if (afSG.shouldSatisfy()) {
+							// Can't walk right, so we want to find a new y coord that lets us walk right
+
+							while(!afSG.isTrue(st)) {
+
+								Integer dx = Integer.parseInt(afSG.getParams()[0]);
+								Integer dy = Integer.parseInt(afSG.getParams()[1]) + 1;
+								Integer dz = Integer.parseInt(afSG.getParams()[2]);
+								String[] newParams = {dx.toString(), dy.toString(), dz.toString()};
+								afSG.setParams(newParams);
+							}
+							String[] globParams = MinecraftDomain.locCoordsToGlobal(st, afSG.getParams());
+							afSG.getSubgoal().setParams(globParams);
+							
+							// For now only isWalkablePX - should loop and find the place were X is 
+							// walkable and make isAtLocation of that walkable X the new subgoal
+							domain.goalStack.add(afSG.getSubgoal());
+							curAfford = getRelevAffordance(st, domain);
+							curAfford.setSubGoalParams(globParams);
+							subgoals = curAfford.getSubgoals();
+							bfsQ.clear();
+							bfsQ.addAll(subgoals);
+						}
+					}
+				}
+				else if (sg.hasSubGoal()) {
+					if (sg.getSubgoal().inActions(this.name)) {
+						return true;
 					}
 				}
 				
@@ -158,13 +192,13 @@ public abstract class Action {
 	 * @param params list of parameters to be passed into the action
 	 * @return whether the action can be performed on the given state
 	 */
-	public Affordance getRelevAffordance(State st, String [] params, Domain domain){
+	public Affordance getRelevAffordance(State st, Domain domain){
 
 		// pop stack, search affordance list for string of thing popped, perform that action.
 		
 		Subgoal goal = domain.goalStack.peek();
 
-		while (goal.isTrue(st, params)) {
+		while (goal.isTrue(st)) {
 			domain.goalStack.pop();
 			goal = domain.goalStack.peek();
 		}
@@ -172,6 +206,15 @@ public abstract class Action {
 		HashMap<String,Affordance> affordances = domain.affordances;
 		String goalName = goal.getName();
 		Affordance curAfford = affordances.get("d" + goalName);
+//		int[] delta = goal.delta(st);
+//
+//		String[] locGoalCoords = {"" + delta[0], "" + delta[1], "" + delta[2]};
+//		
+//		String[] globalCoords = MinecraftDomain.locCoordsToGlobal(st, locGoalCoords);
+		
+//		curAfford.setSubGoalParams(globalCoords);
+		
+		curAfford.setSubGoalParams(goal.getParams());
 		
 		return curAfford;
 	}
@@ -208,7 +251,13 @@ public abstract class Action {
 	public final State performAction(State st, String [] params){
 		
 		State resultState = st.copy();
-		if(!this.applicableInState(st, params)){
+		if(params.length == 0) {
+			// Affordance case
+			if(!this.applicableInState(st, domain)){
+				return resultState; //can't do anything if it's not applicable in the state so return the current state
+			}
+		}
+		else if(!this.applicableInState(st, params)){
 			return resultState; //can't do anything if it's not applicable in the state so return the current state
 		}
 		

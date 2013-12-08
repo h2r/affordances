@@ -9,12 +9,26 @@ import burlap.oomdp.singleagent.Action;
 public class Subgoal{
 	
 	private String name;
+	private String[] params;
 	private PropositionalFunction pf;
 //	private HashMap<String,Action> actionMap;
 //	private HashMap<String,Affordance> affordanceMap;
 	private Action action;
 	private Affordance affordance;
+	private Subgoal subgoal;
 	private boolean tryToSatisfy = true; // Determines if we should try and satisfy this, when false, or if we should just keep searching other subgoals.
+	
+	
+	public Subgoal(String name, PropositionalFunction pf, String[] params, boolean tryToSatisfy) {
+		this.tryToSatisfy = tryToSatisfy;
+		this.name = name;
+		this.pf = pf;
+		this.action = action;
+		this.affordance = affordance;
+		this.params = params;
+//		this.actionMap = new HashMap<String,Action>();
+//		this.affordanceMap = new HashMap<String,Affordance>();
+	}
 	
 	public Subgoal(String name, PropositionalFunction pf) {
 		this.name = name;
@@ -34,9 +48,14 @@ public class Subgoal{
 //		this.actionMap = new HashMap<String,Action>();
 //		this.affordanceMap = new HashMap<String,Affordance>();
 	}
+
 	
-	public boolean isTrue(State st, String[] params) {
-		return pf.isTrue(st, params);
+	public boolean isTrue(State st) {
+		return pf.isTrue(st, this.params);
+	}
+	
+	public int[] delta(State s) {
+		return this.pf.delta(s, this.params);
 	}
 	
 	public String getName() {
@@ -53,6 +72,18 @@ public class Subgoal{
 		return this.affordance;
 	}
 	
+	public Subgoal getSubgoal() {
+		return this.subgoal;
+	}
+	
+	public String[] getParams() {
+		return this.params;
+	}
+	
+	public PropositionalFunction getPropFunc() {
+		return this.pf;
+	}
+	
 	public void setAction(Action a) {
 //		this.actionMap.put(a.getName(), a);
 		this.action = a;
@@ -63,9 +94,22 @@ public class Subgoal{
 		this.affordance = a;
 	}
 	
+	public void setSubgoal(Subgoal sg) {
+		this.subgoal = sg;
+	}
+	
+	public void setParams(String[] newParams) {
+		this.params = newParams;
+	}
+	
 	public boolean isActionListEmpty() {
 //		return this.actionMap.isEmpty();
 		return this.action == null;
+	}
+	
+
+	public boolean hasSubGoal() {
+		return this.subgoal != null;
 	}
 	
 	public boolean hasAffordance() {
@@ -75,6 +119,7 @@ public class Subgoal{
 	public boolean shouldSatisfy() {
 		return this.tryToSatisfy;
 	}
+
 	
 }
 //
