@@ -101,11 +101,17 @@ public abstract class Action {
 		return domain;
 	}
 	
+	// State.java passes in a string as well apparently
+	public final boolean applicableInState(State st, String s, Domain domain){
+		return applicableInState(st, domain);
+	}
+	
 	
 	public final boolean applicableInState(State st, Domain domain){
 		if(!domain.affordanceMode) {
 			return true;
 		}
+		System.out.println(st.toString() + " -- " + this.name);
 		
 		// Get relevant Affordance based on subgoal.
 		
@@ -122,6 +128,7 @@ public abstract class Action {
 //		Iterator itr = subgoals.keySet().iterator();
 		while(!bfsQ.isEmpty()) {
 			Subgoal sg = bfsQ.remove();
+			System.out.println(sg.getName());
 			if (sg.isTrue(st)) {
 				if (sg.inActions(this.name)) {
 					// This action is associated with a relevant subgoal, return true.
@@ -143,27 +150,44 @@ public abstract class Action {
 //							}
 						}
 						else if (afSG.shouldSatisfy()) {
+
 							// Can't walk right, so we want to find a new y coord that lets us walk right
+							Integer dx = Integer.parseInt(afSG.getParams()[0]);
+							Integer dy = Integer.parseInt(afSG.getParams()[1]);
+							Integer dz = Integer.parseInt(afSG.getParams()[2]);
+							
+							// Change Y positively
+							while(!afSG.isTrue(st) && dy < MinecraftDomain.MAXY) {
 
-							while(!afSG.isTrue(st)) {
+//								Integer dx = Integer.parseInt(afSG.getParams()[0]);
+//								Integer dy = Integer.parseInt(afSG.getParams()[1]) + 1;
+//								Integer dz = Integer.parseInt(afSG.getParams()[2]);
+								dy++;
+								String[] newParams = {dx.toString(), dy.toString(), dz.toString()};
+								afSG.setParams(newParams);							}
 
-								Integer dx = Integer.parseInt(afSG.getParams()[0]);
-								Integer dy = Integer.parseInt(afSG.getParams()[1]) + 1;
-								Integer dz = Integer.parseInt(afSG.getParams()[2]);
+							while (!afSG.isTrue(st) && dy > -MinecraftDomain.MAXY) {
+								dy--;
 								String[] newParams = {dx.toString(), dy.toString(), dz.toString()};
 								afSG.setParams(newParams);
 							}
-							String[] globParams = MinecraftDomain.locCoordsToGlobal(st, afSG.getParams());
-							afSG.getSubgoal().setParams(globParams);
 							
-							// For now only isWalkablePX - should loop and find the place were X is 
-							// walkable and make isAtLocation of that walkable X the new subgoal
-							domain.goalStack.add(afSG.getSubgoal());
-							curAfford = getRelevAffordance(st, domain);
-							curAfford.setSubGoalParams(globParams);
-							subgoals = curAfford.getSubgoals();
-							bfsQ.clear();
-							bfsQ.addAll(subgoals);
+							if (afSG.isTrue(st) && afSG.hasSubGoal()) {
+								String[] globParams = MinecraftDomain.locCoordsToGlobal(st, afSG.getParams());
+								afSG.getSubgoal().setParams(globParams);
+								
+								// For now only isWalkablePX - should loop and find the place were X is 
+								// walkable and make isAtLocation of that walkable X the new subgoal
+								domain.goalStack.add(afSG.getSubgoal());
+								curAfford = getRelevAffordance(st, domain);
+								curAfford.setSubGoalParams(globParams);
+								subgoals = curAfford.getSubgoals();
+								bfsQ.clear();
+								bfsQ.addAll(subgoals);								
+							}
+							
+
+
 						}
 					}
 				}
