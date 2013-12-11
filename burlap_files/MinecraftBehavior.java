@@ -62,24 +62,28 @@ public class MinecraftBehavior {
 		// Row i will have blocks in all 10 locations
 		for (int i = 0; i < MAXX; i++){
 //			 Place a width 2 trench @ x = 4 and x = 5
-			if (i == 5)
-			{
-				continue;
-			}
+//			if (i == 5)
+//			{
+//				continue;
+//			}
 			blockX.add(i);
 			blockY.add(MAXY);
 		}
 		
 		initialState = MinecraftDomain.getCleanState(domain, blockX, blockY);
+//		for (int i = 0; i < MAXX; i++) {			MinecraftDomain.removeBlock(initialState, 5, i, 1);			
+
+//		MinecraftDomain.removeBlock(initialState, 5, 5, 1);
+//		}
 
 //		MinecraftDomain.addBlock(initialState, 4, 4, 1); // Adds a bridge over the trench
-		MinecraftDomain.addBlock(initialState, 5, 2, 1); // Adds a bridge over the trench
+//		MinecraftDomain.addBlock(initialState, 5, 2, 1); // Adds a bridge over the trench
 //		MinecraftDomain.addBlock(initialState, 5, 2, 1); // Adds a bridge over the trench
 //		
 		
 		// -- Agent & Goal --
-		MinecraftDomain.setAgent(initialState, 1, 1, 2, 10);
-		MinecraftDomain.setGoal(initialState, 8, 1, 2);
+		MinecraftDomain.setAgent(initialState, 5, 5, 2, 10);
+		MinecraftDomain.setGoal(initialState, 5, 8, 2);
 		
 		ObjectInstance goalObj = initialState.getObject(MinecraftDomain.CLASSGOAL + "0");
 		

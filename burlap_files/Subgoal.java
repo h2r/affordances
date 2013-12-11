@@ -17,7 +17,9 @@ public class Subgoal{
 	private Affordance affordance;
 	private Subgoal subgoal;
 	private boolean tryToSatisfy = true; // Determines if we should try and satisfy this, when false, or if we should just keep searching other subgoals.
-	
+	private int constraintVal;
+	private int constraintDir;
+	private boolean isConstraintLessThan;
 	
 	public Subgoal(String name, PropositionalFunction pf, String[] params, boolean tryToSatisfy) {
 		this.tryToSatisfy = tryToSatisfy;
@@ -62,6 +64,26 @@ public class Subgoal{
 		return name;
 	}
 
+	public String[] chooseGoodSubgoal(String[] params1, String[] params2) {		
+		// Get relevant coordinate
+		String p1Val = params1[this.constraintDir];
+//		String p2Val = params2[this.constraintDir];
+		
+		if (this.isConstraintLessThan) {
+			if (Integer.parseInt(p1Val) > this.constraintVal) return params1;
+			return params2;
+		}
+		else {
+			if (Integer.parseInt(p1Val) < this.constraintVal) return params1;
+			return params2;
+		}
+	}
+	
+	public void switchConstraint() {
+		// Useful for isolating better subgoals based on which region of the map they are in
+		this.isConstraintLessThan = !this.isConstraintLessThan;
+	}
+	
 	public boolean inActions(String name) {
 //		return (this.actionMap.get(name) != null);
 		return (this.action != null && this.action.getName().equals(name));
@@ -96,6 +118,13 @@ public class Subgoal{
 	
 	public void setSubgoal(Subgoal sg) {
 		this.subgoal = sg;
+	}
+
+	public void setParams(String[] newParams, int constraintDir, boolean isConstraintLessThan) {
+		this.params = newParams;
+		this.constraintDir = constraintDir;
+		this.isConstraintLessThan = isConstraintLessThan;
+		this.constraintVal = Integer.parseInt(this.params[constraintDir]);
 	}
 	
 	public void setParams(String[] newParams) {

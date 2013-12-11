@@ -136,81 +136,100 @@ public class MinecraftDomain implements DomainGenerator{
 				new String[]{"Integer", "Integer", "Integer"});
 		PropositionalFunction isWalkable = new IsWalkablePF(ISWALK, DOMAIN,
 				new String[]{"Integer", "Integer", "Integer"});
-		PropositionalFunction isAXLess = new IsAgentXLess(ISAXLESS, DOMAIN,
-				new String[]{"Integer", "Integer"});
-		PropositionalFunction isAYLess = new IsAgentYLess(ISAYLESS, DOMAIN,
-				new String[]{"Integer", "Integer"});
-		PropositionalFunction isAXMore = new IsAgentXMore(ISAXMORE, DOMAIN,
-				new String[]{"Integer", "Integer"});
-		PropositionalFunction isAYMore = new IsAgentYMore(ISAYMORE, DOMAIN,
-				new String[]{"Integer", "Integer"});
-
-		// === Set up affordance list ===
-		HashMap<String,Affordance> affordances = new HashMap<String,Affordance>();
-		
-		// Create Affordances
-		Affordance dIsAtLocation = new Affordance("dIsAtLocation");
-		Affordance dIsWalkablePX = new Affordance("dIsWalkable");
-		Affordance dPosY = new Affordance("dPosY");
-		Affordance dNegY = new Affordance("dNegY");
-		Affordance dNegX = new Affordance("dNegX");
-		Affordance dPosX = new Affordance("dPosX");
-		
-		// Subgoals that we should not try to satisfy (basically just preconditions, if they're true, then proceed)
-		Subgoal isAXLessSG = new Subgoal(ISAXLESS, isAXLess, false);
-		Subgoal isAYLessSG = new Subgoal(ISAYLESS, isAYLess, false);
-		Subgoal isAXMoreSG = new Subgoal(ISAXMORE, isAXMore, false);
-		Subgoal isAYMoreSG = new Subgoal(ISAYMORE, isAYMore, false);
-				
-		// Create subgoals
-		Subgoal isWalkPXSG = new Subgoal("isWalkPX", isWalkable, new String[] {"1","0","0"}, true);
-		Subgoal isWalkNXSG = new Subgoal("isWalkNX", isWalkable, new String[] {"-1","0","0"}, false);
-		Subgoal isWalkPYSG = new Subgoal("isWalkPY", isWalkable, new String[] {"0","1","0"}, true);
-		Subgoal isWalkNYSG = new Subgoal("isWalkNY", isWalkable, new String[] {"0","-1","0"}, false);
-		
-		Subgoal goal = new Subgoal(ISATLOC, atGoal);
-		
-		Subgoal isAtLocation = new Subgoal(ISATLOC, IsAtLocation);
-		
-		// Add actions to subgoals
-		isAtLocation.setAction(right);
-		isAtLocation.setParams(isWalkPXSG.getParams());
-		isWalkPXSG.setSubgoal(isAtLocation);
-		isWalkNXSG.setAction(left);
-		isWalkPYSG.setAction(forward);
-		isWalkNYSG.setAction(backward);
-		
-		// Add affordances to subgoals
-		isAYLessSG.setAffordance(dPosY);
-		isAXLessSG.setAffordance(dPosX);
-		isAYMoreSG.setAffordance(dNegY);
-		isAXMoreSG.setAffordance(dNegX);
-		
-		// Add subgoals to Affordances
-		dIsAtLocation.addChild(isAXLessSG);
-		dIsAtLocation.addChild(isAXMoreSG);
-		dIsAtLocation.addChild(isAYLessSG);
-		dIsAtLocation.addChild(isAYMoreSG);
-		dNegX.addChild(isWalkNXSG);
-		dNegY.addChild(isWalkNYSG);
-		dPosY.addChild(isWalkPYSG);
-		dPosX.addChild(isWalkPXSG);
-		
-		// Add affordances to list
-		affordances.put("dIsAtLocation", dIsAtLocation);
-		affordances.put(ISAYMORE, dNegY);
-		affordances.put(ISAXMORE, dNegX);
-		affordances.put(ISAXLESS, dPosX);
-		affordances.put(ISAYLESS, dPosX);
-
-		// === Set up suboaol stack ===
-		Stack<Subgoal> goalStack = new Stack<Subgoal>();
-		goalStack.push(goal);
-		
-		// Add to domain
-		DOMAIN.setAffordances(affordances);
-		DOMAIN.setGoalStack(goalStack);
-		
+		if (DOMAIN.affordanceMode) {
+			PropositionalFunction isAXLess = new IsAgentXLess(ISAXLESS, DOMAIN,
+					new String[]{"Integer", "Integer"});
+			PropositionalFunction isAYLess = new IsAgentYLess(ISAYLESS, DOMAIN,
+					new String[]{"Integer", "Integer"});
+			PropositionalFunction isAXMore = new IsAgentXMore(ISAXMORE, DOMAIN,
+					new String[]{"Integer", "Integer"});
+			PropositionalFunction isAYMore = new IsAgentYMore(ISAYMORE, DOMAIN,
+					new String[]{"Integer", "Integer"});
+	
+			// === Set up affordance list ===
+			HashMap<String,Affordance> affordances = new HashMap<String,Affordance>();
+			
+			// Create Affordances
+			Affordance dIsAtLocation = new Affordance("dIsAtLocation");
+			Affordance dIsWalkablePX = new Affordance("dIsWalkable");
+			Affordance dPosY = new Affordance("dPosY");
+			Affordance dNegY = new Affordance("dNegY");
+			Affordance dNegX = new Affordance("dNegX");
+			Affordance dPosX = new Affordance("dPosX");
+			
+			// Subgoals that we should not try to satisfy (basically just preconditions, if they're true, then proceed)
+			Subgoal isAXLessSG = new Subgoal(ISAXLESS, isAXLess, false);
+			Subgoal isAYLessSG = new Subgoal(ISAYLESS, isAYLess, false);
+			Subgoal isAXMoreSG = new Subgoal(ISAXMORE, isAXMore, false);
+			Subgoal isAYMoreSG = new Subgoal(ISAYMORE, isAYMore, false);
+					
+			// Create subgoals
+			Subgoal isWalkPXSG = new Subgoal("isWalkPX", isWalkable, new String[] {"1","0","0"}, true);
+			Subgoal isWalkNXSG = new Subgoal("isWalkNX", isWalkable, new String[] {"-1","0","0"}, true);
+			Subgoal isWalkPYSG = new Subgoal("isWalkPY", isWalkable, new String[] {"0","1","0"}, true);
+			Subgoal isWalkNYSG = new Subgoal("isWalkNY", isWalkable, new String[] {"0","-1","0"}, true);
+			
+			Subgoal goal = new Subgoal(ISATLOC, atGoal);
+			
+			// TODO: Make isAtLocation a class
+//			Subgoal isAtLocation = new Subgoal(ISATLOC, IsAtLocation);
+			
+			// Add actions to subgoals
+			Subgoal isAtLocationR = new Subgoal(ISATLOC, IsAtLocation);
+			isAtLocationR.setAction(right);
+			isAtLocationR.setParams(isWalkPXSG.getParams());
+			isWalkPXSG.setSubgoal(isAtLocationR);
+	
+			Subgoal isAtLocationL = new Subgoal(ISATLOC, IsAtLocation);
+			isAtLocationL.setAction(left);
+			isAtLocationL.setParams(isWalkNXSG.getParams());
+			isWalkNXSG.setSubgoal(isAtLocationL);
+	
+			Subgoal isAtLocationF = new Subgoal(ISATLOC, IsAtLocation);
+			isAtLocationF.setAction(forward);
+			isAtLocationF.setParams(isWalkPYSG.getParams());
+			isWalkPYSG.setSubgoal(isAtLocationF);
+	
+			Subgoal isAtLocationB = new Subgoal(ISATLOC, IsAtLocation);
+			isAtLocationB.setAction(backward);
+			isAtLocationB.setParams(isWalkNYSG.getParams());
+			isWalkNYSG.setSubgoal(isAtLocationB);
+	
+	//		isWalkNXSG.setAction(left);
+	//		isWalkPYSG.setAction(forward);
+	//		isWalkNYSG.setAction(backward);
+			
+			// Add affordances to subgoals
+			isAYLessSG.setAffordance(dPosY);
+			isAXLessSG.setAffordance(dPosX);
+			isAYMoreSG.setAffordance(dNegY);
+			isAXMoreSG.setAffordance(dNegX);
+			
+			// Add subgoals to Affordances
+			dIsAtLocation.addChild(isAXLessSG);
+			dIsAtLocation.addChild(isAXMoreSG);
+			dIsAtLocation.addChild(isAYLessSG);
+			dIsAtLocation.addChild(isAYMoreSG);
+			dNegX.addChild(isWalkNXSG);
+			dNegY.addChild(isWalkNYSG);
+			dPosY.addChild(isWalkPYSG);
+			dPosX.addChild(isWalkPXSG);
+			
+			// Add affordances to list
+			affordances.put("dIsAtLocation", dIsAtLocation);
+			affordances.put(ISAYMORE, dNegY);
+			affordances.put(ISAXMORE, dNegX);
+			affordances.put(ISAXLESS, dPosX);
+			affordances.put(ISAYLESS, dPosX);
+	
+			// === Set up suboaol stack ===
+			Stack<Subgoal> goalStack = new Stack<Subgoal>();
+			goalStack.push(goal);
+			
+			// Add to domain
+			DOMAIN.setAffordances(affordances);
+			DOMAIN.setGoalStack(goalStack);
+	}
 		return DOMAIN;
 	}
 	
@@ -225,18 +244,28 @@ public class MinecraftDomain implements DomainGenerator{
 		
 		//start by creating the block objects
 		for(int i = 0; i < blockX.size(); i++){
+			int x = blockX.get(i);
 
-			for(int j = 0;j < blockY.get(i); j++) {
-				int x = blockX.get(i);
+			for(int j = 0;j < blockY.get(i); j++) {				
 				int y = j;
+				if (x == 1) continue;
+				if (x == 7) continue;
+				if (y == 7) continue;
 				
-				ObjectInstance block = new ObjectInstance(domain.getObjectClass(CLASSBLOCK), CLASSBLOCK+x+y+1);
-				block.setValue(ATTX, x);
-				block.setValue(ATTY, y);
-				block.setValue(ATTZ, 1); // NOTE: ASSUMING BLOCKS CAN ONLY BE PLACED @ z=1 CURRENTLY
-				s.addObject(block);
+				addBlock(s, x, y, 1);
 			}
+
 		}
+		
+		addBlock(s, 1, 8, 1);
+		addBlock(s, 7, 8, 1);
+		addBlock(s, 0, 7, 1);
+		addBlock(s, 8, 7, 1);
+		addBlock(s, 1, 0, 1);
+		addBlock(s, 7, 0, 1);
+//		addBlock(s, 0, 8, 1);
+		
+		
 		
 		//create exit
 		s.addObject(new ObjectInstance(domain.getObjectClass(CLASSGOAL), CLASSGOAL+0));
@@ -304,21 +333,29 @@ public class MinecraftDomain implements DomainGenerator{
 		s.addObject(block);
 	}
 	
+	public static void removeBlock(State s, int x, int y, int z) {
+		ObjectInstance block = s.getObject("block" + Integer.toString(x) + Integer.toString(y) + Integer.toString(z));
+//		ObjectInstance block = s.getObservableObjectAt(x * MAXY + y + (z - 1) * MAXY * MAXX);
+//		ObjectInstance block = getBlockAt(s, x, y, z);
+		s.removeObject(block);
+		
+	}
+	
 	/* === Class Accessors === */
 	
-	private static ObjectInstance getBlockAt(State s, int x, int y, int z){
+	public static ObjectInstance getBlockAt(State s, int x, int y, int z){
 		
-		List<ObjectInstance> blocks = s.getObjectsOfTrueClass(CLASSBLOCK);
-		for(ObjectInstance block : blocks){
-			int bx = block.getDiscValForAttribute(ATTX);
-			int by = block.getDiscValForAttribute(ATTY);
-			int bz = block.getDiscValForAttribute(ATTZ);
-			if(bx == x && by == y && bz == z){
-				return block;
-			}
-		}
+//		List<ObjectInstance> blocks = s.getObjectsOfTrueClass(CLASSBLOCK);
+//		for(ObjectInstance block : blocks){
+//			int bx = block.getDiscValForAttribute(ATTX);
+//			int by = block.getDiscValForAttribute(ATTY);
+//			int bz = block.getDiscValForAttribute(ATTZ);
+//			if(bx == x && by == y && bz == z){
+//				return block;
+//			}
+//		}
 		
-		return null;
+		return s.getObject("block" + Integer.toString(x) + Integer.toString(y) + Integer.toString(z));
 	}
 	
 	
@@ -761,26 +798,26 @@ public class MinecraftDomain implements DomainGenerator{
 		// Row i will have blocks in all 10 locations
 		for (int i = 0; i < MAXX; i++){
 			// Place a trench @ x = 5
-			if (i == 5)
-			{
-				continue;
-			}
+//			if (i == 5)
+//			{
+//				continue;
+//			}
 			blockX.add(i);
 			blockY.add(MAXY);
 		}
 
 		State s = getCleanState(d, blockX, blockY);
-		addBlock(s, 5, 6, 1); // Adds a bridge over the trench
+
 		// === Add agent and goal === //
 		ObjectInstance agent = s.getObjectsOfTrueClass(CLASSAGENT).get(0);
-		agent.setValue(ATTX, 1);
-		agent.setValue(ATTY, 1);
+		agent.setValue(ATTX, 5);
+		agent.setValue(ATTY, 5);
 		agent.setValue(ATTZ, 2);
 		agent.setValue(ATTBLKNUM, 2);
 
 		ObjectInstance goal = s.getObjectsOfTrueClass(CLASSGOAL).get(0);
-		goal.setValue(ATTX, 8);
-		goal.setValue(ATTY, 1);
+		goal.setValue(ATTX, 5);
+		goal.setValue(ATTY, 9);
 		goal.setValue(ATTZ, 2);
 		
 		s.addObject(new ObjectInstance(DOMAIN.getObjectClass(CLASSAGENT), CLASSAGENT+0));
@@ -820,6 +857,26 @@ public class MinecraftDomain implements DomainGenerator{
 		String[] globalCoords = {nx.toString(), ny.toString(), nz.toString()};
 		
 		return globalCoords;
+	}
+	
+	public static String[] globCoordsToLocal(State s, String[] globCoords) {
+		// Converts agent relative coordinates to global coordinates
+		ObjectInstance agent = s.getObjectsOfTrueClass(CLASSAGENT).get(0);
+		int ax = agent.getDiscValForAttribute(ATTX);
+		int ay = agent.getDiscValForAttribute(ATTY);
+		int az = agent.getDiscValForAttribute(ATTZ);
+
+		int dx = Integer.parseInt(globCoords[0]);
+		int dy = Integer.parseInt(globCoords[1]);
+		int dz = Integer.parseInt(globCoords[2]);
+		
+		Integer nx = dx - ax;
+		Integer ny = dy - ay;
+		Integer nz = dz - az;
+		
+		String[] localCoords = {nx.toString(), ny.toString(), nz.toString()};
+		
+		return localCoords;
 	}
 	
 }

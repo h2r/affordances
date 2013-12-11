@@ -2,6 +2,7 @@ package burlap.oomdp.singleagent;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -111,12 +112,13 @@ public abstract class Action {
 		if(!domain.affordanceMode) {
 			return true;
 		}
-		System.out.println(st.toString() + " -- " + this.name);
+//		System.out.println(st.toString() + " -- " + this.name);
 		
 		// Get relevant Affordance based on subgoal.
 		
 		Affordance curAfford = getRelevAffordance(st, domain);
 		List<Subgoal> subgoals = curAfford.getSubgoals();
+//		Collections.shuffle(subgoals);
 		
 		// Breadth first search through affordance space
 		
@@ -128,7 +130,7 @@ public abstract class Action {
 //		Iterator itr = subgoals.keySet().iterator();
 		while(!bfsQ.isEmpty()) {
 			Subgoal sg = bfsQ.remove();
-			System.out.println(sg.getName());
+//			System.out.println(sg.getName());
 			if (sg.isTrue(st)) {
 				if (sg.inActions(this.name)) {
 					// This action is associated with a relevant subgoal, return true.
@@ -156,35 +158,105 @@ public abstract class Action {
 							Integer dy = Integer.parseInt(afSG.getParams()[1]);
 							Integer dz = Integer.parseInt(afSG.getParams()[2]);
 							
+							String[] oldParams = afSG.getParams();
+							char dir = afSG.getName().charAt(afSG.getName().length() - 1);
+							
+							String[][] possibleParams = new String[2][3];
+							int sgToSet = 0;
 							// Change Y positively
-							while(!afSG.isTrue(st) && dy < MinecraftDomain.MAXY) {
-
-//								Integer dx = Integer.parseInt(afSG.getParams()[0]);
-//								Integer dy = Integer.parseInt(afSG.getParams()[1]) + 1;
-//								Integer dz = Integer.parseInt(afSG.getParams()[2]);
-								dy++;
+							while(dy < MinecraftDomain.MAXY && dx < MinecraftDomain.MAXX) {
+								if (dir == 'X') {
+									dy++;
+								}
+								else if (dir == 'Y') {
+									dx++;
+								}
 								String[] newParams = {dx.toString(), dy.toString(), dz.toString()};
-								afSG.setParams(newParams);							}
+								afSG.setParams(newParams);	
+								
+								if (afSG.isTrue(st)) {
+									possibleParams[sgToSet] = newParams;
+									sgToSet++;
+									break;
+								}
+							}
 
-							while (!afSG.isTrue(st) && dy > -MinecraftDomain.MAXY) {
-								dy--;
+							while (dy > -MinecraftDomain.MAXY && dx > -MinecraftDomain.MAXX) {
+								if (dir == 'X') {
+									dy--;
+								}
+								else if (dir == 'Y') {
+									dx--;
+								}
 								String[] newParams = {dx.toString(), dy.toString(), dz.toString()};
 								afSG.setParams(newParams);
+								
+								if (afSG.isTrue(st)) {
+									possibleParams[sgToSet] = newParams;
+									sgToSet++;
+									break;
+								}
 							}
 							
+							//reset afSG params to one of the subgoals
+							// GLOBAL
+							String[] localParams;
+							
+							if (sgToSet == 2) {
+								String[] globalPossibleParams1 = MinecraftDomain.locCoordsToGlobal(st, possibleParams[0]);
+								String[] globalPossibleParams2 = MinecraftDomain.locCoordsToGlobal(st, possibleParams[1]);
+								
+								if (domain.prevSatSubgoal != null) {
+									localParams = domain.prevSatSubgoal.chooseGoodSubgoal(globalPossibleParams1, globalPossibleParams2);
+								}
+								else {
+									localParams = domain.goalStack.peek().chooseGoodSubgoal(globalPossibleParams1, globalPossibleParams2);
+								}
+								// Now these are local
+								localParams = MinecraftDomain.globCoordsToLocal(st, localParams);
+								
+							}
+							else {
+								// Only found one possible subgoal, use its global parameters for afSG
+								// Local
+								localParams = possibleParams[0];
+							}
+							afSG.setParams(localParams);
+							
+							// isTrue requires relative coordinates
 							if (afSG.isTrue(st) && afSG.hasSubGoal()) {
-								String[] globParams = MinecraftDomain.locCoordsToGlobal(st, afSG.getParams());
-								afSG.getSubgoal().setParams(globParams);
+								System.out.println("SUBGOAL TIME");
+								String[] globalParams = MinecraftDomain.locCoordsToGlobal(st, localParams);
+								
+								int constraintDir = (int)dir - 88;
+								boolean isConstraintLessThan = (Integer.parseInt(oldParams[constraintDir]) < 0);
+								
+								afSG.getSubgoal().setParams(globalParams, constraintDir, isConstraintLessThan);  // (int)'X' == 88
 								
 								// For now only isWalkablePX - should loop and find the place were X is 
 								// walkable and make isAtLocation of that walkable X the new subgoal
-								domain.goalStack.add(afSG.getSubgoal());
+								if (!domain.goalStack.peek().getName().equals(afSG.getSubgoal().getName()) || !domain.goalStack.peek().getParams().equals(afSG.getSubgoal().getParams())) {
+									domain.goalStack.add(afSG.getSubgoal());									
+									System.out.println("I am trying out a new subgoal!");
+								}
+								else {
+//									domain.goalStack.add(afSG.getSubgoal());
+								}
+								
 								curAfford = getRelevAffordance(st, domain);
-								curAfford.setSubGoalParams(globParams);
+//								curAfford.setSubGoalParams(globParams);
 								subgoals = curAfford.getSubgoals();
 								bfsQ.clear();
-								bfsQ.addAll(subgoals);								
+								
+								for (Subgoal newSG: subgoals) {
+									if (!newSG.getName().equals(sg.getName())) {
+										bfsQ.add(newSG);		
+									}
+								}
 							}
+//							else {
+							afSG.setParams(oldParams);
+//							}
 							
 
 
@@ -223,13 +295,16 @@ public abstract class Action {
 		Subgoal goal = domain.goalStack.peek();
 
 		while (goal.isTrue(st)) {
-			domain.goalStack.pop();
+			domain.prevSatSubgoal = domain.goalStack.pop();
+			domain.prevSatSubgoal.switchConstraint();
 			goal = domain.goalStack.peek();
 		}
 		
 		HashMap<String,Affordance> affordances = domain.affordances;
 		String goalName = goal.getName();
 		Affordance curAfford = affordances.get("d" + goalName);
+		String[] globParams = MinecraftDomain.locCoordsToGlobal(st, goal.getParams());
+		curAfford.setSubGoalParams(globParams);
 //		int[] delta = goal.delta(st);
 //
 //		String[] locGoalCoords = {"" + delta[0], "" + delta[1], "" + delta[2]};
