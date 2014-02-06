@@ -1,0 +1,59 @@
+\begin{thebibliography}{}
+@article{Branavan2012,
+   author = {S. R. K. Branavan and Nate Kushman and Tao Lei and Regina Barzilay},
+   title = {Learning High-Level Planning from Text},
+   journal = {ACL},
+   year = {2012},
+}
+
+@article{Steedman2011,
+   author = {Mark Steedman},
+   title = {Formalizing Affordances},
+   year = {2011},
+}
+
+
+@article{Koppula2013a,
+   author = {Hema Koppula and Ashutosh Saxena},
+   title = {Anticipating Human Activities using Object Affordances for Reactive Robot Response},
+   journal = {RSS},
+   year = {2013},
+}
+
+@article{Koppola2013b,
+   author = {Hema Koppula and Rudhir Gupta and Ashutosh Saxena},
+   title = {Learning Human Activities and Object Affordances from RGB-D Videos},
+   year = {2013},
+}
+
+
+@article{Grounds2005,
+   author = {Matthew Grounds, Daniel Kudenko},
+   title = {Combining Reinforcement Learning with Symbolic Planning},
+   journal = {Springer LNAI 4865},
+   year = {2005},
+}
+
+@article{Nguyen2002,
+   author = {XuanLong Nguyen and Subbaro Kambhampati},
+   title = {Reviving Partial Order Planning},
+   journal = {IJCAI},
+   year = {2001},
+}
+
+@article{LaValle1998,
+   author = {Steven M. LaValle},
+   title = {Rapidly Exploring Random Trees: A New Tool for Path Planning},
+   year = {1998},
+}
+
+@Book{Norvig,
+author = {Stuart J. Russell and Peter Norvig},
+title = {Artificial Intelligence: A Modern Approach},
+publisher = {Prentice Halle},
+year = {2010},
+edition = {Third},
+address = {New Jersey, USA}
+}
+
+\end{thebibliography}
