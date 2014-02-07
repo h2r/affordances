@@ -1,13 +1,13 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Debian) (format=pdflatex 2013.5.19)  6 FEB 2014 11:14
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  7 FEB 2014 13:32
 entering extended mode
  restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
 **uai.tex
 (./uai.tex
 LaTeX2e <2011/06/27>
-Babel <v3.8m> and hyphenation patterns for english, dumylang, nohyphenation, lo
-aded.
-(/usr/share/texlive/texmf-dist/tex/latex/base/latex209.def
+Babel <3.9f> and hyphenation patterns for 78 languages loaded.
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/latex209.def
 File: latex209.def 1998/05/13 v0.52 Standard LaTeX file
 
 
@@ -40,7 +40,7 @@ File: latex209.def 1998/05/13 v0.52 Standard LaTeX file
 \@cla=\count79
 \@clb=\count80
 \mscount=\count81
-(/usr/share/texlive/texmf-dist/tex/latex/base/tracefnt.sty
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/tracefnt.sty
 Package: tracefnt 1997/05/29 v3.0j Standard LaTeX package (font tracing)
 \tracingfonts=\count82
 LaTeX Info: Redefining \selectfont on input line 101.
@@ -57,7 +57,7 @@ LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 295.
 LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 301.
 LaTeX Info: Redefining \em on input line 311.
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/latexsym.sty
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/latexsym.sty
 Package: latexsym 1998/08/17 v2.2e Standard LaTeX package (lasy symbols)
 \symlasy=\mathgroup10
 LaTeX Font Info:    Overwriting symbol font `lasy' in version `bold'
@@ -67,9 +67,9 @@ LaTeX Font Info:    Redeclaring math delimiter \lgroup on input line 375.
 LaTeX Font Info:    Redeclaring math delimiter \rgroup on input line 377.
 LaTeX Font Info:    Redeclaring math delimiter \bracevert on input line 379.
 )
-(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
-(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/size10.clo
 File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count83
@@ -94,8 +94,7 @@ LaTeX Info: Redefining \mit on input line 507.
 \bibindent=\dimen105
 ) (./proceed.sty
 \titlebox=\skip43
-)
-(./uai.aux)
+) (./uai.aux)
 \openout1 = `uai.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 5.
@@ -115,7 +114,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 7.
 LaTeX Font Info:    Try loading font information for U+lasy on input line 7.
- (/usr/share/texlive/texmf-dist/tex/latex/base/ulasy.fd
+ (/usr/local/texlive/2013/texmf-dist/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
 
@@ -128,11 +127,29 @@ LaTeX Warning: Citation `Gibson' on page 1 undefined on input line 10.
 LaTeX Warning: Citation `Norvig' on page 1 undefined on input line 10.
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+LaTeX Warning: Citation `Norvig' on page 1 undefined on input line 15.
 
 
+LaTeX Warning: Citation `Grounds2005' on page 1 undefined on input line 15.
+
+
+LaTeX Warning: Citation `Gibson' on page 1 undefined on input line 20.
+
+
+LaTeX Warning: Citation `Koppula2013a' on page 1 undefined on input line 20.
+
+
+LaTeX Warning: Citation `Koppula2013b' on page 1 undefined on input line 20.
+
+
+LaTeX Warning: Citation `Branavan2012' on page 1 undefined on input line 22.
+
+[1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+
+
+
+]
+[2
 
 ] (./uai.aux)
 
@@ -140,20 +157,23 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 360 strings out of 495059
- 4138 string characters out of 3182030
- 50379 words of memory out of 3000000
- 3596 multiletter control sequences out of 15000+200000
- 10508 words of font info for 39 fonts, out of 3000000 for 9000
- 14 hyphenation exceptions out of 8191
- 22i,9n,19p,909b,162s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
-Output written on uai.pdf (1 page, 48105 bytes).
+ 364 strings out of 493315
+ 4246 string characters out of 6137904
+ 60275 words of memory out of 5000000
+ 3869 multiletter control sequences out of 15000+600000
+ 10508 words of font info for 39 fonts, out of 8000000 for 9000
+ 957 hyphenation exceptions out of 8191
+ 22i,9n,19p,909b,162s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
+></usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
+</usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
+/usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></u
+sr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></us
+r/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+Output written on uai.pdf (2 pages, 82671 bytes).
 PDF statistics:
- 20 PDF objects out of 1000 (max. 8388607)
- 13 compressed objects within 1 object stream
+ 35 PDF objects out of 1000 (max. 8388607)
+ 24 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

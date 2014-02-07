@@ -11,18 +11,51 @@ We introduce a novel approach to planning that combines the concept of affordanc
 \end{abstract}
 
 \section{INTRODUCTION}
+% Motivation
+As robots move out of the lab and into the real world, planning algorithms need to be able to scale to domains of increased noise, size, and complexity. In Norvig and Russell's AI textbook, they state that, ``Planning is foremost an exercise in controlling combinatorial explosion." \cite{Norvig}, an explosion which is currently uncontrolled across many planning domains. A classic formalization of this issue is the sequential decision making problem, where increases in problem size and complexity directly correspond to an explosion in the state-action space. Current approaches to solving sequential decision making problems cannot tackle these problems as the state-action space becomes large \cite{Grounds2005}. 
+
+There is a strong need for a generalizable form of knowledge that, when coupled with a planner, is capable of solving problems in these massive domains. Humans provide an excellent existence proof for such planning, as we are capable of searching over an immense number of possible actions when presented with a goal - a recent concept out of 20th century psychological literature, an ``affordance" has provided an explanation as to how this mechanism of human planning works.
+
+% Affordance paragraph -- Flush this out
+Broadly, an affordance is "what [the environment] offers [an] animal, what [the environment] provides or furnishes, either for good or ill" \cite{Gibson}, and may be employed in the context of planning to direct an agent toward relevant actions or parts of the environment (based on the agent's desires/goals). Additionally, roboticists have recently become interested in leveraging affordances for a variety of applications \cite{Koppula2013a} \cite{Koppula2013b}. In this paper we will employ affordances as a means of reducing large and intractable search problems into smaller, more reasonable problems. When instantiated in a physical robot, this will enable the robot to handle tasks that involve high order action spaces and expansive domains.
+
+We propose a new formalism for representing affordances in an operationalized knowledge base. Current approaches to scaling MDPs up to large domains involve either pruning the state space of the world (by using subgoals), or limiting the action space \cite{Branavan2012}. In our approach, by introducing the affordance knowledge, we effectively limit the state space {\it and} the action space.
+
+% Evaluation
 
 \section{BACKGROUND}
 
+\subsection{AFFORDANCES}
+
+An affordance is what an environment, or the objects in it, offer the agent. For example, if the agent were trying to drink coffee then a mug would afford carrying liquid. However if instead the agent wanted to secure some papers outside on a windy day, then the mug could afford weighing the papers down (i.e. affords using it as a paper weight). Often, objects may be defined in terms of what they afford, such as a bridge - suppose there is a log lying horizontally across a river; such a log provides passage over a river and could reasonably be referred to as a "bridge" simply because it affords crossing the river.
+
 \subsection{SUBGOALS}
 
+Subgoal planning makes use of the fact that certain goals in planning domains may only be brought about if certain preconditions are first satisfied. For instance, in the Minecraft domain, one must be in possession of grain in order to bake bread. In Branavan et. al, they explore learning subgoals and applying them in order to plan through a variety of problems in Minecraft. 
+
+
 \subsection{OPTIONS}
+
+
 
 \subsection{MACRO-ACTIONS}
 
 \subsection{OO-MDP}
 
 \section{AFFORDANCE FORMALISM}
+
+An Affordance is defined as: $\mathcal{A} =\ <\ $a$ ,\ p,\ \mathcal{G}>$, where:
+
+\begin{itemize}
+\item[] $a \in A$
+\item[] $p\ : s \rightarrow \{0,1\}$
+\item[] $ \mathcal{G}\ :\ ${\it s }$ \rightarrow \{$0$,1\}$
+\end{itemize}
+
+Where $a$ is a {\it primitive action} in the agent's set of available actions, $p$ is a {\it precondition} which is a predicate on a given state $s$, and $\mathcal{G}$ is a desired {\it postcondition}, which is also a predicate on a particular state $s$.
+
+The constituents that make up an Affordance parallel those of the other planning approaches discussed in the previous section.
+
 
 \section{EXPERIMENTS}
 
