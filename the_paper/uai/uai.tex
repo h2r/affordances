@@ -1,49 +1,38 @@
 \documentstyle[proceed]{article} 
 
 \title{Planning with Affordances}
-
+\newcommand{\ignore}[1]{}
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
-We introduce a novel approach to planning that combines the concept of affordances \cite{Gibson} with a standard planning algorithm, Value Iteration. Classical planning algorithms suffer from combinatoric state-space explosions \cite{Norvig} that cripple their effectiveness. Thus, in order to fully realize the potential of planning algorithms, we have sought to make these previously difficult problems more tractable; through the use of our affordance framework we seek to ``guide" the agent as it plans, significantly reducing the size of exponential state-spaces. To accomplish this, we propose a planning algorithm that prunes the state action space using affordances. Evaluation is performed in the Minecraft domain on several path planning tasks - we demonstrate a significant increase in speed and reduction in state-space exploration across 5 different path planning tasks.
+%We introduce a novel approach to planning that combines the concept of affordances \cite{Gibson} with a standard planning algorithm, Value Iteration. Classical planning algorithms suffer from combinatoric state-space explosions \cite{Norvig} that cripple their effectiveness. Thus, in order to fully realize the potential of planning algorithms, we have sought to make these previously difficult problems more tractable; through the use of our affordance framework we seek to ``guide" the agent as it plans, significantly reducing the size of exponential state-spaces. To accomplish this, we propose a planning algorithm that prunes the state action space using affordances. Evaluation is performed in the Minecraft domain on several path planning tasks - we demonstrate a significant increase in speed and reduction in state-space exploration across 5 different path planning tasks.
 \end{abstract}
 
 \section{INTRODUCTION}
-% Motivation
-As robots move out of the lab and into the real world, planning algorithms need to be able to scale to domains of increased noise, size, and complexity. In Norvig and Russell's AI textbook, they state that, ``Planning is foremost an exercise in controlling combinatorial explosion." \cite{Norvig}, an explosion which is currently uncontrolled across many planning domains. A classic formalization of this issue is the sequential decision making problem, where increases in problem size and complexity directly correspond to an explosion in the state-action space. Current approaches to solving sequential decision making problems cannot tackle these problems as the state-action space becomes large \cite{Grounds2005}. 
+%% Motivation
+%As robots move out of the lab and into the real world, planning algorithms need to be able to scale to domains of increased noise, size, and complexity. In Norvig and Russell's AI textbook, they state that, ``Planning is foremost an exercise in controlling combinatorial explosion." \cite{Norvig}, an explosion which is currently uncontrolled across many planning domains. A classic formalization of this issue is the sequential decision making problem, where increases in problem size and complexity directly correspond to an explosion in the state-action space. Current approaches to solving sequential decision making problems cannot tackle these problems as the state-action space becomes large \cite{Grounds2005}. 
+%
+%There is a strong need for a generalizable form of knowledge that, when coupled with a planner, is capable of solving problems in these massive domains. Humans provide an excellent existence proof for such planning, as we are capable of searching over an immense number of possible actions when presented with a goal - a recent concept out of 20th century psychological literature, an ``affordance" has provided an explanation as to how this mechanism of human planning works.
+%
+%% Affordance paragraph
+%Broadly, an affordance is "what [the environment] offers [an] animal, what [the environment] provides or furnishes, either for good or ill" \cite{Gibson}, and may be employed in the context of planning to direct an agent toward relevant actions or parts of the environment (based on the agent's desires/goals). Additionally, roboticists have recently become interested in leveraging affordances for a variety of applications \cite{Koppula2013a} \cite{Koppula2013b}. In this paper we will employ affordances as a means of reducing large and intractable search problems into smaller, more reasonable problems. When instantiated in a physical robot, this will enable the robot to handle tasks that involve high order action spaces and expansive domains.
+%
+%We propose a new formalism for representing affordances in an operationalized knowledge base. Current approaches to scaling MDPs up to large domains involve either pruning the state space of the world (by using subgoals), or limiting the action space \cite{Branavan2012}. In our approach, by introducing the affordance knowledge, we effectively limit the state space {\it and} the action space.
+%
+%% Evaluation
 
-There is a strong need for a generalizable form of knowledge that, when coupled with a planner, is capable of solving problems in these massive domains. Humans provide an excellent existence proof for such planning, as we are capable of searching over an immense number of possible actions when presented with a goal - a recent concept out of 20th century psychological literature, an ``affordance" has provided an explanation as to how this mechanism of human planning works.
 
-% Affordance paragraph -- Flush this out
-Broadly, an affordance is "what [the environment] offers [an] animal, what [the environment] provides or furnishes, either for good or ill" \cite{Gibson}, and may be employed in the context of planning to direct an agent toward relevant actions or parts of the environment (based on the agent's desires/goals). Additionally, roboticists have recently become interested in leveraging affordances for a variety of applications \cite{Koppula2013a} \cite{Koppula2013b}. In this paper we will employ affordances as a means of reducing large and intractable search problems into smaller, more reasonable problems. When instantiated in a physical robot, this will enable the robot to handle tasks that involve high order action spaces and expansive domains.
-
-We propose a new formalism for representing affordances in an operationalized knowledge base. Current approaches to scaling MDPs up to large domains involve either pruning the state space of the world (by using subgoals), or limiting the action space \cite{Branavan2012}. In our approach, by introducing the affordance knowledge, we effectively limit the state space {\it and} the action space.
-
-% Evaluation
 
 \section{BACKGROUND}
 
 \subsection{AFFORDANCES}
 
-An affordance is what an environment, or the objects in it, offer the agent. For example, if the agent were trying to drink coffee then a mug would afford carrying liquid. However if instead the agent wanted to secure some papers outside on a windy day, then the mug could afford weighing the papers down (i.e. affords using it as a paper weight). Often, objects may be defined in terms of what they afford, such as a bridge - suppose there is a log lying horizontally across a river; such a log provides passage over a river and could reasonably be referred to as a "bridge" simply because it affords crossing the river.
+%% Intuition
+%An affordance is what an environment, or the objects in it, offer the agent. For example, if the agent were trying to drink coffee then a mug would afford carrying liquid. However if instead the agent wanted to secure some papers outside on a windy day, then the mug could afford weighing the papers down (i.e. affords using it as a paper weight). Often, objects may be defined in terms of what they afford, such as a bridge - suppose there is a log lying horizontally across a river; such a log provides passage over a river and could reasonably be referred to as a "bridge" simply because it affords crossing the river.
 
-\subsection{SUBGOALS}
-
-Subgoal planning makes use of the fact that certain goals in planning domains may only be brought about if certain preconditions are first satisfied. For instance, in the Minecraft domain, one must be in possession of grain in order to bake bread. In Branavan et. al, they explore learning subgoals and applying them in order to plan through a variety of problems in Minecraft. 
-
-
-\subsection{OPTIONS}
-
-
-
-\subsection{MACRO-ACTIONS}
-
-\subsection{OO-MDP}
-
-\section{AFFORDANCE FORMALISM}
-
+%% Formalism
 An Affordance is defined as: $\mathcal{A} =\ <\ $a$ ,\ p,\ \mathcal{G}>$, where:
 
 \begin{itemize}
@@ -54,13 +43,42 @@ An Affordance is defined as: $\mathcal{A} =\ <\ $a$ ,\ p,\ \mathcal{G}>$, where:
 
 Where $a$ is a {\it primitive action} in the agent's set of available actions, $p$ is a {\it precondition} which is a predicate on a given state $s$, and $\mathcal{G}$ is a desired {\it postcondition}, which is also a predicate on a particular state $s$.
 
-The constituents that make up an Affordance parallel those of the other planning approaches discussed in the previous section.
+The constituents that make up an Affordance parallel those of the other planning approaches discussed in the background section.
+
+\subsection{SUBGOALS}
+% % Intuition
+Subgoal planning leverages the intuition that certain goals in planning domains may only be brought about if certain preconditions are first satisfied. For instance, in the Minecraft domain, one must be in possession of grain in order to bake bread. In Branavan et. al, they explore learning subgoals and applying them in order to plan through a variety of problems in Minecraft.
+
+% Formalism
+In subgoal planning, the agent is given a pair of predicates, $<x_k, x_l >$, where $x_l$ is the effect of some action sequence performed on a state in which $x_k$ is true. Thus, subgoal planning entails high-level planning in subgoal space, and low-level planning to get from subgoal to subgoal.
+
+However, subgoal planning falls short in that sub-goals only go so far in direction the low-level planner. The planner will still waste many cycles searching through meaningless portions of the state-space.
+
+% Example
+
+\subsection{OPTIONS}
+
+The options framework proposes incorporating high-level policies to accomplish specific sub tasks. For instance, when an agent is near a door, the agent can engage the `door-opening-option-policy', which switches from the standard high-level planner, to running a policy that is hand crafted to open doors. An option $o$ is defined as follows:
+
+$o\ =\ <\pi_0, I_0, \beta_0>$, where:
+
+\begin{itemize}
+\item[] $\pi_0 : (s,a) \rightarrow [0,1]$
+\item[] $I_0 : s \rightarrow \{0,1\}$
+\item[] $\beta_0 : s \rightarrow [0,1]$
+\end{itemize}
+
+Here, $\pi_0$ represents the {\it option policy}, $I_0$ represents a precondition, under which the option policy may initiate, and $\beta_0$ represent the post condition, which determines which states terminate the execution of the option policy.
+
+As Konidaris and Barto point out, the classic options framework is not generalizable, as do not enable an agent to transfer knowledge from one state space to another. \ignore{cite Konidaris} In Konidaris and Barto's recent paper\ignore{cite}, they expand on the classic options framework and allow for a more portable implementation of options. However, planning with options requires either that we plan in a mixed space of actions {\it and} options, or requires that we plan entirely in the space of options. Additionally, options requires that we provide the agent with option policies, something which is not easily crafted by a human designer (especially if we want an optimal policy, which we do).
+
+The Affordance formalism introduced above and expanded on in this paper, resolves the weaknesses of these other frameworks by limiting the complexity of the seed knowledge required of the designer, and providing enough knowledge of the right kind to limit the search space, and still maintain scalability. (assuming experiments back this up)
 
 
 \section{EXPERIMENTS}
 
-\subsection{BASELINES}
-
 \section{RESULTS}
+
+\section{CONCLUSION}
 
 \end{document}
