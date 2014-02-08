@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  7 DEC 2013 19:00
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  8 FEB 2014 15:01
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**outline.tex
-(./outline.tex
+**fall_13_draft.tex
+(./fall_13_draft.tex
 LaTeX2e <2011/06/27>
 Babel <3.9f> and hyphenation patterns for 78 languages loaded.
 (/usr/local/texlive/2013/texmf-dist/tex/latex/base/article.cls
@@ -161,7 +161,11 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 (./aaai.sty
 Conference Style for AAAI for LaTeX 2e -- version of 2 February 2013
 \titlebox=\skip46
-) (/usr/local/texlive/2013/texmf-dist/tex/latex/listings/listings.sty
+) (/usr/local/texlive/2013/texmf-dist/tex/latex/preprint/fullpage.sty
+Package: fullpage 1999/02/23 1.1 (PWD)
+\FP@margin=\skip47
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/listings/listings.sty
 \lst@mode=\count102
 \lst@gtempboxa=\box28
 \lst@token=\toks25
@@ -506,46 +510,72 @@ Package: calc 2007/08/22 v4.3 Infix arithmetic (KKT,FJ)
 \calc@Bcount=\count132
 \calc@Adimen=\dimen162
 \calc@Bdimen=\dimen163
-\calc@Askip=\skip47
-\calc@Bskip=\skip48
+\calc@Askip=\skip48
+\calc@Bskip=\skip49
 LaTeX Info: Redefining \setlength on input line 76.
 LaTeX Info: Redefining \addtolength on input line 77.
 \calc@Ccount=\count133
-\calc@Cskip=\skip49
+\calc@Cskip=\skip50
 )
 \c@@todonotes@numberoftodonotes=\count134
-) (./outline.aux)
-\openout1 = `outline.aux'.
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/algorithms/algorithm.sty
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
+nment
+\@float@every@algorithm=\toks39
+\c@algorithm=\count135
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/algorithmicx/algpseudocode.sty
+Package: algpseudocode 
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
+(/usr/local/texlive/2013/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
+Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
 
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+\c@ALG@line=\count136
+\c@ALG@rem=\count137
+\c@ALG@nested=\count138
+\ALG@tlm=\skip51
+\ALG@thistlm=\skip52
+\c@ALG@Lnr=\count139
+\c@ALG@blocknr=\count140
+\c@ALG@storecount=\count141
+\c@ALG@tmpcounter=\count142
+\ALG@tmplength=\skip53
+)
+Document Style - pseudocode environments for use with the `algorithmicx' style
+)
+No file fall_13_draft.aux.
+\openout1 = `fall_13_draft.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
 (/usr/local/texlive/2013/texmf-dist/tex/latex/ucs/ucsencs.def
 File: ucsencs.def 2011/01/21 Fixes to fontencodings LGR, T3
 )
 (/usr/local/texlive/2013/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count135
+\scratchcounter=\count143
 \scratchdimen=\dimen164
 \scratchbox=\box41
-\nofMPsegments=\count136
-\nofMParguments=\count137
-\everyMPshowfont=\toks39
-\MPscratchCnt=\count138
+\nofMPsegments=\count144
+\nofMParguments=\count145
+\everyMPshowfont=\toks40
+\MPscratchCnt=\count146
 \MPscratchDim=\dimen165
-\MPnumerator=\count139
-\makeMPintoPDFobject=\count140
-\everyMPtoPDFconversion=\toks40
+\MPnumerator=\count147
+\makeMPintoPDFobject=\count148
+\everyMPtoPDFconversion=\toks41
 ) (/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 )
@@ -594,68 +624,242 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\c@lstlisting=\count141
+\c@lstlisting=\count149
 
 ABD: EveryShipout initializing macros
-LaTeX Font Info:    Try loading font information for U+msa on input line 22.
+LaTeX Font Info:    Try loading font information for U+msa on input line 27.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 22.
+LaTeX Font Info:    Try loading font information for U+msb on input line 27.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+wasy on input line 22.
+LaTeX Font Info:    Try loading font information for U+wasy on input line 27.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/wasysym/uwasy.fd
 File: uwasy.fd 2003/10/30 v2.0 Wasy-2 symbol font definitions
 )
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 22.
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 27.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
-LaTeX Font Info:    Try loading font information for OMS+pcr on input line 22.
+LaTeX Font Info:    Try loading font information for OMS+pcr on input line 27.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/omspcr.fd
 File: omspcr.fd 
 )
 LaTeX Font Info:    Font shape `OMS/pcr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 22.
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 22.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 27.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 27.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <9> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 22.
- [1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 27.
+
+
+LaTeX Warning: Citation `Gibson' on page 1 undefined on input line 30.
+
+
+LaTeX Warning: Citation `Norvig' on page 1 undefined on input line 30.
+
+
+LaTeX Warning: Citation `Norvig' on page 1 undefined on input line 35.
+
+
+LaTeX Warning: Citation `Grounds2005' on page 1 undefined on input line 35.
+
+
+LaTeX Warning: Citation `Gibson' on page 1 undefined on input line 40.
+
+
+LaTeX Warning: Citation `Koppula2013a' on page 1 undefined on input line 40.
+
+
+LaTeX Warning: Citation `Koppula2013b' on page 1 undefined on input line 40.
+
+
+LaTeX Warning: Citation `Branavan2012' on page 1 undefined on input line 42.
+
+<images/formalism.png, id=4, 1271.75125pt x 677.53125pt>
+File: images/formalism.png Graphic file (type png)
+
+<use images/formalism.png>
+Package pdftex.def Info: images/formalism.png used on input line 49.
+(pdftex.def)             Requested size: 432.38971pt x 230.35757pt.
+
+
+LaTeX Warning: Citation `Grounds2005' on page 1 undefined on input line 55.
+
+[1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
 
-] (./outline.aux) ) 
+]
+
+LaTeX Warning: Citation `Branavan2012' on page 2 undefined on input line 57.
+
+
+LaTeX Warning: Citation `Branavan2012' on page 2 undefined on input line 61.
+
+
+LaTeX Warning: Citation `Steedman2011' on page 2 undefined on input line 63.
+
+
+LaTeX Warning: Citation `Steedman2002' on page 2 undefined on input line 63.
+
+
+LaTeX Warning: Citation `Koppula2013a' on page 2 undefined on input line 65.
+
+
+LaTeX Warning: Citation `Koppula2013b' on page 2 undefined on input line 65.
+
+
+LaTeX Warning: Citation `Pas' on page 2 undefined on input line 65.
+
+
+LaTeX Warning: Citation `Norvig' on page 2 undefined on input line 67.
+
+
+LaTeX Warning: Citation `Nguyen2002' on page 2 undefined on input line 67.
+
+[2 <./images/formalism.png>]
+
+LaTeX Warning: Citation `Mineflayer' on page 3 undefined on input line 77.
+
+
+LaTeX Warning: Citation `Norvig' on page 3 undefined on input line 83.
+
+
+LaTeX Warning: Citation `Grounds2005' on page 3 undefined on input line 83.
+
+<images/problem.png, id=22, 966.61125pt x 617.30624pt>
+File: images/problem.png Graphic file (type png)
+
+<use images/problem.png>
+Package pdftex.def Info: images/problem.png used on input line 89.
+(pdftex.def)             Requested size: 193.31882pt x 123.45906pt.
+ <images/isWalk.png, id=23, 933.4875pt x 619.31375pt>
+File: images/isWalk.png Graphic file (type png)
+
+<use images/isWalk.png>
+Package pdftex.def Info: images/isWalk.png used on input line 91.
+(pdftex.def)             Requested size: 186.69418pt x 123.86055pt.
+
+
+LaTeX Warning: Citation `Gibson' on page 3 undefined on input line 99.
+
+
+LaTeX Warning: Reference `fig:affordance_tree' on page 3 undefined on input lin
+e 101.
+
+[3]
+
+LaTeX Warning: Reference `fig:chart' on page 4 undefined on input line 115.
+
+Package epstopdf Info: Source file: <images/statespace_size.eps>
+(epstopdf)                    date: 2013-12-11 20:39:28
+(epstopdf)                    size: 14077 bytes
+(epstopdf)             Output file: <images/statespace_size-eps-converted-to.pd
+f>
+(epstopdf)                    date: 2013-12-11 20:39:46
+(epstopdf)                    size: 7682 bytes
+(epstopdf)             Command: <repstopdf --outfile=images/statespace_size-eps
+-converted-to.pdf images/statespace_size.eps>
+(epstopdf)             \includegraphics on input line 119.
+Package epstopdf Info: Output file is already uptodate.
+<images/statespace_size-eps-converted-to.pdf, id=29, 449.68pt x 338.26375pt>
+File: images/statespace_size-eps-converted-to.pdf Graphic file (type pdf)
+
+<use images/statespace_size-eps-converted-to.pdf>
+Package pdftex.def Info: images/statespace_size-eps-converted-to.pdf used on in
+put line 119.
+(pdftex.def)             Requested size: 224.83945pt x 169.13145pt.
+
+Overfull \hbox (11.90613pt too wide) in paragraph at lines 119--120
+ [][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+LaTeX Warning: Reference `fig:action_space' on page 4 undefined on input line 1
+24.
+
+<images/comparison.png, id=30, 1016.79875pt x 528.97626pt>
+File: images/comparison.png Graphic file (type png)
+
+<use images/comparison.png>
+Package pdftex.def Info: images/comparison.png used on input line 127.
+(pdftex.def)             Requested size: 203.35614pt x 105.79337pt.
+ [4 <./images/problem.png> <./images/isWalk.png> <./images/statespace_size-eps-
+converted-to.pdf> <./images/comparison.png>]
+[5]
+
+LaTeX Warning: Citation `Branavan2012' on page 6 undefined on input line 218.
+
+
+LaTeX Warning: Citation `LaValle1998' on page 6 undefined on input line 220.
+
+
+LaTeX Warning: Citation `Branavan2012' on page 6 undefined on input line 227.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 226--228
+
+ []
+
+
+Underfull \hbox (badness 2608) in paragraph at lines 226--228
+\OT1/cmr/m/n/10 Stefanie Tellex, Eu-gene Char-niak, The en-
+ []
+
+
+Underfull \hbox (badness 1178) in paragraph at lines 226--228
+\OT1/cmr/m/n/10 project, Yoav Artzi, Nate Kush-man, Brown
+ []
+
+No file fall_13_draft.bbl.
+[6] (./fall_13_draft.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
- 13455 strings out of 493315
- 241035 string characters out of 6137904
- 301489 words of memory out of 5000000
- 16598 multiletter control sequences out of 15000+600000
- 8567 words of font info for 34 fonts, out of 8000000 for 9000
+ 14081 strings out of 493315
+ 250427 string characters out of 6137904
+ 316297 words of memory out of 5000000
+ 17182 multiletter control sequences out of 15000+600000
+ 13107 words of font info for 51 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 63i,11n,57p,426b,269s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2013/texmf-dist/fonts/enc/dvips/base/8r.
-enc}</usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.p
-fb></usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pf
-b></usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
-</usr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></u
-sr/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></us
-r/local/texlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/
-local/texlive/2013/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb>
-Output written on outline.pdf (1 page, 86851 bytes).
+ 63i,11n,57p,1050b,308s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2013/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
+exlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/te
+xlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/tex
+live/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texli
+ve/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/local/texli
+ve/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texliv
+e/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/
+2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/201
+3/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2013/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2013/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2013/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2013/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2013/texmf-di
+st/fonts/type1/urw/courier/ucrr8a.pfb>
+Output written on fall_13_draft.pdf (6 pages, 816599 bytes).
 PDF statistics:
- 40 PDF objects out of 1000 (max. 8388607)
- 29 compressed objects within 1 object stream
+ 89 PDF objects out of 1000 (max. 8388607)
+ 61 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 13 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 38 words of extra memory for PDF output out of 10000 (max. 10000000)
 
