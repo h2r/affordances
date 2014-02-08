@@ -34,4 +34,4 @@ TO USE:
 
 	[d] See commands listed in move.js (ex: "plan1", "F", "reset", etc.)
 
-Contact Dave Abel for any questions @ David_Abel@brown.edu
+Contact Dave Abel or Gabriel Barth-Maron for any questions at {David_Abel, gabriel_barth-maron}@brown.edu
