@@ -56,9 +56,11 @@ However, subgoal planning falls short in that sub-goals only go so far in direct
 
 % Example
 
+% PseudoCode
+
 \subsection{OPTIONS}
 
-The options framework proposes incorporating high-level policies to accomplish specific sub tasks. For instance, when an agent is near a door, the agent can engage the `door-opening-option-policy', which switches from the standard high-level planner, to running a policy that is hand crafted to open doors. An option $o$ is defined as follows:
+The options framework proposes incorporating high-level policies to accomplish specific sub tasks. For instance, when an agent is near a door, the agent can engage the `door-opening-option-policy', which switches from the standard high-level planner to running a policy that is hand crafted to open doors. An option $o$ is defined as follows:
 
 $o\ =\ <\pi_0, I_0, \beta_0>$, where:
 
@@ -70,9 +72,9 @@ $o\ =\ <\pi_0, I_0, \beta_0>$, where:
 
 Here, $\pi_0$ represents the {\it option policy}, $I_0$ represents a precondition, under which the option policy may initiate, and $\beta_0$ represent the post condition, which determines which states terminate the execution of the option policy.
 
-As Konidaris and Barto point out, the classic options framework is not generalizable, as it does not enable an agent to transfer knowledge from one state space to another. \ignore{cite Konidaris} In Konidaris and Barto's recent paper\ignore{cite}, they expand on the classic options framework and allow for a more portable implementation of options. However, planning with options requires either that we plan in a mixed space of actions {\it and} options, or requires that we plan entirely in the space of options. Additionally, options requires that we provide the agent with option policies, something which is not easily crafted by a human designer (especially if we want an optimal policy, which we do).
+As Konidaris and Barto point out, the classic options framework is not generalizable, as it does not enable an agent to transfer knowledge from one state space to another. Recently, Konidaris and Barto's \ignore{cite} expand on the classic options framework and allow for a more portable implementation of options. Still, though, planning with options requires either that we plan in a mixed space of actions {\it and} options (which blows up the size of the search space), or requires that we plan entirely in the space of options. Additionally, providing an agent with an option policy is a difficult task for a human designer (especially if we want an optimal policy, which we do).
 
-The Affordance formalism introduced above and expanded on in this paper, resolves the weaknesses of these other frameworks by limiting the complexity of the seed knowledge required of the designer, and providing enough knowledge of the right kind to limit the search space, and still maintain scalability. (assuming experiments back this up)
+The Affordance formalism introduced above and expanded on in this paper resolves the weaknesses of these other frameworks by limiting the complexity of the seed knowledge required of the designer, providing enough knowledge to limit the search space, and still maintains scalability. (note: assuming experiments back this up)
 
 
 \section{EXPERIMENTS}
