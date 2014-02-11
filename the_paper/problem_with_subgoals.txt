@@ -18,3 +18,6 @@ Ideas:
 	- Maybe affordances are fine, and so are subgoals, they're just not THAT good. They can still prune the space a bit, and with some other tricks (maybe clustering subgoals based on similarity/delta between their prop functions or something, or perception -> plane idea).
 	- Humans do a pretty good job of gauging possibility without simulation (is it simulation or like, actually doing it, slash requiring an existence proof). Example: addition, two planes separated by a bridge, etc.
 
+
+
+final note: Movement subgoals (+ destruction and block placement) if useful, are specific to a domain (and too specific)
