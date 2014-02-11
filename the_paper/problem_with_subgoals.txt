@@ -1,0 +1,20 @@
+Statement of Problem: 
+
+Affordance now is Subgoal model, but also pruning actions based on current goal/subgoal.
+
+(+ preconditions)
+
+Movement is just fundamentally not a natural extension of subgoals. Every state that is 1 action away from the goal becomes a subgoal, rinse and repeat. Planning becomes entirely low level.
+
+Subgoals don't know enough about what's going on in order to tell you which path to the goal to take:
+	- <Oven, Bread> -> what about a world without an oven?
+	- All movement subgoals are basically specific to an individual problem. (bridge world, trench world, door, etc.). Otherwise, you get this low level planning problem
+
+The reason affordances worked before (w/ the tree formalism) is that we were creating subgoals as needed as we planned. Reason we can't do that now is that it was too heavy handed.
+
+
+Ideas:
+	- Maybe the tree formalism is the way to go, maybe its not too heavy handed, and maybe we can somehow squeeze out the definition of <p,g,a> from the tree
+	- Maybe affordances are fine, and so are subgoals, they're just not THAT good. They can still prune the space a bit, and with some other tricks (maybe clustering subgoals based on similarity/delta between their prop functions or something, or perception -> plane idea).
+	- Humans do a pretty good job of gauging possibility without simulation (is it simulation or like, actually doing it, slash requiring an existence proof). Example: addition, two planes separated by a bridge, etc.
+
