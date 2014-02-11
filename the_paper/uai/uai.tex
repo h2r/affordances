@@ -1,4 +1,7 @@
-\documentstyle[proceed]{article} 
+\documentclass[]{article} 
+\usepackage{proceed2e}
+
+\usepackage[numbers,sort]{natbib}
 
 \title{Planning with Affordances}
 \newcommand{\ignore}[1]{}
@@ -7,7 +10,19 @@
 \maketitle
 
 \begin{abstract}
-%We introduce a novel approach to planning that combines the concept of affordances \cite{Gibson} with a standard planning algorithm, Value Iteration. Classical planning algorithms suffer from combinatoric state-space explosions \cite{Norvig} that cripple their effectiveness. Thus, in order to fully realize the potential of planning algorithms, we have sought to make these previously difficult problems more tractable; through the use of our affordance framework we seek to ``guide" the agent as it plans, significantly reducing the size of exponential state-spaces. To accomplish this, we propose a planning algorithm that prunes the state action space using affordances. Evaluation is performed in the Minecraft domain on several path planning tasks - we demonstrate a significant increase in speed and reduction in state-space exploration across 5 different path planning tasks.
+Current methods for exactly solving decision-making under uncertainty
+require exhaustive enumeration of all possible states and actions,
+leading to expotential run times which have been referred to as the
+``curse of dimensionality.''  Approaches to address this problem by
+providing the system with formally encoded knowledge such as options
+or macro-actions, still fail to prevent the system from considering
+many actions which seem obviously irrelevant for a human partner.  To
+address this issue, we introduce a novel approach to representing
+knowledge about how to plan in terms of {\em
+  affordances}~\citep{gibson77}.  Evaluation is performed in the
+Minecraft domain on several path planning tasks - we demonstrate a
+significant increase in speed and reduction in state-space exploration
+across 5 different path planning tasks.
 \end{abstract}
 
 \section{INTRODUCTION}
@@ -96,5 +111,9 @@ Task List, apply each planning system (Aff, O, SG) to all tasks.
 
 
 \section{CONCLUSION}
+
+\bibliographystyle{plainnat}
+\bibliography{main}  
+
 
 \end{document}
