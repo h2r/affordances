@@ -6,41 +6,81 @@
 \title{Planning with Affordances}
 \newcommand{\ignore}[1]{}
 \begin{document}
-
+\author{}
 \maketitle
 
 \begin{abstract}
 Current methods for exactly solving decision-making under uncertainty
 require exhaustive enumeration of all possible states and actions,
-leading to expotential run times which have been referred to as the
-``curse of dimensionality.''  Approaches to address this problem by
-providing the system with formally encoded knowledge such as options
-or macro-actions, still fail to prevent the system from considering
-many actions which seem obviously irrelevant for a human partner.  To
+leading to expotential run times, leading to the well-known ``curse of
+dimensionality.''  Approaches to address this problem by providing the
+system with formally encoded knowledge such as options or
+macro-actions, still fail to prevent the system from considering many
+actions which seem obviously irrelevant for a human partner.  To
 address this issue, we introduce a novel approach to representing
 knowledge about how to plan in terms of {\em
-  affordances}~\citep{gibson77}.  Evaluation is performed in the
-Minecraft domain on several path planning tasks - we demonstrate a
+  affordances}~\citep{gibson77}.  Our affordance formalism and
+associated planning framework allows an agent to efficiently prune its
+action space based on domain knowledge.  This pruning significantly
+reduces the number of state/action pairs the agent needs to evaluate
+in order to act optimally.  We demonstrate our approach in the
+Minecraft domain on several planning and building tasks, showing a
 significant increase in speed and reduction in state-space exploration
-across 5 different path planning tasks.
+compared to partial order planning, options, and macro-actions.
 \end{abstract}
 
 \section{INTRODUCTION}
-%% Motivation
-%As robots move out of the lab and into the real world, planning algorithms need to be able to scale to domains of increased noise, size, and complexity. In Norvig and Russell's AI textbook, they state that, ``Planning is foremost an exercise in controlling combinatorial explosion." \cite{Norvig}, an explosion which is currently uncontrolled across many planning domains. A classic formalization of this issue is the sequential decision making problem, where increases in problem size and complexity directly correspond to an explosion in the state-action space. Current approaches to solving sequential decision making problems cannot tackle these problems as the state-action space becomes large \cite{Grounds2005}. 
-%
-%There is a strong need for a generalizable form of knowledge that, when coupled with a planner, is capable of solving problems in these massive domains. Humans provide an excellent existence proof for such planning, as we are capable of searching over an immense number of possible actions when presented with a goal - a recent concept out of 20th century psychological literature, an ``affordance" has provided an explanation as to how this mechanism of human planning works.
-%
-%% Affordance paragraph
-%Broadly, an affordance is "what [the environment] offers [an] animal, what [the environment] provides or furnishes, either for good or ill" \cite{Gibson}, and may be employed in the context of planning to direct an agent toward relevant actions or parts of the environment (based on the agent's desires/goals). Additionally, roboticists have recently become interested in leveraging affordances for a variety of applications \cite{Koppula2013a} \cite{Koppula2013b}. In this paper we will employ affordances as a means of reducing large and intractable search problems into smaller, more reasonable problems. When instantiated in a physical robot, this will enable the robot to handle tasks that involve high order action spaces and expansive domains.
-%
-%We propose a new formalism for representing affordances in an operationalized knowledge base. Current approaches to scaling MDPs up to large domains involve either pruning the state space of the world (by using subgoals), or limiting the action space \cite{Branavan2012}. In our approach, by introducing the affordance knowledge, we effectively limit the state space {\it and} the action space.
-%
-%% Evaluation
+
+As robots move out of the lab and into the real world, planning
+algorithms need to be able to scale to domains of increased noise,
+size, and complexity.  A classic formalization of this issue is the
+sequential decision making problem, where increases in problem size
+and complexity directly correspond to an explosion in the state-action
+space. Current approaches to solving sequential decision making
+problems cannot tackle these problems as the state-action space
+becomes large~\citep{Grounds2005}.
+
+There is a strong need for a generalizable form of knowledge that,
+when coupled with a planner, is capable of solving problems in these
+massive domains. Humans provide an excellent existence proof for such
+planning, as we are capable of searching over an immense number of
+possible actions when presented with a goal.  One approach to
+explaining how humans solve this planning problem is by focusing on
+problem-specific aspects of the environment which focus the search
+toward the most relevant and useful parts of the state/action space.
+Formally, \citet{gibson77} proposed to define this intuition as an
+{\em affordance}, ``what [the environment] offers [an] animal, what
+[the environment] provides or furnishes, either for good or ill.''
+Additionally, roboticists have recently become interested in
+leveraging affordances for perception and prediction of
+humans~\citep{koppula13a, koppula13b}. In this paper we will formalize
+the notion of an affordance as a piece of planning knowledge provided
+to an agent operatingin a Markov Decision Process
+(MDP)~\citep{kaelbling99}.  We demonstrate that, like an option or
+macro-action, an affordance provides additional information to the
+agent, enabling more efficient planning.  However, unlike previous
+approaches, an affordance enables more significant speedups by
+reducing the size and branching-factor of the search space, enabling
+an agent to focus its search on the most relevant part of the problem
+at hand.  This approach means that a {\em single} set of affordances
+provides general domain knowledge, becoming relevant just when the
+agent reasons that it needs to pursue a particular subgoal.  
 
 
+\begin{figure}
+\parbox{1\linewidth}{
+XXXXX~\\
+XXXXX~\\
+XXXXX~\\
+}
+\caption{Figure demonstrating the intuition of the approach.  Maybe a
+  minecraft scene annotated with the affordances used to build a
+  bridge?\label{fig:example}}
+\end{figure}
 
 \section{BACKGROUND}
+
+
 
 \subsection{AFFORDANCES}
 
