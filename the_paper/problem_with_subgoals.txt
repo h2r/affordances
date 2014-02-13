@@ -21,3 +21,9 @@ Ideas:
 
 
 final note: Movement subgoals (+ destruction and block placement) if useful, are specific to a domain (and too specific)
+
+
+Subgoal implementation:
+	- Granular/low level subgoals, effectively becomes VI
+	- Domain/state space specific subgoals, completely lose generality + scalability
+	- Branavan: uses subgoals that are always true, but these don't really exist for a variety of goal types (e.g. movement)

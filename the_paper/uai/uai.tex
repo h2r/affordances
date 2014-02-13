@@ -12,7 +12,7 @@
 \begin{abstract}
 Current methods for exactly solving decision-making under uncertainty
 require exhaustive enumeration of all possible states and actions,
-leading to expotential run times, leading to the well-known ``curse of
+leading to exponential run times, leading to the well-known ``curse of
 dimensionality.''  Approaches to address this problem by providing the
 system with formally encoded knowledge such as options or
 macro-actions, still fail to prevent the system from considering many
@@ -107,7 +107,7 @@ Subgoal planning leverages the intuition that certain goals in planning domains 
 % Formalism
 In subgoal planning, the agent is given a pair of predicates, $<x_k, x_l >$, where $x_l$ is the effect of some action sequence performed on a state in which $x_k$ is true. Thus, subgoal planning entails high-level planning in subgoal space, and low-level planning to get from subgoal to subgoal.
 
-However, subgoal planning falls short in that sub-goals only go so far in directing the low-level planner. The planner will still waste many cycles searching through meaningless portions of the state-space.
+However, subgoal planning falls short in that sub-goals only go so far in directing the low-level planner. The planner will still waste many cycles searching through meaningless portions of the state-space. Additionally, the creation of useful subgoals is quite difficult - in many cases, subgoals must be crafted to a specific state-space and cannot generalize, or, alternatively, they are generalizable but are not useful. % Add more about these two problems.. See: problem_with_subgoals.txt
 
 % Example
 
@@ -131,6 +131,7 @@ As Konidaris and Barto point out, the classic options framework is not generaliz
 
 The Affordance formalism introduced above and expanded on in this paper resolves the weaknesses of these other frameworks by limiting the complexity of the seed knowledge required of the designer, providing enough knowledge to limit the search space, and still maintains scalability. (note: assuming experiments back this up)
 
+\subsection{MACROACTIONS}
 
 \section{EXPERIMENTS}
 
@@ -148,7 +149,6 @@ Task List, apply each planning system (Aff, O, SG) to all tasks.
 \end{tabular}
 
 % As well as some charts indicating search space size, #cycles, etc..
-
 
 \section{CONCLUSION}
 
