@@ -3,7 +3,7 @@ var mineflayer = require('../minecraft_api/mineflayer/');
 var vec3 = mineflayer.vec3;
 var bot = mineflayer.createBot({
   username: "aye_priori",
-    password: "Sprolls5!",
+    password: "password",
 });
 
 MAXBLOCKS = 2;
