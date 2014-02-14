@@ -2,9 +2,11 @@
 \usepackage{proceed2e}
 
 \usepackage[numbers,sort]{natbib}
+\usepackage{amsmath}
 
 \title{Planning with Affordances}
 \newcommand{\ignore}[1]{}
+
 \begin{document}
 \author{}
 \maketitle
@@ -80,36 +82,30 @@ XXXXX~\\
 
 \section{BACKGROUND}
 
-
-
-\subsection{AFFORDANCES}
-
-%% Intuition
-%An affordance is what an environment, or the objects in it, offer the agent. For example, if the agent were trying to drink coffee then a mug would afford carrying liquid. However if instead the agent wanted to secure some papers outside on a windy day, then the mug could afford weighing the papers down (i.e. affords using it as a paper weight). Often, objects may be defined in terms of what they afford, such as a bridge - suppose there is a log lying horizontally across a river; such a log provides passage over a river and could reasonably be referred to as a "bridge" simply because it affords crossing the river.
-
-%% Formalism
-An Affordance is defined as: $Aff =\ <p,g>\ \longrightarrow \Delta$, where:
-
-\begin{itemize}
-\item[] $\Delta : \mathcal{A} \longrightarrow [0,1]^{|\mathcal{A}|}$
-\item[] $p : s \longrightarrow \{$0$, 1\}$
-\item[] $g : s \longrightarrow \{$0$,1\}$
-\end{itemize}
-
-Where $\Delta$ is a distribution over the agent's set of actions $\mathcal{A}$, $p$ is a {\it precondition} that is a predicate over states, and $g$ is a {\it subgoal} that is also a predicate over states.
-
-The constituents that make up an Affordance parallel those of the other planning approaches discussed in the background section.
-
 \subsection{SUBGOALS}
 % % Intuition
 Subgoal planning leverages the intuition that certain goals in planning domains may only be brought about if certain preconditions are first satisfied. For instance, in the Minecraft domain, one must be in possession of grain in order to bake bread. In Branavan et. al, they explore learning subgoals and applying them in order to plan through a variety of problems in Minecraft.
 
 % Formalism
-In subgoal planning, the agent is given a pair of predicates, $<x_k, x_l >$, where $x_l$ is the effect of some action sequence performed on a state in which $x_k$ is true. Thus, subgoal planning entails high-level planning in subgoal space, and low-level planning to get from subgoal to subgoal.
+Formally, in subgoal planning, the agent is given a pair of predicates:
 
-However, subgoal planning falls short in that sub-goals only go so far in directing the low-level planner. The planner will still waste many cycles searching through meaningless portions of the state-space. Additionally, the creation of useful subgoals is quite difficult - in many cases, subgoals must be crafted to a specific state-space and cannot generalize, or, alternatively, they are generalizable but are not useful. % Add more about these two problems.. See: problem_with_subgoals.txt
+\[ 
+<x_k, x_l >
+\]
 
-% Example
+where $x_l$ is the effect of some action sequence performed on a state in which $x_k$ is true. Thus, subgoal planning requires that we perform high-level planning in subgoal space, and low-level planning to get from subgoal to subgoal.
+
+\[
+\boxed{\text{Running Example}}
+\]
+
+% Maybe consider inserting Branavan's chart (or similar), or discuss how the search in subgoal space works?
+
+{\bf Problem 1: Loss of generality}  One important thing to note about subgoals that {\it are} general enough to enhance an agent's planning abilities in a wide variety of state spaces is that they propose {\it necessary} claims about the domain that the agent occupies. If the subgoals are {\it contingent} (i.e. true in some state spaces of the domain but not in others), then they can be shown to completely lose their scalability. For instance, consider the task in \texttt{BRIDGEWORLD}, in which the agent must place a block in the trench that separates the agent from the goal. The subgoal $<blockInTrench(), agentAtGoal()>$ might be a perfectly useful goal in {\it this} planning scenario, but an adversary could easily come up with thousands of worlds in which such a subgoal would completely derail the agent's planner. In order for subgoals to be useful, they must be necessary claims about the domain, otherwise, one can always come up with a counter world (by definition of necessary). 
+
+{\bf Problem 2: Granular Planning} However, this poses a serious problem for subgoal planning, as the vast majority of tasks in mine craft are not so easily broken into useful, necessary subgoals. Movement for instance is particularly difficult, as the subgoals for movement must be necessary claims (i.e. $<agentOneAwayFromGoal(), agentAtGoal()>$), otherwise, they can be broken. Unfortunately, coming up with such subgoals is not an easy task, and often the best we can do is to plan at such a low level that we lose any benefit of planning over subgoals to begin with
+
+% Figure of granular planning w/ subgoals
 
 % PseudoCode
 
@@ -129,13 +125,62 @@ Here, $\pi_0$ represents the {\it option policy}, $I_0$ represents a preconditio
 
 As Konidaris and Barto point out, the classic options framework is not generalizable, as it does not enable an agent to transfer knowledge from one state space to another. Recently, Konidaris and Barto's \ignore{cite} expand on the classic options framework and allow for a more portable implementation of options. Still, though, planning with options requires either that we plan in a mixed space of actions {\it and} options (which blows up the size of the search space), or requires that we plan entirely in the space of options. Additionally, providing an agent with an option policy is a difficult task for a human designer (especially if we want an optimal policy, which we do).
 
-The Affordance formalism introduced above and expanded on in this paper resolves the weaknesses of these other frameworks by limiting the complexity of the seed knowledge required of the designer, providing enough knowledge to limit the search space, and still maintains scalability. (note: assuming experiments back this up)
-
 \subsection{MACROACTIONS}
+
+\[
+\boxed{\text{Running Example}}
+\]
+
+\section{AFFORDANCES}
+
+%% Intuition
+% An affordance is what an environment, or the objects in it, offer the agent. For example, if the agent were trying to drink coffee then a mug would afford carrying liquid. However if instead the agent wanted to secure some papers outside on a windy day, then the mug could afford weighing the papers down (i.e. affords using it as a paper weight). Often, objects may be defined in terms of what they afford, such as a bridge - suppose there is a log lying horizontally across a river; such a log provides passage over a river and could reasonably be referred to as a "bridge" simply because it affords crossing the river.
+
+%% Formalism
+Formally, an Affordance is defined as \vspace{1 mm} \\
+{\it Aff} $ =\ <p,g>\ \longrightarrow \Delta$, where:
+
+\begin{itemize}
+\item[] $\Delta : \mathcal{A} \longrightarrow [0,1]^{|\mathcal{A}|}$
+\item[] $p : s \longrightarrow \{$0$, 1\}$
+\item[] $g : s \longrightarrow \{$0$,1\}$
+\end{itemize}
+
+Where $\Delta$ is a distribution over the agent's set of actions $\mathcal{A}$, $p$ is a {\it precondition} that is a predicate over states, and $g$ is a {\it goal} or {\it subgoal} that is also a predicate over states.
+
+The constituents that make up an Affordance parallel those of the other planning approaches discussed in the background section.
+
+\[
+\boxed{\text{Running Example}}
+\]
+
+The Affordance formalism introduced above and expanded on in this paper resolves the weaknesses of these other frameworks by limiting the complexity of the seed knowledge required of the designer, providing enough knowledge to limit the search space, and still maintains scalability.
 
 \section{EXPERIMENTS}
 
 Task List, apply each planning system (Aff, O, SG) to all tasks.
+
+% List from wiki: (we should pick our task set soon)
+
+%Build a Tower
+%Indestructible Wall w/ an opening
+%U Shaped wall
+%Goal is underground (find object underground)
+%Tunnel under a wall
+%Find destructible part of wall
+%Build stairs over wall
+%Build Ladder to reach goal
+%Use Ladder to reach goal (already in world)
+%Elevator/Minecart
+%Trench of varying width (only have 1 block) ?+? build tower on other side
+%Path Planning (simple)
+%Bridge
+%Tunnell through wall
+%Find hole in wall
+%Use door to get through wall
+%Build something more complicated (a cube? a pyramid? a wall? -> something that restricts access to a goal i.e. makes it impossible to reach)
+%Branavan scenarios
+%Options four rooms
 
 \section{RESULTS}
 
