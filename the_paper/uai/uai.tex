@@ -88,15 +88,15 @@ XXXXX~\\
 %An affordance is what an environment, or the objects in it, offer the agent. For example, if the agent were trying to drink coffee then a mug would afford carrying liquid. However if instead the agent wanted to secure some papers outside on a windy day, then the mug could afford weighing the papers down (i.e. affords using it as a paper weight). Often, objects may be defined in terms of what they afford, such as a bridge - suppose there is a log lying horizontally across a river; such a log provides passage over a river and could reasonably be referred to as a "bridge" simply because it affords crossing the river.
 
 %% Formalism
-An Affordance is defined as: $\mathcal{A} =\ <\ $a$ ,\ p,\ \mathcal{G}>$, where:
+An Affordance is defined as: $Aff =\ <p,g>\ \longrightarrow \Delta$, where:
 
 \begin{itemize}
-\item[] $a \in A$
-\item[] $p\ : s \rightarrow \{0,1\}$
-\item[] $ \mathcal{G}\ :\ ${\it s }$ \rightarrow \{$0$,1\}$
+\item[] $\Delta : \mathcal{A} \longrightarrow [0,1]^{|\mathcal{A}|}$
+\item[] $p : s \longrightarrow \{$0$, 1\}$
+\item[] $g : s \longrightarrow \{$0$,1\}$
 \end{itemize}
 
-Where $a$ is a {\it primitive action} in the agent's set of available actions, $p$ is a {\it precondition} which is a predicate on a given state $s$, and $\mathcal{G}$ is a desired {\it postcondition}, which is also a predicate on a particular state $s$.
+Where $\Delta$ is a distribution over the agent's set of actions $\mathcal{A}$, $p$ is a {\it precondition} that is a predicate over states, and $g$ is a {\it subgoal} that is also a predicate over states.
 
 The constituents that make up an Affordance parallel those of the other planning approaches discussed in the background section.
 
