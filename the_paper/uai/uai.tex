@@ -3,6 +3,8 @@
 
 \usepackage[numbers,sort]{natbib}
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
 
 \title{Planning with Affordances}
 \newcommand{\ignore}[1]{}
@@ -17,7 +19,7 @@ require exhaustive enumeration of all possible states and actions,
 leading to exponential run times, leading to the well-known ``curse of
 dimensionality.''  Approaches to address this problem by providing the
 system with formally encoded knowledge such as options or
-macro-actions, still fail to prevent the system from considering many
+macro-actions still fail to prevent the system from considering many
 actions which seem obviously irrelevant for a human partner.  To
 address this issue, we introduce a novel approach to representing
 knowledge about how to plan in terms of {\em
@@ -28,7 +30,7 @@ reduces the number of state/action pairs the agent needs to evaluate
 in order to act optimally.  We demonstrate our approach in the
 Minecraft domain on several planning and building tasks, showing a
 significant increase in speed and reduction in state-space exploration
-compared to partial order planning, options, and macro-actions.
+compared to subgoal planning, options, and macro-actions.
 \end{abstract}
 
 \section{INTRODUCTION}
@@ -49,7 +51,7 @@ planning, as we are capable of searching over an immense number of
 possible actions when presented with a goal.  One approach to
 explaining how humans solve this planning problem is by focusing on
 problem-specific aspects of the environment which focus the search
-toward the most relevant and useful parts of the state/action space.
+toward the most relevant and useful parts of the state-action space.
 Formally, \citet{gibson77} proposed to define this intuition as an
 {\em affordance}, ``what [the environment] offers [an] animal, what
 [the environment] provides or furnishes, either for good or ill.''
@@ -57,7 +59,7 @@ Additionally, roboticists have recently become interested in
 leveraging affordances for perception and prediction of
 humans~\citep{koppula13a, koppula13b}. In this paper we will formalize
 the notion of an affordance as a piece of planning knowledge provided
-to an agent operatingin a Markov Decision Process
+to an agent operating in a Markov Decision Process
 (MDP)~\citep{kaelbling99}.  We demonstrate that, like an option or
 macro-action, an affordance provides additional information to the
 agent, enabling more efficient planning.  However, unlike previous
@@ -66,21 +68,24 @@ reducing the size and branching-factor of the search space, enabling
 an agent to focus its search on the most relevant part of the problem
 at hand.  This approach means that a {\em single} set of affordances
 provides general domain knowledge, becoming relevant just when the
-agent reasons that it needs to pursue a particular subgoal.  
+agent reasons that it needs to pursue a particular subgoal.  Furthermore,
+Affordances are not specific to a particular state-space nor problem-type, and thus, provide
+the agent with transferrable knowledge that is effective in a wide variety of
+domains and problems, unlike other approaches.
 
 
 \begin{figure}
-\parbox{1\linewidth}{
-XXXXX~\\
-XXXXX~\\
-XXXXX~\\
-}
-\caption{Figure demonstrating the intuition of the approach.  Maybe a
-  minecraft scene annotated with the affordances used to build a
-  bridge?\label{fig:example}}
+\centering
+\includegraphics[scale = 0.2]{figures/mc_action_set.png}
+\caption{The agent's set of actions in the Minecraft domain ($\square$ is a placement action, $\boxtimes$ is a destruction action)}
 \end{figure}
+\begin{figure}
 
 \section{BACKGROUND}
+
+\subsection{OOMDP}
+
+The Object Oriented Markov Decision Process (OO-MDP) is an extension of the classic Markov Decision Process (MDP). Recall that a finite MDP is a five-tuple: $\langle \mathcal{S}, \mathcal{A}, \mathcal{T}, \mathcal{R}, \gamma \rangle$, where $\mathcal{S}$ is a state-space, $\mathcal{A}$ is the agent's set of actions, $\mathcal{T}$ denotes $\mathcal{T}[s' \mid s,a]$, the transition probability of an agent applying action $a \in \mathcal{A}$ in state $s \in \mathcal{S}$ and arriving in $s' \in \mathcal{S}$, and $\mathcal{R}(s,a)$ denotes the reward at $s$ when action $a$ is applied, and $\gamma$ is a discount factor. The OO-MDP changes the underlying representation of the state space $S$.
 
 \subsection{SUBGOALS}
 % % Intuition
@@ -133,8 +138,20 @@ As Konidaris and Barto point out, the classic options framework is not generaliz
 
 \section{AFFORDANCES}
 
-%% Intuition
-% An affordance is what an environment, or the objects in it, offer the agent. For example, if the agent were trying to drink coffee then a mug would afford carrying liquid. However if instead the agent wanted to secure some papers outside on a windy day, then the mug could afford weighing the papers down (i.e. affords using it as a paper weight). Often, objects may be defined in terms of what they afford, such as a bridge - suppose there is a log lying horizontally across a river; such a log provides passage over a river and could reasonably be referred to as a "bridge" simply because it affords crossing the river.
+%\parbox{1\linewidth}{
+%XXXXX~\\
+%XXXXX~\\
+%XXXXX~\\
+%}
+\centering
+% Option one:
+%\includegraphics[scale=0.25]{figures/bridgeworld.png}
+% Option two:
+\includegraphics[scale = 0.18]{figures/bridgeworld_annotated.png}
+\caption{Figure demonstrating the intuition of the approach.  Maybe a
+  minecraft scene annotated with the affordances used to build a
+  bridge?\label{fig:example}}
+\end{figure}
 
 %% Formalism
 Formally, an Affordance is defined as \vspace{1 mm} \\
@@ -153,6 +170,8 @@ The constituents that make up an Affordance parallel those of the other planning
 \[
 \boxed{\text{Running Example}}
 \]
+
+%PseudoCode
 
 The Affordance formalism introduced above and expanded on in this paper resolves the weaknesses of these other frameworks by limiting the complexity of the seed knowledge required of the designer, providing enough knowledge to limit the search space, and still maintains scalability.
 
@@ -185,14 +204,23 @@ Task List, apply each planning system (Aff, O, SG) to all tasks.
 
 \section{RESULTS}
 
+We ran each planning algorithm on 5 distinct tasks, each with its own state space and goal-type. Options, Subgoals, and Affordances were all given optimal knowledge, in each scenario.
+
+
 % We would like a table like this:
-\begin{tabular}{ l || c | c | c }
-  & Affordances & Options & Subgoals \\
+\begin{figure}
+\begin{tabular}{ l || c | c | c | c }
+  & Affordances & Options & Subgoals & VI \\
   \hline
-  {\bf Task One} & 1 & 1 & 0 \\
-  {\bf Task Two} & 1 & 1 & 1 \\
-  {\bf Task Three} & 1 & 1 & 0 \\
+  {\bf T1} & 1 & 1 & 0 & 0  \\
+  {\bf T2} & 1 & 1 & 0 & 1 \\
+  {\bf T3} & 1 & 1 & 1 & 0 \\
+  {\bf T4} & 1 & 1 & 0 & 0\\
 \end{tabular}
+\caption{Results of running each algorithm N times on a variety 
+of planning tasks (see Appendix I for list of tasks). Units are in 
+wall-clock time.}
+\end{figure}
 
 % As well as some charts indicating search space size, #cycles, etc..
 

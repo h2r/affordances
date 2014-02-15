@@ -10,3 +10,4 @@ minecraft_api/world_the_end/
 *.bbl
 *.blg
 *~
+*.key
