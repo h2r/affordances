@@ -121,20 +121,7 @@ SG = <x_k, x_l >
 
 where $x_l$ is the effect of some action sequence performed on a state in which $x_k$ is true. Thus, subgoal planning requires that we perform high-level planning in subgoal space, and low-level planning to get from subgoal to subgoal.
 
-\begin{algorithm}[]
-\mbox{Subgoal planning}
-curState = goal
- \While{curState != startState}{
-
-  \eIf{understand}{
-   go to next section\;
-   current section becomes this one\;
-   }{
-   go back to the beginning of current section\;
-  }
- }
- \caption{How to write algorithms}
-\end{algorithm}
+%Pseudocode of algorithm
 
 In the case of \texttt{BRIDGEWORLD}, we might consider placing a block somewhere along the trench to be a subgoal. Then, we run Value Iteration to get from the agent's starting location to the point at which we've placed a block in the trench, stop, and run Value Iteration again from the first subgoal to the finish. There are a few problems with this approach, however.
 
@@ -148,7 +135,11 @@ In the case of \texttt{BRIDGEWORLD}, we might consider placing a block somewhere
 
 {\bf Problem 3: Researching the Space} The last problem with subgoal planning is that the use of subgoals actually requires that we research a huge portion of the state space. Consider the \texttt{BRIDGEWORLD} example in which the subgoal is to place a block along the trench somewhere - once we plan from the state in which a block has been placed at the trench, we research the entire first side of the trench. This problem only magnifies as you add more subgoals.
 
-% FIGURE OF PROBLEM 3
+\begin{figure}
+\centering
+\includegraphics[scale=0.22]{figures/bridgeworld_sg.png}
+\caption{The agent re-explores a large portion of the state space once it finds $\mathcal{SG}_1$. Also note that this subgoal highlights {\bf Problem 1}, in that it would be useless in many other Minecraft state spaces}
+\end{figure}
 
 \subsection{OPTIONS}
 
