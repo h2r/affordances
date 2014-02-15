@@ -138,15 +138,15 @@ As Konidaris and Barto point out, the classic options framework is not generaliz
 
 %% Formalism
 Formally, an Affordance is defined as \vspace{1 mm} \\
-{\it Aff} $ =\ <p,g>\ \longrightarrow \Delta$, where:
+{\it Aff} $ =\ <p,g>\ \longrightarrow \alpha$, where:
 
 \begin{itemize}
-\item[] $\Delta : \mathcal{A} \longrightarrow [0,1]^{|\mathcal{A}|}$
+\item[] $\alpha \subseteq \mathcal{A}$
 \item[] $p : s \longrightarrow \{$0$, 1\}$
 \item[] $g : s \longrightarrow \{$0$,1\}$
 \end{itemize}
 
-Where $\Delta$ is a distribution over the agent's set of actions $\mathcal{A}$, $p$ is a {\it precondition} that is a predicate over states, and $g$ is a {\it goal} or {\it subgoal} that is also a predicate over states.
+Where $\alpha$ is a subset of the agent's given set of actions $\mathcal{A}$, $p$ is a {\it precondition} that is a predicate over states, and $g$ is a {\it goal} or {\it subgoal} that is also a predicate over states.
 
 The constituents that make up an Affordance parallel those of the other planning approaches discussed in the background section.
 
@@ -155,6 +155,8 @@ The constituents that make up an Affordance parallel those of the other planning
 \]
 
 The Affordance formalism introduced above and expanded on in this paper resolves the weaknesses of these other frameworks by limiting the complexity of the seed knowledge required of the designer, providing enough knowledge to limit the search space, and still maintains scalability.
+
+We should be able to prove that given a ``good" set of subgoals the agent will be able to reach one after the other with high probability. Therefore, in the case that the agent cannot reach a subgoal there is likely a better one. The agent should then prompt for a more specific subgoal that will better allow it to reach the next one.
 
 \section{EXPERIMENTS}
 
@@ -165,22 +167,21 @@ Task List, apply each planning system (Aff, O, SG) to all tasks.
 %Build a Tower
 %Indestructible Wall w/ an opening
 %U Shaped wall
-%Goal is underground (find object underground)
-%Tunnel under a wall
 %Find destructible part of wall
 %Build stairs over wall
-%Build Ladder to reach goal
 %Use Ladder to reach goal (already in world)
-%Elevator/Minecart
 %Trench of varying width (only have 1 block) ?+? build tower on other side
 %Path Planning (simple)
 %Bridge
 %Tunnell through wall
-%Find hole in wall
 %Use door to get through wall
 %Build something more complicated (a cube? a pyramid? a wall? -> something that restricts access to a goal i.e. makes it impossible to reach)
 %Branavan scenarios
 %Options four rooms
+%Macroactions
+% George lightroom example
+
+
 
 \section{RESULTS}
 
