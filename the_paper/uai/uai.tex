@@ -8,7 +8,6 @@
 \usepackage[]{algorithm2e}
 
 \title{Planning with Affordances}
-\newcommand{\ignore}[1]{}
 
 \begin{document}
 \author{}
@@ -43,7 +42,7 @@ sequential decision making problem, where increases in problem size
 and complexity directly correspond to an explosion in the state-action
 space. Current approaches to solving sequential decision making
 problems cannot tackle these problems as the state-action space
-becomes large~\citep{grounds}.
+becomes large~\citep{grounds05a}.
 
 There is a strong need for a generalizable form of knowledge that,
 when coupled with a planner, is capable of solving problems in these
@@ -62,7 +61,7 @@ humans~\citep{koppula13a, koppula13b}.
 
 \begin{figure}
 \centering
-\includegraphics[scale = 0.18]{figures/bridgeworld.png}
+\includegraphics[scale = 0.18]{figures/bridgeworld_aff.png}
 \caption{In the above Minecraft planning problem \texttt{BRIDGEWORLD}, the agent must place a block in the trench in order to reach the goal. This problem was only solvable by the Affordance planner.\label{fig:example}}
 \end{figure}
 
@@ -95,7 +94,7 @@ domains and problems, unlike other approaches.
 
 The Object Oriented Markov Decision Process (OO-MDP) ~\citep{diuk08} is an extension of the classic Markov Decision Process (MDP). Recall that a finite MDP is a five-tuple: $\langle \mathcal{S}, \mathcal{A}, \mathcal{T}, \mathcal{R}, \gamma \rangle$, where $\mathcal{S}$ is a state-space, $\mathcal{A}$ is the agent's set of actions, $\mathcal{T}$ denotes $\mathcal{T}[s' \mid s,a]$, the transition probability of an agent applying action $a \in \mathcal{A}$ in state $s \in \mathcal{S}$ and arriving in $s' \in \mathcal{S}$, and $\mathcal{R}(s,a)$ denotes the reward at $s$ when action $a$ is applied, and $\gamma$ is a discount factor. The OO-MDP changes the underlying representation of the state space $S$ so that worlds are more general. Planning with an OO-MDP involves running Value Iteration to determine a policy.
 
-In practice, basic Value Iteration scales very poorly, either as the state space grows, or the action set grows. This is because the state-action space, depending on the domain, grows exponentially w.r.t the number of ways that the agent can change the environment. This is ameliorated slightly by introducing the OO-MDP, but it still fails in just about all of the planning scenarios we introduce here. On {\texttt BRIDGEWORLD}, the planner was incapable of enumerating the state space prior to filling up a 2Gb Java heapspace, presented with a single block and minimal action set (it could only place blocks in front of it, and could not destroy blocks) and thus, failed outright.
+In practice, basic Value Iteration scales very poorly, either as the state space grows, or the action set grows. This is because the state-action space, depending on the domain, grows exponentially w.r.t the number of ways that the agent can change the environment. This is ameliorated slightly by introducing the OO-MDP, but it still fails in just about all of the planning scenarios we introduce here. On \texttt{BRIDGEWORLD}, the planner was incapable of enumerating the state space prior to filling up a 2Gb Java heapspace, presented with a single block and minimal action set (it could only place blocks in front of it, and could not destroy blocks) and thus, failed outright.
 
 The reason for this failure is that in classical Value Iteration, the agent tries to explore all states that result from applying every action in every state - this is downright silly, as in \texttt{BRIDGEWORLD}, the agent will inevitably end up in the corner of the room placing and destroying blocks. This is an especially bad tactic in the Minecraft domain, as block placement results in a combinatoric explosion of the state space. Thus, in these scenarios, our Affordance planner has a substantial advantage on classic Value Iteration. These weaknesses are well known ~\citep{grounds}, and have resulted in attempts to make planning more practical in domains of a larger scale.
 
@@ -104,7 +103,7 @@ The reason for this failure is that in classical Value Iteration, the agent trie
 
 \begin{figure}
 \centering
-\includegraphics[scale = 0.24]{figures/bridgeworld_vi.png}
+\includegraphics[scale = 0.2]{figures/bridgeworld_vi.png}
 \caption{Reachability while running VI}
 \end{figure}
 
@@ -116,7 +115,7 @@ Subgoal planning leverages the intuition that certain goals in planning domains 
 Formally, in subgoal planning, the agent is set of subgoals, where each subgoal is a pair of predicates:
 
 \[ 
-SG = <x_k, x_l >
+SG = \langle x_k, x_l \rangle
 \]
 
 where $x_l$ is the effect of some action sequence performed on a state in which $x_k$ is true. Thus, subgoal planning requires that we perform high-level planning in subgoal space, and low-level planning to get from subgoal to subgoal.
@@ -141,11 +140,14 @@ In the case of \texttt{BRIDGEWORLD}, we might consider placing a block somewhere
 \caption{The agent re-explores a large portion of the state space once it finds $\mathcal{SG}_1$. Also note that this subgoal highlights {\bf Problem 1}, in that it would be useless in many other Minecraft state spaces}
 \end{figure}
 
+
+A final, but less significant problem, is that Subgoal planning still requires the use of Value Iteration, which does not scale well - if there is ever a case in which planning between two subgoals is at all complex, then Subgoal planning is out of luck.
+
 \subsection{OPTIONS}
 
 The options framework proposes incorporating high-level policies to accomplish specific sub tasks. For instance, when an agent is near a door, the agent can engage the `door-opening-option-policy', which switches from the standard high-level planner to running a policy that is hand crafted to open doors. An option $o$ is defined as follows:
 
-$o\ =\ <\pi_0, I_0, \beta_0>$, where:
+$o\ =\ \langle \pi_0, I_0, \beta_0\rangle$, where:
 
 \begin{itemize}
 \item[] $\pi_0 : (s,a) \rightarrow [0,1]$
@@ -167,7 +169,7 @@ As Konidaris and Barto point out, the classic options framework is not generaliz
 
 %% Formalism
 Formally, an Affordance is defined as \vspace{1 mm} \\
-{\it Aff} $ =\ <p,g>\ \longrightarrow \alpha$, where:
+{\it Aff} $ =\ \langle p,g\rangle\ \longrightarrow \alpha$, where:
 
 \begin{itemize}
 \item[] $\alpha \subseteq \mathcal{A}$
@@ -181,39 +183,54 @@ The constituents that make up an Affordance parallel those of the other planning
 
 %PseudoCode
 
-The Affordance formalism introduced above and expanded on in this paper resolves the weaknesses of these other frameworks by limiting the complexity of the seed knowledge required of the designer, providing enough knowledge to limit the search space, and still maintains scalability.
+The Affordance formalism introduced above and expanded on in this paper resolves the weaknesses of these other frameworks by limiting the complexity of the seed knowledge required of the designer, while still providing enough knowledge to limit the search space but also maintain scalability.
+
+
 
 We should be able to prove that given a ``good" set of subgoals the agent will be able to reach one after the other with high probability. Therefore, in the case that the agent cannot reach a subgoal there is likely a better one. The agent should then prompt for a more specific subgoal that will better allow it to reach the next one.
 
 \section{EXPERIMENTS}
 
-Task List, apply each planning system (Aff, O, SG) to all tasks.
+We tested each planning algorithm (vanilla Value Iteration, Subgoal planning, Options, Affordance planning, Macro-action planning) on 5 distinct tasks, each with its own state space and goal-type. 
 
-% List from wiki: (we should pick our task set soon)
+In the first set of iterations, Options, Subgoals, Macro-actions, and Affordances were all given a hand crafted set of knowledge for each individual task.
 
-%Build a Tower
-%Indestructible Wall w/ an opening
-%U Shaped wall
-%Find destructible part of wall
-%Build stairs over wall
-%Use Ladder to reach goal (already in world)
-%Trench of varying width (only have 1 block) ?+? build tower on other side
-%Path Planning (simple)
-%Bridge
-%Tunnell through wall
-%Use door to get through wall
-%Build something more complicated (a cube? a pyramid? a wall? -> something that restricts access to a goal i.e. makes it impossible to reach)
-%Branavan scenarios
-%Options four rooms
-%Macroactions
-% George lightroom example
+For each iteration, we measured the wall-clock time to find the goal, the percentage of the state-space explored, and the number of states that were re-explored (in the case of subgoals).
 
+In the second round, we required that each system use one set of knowledge to solve all five planning scenarios. We ran the algorithms on the same set of tasks.
 
+The set of tasks were inspired by those planning scenarios that the creators of each other planning system proposed.
+
+{\bf Task One: \texttt{FLATLAND}}
+% Figure or brief explanation
+
+% Knowledge base provided for each in ROUND A
+
+{\bf Task Two: \texttt{BRIDGEWORLD}}
+% Figure or brief explanation
+
+% Knowledge base provided for each in ROUND A
+
+{\bf Task Three: \texttt{LIGHTWORLD}}
+% Figure or brief explanation
+
+% Knowledge base provided for each in ROUND A
+
+{\bf Task Four: \texttt{U-WALL}}
+% Figure or brief explanation
+
+% Knowledge base provided for each in ROUND A
+
+{\bf Task Five: \texttt{BAKE BREAD}}
+% Figure or brief explanation
+
+% Knowledge base provided for each in ROUND A
+
+% ---- Also include the knowledge base provided for each in ROUND B, where that KB must solve all 5 tasks
 
 \section{RESULTS}
 
-We ran each planning algorithm on 5 distinct tasks, each with its own state space and goal-type. Options, Subgoals, and Affordances were all given optimal knowledge, in each scenario.
-
+\subsection{ROUND A:}
 
 % We would like a table like this:
 \begin{figure}
@@ -223,16 +240,38 @@ We ran each planning algorithm on 5 distinct tasks, each with its own state spac
   {\bf T1} & 1 & 1 & 0 & 0  \\
   {\bf T2} & 1 & 1 & 0 & 1 \\
   {\bf T3} & 1 & 1 & 1 & 0 \\
-  {\bf T4} & 1 & 1 & 0 & 0\\
+  {\bf T4} & 1 & 1 & 0 & 0 \\
+  {\bf T5} & 1 & 1 & 0 & 0 \\
 \end{tabular}
-\caption{Results of running each algorithm N times on a variety 
-of planning tasks (see Appendix I for list of tasks). Units are in 
+\caption{Results of running each algorithm ten times in Round A on each of the five tasks described above . Units are in 
 wall-clock time.}
 \end{figure}
 
+
+\subsection{ROUND B:}
+
+% We would like a table like this:
+\begin{figure}
+\begin{tabular}{ l || c | c | c | c }
+  & Affordances & Options & Subgoals & VI \\
+  \hline
+  {\bf T1} & 1 & 1 & 0 & 0  \\
+  {\bf T2} & 1 & 1 & 0 & 1 \\
+  {\bf T3} & 1 & 1 & 1 & 0 \\
+  {\bf T4} & 1 & 1 & 0 & 0 \\
+  {\bf T5} & 1 & 1 & 0 & 0 \\
+\end{tabular}
+\caption{Results of running each algorithm ten times in Round B on each of the five tasks described above . Units are in 
+wall-clock time.}
+\end{figure}
 % As well as some charts indicating search space size, #cycles, etc..
 
 \section{CONCLUSION}
+
+% Recap contribution paragraph
+
+% Future work: Learning, making result of each affordance probabilistic to prune away even more.
+
 
 \bibliographystyle{plainnat}
 \bibliography{main}  
