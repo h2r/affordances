@@ -152,7 +152,7 @@ In the case of \texttt{BRIDGEWORLD}, we might consider placing a block somewhere
 
 % Maybe consider inserting Branavan's chart (or similar), or discuss how the search in subgoal space works?
 
-{\bf Problem 1: Loss of generality}  One important thing to note about subgoals that {\it are} general enough to enhance an agent's planning abilities in a wide variety of state spaces is that they propose {\it necessary} claims about the domain that the agent occupies. If the subgoals are {\it contingent} (i.e. true in some state spaces of the domain but not in others), then they can be shown to completely lose their scalability. For instance, consider the task in \texttt{BRIDGEWORLD}, in which the agent must place a block in the trench that separates the agent from the goal. The subgoal $<blockInTrench, reachGoal>$ might be a perfectly useful subgoal in \texttt{BRIDGEWORLD}, but an adversary could easily come up with thousands of worlds in which such a subgoal would completely derail the agent's planner. Thus, many subgoals do not scale beyond a particular instance of a state space. In order for subgoals to be useful, they must be necessary claims about the domain, otherwise, one can always come up with a counter world (by definition of necessary). 
+{\bf Problem 1: Loss of generality}  One important thing to note about subgoals that {\it are} general enough to enhance an agent's planning abilities in a wide variety of state spaces is that they propose {\it necessary} claims about the domain that the agent occupies. If the subgoals are {\it contingent} (i.e. true in some state spaces of the domain but not in others), then they can be shown to completely lose their scalability. For instance, consider the task in \texttt{BRIDGEWORLD}, in which the agent must place a block in the trench that separates the agent from the goal. The subgoal $\langle blockInTrench, reachGoal\rangle$ might be a perfectly useful subgoal in \texttt{BRIDGEWORLD}, but an adversary could easily come up with thousands of worlds in which such a subgoal would completely derail the agent's planner. Thus, many subgoals do not scale beyond a particular instance of a state space. In order for subgoals to be useful, they must be necessary claims about the domain, otherwise, one can always come up with a counter world (by definition of necessary). 
 
 {\bf Problem 2: Granular Planning} The second problem is that those that subgoals that do scale across state spaces are often not useful. For instance, the vast majority of tasks in Minecraft are not so easily broken into useful, necessary subgoals. Movement, for instance, is particularly difficult. As stated before, scalable subgoals must be necessary preconditions for a particular goal, and such preconditions are often difficult to come up with in a way that actually makes planning easier. One idea would be to create the movement subgoal that the agent is one away from the goal - this is a poor choice however, since this subgoal is hardly useful unless we repeat it (i.e. the agent is one away from the next subgoal, and so on). The result is an extremely granular and low level planning system that is no better than standard Value Iteration. If necessary preconditions existed for many goal types, then subgoal planning would be a great approach. Unfortunately, coming up with such subgoals is not an easy task, and often the best we can do is to plan at such a low level that we lose any benefit of planning over subgoals to begin with
 
@@ -289,7 +289,7 @@ A 10x10 world in which the agent is nearly surrounded by an indestructible wall 
 
 \section{RESULTS}
 
-\subsection{ROUND A:}
+\subsection{KNOWLEDGE ROUND:}
 
 % We would like a table like this:
 \begin{tabular}{ l || c | c | c | c }
@@ -303,14 +303,32 @@ A 10x10 world in which the agent is nearly surrounded by an indestructible wall 
 \end{tabular}
 
 
-\subsection{ROUND B:}
+\subsection{TRANSFER ROUND:}
+
+Figure \ref{t/l:transfer_kb} indicates the knowledge that we provided each system. We did our best to provide each system with optimal knowledge, in the sense that these knowledge bases ought to do better than any other. Below are the results for the transfer round.
+
+\begin{figure}
+\centering
+\begin{tabular}{| l  c |}
+\hline \\
+{\it AffordanceKB} $=$ & \{\} \\
+\hline \\
+Subgoals & \{\} \\
+\hline \\
+Options & \{\} \\
+\hline \\
+ValueIteration & \{\} \\
+\hline
+\end{tabular}
+\caption{The knowledge bases provided to each planning system to solve all five tasks \label{tbl:transfer_kb}}
+\end{figure}
 
 % We would like a table like this:
 \begin{tabular}{ l || c | c | c | c }
   & Affordances & Options & Subgoals & VI \\
   \hline
-  {\bf T1} & 1 & 1 & 0 & 0  \\
-  {\bf T2} & 1 & 1 & 0 & 1 \\
+  {\bf T1} & 1s & 1 & 0 & 0  \\
+  {\bf T2} & 40s & 1 & 0 & 1 \\
   {\bf T3} & 1 & 1 & 1 & 0 \\
   {\bf T4} & 1 & 1 & 0 & 0 \\
   {\bf T5} & 1 & 1 & 0 & 0 \\
