@@ -44,7 +44,7 @@ sequential decision making problem, where increases in problem size
 and complexity directly correspond to an explosion in the state-action
 space. Current approaches to solving sequential decision making
 problems cannot tackle these problems as the state-action space
-becomes large~\citep{grounds05a}.
+becomes large~\citep{grounds05}.
 
 There is a strong need for a generalizable form of knowledge that,
 when coupled with a planner, is capable of solving problems in these
@@ -105,7 +105,7 @@ Where $U_i(s)$ is the {\it utility} of state $s$ at iteration $i$, representing 
 
 In practice, basic Value Iteration scales very poorly, either as the state space grows, or the action set grows. This is because the state-action space, depending on the domain, grows exponentially w.r.t the number of ways that the agent can change the environment. This is ameliorated slightly by introducing the OO-MDP, but it still fails in just about all of the planning scenarios we introduce here. On \texttt{BRIDGEWORLD}, the planner was incapable of enumerating the state space prior to filling up a 2Gb Java heapspace, presented with a single block and minimal action set (it could only place blocks in front of it, and could not destroy blocks) and thus, failed outright.
 
-The reason for this failure is that in classical Value Iteration, the agent tries to explore all states that result from applying every action in every state - this is downright silly, as in \texttt{BRIDGEWORLD}, the agent will inevitably end up in the corner of the room placing and destroying blocks. This is an especially bad tactic in the Minecraft domain, as block placement results in a combinatoric explosion of the state space. Thus, in these scenarios, our Affordance planner has a substantial advantage on classic Value Iteration. These weaknesses are well known ~\citep{grounds}, and have resulted in attempts to make planning more practical in domains of a larger scale.
+The reason for this failure is that in classical Value Iteration, the agent tries to explore all states that result from applying every action in every state - this is downright silly, as in \texttt{BRIDGEWORLD}, the agent will inevitably end up in the corner of the room placing and destroying blocks. This is an especially bad tactic in the Minecraft domain, as block placement results in a combinatoric explosion of the state space. Thus, in these scenarios, our Affordance planner has a substantial advantage on classic Value Iteration. These weaknesses are well known ~\citep{grounds05}, and have resulted in attempts to make planning more practical in domains of a larger scale.
 
 % Value Iteration
 % More details on OO-MDP, Value Iteration, etc.
@@ -118,7 +118,7 @@ The reason for this failure is that in classical Value Iteration, the agent trie
 
 \subsection{SUBGOALS}
 % % Intuition
-Subgoal planning leverages the intuition that certain goals in planning domains may only be brought about if certain preconditions are first satisfied. For instance, in the Minecraft domain, one must be in possession of grain in order to bake bread. In Branavan et. al~\citep{branavan}, they explore learning subgoals from the Minecraft wiki and applying them in order to plan through a variety of problems in Minecraft.
+Subgoal planning leverages the intuition that certain goals in planning domains may only be brought about if certain preconditions are first satisfied. For instance, in the Minecraft domain, one must be in possession of grain in order to bake bread. In Branavan et. al~\citep{branavan12a}, they explore learning subgoals from the Minecraft wiki and applying them in order to plan through a variety of problems in Minecraft.
 
 % Formalism
 Formally, in subgoal planning, the agent is set of subgoals, where each subgoal is a pair of predicates:
@@ -180,7 +180,7 @@ $o\ =\ \langle \pi_0, I_0, \beta_0\rangle$, where:
 
 Here, $\pi_0$ represents the {\it option policy}, $I_0$ represents a precondition, under which the option policy may initiate, and $\beta_0$ represent the post condition, which determines which states terminate the execution of the option policy.
 
-As Konidaris and Barto point out, the classic options framework is not generalizable, as it does not enable an agent to transfer knowledge from one state space to another. Recently, Konidaris and Barto's ~\citep{konidaris} expand on the classic options framework and allow for a more portable implementation of options. Still, though, planning with options requires either that we plan in a mixed space of actions {\it and} options (which blows up the size of the search space), or requires that we plan entirely in the space of options. Additionally, providing an agent with an option policy is a difficult task for a human designer (especially if we want an optimal policy, which we do).
+As Konidaris and Barto point out, the classic options framework is not generalizable, as it does not enable an agent to transfer knowledge from one state space to another. Recently, Konidaris and Barto's ~\citep{konidaris07} expand on the classic options framework and allow for a more portable implementation of options. Still, though, planning with options requires either that we plan in a mixed space of actions {\it and} options (which blows up the size of the search space), or requires that we plan entirely in the space of options. Additionally, providing an agent with an option policy is a difficult task for a human designer (especially if we want an optimal policy, which we do).
 
 \subsection{MACROACTIONS}
 
@@ -362,7 +362,7 @@ As expected, all of the other planning types failed in reaching the goal (they e
 
 \subsection{TRANSFER ROUND:}
 
-Figure \ref{t/l:transfer_kb} indicates the knowledge that we provided each system. We did our best to provide each system with optimal knowledge, in the sense that these knowledge bases ought to do better than any other. Below are the results for the transfer round.
+Figure NEED FIGURE indicates the knowledge that we provided each system. We did our best to provide each system with optimal knowledge, in the sense that these knowledge bases ought to do better than any other. Below are the results for the transfer round.
 
 \begin{figure}
 \centering
