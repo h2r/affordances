@@ -238,11 +238,15 @@ We should be able to prove that given a ``good" set of subgoals the agent will b
 
 \section{EXPERIMENTS}
 
-We tested each planning algorithm (vanilla Value Iteration, Subgoal planning, Options, Affordance planning) on 5 distinct tasks, each with its own state space. For each task, the agent was given the same set of actions seen in Figure \ref{fig:mc_action_set} and one block to place.
+We tested each planning algorithm (vanilla Value Iteration, Subgoal planning, Options, Affordance planning) on 5 distinct tasks, each with its own state space.
 
-In the Knowledge Round, Options, Subgoals, Macro-actions, and Affordances were all given a hand crafted set of knowledge for each individual task. This round is intended to demonstrate the efficacy of each planning system, given perfect knowledge.
+In the Knowledge Round, Options, Subgoals, Macro-actions, and Affordances were all given a hand crafted set of knowledge for each individual task. This round is intended to demonstrate the efficacy of each planning system, given perfect knowledge. For tasks 1-3, the agent was given the same set of actions seen in Figure \ref{fig:mc_action_set} and one block to place. For tasks 4-5, the agent was given only the minimal action set required to complete the task (movement, in both cases). 
 
-In the Transfer Round, we required that each system use one set of knowledge to solve all five planning scenarios. We ran the algorithms on the same set of tasks. This was intended to measure the transferability of each knowledge representation.
+The reason for providing different action sets is that in Minecraft, the agent has an extraordinary ability to modify the state space via placing and destroying blocks. The result is that if an agent begins placing or destroying blocks as it plans in cases where it does not need to, the state-action space will explode exponentially and grow far too fast for the planner to finish in our lifetime. 
+
+Consider that the agent is capable of destroying and placing blocks at the $z = 1$ and $z = 2$ level in a 10x10 world; there are on the order of $O\left(\prod_{n=1}^{100} \binom{100}{n}\right)$, which is far too large too seriously explore. Thus, we demonstrate that our affordance model {\it is} capable of handling such actions, and can plan using them as in a bridge building scenario, while the others cannot. However, in order to also prove the generality of affordance planning, we also visit planning scenarios in which the agent is given a more normal set of actions.
+
+In the Transfer Round, we required that each system use one set of knowledge to solve all five planning scenarios. We ran the algorithms on the same set of tasks. This was intended to measure the transferability of each knowledge representation. For this case, we provide the agent with the same set of actions in each task, the set in \ref{fig:mc_action_set}. This round is intended to demonstrate to the scalability of each system (those as we know, the others will fall prey to the Minecraft combinatorial explosion).
 
 For each iteration, we measured the wall-clock time to find the goal, the percentage of the state-space explored, and the number of states that were re-explored (in the case of subgoals).
 
@@ -309,17 +313,12 @@ Figure \ref{t/l:transfer_kb} indicates the knowledge that we provided each syste
 
 \begin{figure}
 \centering
-\begin{tabular}{| l  c |}
-\hline \\
+\boxed{\begin{tabular}{ l c }
 {\it AffordanceKB} $=$ & \{\} \\
-\hline \\
 Subgoals & \{\} \\
-\hline \\
 Options & \{\} \\
-\hline \\
 ValueIteration & \{\} \\
-\hline
-\end{tabular}
+\end{tabular}}
 \caption{The knowledge bases provided to each planning system to solve all five tasks \label{tbl:transfer_kb}}
 \end{figure}
 
