@@ -5,7 +5,9 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
-\usepackage[]{algorithm2e}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 \title{Planning with Affordances}
 
@@ -93,9 +95,16 @@ domains and problems, unlike other approaches.
 
 \section{BACKGROUND}
 
-\subsection{OOMDP}
+\subsection{OO-MDP}
 
-The Object Oriented Markov Decision Process (OO-MDP) ~\citep{diuk08} is an extension of the classic Markov Decision Process (MDP). Recall that a finite MDP is a five-tuple: $\langle \mathcal{S}, \mathcal{A}, \mathcal{T}, \mathcal{R}, \gamma \rangle$, where $\mathcal{S}$ is a state-space, $\mathcal{A}$ is the agent's set of actions, $\mathcal{T}$ denotes $\mathcal{T}[s' \mid s,a]$, the transition probability of an agent applying action $a \in \mathcal{A}$ in state $s \in \mathcal{S}$ and arriving in $s' \in \mathcal{S}$, and $\mathcal{R}(s,a)$ denotes the reward at $s$ when action $a$ is applied, and $\gamma$ is a discount factor. The OO-MDP changes the underlying representation of the state space $S$ so that worlds are more general. Planning with an OO-MDP involves running Value Iteration to determine a policy.
+The Object Oriented Markov Decision Process (OO-MDP) ~\citep{diuk08} is an extension of the classic Markov Decision Process (MDP), a fundamental building block of Reinforcement Learning (RL). RL is an algorithmic approach to sequential decision making problems, or more simply: planning.
+
+A finite MDP is a five-tuple: $\langle \mathcal{S}, \mathcal{A}, \mathcal{T}, \mathcal{R}, \gamma \rangle$, where $\mathcal{S}$ is a state-space, $\mathcal{A}$ is the agent's set of actions, $\mathcal{T}$ denotes $\mathcal{T}[s' \mid s,a]$, the transition probability of an agent applying action $a \in \mathcal{A}$ in state $s \in \mathcal{S}$ and arriving in $s' \in \mathcal{S}$, and $\mathcal{R}(s,a)$ denotes the reward at $s$ when action $a$ is applied, and $\gamma$ is a discount factor. The OO-MDP changes the underlying representation of the state space $S$ so that worlds consist of instances of objects that are grouped into classes, where each object obtains of a set of attributes. Thus, a state in the OO-MDP is just the union of the attribute values of all objects in the world. As with a classical finite MDP, planning with an OO-MDP involves running Value Iteration to determine a policy. Recall that value iteration involves propagating reward throughout the state space until propagation has converged, at which point, a policy may be deduced. Reward propagation occurs as in a Bellman update:
+\begin{equation}
+U_{i+1}(s) \leftarrow \mathcal{R}(s) + \gamma \max_{a \in \mathcal{A}(s)} \sum_{s'} \text{Pr}(s' \mid s, a)U_i(s')
+\end{equation}
+
+Where $U_i(s)$ is the {\it utility} of state $s$ at iteration $i$, representing the expected reward of being in that state. In the Russell and Norvig AI text, they provide
 
 In practice, basic Value Iteration scales very poorly, either as the state space grows, or the action set grows. This is because the state-action space, depending on the domain, grows exponentially w.r.t the number of ways that the agent can change the environment. This is ameliorated slightly by introducing the OO-MDP, but it still fails in just about all of the planning scenarios we introduce here. On \texttt{BRIDGEWORLD}, the planner was incapable of enumerating the state space prior to filling up a 2Gb Java heapspace, presented with a single block and minimal action set (it could only place blocks in front of it, and could not destroy blocks) and thus, failed outright.
 
@@ -123,7 +132,21 @@ SG = \langle x_k, x_l \rangle
 
 where $x_l$ is the effect of some action sequence performed on a state in which $x_k$ is true. Thus, subgoal planning requires that we perform high-level planning in subgoal space, and low-level planning to get from subgoal to subgoal.
 
-%Pseudocode of algorithm
+% Insert pseudcode
+
+\begin{algorithm}
+  \caption{Plan with Knowledge Base of Subgoals}
+  \begin{algorithmic}[1]
+    \State subgoalSequence $\gets$ BFS(subgoalKB, goal)
+    \State plan = []
+    \State curState $\gets$ subgoalSequence.pop()
+    \For {subgoal $\in$ subgoalSequence}
+    		\State plan $\gets$ ValueIteration(curState, subgoal)
+		\State curState $\gets$ plan.getLastState()
+    \EndFor \\
+    \Return plan;
+  \end{algorithmic}
+\end{algorithm}
 
 In the case of \texttt{BRIDGEWORLD}, we might consider placing a block somewhere along the trench to be a subgoal. Then, we run Value Iteration to get from the agent's starting location to the point at which we've placed a block in the trench, stop, and run Value Iteration again from the first subgoal to the finish. There are a few problems with this approach, however.
 
@@ -188,7 +211,26 @@ The reason that each goal encodes information about the goal relevant to those a
 
 Most importantly, within the Affordance framework, agent's may have {\it huge} action sets, since they will effectively prune their action set as needed. As a result, Affordance-equipped agents are able to solve a variety of problems across variable state-spaces with a single set of knowledge. This makes affordances extremely robust, as well as transferrable relative to subgoal planning and options.
 
-%PseudoCode
+% Insert pseudcode
+
+\begin{algorithm}
+  \caption{Plan with Knowledge Base of Affordances}
+
+  \begin{algorithmic}
+    \State \Comment{Reachability Analysis}
+    \State currAs $\gets$ affordKB.pruneAs(initS, d.goal, actions)
+    \State allStateActions $\gets$ $\langle State ,\langle Action \rangle \rangle$
+    \For {s in allStateActions}
+	\State nextAs $\gets$ affordKB.pruneAs(s, d.goal, allStateActions $\langle s \rangle$)
+	\State allStateActions.add(s.do(nextAs))
+    \EndFor
+    \State \Comment{ValueIteration}
+    \State policy $\gets$ ValueIteration(d, allStateActions)
+    
+    \Return policy;
+  \end{algorithmic}
+\end{algorithm}
+
 
 The Affordance formalism introduced above and expanded on in this paper resolves the weaknesses of these other frameworks by limiting the complexity of the seed knowledge required of the designer, while still providing enough knowledge to limit the search space but also maintain scalability.
 
@@ -279,7 +321,7 @@ A 10x10 world in which the agent is nearly surrounded by an indestructible wall 
 \section{CONCLUSION}
 
 We proposed a novel approach to representing
-knowledge about how to plan in terms of {\em
+knowledge in terms of {\em
   affordances}~\citep{gibson77} that allows an agent to efficiently prune its
 action space based on domain knowledge. This pruning was shown to significantly
 reduce the number of state/action pairs the agent needs to evaluate
