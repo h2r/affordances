@@ -241,7 +241,7 @@ We should be able to prove that given a ``good" set of subgoals the agent will b
 \caption{The pruned set of actions provided to the agent for tasks 4-8 in the Knowledge Round \label{fig:reg_actions}}
 \end{figure}
 
-We tested each planning algorithm (vanilla Value Iteration, Subgoal planning, Options, Affordance planning) on eight distinct tasks, divided into two groups, the Block group (requires block placement or destruction), and the General group (tasks that do not require block placement or destruction). We issue these experiments in two rounds, the Knowledge Round, and the Transfer Round.
+We tested each planning algorithm (vanilla Value Iteration, Subgoal planning, Options, Affordance planning) on seven distinct tasks, divided into two groups, the Block group (requires block placement or destruction), and the General group (tasks that do not require block placement or destruction). We issue these experiments in two rounds, the Knowledge Round, and the Transfer Round.
 
 \boxed{\begin{tabular}{ l | l }
 {\bf Block Group} & {\bf General Group} \\
@@ -249,8 +249,7 @@ We tested each planning algorithm (vanilla Value Iteration, Subgoal planning, Op
 B1: \texttt{FLATWORLD} & G1: \texttt{SMALLPATHWORLD} \\
 B2: \texttt{BRIDGEWORLD10} & G2: \texttt{WALLWORLD} \\
 B3: \texttt{TUNNELWORLD} & G3: \texttt{DOORWORLD} \\
-& G4: \texttt{LIGHTWORLD} \\
-& G5: \texttt{BIGWORLD} \\
+& G4: \texttt{BIGWORLD} \\
 
 \end{tabular}}
 
@@ -320,18 +319,25 @@ Recall that the action set for these tasks is defined in Figure \ref{fig:reg_act
 %\end{center}
 
 
-{\bf G4: \texttt{LIGHTWORLD}} This is an adaptation of one of Konidaris' examples demonstrating the efficacy of portable options. A 10x10 world where the agent is surrounded on all sides by indestructible walls (i.e. the agent cannot destroy the grey blocks). The agent must press the button in order to open the door and proceed to the goal.
-
-\begin{center}
-\includegraphics[scale=0.23]{figures/lightworld.png}
-\end{center}
+%
 
 % Knowledge base provided for each in ROUND A
 
-{\bf G5: \texttt{BIGWORLD}} Identical to {\bf B1: \texttt{FLATWORLD}}, but the dimensions of the world are 100x100.
+
+
+{\bf G5: \texttt{MEDWORLD}} Identical to {\bf B1: \texttt{FLATWORLD}}, but the dimensions of the world are 15x15.
+
+
+{\bf G5: \texttt{BIGWORLD}} Identical to {\bf B1: \texttt{FLATWORLD}}, but the dimensions of the world are 20x20.
 
 % Knowledge base provided for each in ROUND A
 
+
+%{\bf G5: \texttt{LIGHTWORLD}} This is an adaptation of one of Konidaris' examples demonstrating the efficacy of portable options. A 10x10 world where the agent is surrounded on all sides by indestructible walls (i.e. the agent cannot destroy the grey blocks). The agent must press the button in order to open the door and proceed to the goal.
+%
+%\begin{center}
+%\includegraphics[scale=0.23]{figures/lightworld.png}
+%\end{center}
 % ---- Also include the knowledge base provided for each in ROUND B, where that KB must solve all 5 tasks
 
 \section{RESULTS}
@@ -346,12 +352,11 @@ As expected, all of the other planning types failed in reaching the goal (they e
   {\bf M1} & 1s & ? & DNF & DNF  \\
   {\bf M2} & 40s & ? & DNF & DNF \\
   {\bf M3} & 40s & ? & DNF & DNF \\
-  {\bf G1} & 1 & 1 ? 0 & 0 \\
-  {\bf G2} & 1 & 1 ? 0 & 0 \\
-  {\bf G3} & 1 & 1 ? 0 & 0 \\
-  {\bf G4} & 1 & 1 ? 0 & 0 \\
-  {\bf G5} & 1 & 1 ? 0 & 0 \\
-  {\bf G6} & 1 & 1 ? 0 & 0 \\
+  {\bf G1} & 1s & ? & 1s & 1s \\
+  {\bf G2} & 1s & ? & 4s & 2s \\
+  {\bf G3} & 1s & ? & 1s & 1s \\
+  {\bf G4} & 1s & ? & 13s & 8s \\
+  {\bf G4} & 1s & ? & 13s & 8s \\
 \end{tabular}
 
 
@@ -370,15 +375,17 @@ ValueIteration & \{\} \\
 \caption{The knowledge bases provided to each planning system to solve all five tasks \label{tbl:transfer_kb}}
 \end{figure}
 
-% We would like a table like this:
+
 \begin{tabular}{ l || c | c | c | c }
   & Affordances & Options & Subgoals & VI \\
   \hline
-  {\bf T1} & 1s & 1 & 0 & 0  \\
-  {\bf T2} & 40s & 1 & 0 & 1 \\
-  {\bf T3} & 1 & 1 & 1 & 0 \\
-  {\bf T4} & 1 & 1 & 0 & 0 \\
-  {\bf T5} & 1 & 1 & 0 & 0 \\
+  {\bf M1} & 1s & ? & DNF & DNF  \\
+  {\bf M2} & 15s & ? & DNF & DNF \\
+  {\bf M3} & 40s & ? & DNF & DNF \\
+  {\bf G1} & 1s & ? & 1s & 1s \\
+  {\bf G2} & 1s & ? & 4s & 2s \\
+  {\bf G3} & 1s & ? & 1s & 1s \\
+  {\bf G4} & 1s & ? & 13s & 8s \\
 \end{tabular}
 
 % As well as some charts indicating search space size, #cycles, etc..
