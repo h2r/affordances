@@ -247,7 +247,7 @@ We should be able to prove that given a ``good" set of subgoals the agent will b
 \caption{The pruned set of actions provided to the agent for tasks 4-8 in the Knowledge Round \label{fig:reg_actions}}
 \end{figure}
 
-We tested each planning algorithm (vanilla Value Iteration, Subgoal planning, Options, Affordance planning) on seven distinct tasks, divided into two groups, the Block group (requires block placement or destruction), and the General group (tasks that do not require block placement or destruction). We issue these experiments in two rounds, the Knowledge Round, and the Transfer Round.
+We tested each planning algorithm (vanilla Value Iteration, Subgoal planning, Options, Affordance planning) on seven distinct tasks, divided into two groups, the Block group (requires block placement or destruction), and the General group (tasks that do not require block placement or destruction). We issue these experiments in two rounds, the Knowledge Round, and the Transfer Round. The purpose of these two rounds is to compare both the effectiveness and generality of planning with affordances to other planners.
 
 \boxed{\begin{tabular}{ l | l }
 {\bf Block Group} & {\bf General Group} \\
@@ -260,22 +260,26 @@ B3: \texttt{TUNNELWORLD} & G3: \texttt{DOORWORLD} \\
 \end{tabular}}
 
 
-In the {\bf Knowledge Round}, Options, Subgoals, Macro-actions, and Affordances were all given a hand crafted set of knowledge for each individual task. This round is intended to demonstrate the efficacy of each planning system, given perfect knowledge for a particular planning scenario. For tasks 1-3, the agent was given the set of actions seen in Figure \ref{fig:all_actions} (includes block placement and destruction) and one block to place. For tasks 4-8, the agent was given the set of actions described in Figure\ref{fig:reg_actions} (does not include block placement or destruction). The reason for providing these two action sets and splitting the tasks up is that in Minecraft, the agent has an extraordinary ability to modify the state space via placing and destroying blocks. As a result, if an agent begins placing or destroying blocks in cases where it does not need to, the state-action space will explode exponentially and grow far too fast for the planner to finish in our lifetime (for just about any planner). 
+In the {\bf Knowledge Round}, Options, Subgoals, Macro-actions, and Affordances were all given a hand crafted set of knowledge for each individual task. This round is intended to demonstrate the efficacy of each planning system, given perfect knowledge for a particular planning scenario. For tasks B1-B3, the agent was given the set of actions seen in Figure \ref{fig:all_actions} (includes block placement and destruction) and one block to place. For tasks G1-G4, the agent was given the set of actions described in Figure \ref{fig:reg_actions} (does not include block placement or destruction). The reason for providing these two action sets and splitting the tasks up is that in Minecraft, the agent has an extraordinary ability to modify the state space via placing and destroying blocks. As a result, if an agent begins placing or destroying blocks in cases where it does not need to, the state-action space will explode exponentially and grow far too fast for (almost) any planner to finish in our lifetime. 
 
 Consider that the agent is capable of destroying and placing blocks in a 10x10x2 world; there are on the order of:
 
+% This equation doesn't seem quite right. I think it should be
+% \sum_{i = 1}^2 \binom{10 \cdot 10}{i}. This is the total number
+% of ways of placing the agent in the 10x10x2 world (no block), plus
+% number of ways of placing the agent and one block.
 \begin{equation}
-O\left(\prod_{n=1}^{10*10*2} \binom{10*10*2}{n}\right)
+O\left(\prod_{n=1}^{10 \cdot 10 \cdot 2} \binom{10 \cdot 10 \cdot 2}{n}\right)
 \label{eq:mc_explode}
 \end{equation}
 
-states, which is far too large to explore. We will demonstrate that our affordance model {\it is} capable of handling such actions, and can plan using them as in a bridge building scenario or tunnel digging scenario (among others) while the other planners cannot. In fact, with these actions, none of the other planning systems can solve even the most basic path planning from (see {\bf B1: \texttt{FLATWORLD}}). However, in order to also prove the generality of affordance planning (and not just demonstrate that it takes advantage of the Minecraft explosion from Equation \ref{eq:mc_explode}, we also test on planning scenarios in which the agent is given a more normal set of actions (found in Figure \ref{fig:reg_actions}).
+states, which is far too large to explore. We will demonstrate-- that our affordance model {\it is} capable of handling such types of actions, and can plan using them as in a bridge building scenario or tunnel digging scenario (among others) while the other planners cannot. In fact, with these actions, none of the other planning systems can solve even the most basic path planning from (see {\bf B1: \texttt{FLATWORLD}}). However, in order to also prove the generality of affordance planning (and not just demonstrate that it takes advantage of the Minecraft statespace explosion from Equation \ref{eq:mc_explode}, we also test on planning scenarios in which the agent is given a more normal set of actions (found in Figure \ref{fig:reg_actions}).
 
 In the {\bf Transfer Round}, we required that each system use one set of knowledge to plan through each of the eight tasks. This is intended to measure the transferability of each planning technique. Additionally, we provide the agent with the set of all actions so that it can actually solve the problems, the set in Figure. \ref{fig:all_actions}.
-For each iteration, we measured the wall-clock time to find the goal.
 
-The set of tasks were inspired by those planning scenarios that the creators of each other planning system proposed.
-\subsection{Block Group}
+For each iteration, we measured the wall-clock time to find the goal and compare the relative gains of one algorithm over the other. The set of tasks were inspired by those planning scenarios that the creators of each other planning system have proposed. We found this important because we wanted to eliminate the possibility that one problem type favoured a particular planning algorithm over another.
+
+\subsection{BLOCK GROUP}
 
 Recall that the action set for these tasks is defined in Figure \ref{fig:all_actions}.
 
