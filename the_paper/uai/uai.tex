@@ -59,7 +59,7 @@ Formally, \citet{gibson77} proposed to define this intuition as an
 [the environment] provides or furnishes, either for good or ill.''
 Additionally, roboticists have recently become interested in
 leveraging affordances for perception and prediction of
-humans~\citep{koppula13a, koppula13b}.
+human actions~\citep{koppula13a, koppula13b}.
 
 \begin{figure}
 \centering
@@ -72,13 +72,13 @@ the notion of an affordance as a piece of planning knowledge provided
 to an agent operating in a Markov Decision Process
 (MDP)~\citep{kaelbling99}.  We demonstrate that, like an option or
 macro-action, an affordance provides additional information to the
-agent, enabling more efficient planning.  However, unlike previous
+agent, enabling more transferable and efficient planning.  However, unlike previous
 approaches, an affordance enables more significant speedups by
 reducing the size and branching-factor of the search space, enabling
 an agent to focus its search on the most relevant part of the problem
 at hand.  This approach means that a {\em single} set of affordances
 provides general domain knowledge, becoming relevant just when the
-agent reasons that it needs to pursue a particular subgoal.  Furthermore,
+agent reasons that it needs to pursue a particular goal.  Furthermore,
 Affordances are not specific to a particular state-space nor problem-type, and thus, provide
 the agent with transferrable knowledge that is effective in a wide variety of
 domains and problems, unlike other approaches.
@@ -109,12 +109,11 @@ U_{i+1}(s) \leftarrow \mathcal{R}(s) + \gamma \max_{a \in \mathcal{A}(s)} \sum_{
 
 Where $U_i(s)$ is the {\it utility} of state $s$ at iteration $i$, representing the expected reward of being in that state.
 
-In practice, basic Value Iteration scales very poorly, either as the state space grows, or the action set grows. This is because the state-action space, depending on the domain, grows exponentially w.r.t the number of ways that the agent can change the environment. This is ameliorated slightly by introducing the OO-MDP, but it still fails in just about all of the planning scenarios we introduce here. In \texttt{BRIDGEWORLD}, when presented with a single block and minimal action set (it could only place blocks in front of it, and could not destroy blocks) the planner was incapable of enumerating the state space prior to filling up a 2Gb Java heapspace and thus, failed outright.
+In practice, basic Value Iteration scales very poorly, either as the state space grows, or the action set grows. This is because the state-action space, depending on the domain, grows exponentially w.r.t the number of ways that the agent can change the environment. This is ameliorated slightly by introducing the OO-MDP, but it still fails in just about all of the planning scenarios we introduce here. In \texttt{BRIDGEWORLD}, VI was incapable of enumerating the state space prior to filling up a 2Gb Java heapspace and thus, failed outright.
 
-The reason for this failure is that in classical Value Iteration, the agent tries to explore all states that result from applying every action in every state - this is downright silly, as in \texttt{BRIDGEWORLD}, the agent will inevitably end up in the corner of the room placing and destroying blocks. This is an especially bad tactic in the Minecraft domain, as block placement results in a combinatoric explosion of the state space. Thus, in these scenarios, our Affordance planner has a substantial advantage on classic Value Iteration. These weaknesses are well known ~\citep{grounds05}, and have resulted in attempts to make planning more practical in domains of a larger scale.
+The reason for this failure is that in classical Value Iteration, the agent tries to explore all states that result from applying every action in every state - this is downright silly, as in \texttt{BRIDGEWORLD}, the agent will inevitably end up in the corner of the room placing and destroying blocks. This is an especially bad tactic in the Minecraft domain, as block placement results in a combinatoric explosion of the state space (see Equation \ref{eq:mc_explode}). Thus, in these scenarios, our Affordance planner has a substantial advantage on classic Value Iteration. These weaknesses are well known ~\citep{grounds05}, and have resulted in attempts to make planning more practical in domains of a larger scale.
 
-% Value Iteration
-% More details on OO-MDP, Value Iteration, etc.
+% More VI math. Maybe pseudocode.
 
 \begin{figure}
 \centering
@@ -144,7 +143,7 @@ where $x_l$ is the effect of some action sequence performed on a state in which 
     \State plan = []
     \State curState $\gets$ subgoalSequence.pop()
     \For {subgoal $\in$ subgoalSequence}
-    		\State plan $\gets$ ValueIteration(curState, subgoal)
+    		\State plan += ValueIteration(curState, subgoal)
 		\State curState $\gets$ plan.getLastState()
     \EndFor \\
     \Return plan;
@@ -210,9 +209,7 @@ Where $\alpha$ is a subset of the agent's given set of actions $\mathcal{A}$, $p
 
 The intuition is that in a huge number of planning scenarios, given a goal, the agent should be able to focus on only a subset of its available actions. The result is that the state-action space that the agent explores is astronomically smaller than in standard Value Iteration (especially in domains where the agent can change the environment to the degree of Minecraft). This parallels the intuition of Gibson's concept of an affordance, in which a human is capable of trimming down his or her considered action space by a huge amount when directed toward a particular goal. For instance, consider an agent with the standard Minecraft action set seen in Figure \ref{fig:all_actions} - if the agent need only walk across a flat surface to reach the goal, it should not even bother trying to place blocks or destroy blocks. If it needs to dig a ten block hole, then the agent should not consider movement or placement.
 
-The reason that each goal encodes information about the goal relevant to those actions is that it, given perfect subgoal knowledge for a particular planning task, the affordance formalism will find an optimal policy {\it extremely} quickly. We imagine extensions in which an agent gets stuck and must ask a human partner for help using natural language, and the resulting dialogue could endow the agent with subgoal knowledge. This also allows the agent to prune way unnecessary actions in $\mathcal{A}$ in each specific planning task, making it possible to solve a engage with a large number of planning scenarios that may call for different actions.
-
-Most importantly, within the Affordance framework, agent's may have {\it huge} action sets, since they will effectively prune their action set as needed. As a result, Affordance-equipped agents are able to solve a variety of problems across variable state-spaces with a single set of knowledge. This makes affordances extremely robust, as well as transferrable relative to subgoal planning and options.
+The reason that each goal encodes information about the goal relevant to those actions is that it, given perfect subgoal knowledge for a particular planning task, the affordance formalism will find an optimal policy {\it extremely} quickly. We imagine extensions in which an agent gets stuck and must ask a human partner for help using natural language, and the resulting dialogue could endow the agent with subgoal knowledge. This also allows the agent to prune way unnecessary actions in $\mathcal{A}$ in each specific planning task, making it possible to solve a engage with a large number of planning scenarios that may call for different actions. Furthermore, since actions may be pruned with respect to a given goal, agents may be endowed with huge action sets that enable them solve a variety of problems across variable state-spaces, yet the branching factor of an affordance agent's exploration will be significantly smaller, since actions that are not relevant to the current goal will be pruned. This makes the affordance formalism extremely robust, as well as transferrable relative to subgoal planning and options.
 
 % Insert pseudcode
 
@@ -247,7 +244,16 @@ We should be able to prove that given a ``good" set of subgoals the agent will b
 \caption{The pruned set of actions provided to the agent for tasks 4-8 in the Knowledge Round \label{fig:reg_actions}}
 \end{figure}
 
-We tested each planning algorithm (vanilla Value Iteration, Subgoal planning, Options, Affordance planning) on seven distinct tasks, divided into two groups, the Block group (requires block placement or destruction), and the General group (tasks that do not require block placement or destruction). We issue these experiments in two rounds, the Knowledge Round, and the Transfer Round. The purpose of these two rounds is to compare both the effectiveness and generality of planning with affordances to other planners.
+We tested each planning algorithm (vanilla Value Iteration, Subgoal planning, Options, Affordance planning) on seven distinct tasks, with varying action sets. We tested each algorithm with perfect knowledge (hand crafted knowledge bases specific to each task), as well as testing each algorithm with only a single knowledge base to solve all the tasks. 
+
+Q: How much detail should we include about the experiments? I think maybe diving deeply into a single one would make sense.
+
+Desired result: We want to show that Affordance planning does just as well if not better on any specific planning task. BUT additionally, with a reasonably small knowledge base, can solve a ton of different problems (i.e. it is more transferable). And finally, we want to show that in cases where trying unnecessary actions is a really bad idea (mine craft placement/destruction) only the affordance planner will work, therefore if we need to plan in domains {\it like} Minecraft, then we should use affordance planner (maybe a small argument that real world robotics tasks parallel the malleability of mine craft, since the universe has a monstrous number of ways to change).
+
+
+{\bf Old attempt:}
+
+ divided into two groups, the Block group (requires block placement or destruction), and the General group (tasks that do not require block placement or destruction). We issue these experiments in two rounds, the Knowledge Round, and the Transfer Round. The purpose of these two rounds is to compare both the effectiveness and generality of planning with affordances to other planners.
 
 \boxed{\begin{tabular}{ l | l }
 {\bf Block Group} & {\bf General Group} \\
