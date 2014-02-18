@@ -64,7 +64,11 @@ human actions~\citep{koppula13a, koppula13b}.
 \begin{figure}
 \centering
 \includegraphics[scale = 0.21]{figures/bridgeworld_vi_vs_aff.png}
-\caption{In the above Minecraft planning problem \texttt{BRIDGEWORLD}, the agent must place a block in the trench in order to reach the goal (the trench is too wide to jump over). This problem was only solvable by the Affordance planner.\label{fig:bridgeworld_aff}}
+\caption{In the above Minecraft planning problem \texttt{BRIDGEWORLD},
+the agent must place a block in the trench in order to reach the goal 
+(the trench is too wide to jump over). This problem was only solvable 
+by the Affordance planner.\label{fig:bridgeworld_aff} (see Fig. \ref{fig:all_actions}
+for a description of the action-symbols)}
 \end{figure}
 
 In this paper we will formalize
@@ -94,30 +98,76 @@ domains and problems, unlike other approaches.
 
 \subsection{OO-MDP}
 
-The Object Oriented Markov Decision Process (OO-MDP) ~\citep{diuk08} is an extension of the classic Markov Decision Process (MDP), a fundamental building block of Reinforcement Learning (RL). RL is an algorithmic approach to sequential decision making problems, or more simply: planning.
+The Object Oriented Markov Decision Process 
+(OO-MDP) ~\citep{diuk08} is an extension of the classic
+Markov Decision Process (MDP), a fundamental building 
+block of Reinforcement Learning (RL). RL is an algorithmic 
+approach to sequential decision making problems, or more simply: planning.
 
-A finite MDP is a five-tuple: $\langle \mathcal{S}, \mathcal{A}, \mathcal{T}, \mathcal{R}, \gamma \rangle$, where $\mathcal{S}$ is a state-space, $\mathcal{A}$ is the agent's set of actions, $\mathcal{T}$ denotes $\mathcal{T}(s' \mid s,a)$, the transition probability of an agent applying action $a \in \mathcal{A}$ in state $s \in \mathcal{S}$ and arriving in $s' \in \mathcal{S}$, and $\mathcal{R}(s,a)$ denotes the reward at $s$ when action $a$ is applied, and $\gamma$ is a discount factor.
+A finite MDP is a five-tuple: $\langle \mathcal{S}, \mathcal{A}, 
+\mathcal{T}, \mathcal{R}, \gamma \rangle$, where $\mathcal{S}$
+is a state-space, $\mathcal{A}$ is the agent's set of actions, 
+$\mathcal{T}$ denotes $\mathcal{T}(s' \mid s,a)$, the transition
+probability of an agent applying action $a \in \mathcal{A}$ in 
+state $s \in \mathcal{S}$ and arriving in $s' \in \mathcal{S}$, 
+and $\mathcal{R}(s,a)$ denotes the reward at $s$ when action
+$a$ is applied, and $\gamma$ is a discount factor.
 
-The OO-MDP changes the representation of the state space $S$ through the introduction of object classes, each of which has a set of attributes. The state space is represented as a collection of objects, which are instances of the aforementioned classes. Additionally, upon instantiation the attributes of the object's class are given a state (an assignment of values). Finally, the underlying MDP is the union of all the states of its objects \citep{diuk08}.
+The OO-MDP changes the representation of the state space 
+$S$ through the introduction of object classes, each of which 
+has a set of attributes. The state space is represented as a 
+collection of objects, which are instances of the aforementioned 
+classes. Additionally, upon instantiation the attributes of the 
+object's class are given a state (an assignment of values). 
+Finally, the underlying MDP is the union of all the states of its 
+objects \citep{diuk08}.
 
-Our motivation for using an OO-MDP instead of an MDP lies in the ability to formulate predicates over classes of objects. As we will see in section 3, this helps us form preconditions and goals that generalize beyond a particular instance of a state space.
+Our motivation for using an OO-MDP instead of an MDP
+lies in the ability to formulate predicates over classes of 
+objects. As we will see in section 3, this helps us form 
+preconditions and goals that generalize beyond a particular
+instance of a state space.
 
-As with a classical finite MDP, planning with an OO-MDP involves running Value Iteration to determine a policy. Recall that value iteration involves propagating reward throughout the state space until propagation has converged, at which point, a policy may be deduced. Reward propagation occurs as in a Bellman update:
+As with a classical finite MDP, planning with an OO-MDP 
+involves running Value Iteration to determine a policy. 
+Recall that value iteration involves propagating reward 
+throughout the state space until propagation has converged, 
+at which point, a policy may be deduced. Reward propagation
+occurs as in a Bellman update:
+
 \begin{equation}
 U_{i+1}(s) \leftarrow \mathcal{R}(s) + \gamma \max_{a \in \mathcal{A}(s)} \sum_{s'} \text{Pr}(s' \mid s, a)U_i(s')
 \end{equation}
 
-Where $U_i(s)$ is the {\it utility} of state $s$ at iteration $i$, representing the expected reward of being in that state.
+Where $U_i(s)$ is the {\it utility} of state $s$ at iteration $i$, 
+representing the expected reward of being in that state.
 
-In practice, basic Value Iteration scales very poorly, either as the state space grows, or the action set grows. This is because the state-action space, depending on the domain, grows exponentially w.r.t the number of ways that the agent can change the environment. This is ameliorated slightly by introducing the OO-MDP, but it still fails in just about all of the planning scenarios we introduce here. In \texttt{BRIDGEWORLD}, VI was incapable of enumerating the state space prior to filling up a 2Gb Java heapspace and thus, failed outright.
+In practice, basic Value Iteration scales very poorly, either as the state 
+space grows, or the action set grows. This is because the state-action 
+space, depending on the domain, grows exponentially w.r.t the number 
+of ways that the agent can change the environment. This is ameliorated 
+slightly by introducing the OO-MDP, but it still fails in just about all of 
+the planning scenarios we introduce here.
 
-The reason for this failure is that in classical Value Iteration, the agent tries to explore all states that result from applying every action in every state - this is downright silly, as in \texttt{BRIDGEWORLD}, the agent will inevitably end up in the corner of the room placing and destroying blocks. This is an especially bad tactic in the Minecraft domain, as block placement results in a combinatoric explosion of the state space (see Equation \ref{eq:mc_explode}). Thus, in these scenarios, our Affordance planner has a substantial advantage on classic Value Iteration. These weaknesses are well known ~\citep{grounds05}, and have resulted in attempts to make planning more practical in domains of a larger scale.
+The reason for this failure is that in classical Value Iteration, the agent tries to 
+explore all states that result from applying every action in every state - this is downright silly, 
+as in \texttt{BRIDGEWORLD}, the agent will inevitably end up in the corner of the 
+room placing and destroying blocks. This is an especially bad tactic in the Minecraft 
+domain, as block placement results in a combinatoric explosion of the state space 
+(see Equation \ref{eq:mc_explode}). Thus, in these scenarios, our Affordance planner 
+has a substantial advantage on classic Value Iteration. These weaknesses are well 
+known ~\citep{grounds05}, and have resulted in attempts to make planning more 
+practical in domains of a larger scale.
 
 % More VI math. Maybe pseudocode.
 
 \subsection{SUBGOALS}
 % % Intuition
-Subgoal planning leverages the intuition that certain goals in planning domains may only be brought about if certain preconditions are first satisfied. For instance, in the Minecraft domain, one must be in possession of grain in order to bake bread. In Branavan et. al~\citep{branavan12a}, they explore learning subgoals from the Minecraft wiki and applying them in order to plan through a variety of problems in Minecraft.
+Subgoal planning leverages the intuition that certain goals in planning domains 
+may only be brought about if certain preconditions are first satisfied. For instance, 
+in the Minecraft domain, one must be in possession of grain in order to bake bread. 
+In Branavan et. al~\citep{branavan12a}, they explore learning subgoals from the 
+Minecraft wiki and applying them in order to plan through a variety of problems in Minecraft.
 
 % Formalism
 Formally, in subgoal planning, the agent is set of subgoals, where each subgoal is a pair of predicates:
@@ -126,7 +176,10 @@ Formally, in subgoal planning, the agent is set of subgoals, where each subgoal 
 SG = \langle x_k, x_l \rangle
 \]
 
-where $x_l$ is the effect of some action sequence performed on a state in which $x_k$ is true. Thus, subgoal planning requires that we perform high-level planning in subgoal space, and low-level planning to get from subgoal to subgoal.
+where $x_l$ is the effect of some action sequence performed on 
+a state in which $x_k$ is true. Thus, subgoal planning requires 
+that we perform high-level planning in subgoal space, and low-level 
+planning to get from subgoal to subgoal.
 
 % Insert pseudcode
 
@@ -144,30 +197,74 @@ where $x_l$ is the effect of some action sequence performed on a state in which 
   \end{algorithmic}
 \end{algorithm}
 
-In the case of \texttt{BRIDGEWORLD}, we might consider placing a block somewhere along the trench to be a subgoal. Then, we run Value Iteration to get from the agent's starting location to the point at which we've placed a block in the trench, stop, and run Value Iteration again from the first subgoal to the finish. There are a few problems with this approach, however.
+In the case of \texttt{BRIDGEWORLD}, we might consider placing 
+a block somewhere along the trench to be a subgoal. Then, we 
+run Value Iteration to get from the agent's starting location to the 
+point at which we've placed a block in the trench, stop, and run 
+Value Iteration again from the first subgoal to the finish. There are 
+a few problems with this approach, however.
 
 % Maybe consider inserting Branavan's chart (or similar), or discuss how the search in subgoal space works?
 
-{\bf Problem 1: Loss of generality}  One important thing to note about subgoals that {\it are} general enough to enhance an agent's planning abilities in a wide variety of state spaces is that they propose {\it necessary} claims about the domain that the agent occupies. If the subgoals are {\it contingent} (i.e. true in some state spaces of the domain but not in others), then they can be shown to completely lose their scalability. For instance, consider the task in \texttt{BRIDGEWORLD}, in which the agent must place a block in the trench that separates the agent from the goal. The subgoal $\langle blockInTrench, reachGoal\rangle$ might be a perfectly useful subgoal in \texttt{BRIDGEWORLD}, but an adversary could easily come up with thousands of worlds in which such a subgoal would completely derail the agent's planner. Thus, many subgoals do not scale beyond a particular instance of a state space. In order for subgoals to be useful, they must be necessary claims about the domain, otherwise, one can always come up with a counter world (by definition of necessary). 
+{\bf Problem 1: Loss of generality}  One important thing to note about subgoals 
+that {\it are} general enough to enhance an agent's planning abilities in a wide 
+variety of state spaces is that they propose {\it necessary} claims about the 
+domain that the agent occupies. If the subgoals are {\it contingent} (i.e. true in 
+some state spaces of the domain but not in others), then they can be shown to 
+completely lose their scalability. For instance, consider the task in \texttt{BRIDGEWORLD}, 
+in which the agent must place a block in the trench that separates the agent from the goal. 
+The subgoal $\langle blockInTrench, reachGoal\rangle$ might be a perfectly useful 
+subgoal in \texttt{BRIDGEWORLD}, but an adversary could easily come up with 
+thousands of worlds in which such a subgoal would completely derail the agent's 
+planner. Thus, many subgoals do not scale beyond a particular instance of a state 
+space. In order for subgoals to be useful, they must be necessary claims about the 
+domain, otherwise, one can always come up with a counter world (by definition of necessary). 
 
-{\bf Problem 2: Granular Planning} The second problem is that those that subgoals that do scale across state spaces are often not useful. For instance, the vast majority of tasks in Minecraft are not so easily broken into useful, necessary subgoals. Movement, for instance, is particularly difficult. As stated before, scalable subgoals must be necessary preconditions for a particular goal, and such preconditions are often difficult to come up with in a way that actually makes planning easier. One idea would be to create the movement subgoal that the agent is one away from the goal - this is a poor choice however, since this subgoal is hardly useful unless we repeat it (i.e. the agent is one away from the next subgoal, and so on). The result is an extremely granular and low level planning system that is no better than standard Value Iteration. If necessary preconditions existed for many goal types, then subgoal planning would be a great approach. Unfortunately, coming up with such subgoals is not an easy task, and often the best we can do is to plan at such a low level that we lose any benefit of planning over subgoals to begin with
+{\bf Problem 2: Granular Planning} The second problem is that those that subgoals 
+that do scale across state spaces are often not useful. For instance, the vast majority 
+of tasks in Minecraft are not so easily broken into useful, necessary subgoals. 
+Movement, for instance, is particularly difficult. As stated before, scalable subgoals 
+must be necessary preconditions for a particular goal, and such preconditions are 
+often difficult to come up with in a way that actually makes planning easier. One 
+idea would be to create the movement subgoal that the agent is one away from 
+the goal - this is a poor choice however, since this subgoal is hardly useful unless 
+we repeat it (i.e. the agent is one away from the next subgoal, and so on). The 
+result is an extremely granular and low level planning system that is no better 
+than standard Value Iteration. If necessary preconditions existed for many goal 
+types, then subgoal planning would be a great approach. Unfortunately, coming 
+up with such subgoals is not an easy task, and often the best we can do is to 
+plan at such a low level that we lose any benefit of planning over subgoals to begin with
 
 % FIGURE OF PROBLEM 2
 
-{\bf Problem 3: Researching the Space} The last problem with subgoal planning is that the use of subgoals actually requires that we research a huge portion of the state space. Consider the \texttt{BRIDGEWORLD} example in which the subgoal is to place a block along the trench somewhere - once we plan from the state in which a block has been placed at the trench, we research the entire first side of the trench. This problem only magnifies as you add more subgoals.
+{\bf Problem 3: Researching the Space} The last problem with subgoal planning 
+is that the use of subgoals actually requires that we research a huge portion of 
+the state space. Consider the \texttt{BRIDGEWORLD} example in which the 
+subgoal is to place a block along the trench somewhere - once we plan from the 
+state in which a block has been placed at the trench, we research the entire first 
+side of the trench. This problem only magnifies as you add more subgoals.
 
 \begin{figure}
 \centering
 \includegraphics[scale=0.22]{figures/bridgeworld_sg.png}
-\caption{The agent re-explores a large portion of the state space once it finds $\mathcal{SG}_1$. Also note that this subgoal highlights {\bf Problem 1}, in that it would be useless in many other Minecraft state spaces}
+\caption{The agent re-explores a large portion of the state space 
+once it finds $\mathcal{SG}_1$. Also note that this subgoal 
+highlights {\bf Problem 1}, in that it would be useless in many other Minecraft state spaces}
 \end{figure}
 
 
-A final, but less significant problem, is that Subgoal planning still requires the use of Value Iteration, which does not scale well - if there is ever a case in which planning between two subgoals is at all complex, then Subgoal planning is out of luck.
+A final, but less significant problem, is that Subgoal planning still 
+requires the use of Value Iteration, which does not scale well - if 
+there is ever a case in which planning between two subgoals is 
+at all complex, then Subgoal planning is out of luck.
 
 \subsection{OPTIONS}
 
-The options framework proposes incorporating high-level policies to accomplish specific sub tasks. For instance, when an agent is near a door, the agent can engage the `door-opening-option-policy', which switches from the standard high-level planner to running a policy that is hand crafted to open doors. An option $o$ is defined as follows:
+The options framework proposes incorporating high-level policies to 
+accomplish specific sub tasks. For instance, when an agent is near 
+a door, the agent can engage the `door-opening-option-policy', which 
+switches from the standard high-level planner to running a policy 
+that is hand crafted to open doors. An option $o$ is defined as follows:
 
 $o\ =\ \langle \pi_0, I_0, \beta_0\rangle$, where:
 
@@ -177,7 +274,10 @@ $o\ =\ \langle \pi_0, I_0, \beta_0\rangle$, where:
 \item[] $\beta_0 : s \rightarrow [0,1]$
 \end{itemize}
 
-Here, $\pi_0$ represents the {\it option policy}, $I_0$ represents a precondition, under which the option policy may initiate, and $\beta_0$ represent the post condition, which determines which states terminate the execution of the option policy.
+Here, $\pi_0$ represents the {\it option policy}, $I_0$ represents
+a precondition, under which the option policy may initiate, and 
+$\beta_0$ represent the post condition, which determines which 
+states terminate the execution of the option policy.
 
 As Konidaris and Barto point out, the classic options framework is not 
 generalizable, as it does not enable an agent to transfer knowledge from 
@@ -286,7 +386,8 @@ blocks in cases where it does not need to, the state-action space will
 explode exponentially and grow far too fast for (almost) any planner to 
 finish in our lifetime. 
 
-Consider that the agent is capable of destroying and placing blocks in a 10x10x2 world; there are on the order of:
+Consider that the agent is capable of destroying and placing blocks 
+in a 10x10x2 world; there are on the order of:
 
 \begin{equation}
 O\left(\sum_{n=1}^{10 \cdot 10 \cdot 2} \binom{10 \cdot 10 \cdot 2}{n}\right)
@@ -302,9 +403,29 @@ can solve even the most basic path planning (even on just a flat
 surface with no obstacles). We explore this ability in the results 
 seen in Table \ref{results_2}
 
-As discussed above, one of the major advantages of using Affordances to plan is that they enable an agent to have a massive action set, making Affordances effectively transfer between domains. We conducted an additional set of experiments on the 15x15 world with no obstacles \texttt{15WORLD}. For this round of testing, we varied the number of actions available to the agent (starting from $|\mathcal{A}| = 4$ up to $|\mathcal{A}| = 25$) and ran the planner on \texttt{15WORLD} with the same goal (to reach the goal in the corner).
+As discussed above, one of the major advantages of using Affordances 
+to plan is that they enable an agent to have a massive action set, 
+making Affordances effectively transfer between domains. We 
+conducted an additional set of experiments on the 15x15 world 
+with no obstacles \texttt{15WORLD}. For this round of testing, we 
+varied the number of actions available to the agent (starting from 
+$|\mathcal{A}| = 4$ up to $|\mathcal{A}| = 25$) and ran the planner 
+on \texttt{15WORLD} with the same goal (to reach the goal in the corner).
 
-An additional advantage of planning with Affordances is that the problems of block-placement and block-destruction illustrated by \ref{eq:mc_explode} are overcome. With Affordances, we are able to solve a variety of novel planning problems in the Minecraft domain, such as building a bridge to cross a long trench, or digging a hole through a wall to reach the goal (see Table \ref{results_2}). This is indeed a compelling result, as no other planning system is currently able to avoid falling prey to the state-space explosion mentioned above. Additionally, the malleability of Minecraft that causes this explosion is a reasonable model of the way that an agent in the real world is capable of modifying its surroundings. Thus, we foresee the Affordance planner as being extremely deft at handling real world planning scenarios.
+
+An additional advantage of planning with Affordances is that the 
+problems of block-placement and block-destruction illustrated by 
+\ref{eq:mc_explode} are overcome. With Affordances, we are able 
+to solve a variety of novel planning problems in the Minecraft 
+domain, such as building a bridge to cross a long trench, or digging 
+a hole through a wall to reach the goal (see Table \ref{results_2}). 
+This is indeed a compelling result, as no other planning system is 
+currently able to avoid falling prey to the state-space explosion 
+mentioned above. Additionally, the malleability of Minecraft that 
+causes this explosion is a reasonable model of the way that an 
+agent in the real world is capable of modifying its surroundings. 
+Thus, we foresee the Affordance planner as being extremely deft 
+at handling real world planning scenarios.
 
 
 \section{RESULTS}
