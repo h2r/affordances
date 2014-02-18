@@ -63,8 +63,8 @@ human actions~\citep{koppula13a, koppula13b}.
 
 \begin{figure}
 \centering
-\includegraphics[scale = 0.18]{figures/bridgeworld_aff.png}
-\caption{In the above Minecraft planning problem \texttt{BRIDGEWORLD}, the agent must place a block in the trench in order to reach the goal. This problem was only solvable by the Affordance planner.\label{fig:bridgeworld_aff}}
+\includegraphics[scale = 0.21]{figures/bridgeworld_vi_vs_aff.png}
+\caption{In the above Minecraft planning problem \texttt{BRIDGEWORLD}, the agent must place a block in the trench in order to reach the goal (the trench is too wide to jump over). This problem was only solvable by the Affordance planner.\label{fig:bridgeworld_aff}}
 \end{figure}
 
 In this paper we will formalize
@@ -114,12 +114,6 @@ In practice, basic Value Iteration scales very poorly, either as the state space
 The reason for this failure is that in classical Value Iteration, the agent tries to explore all states that result from applying every action in every state - this is downright silly, as in \texttt{BRIDGEWORLD}, the agent will inevitably end up in the corner of the room placing and destroying blocks. This is an especially bad tactic in the Minecraft domain, as block placement results in a combinatoric explosion of the state space (see Equation \ref{eq:mc_explode}). Thus, in these scenarios, our Affordance planner has a substantial advantage on classic Value Iteration. These weaknesses are well known ~\citep{grounds05}, and have resulted in attempts to make planning more practical in domains of a larger scale.
 
 % More VI math. Maybe pseudocode.
-
-\begin{figure}
-\centering
-\includegraphics[scale = 0.2]{figures/bridgeworld_vi.png}
-\caption{Reachability while running VI}
-\end{figure}
 
 \subsection{SUBGOALS}
 % % Intuition
@@ -185,7 +179,15 @@ $o\ =\ \langle \pi_0, I_0, \beta_0\rangle$, where:
 
 Here, $\pi_0$ represents the {\it option policy}, $I_0$ represents a precondition, under which the option policy may initiate, and $\beta_0$ represent the post condition, which determines which states terminate the execution of the option policy.
 
-As Konidaris and Barto point out, the classic options framework is not generalizable, as it does not enable an agent to transfer knowledge from one state space to another. Recently, Konidaris and Barto's ~\citep{konidaris07} expand on the classic options framework and allow for a more portable implementation of options. Still, though, planning with options requires either that we plan in a mixed space of actions {\it and} options (which blows up the size of the search space), or requires that we plan entirely in the space of options. Additionally, providing an agent with an option policy is a difficult task for a human designer (especially if we want an optimal policy, which we do).
+As Konidaris and Barto point out, the classic options framework is not 
+generalizable, as it does not enable an agent to transfer knowledge from 
+one state space to another. Recently, Konidaris and Barto's ~\citep{konidaris07} 
+expand on the classic options framework and allow for a more portable 
+implementation of options. Still, though, planning with options requires either 
+that we plan in a mixed space of actions {\it and} options (which blows up the 
+size of the search space), or requires that we plan entirely in the space of options. 
+Additionally, providing an agent with an option policy is a difficult task for a human 
+designer (especially if we want an optimal policy, which we do).
 
 \subsection{MACROACTIONS}
 
@@ -205,11 +207,37 @@ Formally, an Affordance is defined as: \\ \\
 \item[] $g : s \longrightarrow \{$0$,1\}$
 \end{itemize}
 
-Where $\alpha$ is a subset of the agent's given set of actions $\mathcal{A}$, $p$ is a {\it precondition} that is a predicate over states, and $g$ is a {\it goal} or {\it subgoal} that is also a predicate over states.
+Where $\alpha$ is a subset of the agent's given set of actions 
+$\mathcal{A}$, $p$ is a {\it precondition} that is a predicate over states, 
+and $g$ is a {\it goal} or {\it subgoal} that is also a predicate over states.
 
-The intuition is that in a huge number of planning scenarios, given a goal, the agent should be able to focus on only a subset of its available actions. The result is that the state-action space that the agent explores is astronomically smaller than in standard Value Iteration (especially in domains where the agent can change the environment to the degree of Minecraft). This parallels the intuition of Gibson's concept of an affordance, in which a human is capable of trimming down his or her considered action space by a huge amount when directed toward a particular goal. For instance, consider an agent with the standard Minecraft action set seen in Figure \ref{fig:all_actions} - if the agent need only walk across a flat surface to reach the goal, it should not even bother trying to place blocks or destroy blocks. If it needs to dig a ten block hole, then the agent should not consider movement or placement.
+The intuition is that in a huge number of planning scenarios, given a goal, the agent 
+should be able to focus on only a subset of its available actions. The result is that the 
+state-action space that the agent explores is astronomically smaller than in standard 
+Value Iteration (especially in domains where the agent can change the environment 
+to the degree of Minecraft). This parallels the intuition of Gibson's concept of an 
+affordance, in which a human is capable of trimming down his or her considered 
+action space by a huge amount when directed toward a particular goal. For instance, 
+consider an agent with the standard Minecraft action set seen in Figure \ref{fig:all_actions} - 
+if the agent need only walk across a flat surface to reach the goal, it should not 
+even bother trying to place blocks or destroy blocks. If it needs to dig a ten block 
+hole, then the agent should not consider movement or placement.
 
-The reason that each goal encodes information about the goal relevant to those actions is that it, given perfect subgoal knowledge for a particular planning task, the affordance formalism will find an optimal policy {\it extremely} quickly. We imagine extensions in which an agent gets stuck and must ask a human partner for help using natural language, and the resulting dialogue could endow the agent with subgoal knowledge. This also allows the agent to prune way unnecessary actions in $\mathcal{A}$ in each specific planning task, making it possible to solve a engage with a large number of planning scenarios that may call for different actions. Furthermore, since actions may be pruned with respect to a given goal, agents may be endowed with huge action sets that enable them solve a variety of problems across variable state-spaces, yet the branching factor of an affordance agent's exploration will be significantly smaller, since actions that are not relevant to the current goal will be pruned. This makes the affordance formalism extremely robust, as well as transferrable relative to subgoal planning and options.
+The reason that each goal encodes information about the goal relevant to 
+those actions is that it, given perfect subgoal knowledge for a particular 
+planning task, the affordance formalism will find an optimal policy {\it extremely}
+ quickly. We imagine extensions in which an agent gets stuck and must ask 
+ a human partner for help using natural language, and the resulting dialogue 
+ could endow the agent with subgoal knowledge. This also allows the agent 
+ to prune way unnecessary actions in $\mathcal{A}$ in each specific planning 
+ task, making it possible to solve a engage with a large number of planning 
+ scenarios that may call for different actions. Furthermore, since actions may 
+ be pruned with respect to a given goal, agents may be endowed with huge 
+ action sets that enable them solve a variety of problems across variable 
+ state-spaces, yet the branching factor of an affordance agent's exploration 
+ will be significantly smaller, since actions that are not relevant to the current 
+ goal will be pruned. This makes the affordance formalism extremely robust, 
+ as well as transferrable relative to subgoal planning and options.
 
 % Insert pseudcode
 
@@ -232,179 +260,85 @@ The reason that each goal encodes information about the goal relevant to those a
 \end{algorithm}
 
 
-The Affordance formalism introduced above and expanded on in this paper resolves the weaknesses of these other frameworks by limiting the complexity of the seed knowledge required of the designer, while still providing enough knowledge to limit the search space but also maintain scalability.
-
-We should be able to prove that given a ``good" set of subgoals the agent will be able to reach one after the other with high probability. Therefore, in the case that the agent cannot reach a subgoal there is likely a better one. The agent should then prompt for a more specific subgoal that will better allow it to reach the next one.
+The Affordance formalism introduced above and expanded on in this 
+paper resolves the weaknesses of these other frameworks by limiting 
+the complexity of the seed knowledge required of the designer, while 
+still providing enough knowledge to limit the search space but also 
+maintain scalability.
 
 \section{EXPERIMENTS}
 
-\begin{figure}
-\centering
-\includegraphics[scale=0.2]{figures/reg_actions.png}
-\caption{The pruned set of actions provided to the agent for tasks 4-8 in the Knowledge Round \label{fig:reg_actions}}
-\end{figure}
+We conducted a series of experiments in the Minecraft domain that tested 
+each planning system on a variety of tasks, ranging from basic path planning,
+ to baking bread, to opening doors and jumping over trenches.  We also tested 
+ each planner on worlds of varying size to demonstrate the scalability of each 
+ system. In Table \ref{results_1}, we provide results on testing the planners 
+ across each system. For each data point, we ran the planning system 3 times 
+ and took the average result (they rarely deviated beyond $\frac{1}{10}$ of a second).
 
-We tested each planning algorithm (vanilla Value Iteration, Subgoal planning, Options, Affordance planning) on seven distinct tasks, with varying action sets. We tested each algorithm with perfect knowledge (hand crafted knowledge bases specific to each task), as well as testing each algorithm with only a single knowledge base to solve all the tasks. 
-
-Q: How much detail should we include about the experiments? I think maybe diving deeply into a single one would make sense.
-
-Desired result: We want to show that Affordance planning does just as well if not better on any specific planning task. BUT additionally, with a reasonably small knowledge base, can solve a ton of different problems (i.e. it is more transferable). And finally, we want to show that in cases where trying unnecessary actions is a really bad idea (mine craft placement/destruction) only the affordance planner will work, therefore if we need to plan in domains {\it like} Minecraft, then we should use affordance planner (maybe a small argument that real world robotics tasks parallel the malleability of mine craft, since the universe has a monstrous number of ways to change).
-
-
-{\bf Old attempt:}
-
- divided into two groups, the Block group (requires block placement or destruction), and the General group (tasks that do not require block placement or destruction). We issue these experiments in two rounds, the Knowledge Round, and the Transfer Round. The purpose of these two rounds is to compare both the effectiveness and generality of planning with affordances to other planners.
-
-\boxed{\begin{tabular}{ l | l }
-{\bf Block Group} & {\bf General Group} \\
-\hline \\
-B1: \texttt{FLATWORLD} & G1: \texttt{SMALLPATHWORLD} \\
-B2: \texttt{BRIDGEWORLD10} & G2: \texttt{WALLWORLD} \\
-B3: \texttt{TUNNELWORLD} & G3: \texttt{DOORWORLD} \\
-& G4: \texttt{BIGWORLD} \\
-
-\end{tabular}}
-
-
-In the {\bf Knowledge Round}, Options, Subgoals, Macro-actions, and Affordances were all given a hand crafted set of knowledge for each individual task. This round is intended to demonstrate the efficacy of each planning system, given perfect knowledge for a particular planning scenario. For tasks B1-B3, the agent was given the set of actions seen in Figure \ref{fig:all_actions} (includes block placement and destruction) and one block to place. For tasks G1-G4, the agent was given the set of actions described in Figure \ref{fig:reg_actions} (does not include block placement or destruction). The reason for providing these two action sets and splitting the tasks up is that in Minecraft, the agent has an extraordinary ability to modify the state space via placing and destroying blocks. As a result, if an agent begins placing or destroying blocks in cases where it does not need to, the state-action space will explode exponentially and grow far too fast for (almost) any planner to finish in our lifetime. 
+For the scenarios listed in Table \ref{results_1}, we limited the agent's 
+action set across all planners so that it did not have access to block 
+placement ($\square$) and block destruction ($\boxtimes$). The reason 
+for excluding these two action types up is that, in Minecraft, the agent 
+has an extraordinary ability to modify the state space via placing and 
+destroying blocks. As a result, if an agent begins placing or destroying 
+blocks in cases where it does not need to, the state-action space will 
+explode exponentially and grow far too fast for (almost) any planner to 
+finish in our lifetime. 
 
 Consider that the agent is capable of destroying and placing blocks in a 10x10x2 world; there are on the order of:
 
-% This equation doesn't seem quite right. I think it should be
-% \sum_{i = 1}^2 \binom{10 \cdot 10}{i}. This is the total number
-% of ways of placing the agent in the 10x10x2 world (no block), plus
-% number of ways of placing the agent and one block.
 \begin{equation}
-O\left(\prod_{n=1}^{10 \cdot 10 \cdot 2} \binom{10 \cdot 10 \cdot 2}{n}\right)
+O\left(\sum_{n=1}^{10 \cdot 10 \cdot 2} \binom{10 \cdot 10 \cdot 2}{n}\right)
 \label{eq:mc_explode}
 \end{equation}
 
-states, which is far too large to explore. We will demonstrate-- that our affordance model {\it is} capable of handling such types of actions, and can plan using them as in a bridge building scenario or tunnel digging scenario (among others) while the other planners cannot. In fact, with these actions, none of the other planning systems can solve even the most basic path planning from (see {\bf B1: \texttt{FLATWORLD}}). However, in order to also prove the generality of affordance planning (and not just demonstrate that it takes advantage of the Minecraft statespace explosion from Equation \ref{eq:mc_explode}, we also test on planning scenarios in which the agent is given a more normal set of actions (found in Figure \ref{fig:reg_actions}).
+states, which is far too large to explore. We will demonstrate that our 
+affordance model {\it is} capable of handling these types of actions, 
+and can plan using them as in a bridge building scenario or tunnel 
+digging scenario (among others) while the other planners cannot. 
+In fact, with these actions, none of the other planning systems 
+can solve even the most basic path planning (even on just a flat 
+surface with no obstacles). We explore this ability in the results 
+seen in Table \ref{results_2}
 
-In the {\bf Transfer Round}, we required that each system use one set of knowledge to plan through each of the eight tasks. This is intended to measure the transferability of each planning technique. Additionally, we provide the agent with the set of all actions so that it can actually solve the problems, the set in Figure. \ref{fig:all_actions}.
+As discussed above, one of the major advantages of using Affordances to plan is that they enable an agent to have a massive action set, making Affordances effectively transfer between domains. We conducted an additional set of experiments on the 15x15 world with no obstacles \texttt{15WORLD}. For this round of testing, we varied the number of actions available to the agent (starting from $|\mathcal{A}| = 4$ up to $|\mathcal{A}| = 25$) and ran the planner on \texttt{15WORLD} with the same goal (to reach the goal in the corner).
 
-For each iteration, we measured the wall-clock time to find the goal and compare the relative gains of one algorithm over the other. The set of tasks were inspired by those planning scenarios that the creators of each other planning system have proposed. We found this important because we wanted to eliminate the possibility that one problem type favoured a particular planning algorithm over another.
+An additional advantage of planning with Affordances is that the problems of block-placement and block-destruction illustrated by \ref{eq:mc_explode} are overcome. With Affordances, we are able to solve a variety of novel planning problems in the Minecraft domain, such as building a bridge to cross a long trench, or digging a hole through a wall to reach the goal (see Table \ref{results_2}). This is indeed a compelling result, as no other planning system is currently able to avoid falling prey to the state-space explosion mentioned above. Additionally, the malleability of Minecraft that causes this explosion is a reasonable model of the way that an agent in the real world is capable of modifying its surroundings. Thus, we foresee the Affordance planner as being extremely deft at handling real world planning scenarios.
 
-\subsection{BLOCK GROUP}
-
-Recall that the action set for these tasks is defined in Figure \ref{fig:all_actions}.
-
-{\bf B1: \texttt{FLATWORLD}} A 10x10 world with no obstacles.
-
-\begin{center}
-\includegraphics[scale=0.24]{figures/flatland.png}
-\end{center}
-
-Actions are defined as in Figure \ref{fig:all_actions}
-	
-{\bf B2: \texttt{BRIDGEWORLD10}} A 10x10 world with a trench cutting across the center, separating the agent from the goal. The agent must build a bridge (i.e. place two blocks across the trench) to reach the goal.
-
-\begin{center}
-\includegraphics[scale=0.28]{figures/bridgeworld10.png}
-\end{center}
-% Knowledge base provided for each in ROUND A
-
-{\bf B3: \texttt{TUNNELWORLD}}
-
-%\begin{center}
-%\includegraphics[scale=0.28]{figures/tunnelworld.png}
-%\end{center}
-
-% Knowledge base provided for each in ROUND A
-
-\subsection{General Group}
-
-Recall that the action set for these tasks is defined in Figure \ref{fig:reg_actions}.
-
-{\bf G1: \texttt{SMALLPATHWORLD}} A 10x10 world with a trench cutting across the middle separating the agent from the goal with a small bridge connecting the two sides.
-
-%\begin{center}
-%\includegraphics[scale=0.23]{figures/smallpathworld.png}
-%\end{center}
-
-{\bf G2: \texttt{WALLWORLD}} A 10x10 world in which the agent is nearly surrounded by an indestructible wall (i.e. it cannot destroy the grey blocks) and must first move farther away from the goal in order to reach the goal.
-
-\begin{center}
-\includegraphics[scale=0.21]{figures/uwall.png}
-\end{center}
-
-{\bf G3: \texttt{DOORWORLD}} A 10x10 world in which the agent must open a door to reach the goal.
-
-%\begin{center}
-%\includegraphics[scale=0.21]{figures/doorworld.png}
-%\end{center}
-
-
-%
-
-% Knowledge base provided for each in ROUND A
-
-
-
-{\bf G5: \texttt{MEDWORLD}} Identical to {\bf B1: \texttt{FLATWORLD}}, but the dimensions of the world are 15x15.
-
-
-{\bf G5: \texttt{BIGWORLD}} Identical to {\bf B1: \texttt{FLATWORLD}}, but the dimensions of the world are 20x20.
-
-% Knowledge base provided for each in ROUND A
-
-
-%{\bf G5: \texttt{LIGHTWORLD}} This is an adaptation of one of Konidaris' examples demonstrating the efficacy of portable options. A 10x10 world where the agent is surrounded on all sides by indestructible walls (i.e. the agent cannot destroy the grey blocks). The agent must press the button in order to open the door and proceed to the goal.
-%
-%\begin{center}
-%\includegraphics[scale=0.23]{figures/lightworld.png}
-%\end{center}
-% ---- Also include the knowledge base provided for each in ROUND B, where that KB must solve all 5 tasks
 
 \section{RESULTS}
 
-\subsection{KNOWLEDGE ROUND:}
-
-As expected, all of the other planning types failed in reaching the goal (they each filled up a 1.5Gb java heap in 45 minutes and had not yet even finished reachability).
-
-\begin{tabular}{ l || c | c | c | c }
-  & Affordances & Options & Subgoals & VI \\
+\begin{tabular}{ l || c | c | c }
+  & Affordances & Subgoals & VI \\
   \hline
-  {\bf M1} & 1s & ? & DNF & DNF  \\
-  {\bf M2} & 40s & ? & DNF & DNF \\
-  {\bf M3} & 40s & ? & DNF & DNF \\
-  {\bf G1} & 1s & ? & 1s & 1s \\
-  {\bf G2} & 1s & ? & 4s & 2s \\
-  {\bf G3} & 1s & ? & 1s & 1s \\
-  {\bf G4} & 1s & ? & 13s & 8s \\
-  {\bf G4} & 1s & ? & 13s & 8s \\
-\end{tabular}
+  \texttt{10WORLD} & ? & 2.2s & 1.1s  \\
+  \texttt{13WORLD} & ? & 11.2s & 6.0s  \\
+  \texttt{15WORLD} & ? & 24.6s & 11.8s  \\
+  \texttt{17WORLD} & ? & 55.4s & 28.2s  \\
+  \texttt{20WORLD} & ? & 161.8s & 140.5s  \\
+  \texttt{JUMPWORLD}  & ? & 23.6 & 10.1s \\
+  \texttt{BREADWORLD}  & 1s & ? & 51.6s \\
+  \texttt{DOORWORLD}  & 1s & ? & 25.3s \\
+  \texttt{MAZEWORLD}  & 1s & ? & 37.6s \\
+  \texttt{HARDWORLD} & ? & ? & 149.7s
+  \label{results_1}
+\end{tabular} 
 
+\vspace{4 mm}
 
-\subsection{TRANSFER ROUND:}
-
-Figure NEED FIGURE indicates the knowledge that we provided each system. We did our best to provide each system with optimal knowledge, in the sense that these knowledge bases ought to do better than any other. Below are the results for the transfer round.
-
-\begin{figure}
-\centering
-\boxed{\begin{tabular}{ l c }
-{\it AffordanceKB} $=$ & \{\} \\
-Subgoals & \{\} \\
-Options & \{\} \\
-ValueIteration & \{\} \\
-\end{tabular}}
-\caption{The knowledge bases provided to each planning system to solve all five tasks \label{tbl:transfer_kb}}
-\end{figure}
-
-
-\begin{tabular}{ l || c | c | c | c }
-  & Affordances & Options & Subgoals & VI \\
+\begin{tabular}{ l || c | c | c }
+  & Affordances & Subgoals & VI \\
   \hline
-  {\bf M1} & 1s & ? & DNF & DNF  \\
-  {\bf M2} & 15s & ? & DNF & DNF \\
-  {\bf M3} & 40s & ? & DNF & DNF \\
-  {\bf G1} & 1s & ? & 1s & 1s \\
-  {\bf G2} & 1s & ? & 4s & 2s \\
-  {\bf G3} & 1s & ? & 1s & 1s \\
-  {\bf G4} & 1s & ? & 13s & 8s \\
+  $|\mathcal{A}| = 4$ & ? & ? & ?  \\
+  $|\mathcal{A}| = 8$ & ? & ? & ?  \\
+  $|\mathcal{A}| = 12$ & ? & ? & ?  \\
+  $|\mathcal{A}| = 16$ & ? & ? & ?  \\
+  $|\mathcal{A}| = 17$ & ? & ? & ?  \\
+  $|\mathcal{A}| = 21$ & ? & DNF & DNF  \\
+  $|\mathcal{A}| = 25$ & ? & DNF & DNF  \\
+    \label{results_2}
 \end{tabular}
-
-% As well as some charts indicating search space size, #cycles, etc..
 
 \section{CONCLUSION}
 
