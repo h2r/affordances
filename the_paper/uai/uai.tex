@@ -134,11 +134,9 @@ Recall that value iteration involves propagating reward
 throughout the state space until propagation has converged, 
 at which point, a policy may be deduced. Reward propagation
 occurs as in a Bellman update:
-
 \begin{equation}
 U_{i+1}(s) \leftarrow \mathcal{R}(s) + \gamma \max_{a \in \mathcal{A}(s)} \sum_{s'} \text{Pr}(s' \mid s, a)U_i(s')
 \end{equation}
-
 Where $U_i(s)$ is the {\it utility} of state $s$ at iteration $i$, 
 representing the expected reward of being in that state. See Algorithm \ref{alg:vi} for the full pseudocode of the algorithm ~\citep{russellnorvigAI}.
 
@@ -154,7 +152,7 @@ representing the expected reward of being in that state. See Algorithm \ref{alg:
     	\State $\delta \gets |U'[s] - U[s]|$ 
     \EndIf
     \EndFor
-    \EndWhile
+    \EndWhile \\
     \Return U;
   \end{algorithmic}
   \label{alg:vi}
@@ -184,9 +182,18 @@ practical in domains of a larger scale.
 % % Intuition
 Subgoal planning leverages the intuition that certain goals in planning domains 
 may only be brought about if certain preconditions are first satisfied. For instance, 
-in the Minecraft domain, one must be in possession of grain in order to bake bread. 
+in the Minecraft domain, one must be in possession of grain in order to bake bread.
 In Branavan et. al~\citep{branavan12a}, they explore learning subgoals from the 
 Minecraft wiki and applying them in order to plan through a variety of problems in Minecraft.
+For further clarification, see Fig. \ref{fig:branavan_sg}, directly from Branavan
+et. al's paper, displaying the high-level search in subgoal space for the baking bread example.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.27]{figures/branavan_sg.png}
+\label{fig:branavan_sg.png}
+\caption{A picture from Branavan et. al's paper ~\citep{branavan12a} displaying the high-level search in subgoal space on the baking bread task}
+\end{figure}
 
 % Formalism
 Formally, in subgoal planning, the agent is set of subgoals, where each subgoal is a pair of predicates:
@@ -357,24 +364,25 @@ planning task, the affordance formalism will find an optimal policy {\it extreme
  goal will be pruned. This makes the affordance formalism extremely robust, 
  as well as transferrable relative to subgoal planning and options.
 
-% Insert pseudcode
 
+% VI pseudocode + Affordances
 \begin{algorithm}
-  \caption{Plan with Knowledge Base of Affordances}
-
-  \begin{algorithmic}
-    \State \Comment{Reachability Analysis}
-    \State currAs $\gets$ affordKB.pruneAs(initS, d.goal, actions)
-    \State allStateActions $\gets$ $\langle State ,\langle Action \rangle \rangle$
-    \For {s in allStateActions}
-	\State nextAs $\gets$ affordKB.pruneAs(s, d.goal, allStateActions $\langle s \rangle$)
-	\State allStateActions.add(s.do(nextAs))
+  \caption{Affordance-Value-Iteration($\mathcal{A}$, $\mathcal{R}$, $initState$, $kb$, $goal$, $\epsilon$, $\gamma$, )}
+  \begin{algorithmic}[1]
+    \State $\hat{\mathcal{A}} \gets pruneActions(kb, initState, \mathcal{A}, goal)$
+    \State $\hat{\mathcal{S}} \gets genStates(kb, \hat{\mathcal{A}})$
+    \While {$\delta < \epsilon \frac{(1-\gamma)}{\gamma}$}
+    \State $U \gets U';\delta \gets 0$
+    \For {each state $s \in \hat{\mathcal{S}}$}
+    \State $U'[s] \leftarrow \mathcal{R}(s) + \gamma \max_{a \in \hat{\mathcal{A}}(s)} \sum_{s'} \text{Pr}(s'\mid s,a) U[s']$
+    \If {$|U'[s] - U[s]| > \delta$}
+    	\State $\delta \gets |U'[s] - U[s]|$ 
+    \EndIf
     \EndFor
-    \State \Comment{ValueIteration}
-    \State policy $\gets$ ValueIteration(d, allStateActions)
-    
-    \Return policy;
+    \EndWhile
+    \Return U;
   \end{algorithmic}
+  \label{alg:vi}
 \end{algorithm}
 
 
@@ -445,28 +453,30 @@ agent in the real world is capable of modifying its surroundings.
 Thus, we foresee the Affordance planner as being extremely deft 
 at handling real world planning scenarios.
 
-
 \section{RESULTS}
 
+\begin{table}
 \begin{tabular}{ l || c | c | c }
   & Affordances & Subgoals & VI \\
   \hline
-  \texttt{10WORLD} 		& ? 		& 	1.8s 		& 1.1s  \\
-  \texttt{13WORLD} 		& ? 		& 	10.1s 	& 6.0s  \\
-  \texttt{15WORLD} 		& ? 		& 	21.6s 	& 11.8s  \\
-  \texttt{17WORLD} 		& ? 		& 	45.4s 	& 28.2s  \\
-  \texttt{20WORLD} 		& ? 		& 	144.3s 	& 140.5s  \\
-  \texttt{JUMPWORLD}  	& ? 		& 	21.1s 	& 10.1s \\
-  \texttt{BREADWORLD}  	& ? 		& 	22.8s 	& 51.6s \\
-  \texttt{DOORWORLD}  	& ? 		& 	? 		& 25.3s \\
-  \texttt{MAZEWORLD}  	& ? 		& 	?		& 37.6s \\
-  \texttt{HARDWORLD} 	& ? 		& 	? 		& 149.7s
-  \label{results_1}
-  \caption{Tests on a variety of tasks without block placement and destruction actions}
+  \texttt{10WORLD} 		&	{\bf 0.6s} 		&	 1.8s 		& 1.1s  \\
+  \texttt{13WORLD} 		&	{\bf 2.5s} 	 	& 	10.1s 		& 6.0s  \\
+  \texttt{15WORLD} 		&	{\bf 6.7s} 	 	& 	21.6s 		& 11.8s  \\
+  \texttt{17WORLD} 		& 	{\bf 16.6s} 	& 	45.4s 		& 28.2s  \\
+  \texttt{20WORLD} 		& 	{\bf 57.6s} 	& 	144.3s 		& 140.5s  \\
+  \texttt{JUMPWORLD}  	& 	{\bf 4.3s} 		& 	21.1s 		& 10.1s \\
+  \texttt{BREADWORLD}  	& 	25.5s		& 	{\bf 22.8s} 	& 51.6s \\
+  \texttt{DOORWORLD}  	& 	{\bf 16.3s} 	& 	25.0s 		& 25.3s \\
+  \texttt{MAZEWORLD}  	& 	{\bf 17.9s} 	& 	114.8s		& 37.6s \\
+  \texttt{HARDWORLD} 	& 	{\bf 34.5s}  	& 	215.9s 		& 149.7s
 \end{tabular} 
+\label{results_1}
+\caption{Tests on a variety of tasks without block placement and destruction actions}
+\end{table}
 
 \vspace{4 mm}
 
+\begin{table}
 \begin{tabular}{ l || c | c | c }
   & Affordances & Subgoals & VI \\
   \hline
@@ -477,9 +487,10 @@ at handling real world planning scenarios.
   $|\mathcal{A}| = 17$ 	& 	? 	& 	? 		& ?  \\
   $|\mathcal{A}| = 21$ 	& 	? 	& 	DNF 		& DNF  \\
   $|\mathcal{A}| = 25$ 	& 	? 	& 	DNF 		& DNF  \\
-    \label{results_2}
-    \caption{Tests on the simplest possible task (path planning in a flat plane with no obstacle) with incrementally larger action sets.}
 \end{tabular}
+\label{results_2}
+\caption{Plan on the simplest possible task (path planning in a flat plane with no obstacles) with incrementally larger action sets.}
+\end{table}
 
 As one can see from Table \ref{results_2}, in those cases where $|\mathcal{A}| = 21$ and $|\mathcal{A}| = 25$, the only planning algorithm to actually complete the tasks was the Affordance planner. This is because each of these cases scaled to include block destruction and block placement actions. Thus, any case in which these actions are required to complete the task at hand, only Affordance planning will succeed. This is significant, as Table \ref{results_1} indicates that the Affordance planner plans more effectively than the other systems, but it can also handle novel problems involving those actions that alter the environment in sever ways. We also include a Bonus round indicating those tasks that only the Affordance planner was able to solve. Finally, since each Affordance is attached to a particular goal, a single knowledge base will scale across state-spaces and task types, causing Affordance planning to be extremely transferrable.
 
