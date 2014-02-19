@@ -144,14 +144,15 @@ $s \in \mathcal{S}$ and arriving in $s' \in \mathcal{S}$, and
 $\mathcal{R}(s,a)$ denotes the reward at $s$ when action $a$ is
 applied, and $\gamma$ is a discount factor.
 
-\stnote{Need to define variables and types.  Should use the same
-  variables as the OO-MDP paper.}  The OO-MDP represents the state
-space $S$ as a collection of objects, $o$.  Each object has a class,
-$c$. The state space is represented as a collection of objects, which
-are instances of the aforementioned classes. Additionally, upon
-instantiation the attributes of the object's class are given a state
-(an assignment of values).  Finally, the underlying MDP is the union
-of all the states of its objects \citep{diuk08}.
+% \stnote{Need to define variables and types.  Should use the same
+%  variables as the OO-MDP paper.}
+A OO-MDP represents the state space as a collection of objects,
+$O = \{o_1, \ldots, o_o \}$.  Each object $o_i$ has a
+class $c_j \in  \{c_1, \ldots, c_c\}$. Every class has a set of attributes
+$Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of which has a domain $Dom(c.a)$.
+Upon instantiation of an object its attributes are given a state $o.state$
+(an assignment of values to its attributes).  Finally, the underlying MDP is the union
+of all the states of its objects $\cup_{i = 1}^o o_i.state$. ~\citep{diuk08}
 
 Our motivation for using an OO-MDP instead of an MDP lies in the
 ability to formulate predicates over classes of objects. As we will
