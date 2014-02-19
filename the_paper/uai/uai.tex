@@ -118,8 +118,8 @@ adding knowledge to planning.
 
 \subsection{DOMAIN}
 
-We will be using Minecraft as our planning and evaluation domain. Minecraft
-is a 3-D block world game, in which the user can place and destroy blocks of
+We will be using Minecraft as our primary planning and evaluation domain. Minecraft
+is a 3-D block world game in which the user can place and destroy blocks of
 different types. As a running example, we will consider the problem of an agent
 attempting to cross a trench in a $4 \times 4 \times 2$ Minecraft world shown
 in Figure~\ref{fig:bridgeworld}. The floor (at $z = 1)$ \footnote{The $z$-axis
@@ -129,12 +129,12 @@ trenches at $y = 2$ and $y = 3$. The agent is  at the starting location
 $(1, 1, 2)$ and needs to reach the goal at $(4,4,2)$
 
 To solve the problem, the agent must
-place a block in the trench, forming a bridge, then cross the bridge
+place a block in the trench to form a bridge, then cross the bridge
 to reach the goal.  However when running an uninformed planning
 technique such as value iteration, the agent must enumerate all
 possible states, such as placing a block in the corner and
-subsequently destroying it.  Considering these actions, which would be
-obviously irrelevant to a human player, results in a combinatoric
+subsequently destroying it.  Considering these actions (which are
+obviously irrelevant to a human player) results in a combinatoric
 explosion of the state space (see Equation \ref{eq:mc_explode}).
 
 \subsection{OO-MDP}
