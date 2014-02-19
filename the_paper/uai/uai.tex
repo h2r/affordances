@@ -130,7 +130,7 @@ $(1, 1, 2)$ and needs to reach the goal at $(4,4,2)$
 
 To solve the problem, the agent must
 place a block in the trench to form a bridge, then cross the bridge
-to reach the goal.  However when running an uninformed planning
+to reach the goal.  However, when running an uninformed planning
 technique such as value iteration, the agent must enumerate all
 possible states, such as placing a block in the corner and
 subsequently destroying it.  Considering these actions (which are
@@ -207,25 +207,6 @@ we introduce here because the agent explores all states that result
 from applying every action in every state.  The complexity of Value-Iteration
 is known to be $\mathcal{O}(|\mathcal{A}||\mathcal{S}|^2)$, so as the number
 of states increases, the runtime of Value Iteration grows quite quickly.
-
-We will be using Minecraft as our planning and evaluation domain. Minecraft
-is a 3-D block world game, in which the user can place and destroy blocks of
-different types. As a running example, we will consider the problem of an agent
-attempting to cross a trench in a $4 \times 4 \times 2$ Minecraft world shown
-in Figure~\ref{fig:bridgeworld}. The floor (at $z = 1)$ \footnote{The $z$-axis
-is height of the Minecraft world. Similarly, the $x$-axis is width and the
-$y$-axis is length.} is composed of 8 solid blocks, with horizontal empty
-trenches at $y = 2$ and $y = 3$. The agent is  at the starting location
-$(1, 1, 2)$ and needs to reach the goal at $(4,4,2)$
-
-To solve the problem, the agent must
-place a block in the trench, forming a bridge, then cross the bridge
-to reach the goal.  However when running an uninformed planning
-technique such as value iteration, the agent must enumerate all
-possible states, such as placing a block in the corner and
-subsequently destroying it.  Considering these actions, which would be
-obviously irrelevant to a human player, results in a combinatoric
-explosion of the state space (see Equation \ref{eq:mc_explode}).
 
 \subsection{SUBGOALS}
 
@@ -306,7 +287,7 @@ highlights {\bf Problem 1}, in that it would be useless in many other Minecraft 
 
 
 A final, but less significant problem, is that Subgoal planning still 
-requires the use of Value Iteration, which does not scale well - if 
+requires the use of Value Iteration or another low-level planner, which does not scale well - if 
 there is ever a case in which planning between two subgoals is 
 at all complex, then Subgoal planning is out of luck.
 
@@ -386,7 +367,7 @@ The primary benefit of encoding goal relative knowledge in each Affordance
 is that actions may be pruned with respect to a given goal. As a result,
 agents may be endowed with huge action sets that enables them to solve a variety of
 problems across variable state-spaces. This
-hints at the transferrability that we will demonstrate empirically in the next section.
+hints at the transferability that we will demonstrate empirically in the next section.
 
 \begin{figure}
 \centering
