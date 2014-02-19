@@ -558,7 +558,19 @@ at handling real world planning scenarios.
 \caption{Plan on the simplest possible task (path planning in a flat plane with no obstacles) with incrementally larger action sets.}
 \end{table}
 
-As one can see from Table \ref{results_2}, in those cases where $|\mathcal{A}| = 21$ and $|\mathcal{A}| = 25$, the only planning algorithm to actually complete the tasks was the Affordance planner. This is because each of these cases scaled to include block destruction and block placement actions. Thus, any case in which these actions are required to complete the task at hand, only Affordance planning will succeed. This is significant, as Table \ref{results_1} indicates that the Affordance planner plans more effectively than the other systems, but it can also handle novel problems involving those actions that alter the environment in sever ways. We also include a Bonus round indicating those tasks that only the Affordance planner was able to solve. Finally, since each Affordance is attached to a particular goal, a single knowledge base will scale across state-spaces and task types, causing Affordance planning to be extremely transferrable.
+As one can see from Table \ref{results_2}, in those cases where
+$|\mathcal{A}| = 21$ and $|\mathcal{A}| = 25$, the only planning algorithm to
+actually complete the tasks was the Affordance planner. This is because each
+of these cases scaled to include block destruction and block placement actions.
+Thus, any case in which these actions are required to complete the task at hand,
+only Affordance planning will succeed. This is significant, as Table \ref{results_1}
+indicates that the Affordance planner plans more effectively than the other
+systems, but it can also handle novel problems involving those actions that
+alter the environment in sever ways. We also include a Bonus round indicating
+those tasks that only the Affordance planner was able to solve. Finally, since
+each Affordance is attached to a particular goal, a single knowledge base will
+scale across state-spaces and task types, causing Affordance planning to be
+extremely transferrable.
 
 % Insert bonus round of:
 %	- Ladder!!!!
