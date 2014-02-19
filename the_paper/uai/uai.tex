@@ -185,6 +185,14 @@ OO-MDP, but it still fails in just about all of the planning scenarios
 we introduce here because the agent explores all states that result
 from applying every action in every state.  
 
+\begin{figure}
+\centering
+\includegraphics[scale=0.2]{figures/bridgeworld.png}
+\caption{In the above Minecraft planning problem \texttt{BRIDGEWORLD},
+the agent must place a block in the trench in order to reach the goal 
+(the trench is too wide to jump over). \label{fig:bridgeworld}}
+\end{figure}
+
 We will be using Minecraft as our planning and evaluation domain. Minecraft
 is a 3-D block world game, in which the user can place and destroy blocks of
 different types. As a running example, we will consider the problem of an agent
@@ -379,6 +387,11 @@ p,g\rangle\ \longrightarrow \alpha$, where:
 \item[] $g$ is a predicate on states, $s \longrightarrow \{$0$,1\}$
   representing the {\em postcondition}.
 \end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.23]{figures/bridgeworld_aff_vs_vi.png}
+\end{figure}
 
 \stnote{Need to immediately connect the definition with how it will be
   used in the aglorithm.  I would first give a high-level intuition of
