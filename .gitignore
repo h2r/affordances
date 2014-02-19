@@ -2,7 +2,7 @@
 *.class
 *.mca
 *.dat
-minecraft_api/world/
+minecraft_api/
 minecraft_api/world_nether/
 minecraft_api/world_the_end/
 *.aux
