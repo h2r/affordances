@@ -41,12 +41,12 @@ compared to subgoal (partial order) planning.
 % options, and macro actions
 \end{abstract}
 
-\stnote{High level things we should add:
-\begin{itemize}
-\item Runtime of the three algorithms in big O notation.
-\item Results with non-deterministic T.
-\end{itemize}
-}
+%\stnote{High level things we should add:
+%\begin{itemize}
+%\item Runtime of the three algorithms in big O notation.
+%\item Results with non-deterministic T.
+%\end{itemize}
+%}
 
 \section{INTRODUCTION}
 
@@ -360,38 +360,33 @@ p,g\rangle\ \longrightarrow \alpha$, where:
   representing the {\em postcondition}.
 \end{itemize}
 
-\stnote{Need to immediately connect the definition with how it will be
-  used in the aglorithm.  I would first give a high-level intuition of
-  how they will be used, then say why they will speed up.  Then there
-  should be a paragraph explaining affordance-based value iteration
-  which also gives a runtime.  Also the predicate functions should
-  connect to OO-MDPs.  I think we need OO-MDPs to make this work,
-  because otherwise we couldn't factor the pre and post condition as
-  predicates on states (because where do the predicates come from?)
-  This connection needs to be made explicitly.}
+The intuition behind an Affordance is that in a huge number of planning 
+scenarios, not all actions are needed in all states. In fact, many applications 
+of actions in states do not contribute toward solving the planning task, but 
+instead, cause the state-space to grow exponentially. This is especially true 
+in domains in which the agent's actions can drastically shape the environment, 
+such as in Minecraft. Thus, Affordances are used in order to determine which 
+actions are relevant in which states, given a specific goal. For instance, if the 
+agent is at the trench in \texttt{BRIDGEWORLD} and trying to reach the goal then it
+would not consider destroying a block, as that does not further its ability
+to reach the goal. Eliminating the ``destroy" action avoids 
+exploring every consequent state in which that block has been destroyed.
 
-The intuition is that in a huge number of planning scenarios, given a
-goal, the agent should be able to focus on only a subset of its
-available actions, dramatically reducing the size of the state-action
-space. Our definition of an affordance parallels the intuition of
-\citet{gibson77}, in which a human is capable of trimming down their
-action space by a huge amount when directed toward a particular
-goal. For instance, consider an agent with the standard Minecraft
-action set seen in Figure~\ref{fig:all_actions}.  If the agent need
-only walk across a flat surface to reach the goal, it should not even
-bother trying to place blocks or destroy blocks. If it needs to dig a
-ten block hole, then the agent should not consider placing blocks.
+The Affordance Value-Iteration algorithm (for full pseudocode see Algorithm \ref{alg:aff_vi}) works by
+only enumerating a subset of the actual state space. More specifically, the state space is generated
+outward from the agent's start state by applying actions that are deemed relevant by the current
+set of affordances. Thus, in most cases, a much smaller state space $\hat{\mathcal{S}}$ is produced,
+on which Value-Iteration finds an optimal policy.
 
-The reason that each goal encodes information about the goal relevant
-to those actions is that it, given perfect subgoal knowledge for a
-particular planning task, the affordance formalism will find an
-optimal policy {\it extremely} quickly. We imagine extensions in which
-an agent gets stuck and must ask a human partner for help using
-natural language, and the resulting dialogue could endow the agent
-with subgoal knowledge. This also allows the agent to prune way
-unnecessary actions in $\mathcal{A}$ in each specific planning task,
-making it possible to solve a engage with a large number of planning
-scenarios that may call for different actions. 
+The predicate $p$ and goal $g$ that are constituents of an Affordances are both subsets of the union
+of object states $\cup_{i = 1}^o o_i.state$ (see section 2.2).  The use of an OO-MDP gives us easy access to these
+robust predicates which completely describe the underlying MDP in a much more general manner.
+
+The primary benefit of encoding goal relative knowledge in each Affordance
+is that actions may be pruned with respect to a given goal. As a result,
+agents may be endowed with huge action sets that enables them to solve a variety of
+problems across variable state-spaces. This
+hints at the transferrability that we will demonstrate empirically in the next section.
 
 \begin{figure}
 \centering
@@ -400,13 +395,15 @@ scenarios that may call for different actions.
 \label{fig:bridgeworld_aff}
 \end{figure}
 
-Furthermore, since actions may be pruned with respect to a given goal, agents may be
-endowed with huge action sets that enable them solve a variety of
-problems across variable state-spaces, yet the branching factor of an
-affordance agent's exploration will be significantly smaller, since
-actions that are not relevant to the current goal will be pruned. This
-makes the affordance formalism extremely robust, as well as
-transferrable relative to subgoal planning and options.
+Furthermore, given perfect subgoal knowledge for a
+particular planning task, the affordance formalism will find an
+optimal policy {\it extremely} quickly. We imagine extensions in which
+an agent gets stuck and must ask a human partner for help using
+natural language, and the resulting dialogue could endow the agent
+with subgoal knowledge. This also allows the agent to prune way
+unnecessary actions in $\mathcal{A}$ in each specific planning task,
+making it possible to solve a engage with a large number of planning
+scenarios that may call for different actions. 
 
 
 % VI pseudocode + Affordances
@@ -426,11 +423,11 @@ transferrable relative to subgoal planning and options.
     \EndWhile\\
     \Return U;
   \end{algorithmic}
-  \label{alg:vi}
+  \label{alg:aff_vi}
 \end{algorithm}
 
 In the worst case, the Affordance-Value-Iteration Algorithm is 
-bounded by $\mathcal{O}(|\mathcal{A}|\cdot |\hat{\mathcal{S}}|^2$, where
+bounded by $\mathcal{O}(|\mathcal{A}|\cdot |\hat{\mathcal{S}}|^2)$, where
 $\hat{\mathcal{S}}$ is the subset of the states that were reachable using the
 resulting pruned action set determined by the agent's affordances. Thus,
 if the affordances were poorly designed, then the lower bound for the size of
@@ -447,11 +444,11 @@ maintain scalability.
 
 \section{EXPERIMENTS}
 
-\stnote{To write the experiments section, it's good to say what we are
-  interested in learning first.  What are we testing?  What is our
-  hypothesis?  Then explain the setup, then explain what the results
-  say about the hypothesis.  I would make experiments and results one
-  section, with subsections for each experiment + results}
+%\stnote{To write the experiments section, it's good to say what we are
+%  interested in learning first.  What are we testing?  What is our
+%  hypothesis?  Then explain the setup, then explain what the results
+%  say about the hypothesis.  I would make experiments and results one
+%  section, with subsections for each experiment + results}
 
 We conducted a series of experiments in the Minecraft domain that
 tested each planning system on a variety of tasks, ranging from basic
@@ -561,11 +558,18 @@ Thus, any case in which these actions are required to complete the task at hand,
 only Affordance planning will succeed. This is significant, as Table \ref{results_1}
 indicates that the Affordance planner plans more effectively than the other
 systems, but it can also handle novel problems involving those actions that
-alter the environment in sever ways. We also include a Bonus round indicating
+alter the environment in sever ways.
+
+We also include a Bonus round indicating
 those tasks that only the Affordance planner was able to solve. Finally, since
 each Affordance is attached to a particular goal, a single knowledge base will
 scale across state-spaces and task types, causing Affordance planning to be
-extremely transferrable.
+extremely transferrable. Additionally, we plan to add experiments in
+Non-deterministic planning scenarios, as well as testing on the planning scenarios
+from table \ref{results_1} where the knowledge bases remain constant across
+state-spaces to test the generality of each algorithm.
+
+
 
 % Insert bonus round of:
 %	- Ladder!!!!
