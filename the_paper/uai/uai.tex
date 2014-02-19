@@ -181,7 +181,7 @@ representing the expected reward of being in that state. See Algorithm \ref{alg:
 
 % VI pseudocode from Norvig/Russell
 \begin{algorithm}
-  \caption{Value-Iteration($\mathcal{A}$, $\mathcal{R}$, $\mathcal{S}$, $\epsilon$, $\gamma$)}
+  \caption{Value-Iteration($\mathcal{A}$, $\mathcal{R}$, $\mathcal{S}$, $\epsilon$, $\gamma$) \\ {\it Complexity:} $\mathcal{O}(|\mathcal{A}|\cdot |\mathcal{S}|^2)$}
   \begin{algorithmic}[1]
     \While {$\delta < \epsilon \frac{(1-\gamma)}{\gamma}$}
     \State $U \gets U';\delta \gets 0$
@@ -204,7 +204,9 @@ space, depending on the domain, grows exponentially in the number of
 actions.  This problem is ameliorated slightly by introducing the
 OO-MDP, but it still fails in just about all of the planning scenarios
 we introduce here because the agent explores all states that result
-from applying every action in every state.  
+from applying every action in every state.  The complexity of Value-Iteration
+is known to be $\mathcal{O}(|\mathcal{A}||\mathcal{S}|^2)$, so as the number
+of states increases, the runtime of Value Iteration grows quite quickly.
 
 We will be using Minecraft as our planning and evaluation domain. Minecraft
 is a 3-D block world game, in which the user can place and destroy blocks of
@@ -244,11 +246,12 @@ SG = \langle x_k, x_l \rangle
 where $x_l$ is the effect of some action sequence performed on 
 a state in which $x_k$ is true. Thus, subgoal planning requires 
 that we perform high-level planning in subgoal space, and low-level 
-planning to get from subgoal to subgoal.
+planning to get from subgoal to subgoal. The low-level planner may vary, though
+Metro-FF is a popular choice, as is Value Iteration.
 
 % Subgoal planning pseudocode
 \begin{algorithm}
-  \caption{Plan with Knowledge Base of Subgoals}
+  \caption{Plan with Knowledge Base of Subgoals \\ {\it Complexity:} $\mathcal{O}(|\mathcal{A}|\cdot |\mathcal{S}|^2)$}
   \begin{algorithmic}[1]
     \State subgoalSequence $\gets$ BFS(subgoalKB, goal)
     \State plan = []
@@ -408,14 +411,14 @@ transferrable relative to subgoal planning and options.
 
 % VI pseudocode + Affordances
 \begin{algorithm}
-  \caption{Affordance-Value-Iteration($\mathcal{A}$, $\mathcal{R}$, $initState$, $kb$, $goal$, $\epsilon$, $\gamma$, )}
+  \caption{Affordance-VI($\mathcal{A}$, $\mathcal{R}$, $s_0$, $kb$, $goal$, $\epsilon$, $\gamma$) \\ {\it Complexity:} $\mathcal{O}(|\mathcal{A}|\cdot |\hat{\mathcal{S}}|^2)$}
   \begin{algorithmic}[1]
-    \State $\hat{\mathcal{A}} \gets pruneActions(kb, initState, \mathcal{A}, goal)$
+    \State $\hat{\mathcal{A}} \gets pruneActions(kb, s_0, \mathcal{A}, goal)$
     \State $\hat{\mathcal{S}} \gets genStates(kb, \hat{\mathcal{A}})$
     \While {$\delta < \epsilon \frac{(1-\gamma)}{\gamma}$}
     \State $U \gets U';\delta \gets 0$
     \For {each state $s \in \hat{\mathcal{S}}$}
-    \State $U'[s] \leftarrow \mathcal{R}(s) + \gamma \max_{a \in \hat{\mathcal{A}}(s)} \sum_{s'} \text{Pr}(s'\mid s,a) U[s']$
+    \State $U'[s] \gets \mathcal{R}(s) + \gamma \max_{a \in \hat{\mathcal{A}}(s)} \sum_{s'} \text{Pr}(s'\mid s,a) U[s']$
     \If {$|U'[s] - U[s]| > \delta$}
     	\State $\delta \gets |U'[s] - U[s]|$ 
     \EndIf
@@ -426,6 +429,15 @@ transferrable relative to subgoal planning and options.
   \label{alg:vi}
 \end{algorithm}
 
+In the worst case, the Affordance-Value-Iteration Algorithm is 
+bounded by $\mathcal{O}(|\mathcal{A}|\cdot |\hat{\mathcal{S}}|^2$, where
+$\hat{\mathcal{S}}$ is the subset of the states that were reachable using the
+resulting pruned action set determined by the agent's affordances. Thus,
+if the affordances were poorly designed, then the lower bound for the size of
+$\hat{\mathcal{S}}$, is precisely the full state space, $\mathcal{S}$. However,
+in general, when reasonable affordances are applied the agent is guaranteed to prune its
+action set for any number of states, and thus will explore less of the state space
+as a result.
 
 The affordance formalism introduced above and expanded on in this
 paper resolves the weaknesses of these other frameworks by limiting
