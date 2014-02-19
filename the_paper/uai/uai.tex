@@ -70,6 +70,12 @@ state/action space (while also allowing the agent to search more
 deeply within the space).  The resulting augmented space is even
 larger, which has the paradoxical effect of increasing search times.
 
+\begin{figure}
+\centering
+\includegraphics[scale =0.18]{figures/bridgeworld_vi_vs_aff.png}
+  \caption{Classic Value Iteration (left) compared to the Affordance planner (right) in a bridge building task.}
+  \label{fig:minecraft}
+\end{figure}
 
 One approach to explaining how humans solve this planning problem is
 by focusing on problem-specific aspects of the environment which focus
@@ -80,17 +86,6 @@ planning.  Our approach is a formalization of {\em affordances},
 introduces by \citet{gibson77} as ``what [the environment] offers [an]
 animal, what [the environment] provides or furnishes, either for good
 or ill.''  
-
-%% Additionally, roboticists have recently become interested
-%% in leveraging affordances for perception and prediction of human
-%% actions~\citep{koppula13a, koppula13b}.
-
-\begin{figure}
-\centering
-\includegraphics[scale =
-  0.19]{figures/bridgeworld_vi_vs_aff.png}
-  \caption{Classic Value Iteration (left) compared to the Affordance planner (right) in a bridge building task)}
-\end{figure}
 
 In this paper we will formalize the notion of an affordance as a piece
 of planning knowledge provided to an agent operating in a Markov
@@ -112,7 +107,7 @@ problems.
 \begin{figure}
 \centering
 \includegraphics[scale = 0.15]{figures/all_actions.png}
-\caption{The set of all actions in the Minecraft domain \label{fig:all_actions}}
+\caption{The set of all actions in the Minecraft domain. \label{fig:all_actions}}
 \end{figure}
 
 \section{BACKGROUND}
@@ -120,6 +115,27 @@ problems.
 We define affordances in terms of an Object Oriented Markov Decision
 Process (OO-MDP)~\citep{diuk08} and review competing approaches for
 adding knowledge to planning.
+
+\subsection{DOMAIN}
+
+We will be using Minecraft as our planning and evaluation domain. Minecraft
+is a 3-D block world game, in which the user can place and destroy blocks of
+different types. As a running example, we will consider the problem of an agent
+attempting to cross a trench in a $4 \times 4 \times 2$ Minecraft world shown
+in Figure~\ref{fig:bridgeworld}. The floor (at $z = 1)$ \footnote{The $z$-axis
+is the height of the Minecraft world. Similarly, the $x$-axis is its width and the
+$y$-axis is its length.} is composed of 8 solid blocks, with horizontal empty
+trenches at $y = 2$ and $y = 3$. The agent is  at the starting location
+$(1, 1, 2)$ and needs to reach the goal at $(4,4,2)$
+
+To solve the problem, the agent must
+place a block in the trench, forming a bridge, then cross the bridge
+to reach the goal.  However when running an uninformed planning
+technique such as value iteration, the agent must enumerate all
+possible states, such as placing a block in the corner and
+subsequently destroying it.  Considering these actions, which would be
+obviously irrelevant to a human player, results in a combinatoric
+explosion of the state space (see Equation \ref{eq:mc_explode}).
 
 \subsection{OO-MDP}
 
@@ -133,8 +149,14 @@ $s \in \mathcal{S}$ and arriving in $s' \in \mathcal{S}$, and
 $\mathcal{R}(s,a)$ denotes the reward at $s$ when action $a$ is
 applied, and $\gamma$ is a discount factor.
 
-% \stnote{Need to define variables and types.  Should use the same
-%  variables as the OO-MDP paper.}
+\begin{figure}
+\centering
+\includegraphics[scale=0.2]{figures/bridgeworld.png}
+\caption{In the above Minecraft planning problem \texttt{BRIDGEWORLD},
+the agent must place a block in the trench in order to reach the goal 
+(the trench is too wide to jump over). \label{fig:bridgeworld}}
+\end{figure}
+
 A OO-MDP represents the state space as a collection of objects,
 $O = \{o_1, \ldots, o_o \}$.  Each object $o_i$ has a
 class $c_j \in  \{c_1, \ldots, c_c\}$. Every class has a set of attributes
@@ -147,7 +169,6 @@ Our motivation for using an OO-MDP instead of an MDP lies in the
 ability to formulate predicates over classes of objects. As we will
 see in section 3, this helps us form preconditions and goals that
 generalize beyond a particular instance of a state space.
-\stnote{Need to stay why using an OO-MDP earlier.}
 
 As with a classical finite MDP, planning with an OO-MDP involves
 running value iteration to determine a policy.  Reward propagation in
@@ -185,14 +206,6 @@ OO-MDP, but it still fails in just about all of the planning scenarios
 we introduce here because the agent explores all states that result
 from applying every action in every state.  
 
-\begin{figure}
-\centering
-\includegraphics[scale=0.2]{figures/bridgeworld.png}
-\caption{In the above Minecraft planning problem \texttt{BRIDGEWORLD},
-the agent must place a block in the trench in order to reach the goal 
-(the trench is too wide to jump over). \label{fig:bridgeworld}}
-\end{figure}
-
 We will be using Minecraft as our planning and evaluation domain. Minecraft
 is a 3-D block world game, in which the user can place and destroy blocks of
 different types. As a running example, we will consider the problem of an agent
@@ -212,16 +225,7 @@ subsequently destroying it.  Considering these actions, which would be
 obviously irrelevant to a human player, results in a combinatoric
 explosion of the state space (see Equation \ref{eq:mc_explode}).
 
-%% Our
-%% affordance planner Thus, in these scenarios, our Affordance planner has
-%% a substantial advantage on classic Value Iteration. These weaknesses
-%% are well known ~\citep{grounds05}, and have resulted in attempts to
-%% make planning more practical in domains of a larger scale.
-
-% More VI math. Maybe pseudocode.
-
 \subsection{SUBGOALS}
-% % Intuition
 
 Subgoal planning leverages the intuition that certain goals in
 planning domains may only be brought about if certain preconditions
@@ -230,18 +234,6 @@ first place a block in the trench to create a bridge before crossing
 the trench.  \citet{branavan12a} explore learning subgoals from the
 Minecraft wiki and applying them in order to plan through a variety of
 problems in Minecraft.  
-
-%% For further clarification, see
-%% Fig. \ref{fig:branavan_sg}, directly from Branavan et. al's paper,
-%% displaying the high-level search in subgoal space for the baking bread
-%% example.
-
-%% \begin{figure}
-%% \centering
-%% \includegraphics[scale=0.27]{figures/branavan_sg.png}
-%% \label{fig:branavan_sg.png}
-%% \caption{A picture from Branavan et. al's paper ~\citep{branavan12a} displaying the high-level search in subgoal space on the baking bread task}
-%% \end{figure}
 
 % Formalism
 Formally, in subgoal planning, the agent is set of subgoals, where each subgoal is a pair of predicates:
@@ -291,30 +283,6 @@ in minecraft: posessing wheat is always required to make bread, and it
 is impossible to construct a world where this precondition is not
 true.
 
-\stnote{I don't get granular planning; this seems identical to the
-  first problem.}
-
-%% {\bf Problem 2: Granular Planning} The second problem is that those
-%% that subgoals that do scale across state spaces are often not
-%% useful. For instance, the vast majority of tasks in Minecraft are
-%% not so easily broken into useful, necessary subgoals.  Movement,
-%% for instance, is particularly difficult. As stated before, scalable
-%% subgoals must be necessary preconditions for a particular goal, and
-%% such preconditions are often difficult to come up with in a way
-%% that actually makes planning easier. One idea would be to create
-%% the movement subgoal that the agent is one away from the goal -
-%% this is a poor choice however, since this subgoal is hardly useful
-%% unless we repeat it (i.e. the agent is one away from the next
-%% subgoal, and so on). The result is an extremely granular and low
-%% level planning system that is no better than standard Value
-%% Iteration. If necessary preconditions existed for many goal types,
-%% then subgoal planning would be a great approach. Unfortunately,
-%% coming up with such subgoals is not an easy task, and often the
-%% best we can do is to plan at such a low level that we lose any
-%% benefit of planning over subgoals to begin with
-
-
-
 {\bf Problem 2: Efficient Search} The last problem with subgoal
 planning is that the use of subgoals actually requires that we
 research a huge portion of the state space. Consider the
@@ -329,7 +297,8 @@ opposite side of the trench toward the goal.
 \includegraphics[scale=0.22]{figures/bridgeworld_sg.png}
 \caption{The agent re-explores a large portion of the state space 
 once it finds $\mathcal{SG}_1$. Also note that this subgoal 
-highlights {\bf Problem 1}, in that it would be useless in many other Minecraft state spaces}
+highlights {\bf Problem 1}, in that it would be useless in many other Minecraft state spaces.}
+\label{fig:bwsg}
 \end{figure}
 
 
@@ -388,11 +357,6 @@ p,g\rangle\ \longrightarrow \alpha$, where:
   representing the {\em postcondition}.
 \end{itemize}
 
-\begin{figure}
-\centering
-\includegraphics[scale=0.23]{figures/bridgeworld_aff_vs_vi.png}
-\end{figure}
-
 \stnote{Need to immediately connect the definition with how it will be
   used in the aglorithm.  I would first give a high-level intuition of
   how they will be used, then say why they will speed up.  Then there
@@ -424,8 +388,16 @@ natural language, and the resulting dialogue could endow the agent
 with subgoal knowledge. This also allows the agent to prune way
 unnecessary actions in $\mathcal{A}$ in each specific planning task,
 making it possible to solve a engage with a large number of planning
-scenarios that may call for different actions. Furthermore, since
-actions may be pruned with respect to a given goal, agents may be
+scenarios that may call for different actions. 
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.22]{figures/bridgeworld_aff.png}
+\caption{The Affordance planner's state-action space on \texttt{BRIDGEWORLD}.}
+\label{fig:bridgeworld_aff}
+\end{figure}
+
+Furthermore, since actions may be pruned with respect to a given goal, agents may be
 endowed with huge action sets that enable them solve a variety of
 problems across variable state-spaces, yet the branching factor of an
 affordance agent's exploration will be significantly smaller, since
