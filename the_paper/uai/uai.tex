@@ -519,17 +519,19 @@ at handling real world planning scenarios.
 \begin{tabular}{ l || c | c | c }
   & Affordances & Subgoals & VI \\
   \hline
-  $|\mathcal{A}| = 4$ 		& 	? 	& 	? 		& ?  \\
-  $|\mathcal{A}| = 8$ 		& 	? 	& 	? 		& ?  \\
-  $|\mathcal{A}| = 12$ 	& 	? 	& 	? 		& ?  \\
-  $|\mathcal{A}| = 16$ 	& 	? 	& 	? 		& ?  \\
-  $|\mathcal{A}| = 17$ 	& 	? 	& 	? 		& ?  \\
-  $|\mathcal{A}| = 21$ 	& 	? 	& 	DNF 		& DNF  \\
-  $|\mathcal{A}| = 25$ 	& 	? 	& 	DNF 		& DNF  \\
+  $|\mathcal{A}| = 4$ 		& 	6.7s 	& 	11.8s 	& 6.7s  \\ % Just movement
+  $|\mathcal{A}| = 8$ 		& 	6.8s 	& 	25.4s 	& 14.8s  \\ % + openDoor
+  $|\mathcal{A}| = 12$ 	& 	6.8s 	& 	39.8s 	& 22.9s  \\ % + Oven
+  $|\mathcal{A}| = 13$ 	& 	6.8s 	& 	41.28s      & 24.7s  \\ % + grain
+  $|\mathcal{A}| = 17$ 	& 	6.7s	& 	55.5s	& 33.1s  \\ % + 0 blocks, placement
+  $|\mathcal{A}| = 17$ 	& 	6.8s 	& 	DNF 		& DNF  \\ % + 1 blocks, placement
+  $|\mathcal{A}| = 21$ 	& 	6.6s 	& 	DNF 		& DNF  \\ % + destruction
 \end{tabular}
 \label{results_2}
-\caption{Plan on the simplest possible task (path planning in a flat plane with no obstacles) with incrementally larger action sets.}
+\caption{Plan on the simplest possible task (path planning in a flat plane with no obstacles - \texttt{15WORLD}) with incrementally larger action sets.}
 \end{table}
+
+% Should explain DNF
 
 As one can see from Table \ref{results_2}, in those cases where
 $|\mathcal{A}| = 21$ and $|\mathcal{A}| = 25$, the only planning algorithm to
