@@ -1,6 +1,6 @@
 \documentclass[]{article} 
 \usepackage{proceed2e}
-
+\usepackage{subfigure}
 \usepackage[numbers,sort]{natbib}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -25,16 +25,16 @@
 %Current methods for decision-making under uncertainty require
 %exhaustive enumeration of all possible states and actions, leading to
 %exponential run times caused by 
-Planning algorithms for non-deterministic domains 
-are often intractable in large state and action spaces
-due to the well-known ``curse of
-dimensionality.''  Approaches to address this problem by providing the
-system with formally encoded knowledge such as
-macro-actions and options still fail to prevent the system from considering many
-actions which would be obviously irrelevant to a human solving the
-same problem.  To address this issue, we introduce a novel approach
-which represents knowledge about the domain in terms of {\em
-  affordances}~\citep{gibson77}.  Our affordance formalism and
+
+Planning algorithms for non-deterministic domains are often
+intractable in large state and action spaces due to the well-known
+``curse of dimensionality.''  Approaches to address this problem by
+providing the system with formally encoded knowledge such as
+macro-actions and options still fail to prevent the system from
+considering many actions which would be obviously irrelevant to a
+human solving the same problem.  To address this issue, we introduce a
+novel approach which represents knowledge about the domain in terms of
+{\em affordances}~\citep{gibson77}.  Our affordance formalism and
 associated planning framework allows an agent to efficiently prune its
 action space based on domain knowledge.  This pruning significantly
 reduces the number of state/action pairs the agent needs to evaluate
@@ -42,6 +42,7 @@ in order to act optimally.  We demonstrate our approach in the
 Minecraft domain on several planning and building tasks, showing a
 significant increase in speed and reduction in state-space exploration
 compared to subgoal (partial order) planning.
+
 % options, and macro actions
 \end{abstract}
 
@@ -55,13 +56,12 @@ compared to subgoal (partial order) planning.
 \section{INTRODUCTION}
 
 As robots move out of the lab and into the real world, planning
-algorithms need to be able to scale to domains of increased noise,
-size, and complexity.  A classic formalization of this issue is a
-stochastic sequential decision making problem in which
-the agent must find a policy (a mapping from states to actions) for 
-some subset of the state space that
-enables the agent to achieve a goal from some initial state, while minimizing
-any costs along the way. 
+algorithms need to scale to domains of increased noise, size, and
+complexity.  A classic formalization of this problem is a stochastic
+sequential decision making problem in which the agent must find a
+policy (a mapping from states to actions) for some subset of the state
+space that enables the agent to achieve a goal from some initial
+state, while minimizing any costs along the way.
 %A classic formalization of this issue is the
 %sequential decision making problem, where 
 Increases in planning problem size
@@ -72,48 +72,48 @@ becomes too large~\citep{grounds05}.
 
 To address this state-space explosion, prior work has explored adding
 knowledge to the planner to enable it to solve problems in these
-massive domains. Humans provide an excellent existence proof for such
-planning, as we are capable of searching over an immense number of
-possible actions when presented with a goal.  However prior approaches
-such as options and macro-actions work by providing additional
-high-level actions to the agent, which {\em increases} the size of the
-state/action space (while also allowing the agent to search more
-deeply within the space).  The resulting augmented space is even
-larger, which can have the paradoxical effect of increasing the search time for
-a good policy.
+massive domains. However prior approaches such as options and
+macro-actions work by providing additional high-level actions to the
+agent, which {\em increases} the size of the state/action space (while
+also allowing the agent to search more deeply within the space).  The
+resulting augmented space is even larger, which can have the
+paradoxical effect of increasing the search time for a good policy.
 
 \begin{figure}
 \centering
-\includegraphics[scale =0.18]{figures/bridgeworld_vi_vs_aff.png}
-  \caption{Classic Value Iteration (left) compared to the Affordance planner (right) in a bridge building task. \jmnote{This image may need to be changed to the result from RTDP. Also, Value Iteration
-  (and RTDP) should still be able to solve the task completely *if* it was given enough time.
-  Therefore, it might be better state something like it being an example of the clearly irrelevant states
-  explored by VI/RTDP and in which case the affordance-aware planning image may not
-  not provide any meaningful information}}
-  \label{fig:minecraft}
+%\includegraphics[scale=0.18]{figures/bridgeworld_vi_vs_aff.png}
+\subfigure[Planning with VI.]{
+\includegraphics[width=0.5\linewidth]{figures/fig_1_vi_cropped.png}}%
+\subfigure[Planning with affordances.]{
+\includegraphics[width=0.5\linewidth]{figures/fig_1_aff_cropped.png}}%
+  \caption{Scenes from a Minecraft agent planning using Value
+    Iteration (VI) compared to the affordance planner in a bridge
+    building task.  VI considers states which would be obviously
+    irrelevant to a human solving the same problem, such as stacking
+    blocks in the corner.  Our affordance agent, in contrast, focuses
+    on placing blocks in the trench, which are much more relevant to
+    reaching the goal.\label{fig:minecraft}}
 \end{figure}
 
-One approach to explaining how humans solve this planning problem is
-by focusing on problem-specific aspects of the environment which focus
-the search toward the most relevant and useful parts of the
-state-action space.  This approach aims to {\em reduce}
-the size of the explored state action space, leading to dramatic speedups in
-planning.  Our approach is a formalization of {\em affordances},
-introduced by \citet{gibson77} as ``what [the environment] offers [an]
-animal, what [the environment] provides or furnishes, either for good
-or ill.''  
-
-In this paper we will formalize the notion of an affordance as a piece
-of planning knowledge provided to an agent operating in a Markov
-Decision Process (MDP). We then explain how
-affordances can be easily leveraged by a variety of planning algorithms
-by pruning the action set the agent uses on a state-by-state basis. We call
-any planning algorithm that uses affordances to prune the action set an
-affordance-aware planning algorithm.
-A useful property of affordances is that they are not specific to a
-particular reward function or goal, and thus, provide the agent with
-transferable knowledge that is effective in a wide variety of
-problems.
+We propose to address this planning problem by focusing on
+problem-specific aspects of the environment which focus the search
+toward the most relevant and useful parts of the state-action space.
+This approach aims to {\em reduce} the size of the explored state
+action space, leading to dramatic speedups in planning.  Our approach
+is a formalization of {\em affordances}, introduced by
+\citet{gibson77} as ``what [the environment] offers [an] animal, what
+      [the environment] provides or furnishes, either for good or
+      ill.''  We formalize the notion of an affordance as a piece of
+      planning knowledge provided to an agent operating in a Markov
+      Decision Process (MDP). We explain how affordances can be
+      leveraged by a variety of planning algorithms to prune the
+      action set the agent uses dynamically based on the agent's
+      current goal.  We call any planning algorithm that uses
+      affordances to prune the action set an affordance-aware planning
+      algorithm.  A useful property of affordances is that they are
+      not specific to a particular reward function or goal, and thus,
+      provide the agent with transferable knowledge that is effective
+      in a wide variety of problems.
 
 %~\citep{kaelbling99} -- (JM: I don't think you should cite this. This paper involves
 %partially observable markov decision processes, which this work does not evaluate.)
@@ -133,53 +133,43 @@ problems.
 %problems.
 
 
-\begin{figure}
-\centering
-\includegraphics[scale = 0.15]{figures/all_actions.png}
-\caption{The set of all actions in the Minecraft domain. \label{fig:all_actions}}
-\end{figure}
+\jmnote{Need to augment this description with the embedded
+  stochasticity. If the stochasticity is effectively a probability of
+  taking the wrong action/movement, we should relate it the fact that
+  in robotics, actuators are noisy and often fail, thereby making the
+  domain a bit more analogous to physical robots. We should also
+  highlight that this stochasticity can affect the policy by forcing
+  the agent to be more cautious in dangerous environments.}  
 
-\section{BACKGROUND}
+We use Minecraft as our planning and evaluation domain. Minecraft is a
+3-D blocks world game in which the user can place and destroy blocks
+of different types.  Minecraft players have constructed complex
+worlds, including models of a scientific graphing
+calculator~\footnote{https://www.youtube.com/watch?v=wgJfVRhotlQ};
+scenes from a Minecraft world appear in Figure~ref{fig:minecraft}.  As a
+running example, we will consider the problem of an agent attempting
+to cross a trench in a $4 \times 4 \times 2$ Minecraft world shown in
+Figure~\ref{fig:bridgeworld}. The floor (at $z = 1)$ \footnote{The
+  $z$-axis is the height of the Minecraft world. Similarly, the
+  $x$-axis is its width and the $y$-axis is its length.} is composed
+of 8 solid blocks, with horizontal empty trenches at $y = 2$ and $y =
+3$. The agent is at the starting location $(1, 1, 2)$ and needs to
+reach the goal at $(4,4,2)$
 
-In this section we describe the Minecraft domain, which we use
-as a running example in our explanations and as a test domain in our experiments.
-We also review the
-Object-Oriented Markov Decision Process (OO-MDP)~\citep{diuk08}, which is
-used to formalize our definition of affordances; and Subgoal planning, which
-will use as comparison to affordance-aware planning in our experiments.
-
-\subsection{DOMAIN}
-
-\jmnote{Need to augment this description with the embedded stochasticity. If the stochasticity
-is effectively a probability of taking the wrong action/movement, we should relate it
-the fact that in robotics, actuators are noisy and often fail, thereby making the domain
-a bit more analogous to physical robots. We should also highlight that this stochasticity
-can affect the policy by forcing the agent to be more cautious in dangerous environments.}
-We will be using Minecraft as our primary planning and evaluation domain. Minecraft
-is a 3-D block world game in which the user can place and destroy blocks of
-different types. As a running example, we will consider the problem of an agent
-attempting to cross a trench in a $4 \times 4 \times 2$ Minecraft world shown
-in Figure~\ref{fig:bridgeworld}. The floor (at $z = 1)$ \footnote{The $z$-axis
-is the height of the Minecraft world. Similarly, the $x$-axis is its width and the
-$y$-axis is its length.} is composed of 8 solid blocks, with horizontal empty
-trenches at $y = 2$ and $y = 3$. The agent is  at the starting location
-$(1, 1, 2)$ and needs to reach the goal at $(4,4,2)$
-
-To solve the problem, the agent must
-place a block in the trench to form a bridge, then cross the bridge
-to reach the goal. Although this task {\em seems} simple, it can be quite
-challenging for planning algorithms to solve, because the reachable
-state space in Minecraft is so large. For example, the number of places
-an agent can place and destroy blocks alone can result in 
-a combinatorial explosion of the state space. Specifically,
-given an agent capable placing and destroying blocks in a 
-10x10x2 world, there are on the order of
+To solve the problem, the agent must place a block in the trench to
+form a bridge, then cross the bridge to reach the goal.  This task is
+challenging for planning algorithms to solve because the reachable
+state space in Minecraft is so large. For example, the number of
+places an agent can place and destroy blocks alone can result in a
+combinatorial explosion of the state space. Specifically, given an
+agent capable placing and destroying blocks in a 10x10x2 world, there
+are on the order of
 \begin{align}
 O\left(\sum_{n=1}^{10 \cdot 10 \cdot 2} \binom{10 \cdot 10 \cdot 2}{n}\right)
 \label{eq:mc_explode}
 \end{align}
-states, which is too large for a planning algorithm to explore in a reasonable
-time.
+states, which is too large for a planning algorithm to explore in a
+reasonable time.
 
 %However, when running an uninformed planning
 %technique such as value iteration, the agent must enumerate all
@@ -188,20 +178,24 @@ time.
 %obviously irrelevant to a human player) results in a combinatoric
 %explosion of the state space (see Equation \ref{eq:mc_explode}).
 
-\subsection{OO-MDP}
 
-OO-MDPs~\citep{diuk08} are an extension of the classic Markov Decision Process (MDP).
-A classic MDP is a five-tuple: $\langle \mathcal{S}, \mathcal{A},
-\mathcal{T}, \mathcal{R}, \gamma \rangle$, where $\mathcal{S}$ is a
-state-space; $\mathcal{A}$ is the agent's set of actions;
-$\mathcal{T}$ denotes $\mathcal{T}(s' \mid s,a)$, the transition
-probability of an agent applying action $a \in \mathcal{A}$ in state
-$s \in \mathcal{S}$ and arriving in $s' \in \mathcal{S}$;
-$\mathcal{R}(s,a,s')$ denotes the reward received by the agent for applying
-action $a$ in state $s$ and and transitioning to state $s'$; and 
-$\gamma \in [0, 1)$ is a discount factor that defines how much the
-agent prefers immediate rewards over distant rewards (the agent
-more greatly prefers to maximize more immediate rewards as $\gamma$ decreases).
+\section{BACKGROUND}
+
+We define affordances in terms of propositional functions on states.
+Our definition builds on the Object-Oriented Markov Decision Process
+(OO-MDP)~\citep{diuk08}.  OO-MDPs~\citep{diuk08} are an extension of
+the classic Markov Decision Process (MDP).  A classic MDP is a
+five-tuple: $\langle \mathcal{S}, \mathcal{A}, \mathcal{T},
+\mathcal{R}, \gamma \rangle$, where $\mathcal{S}$ is a state-space;
+$\mathcal{A}$ is the agent's set of actions; $\mathcal{T}$ denotes
+$\mathcal{T}(s' \mid s,a)$, the transition probability of an agent
+applying action $a \in \mathcal{A}$ in state $s \in \mathcal{S}$ and
+arriving in $s' \in \mathcal{S}$; $\mathcal{R}(s,a,s')$ denotes the
+reward received by the agent for applying action $a$ in state $s$ and
+and transitioning to state $s'$; and $\gamma \in [0, 1)$ is a discount
+  factor that defines how much the agent prefers immediate rewards
+  over distant rewards (the agent more greatly prefers to maximize
+  more immediate rewards as $\gamma$ decreases).
 
 \begin{figure}
 \centering
@@ -210,6 +204,15 @@ more greatly prefers to maximize more immediate rewards as $\gamma$ decreases).
 the agent must place a block in the trench in order to reach the goal 
 (the trench is too wide to jump over). \label{fig:bridgeworld}}
 \end{figure}
+
+
+\begin{figure}
+\centering
+\includegraphics[scale = 0.15]{figures/all_actions.png}
+\caption{The set of all actions in the Minecraft domain. \label{fig:all_actions}}
+\end{figure}
+
+
 
 A classic way to provide a factored representation of an MDP state is to represent
 each MDP state as a single feature vector. In contrast, an OO-MDP represents the state space as a collection of objects,
@@ -220,36 +223,42 @@ Upon instantiation of an object class, its attributes are given a state $o.state
 (an assignment of values to its attributes).  The underlying MDP state is the set
 of all the object states: $s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$.
 
-There are two advantages to using an object-oriented factored state representation instead 
-of a single feature vector. First, different states in the same state space may contain
-different numbers of objects of varying classes, which is useful in domains like Minecraft in which
-the agent can dynamically add and remove blocks to the world. Second, MDP states can be defined invariantly to the specific object references.
-For instance, consider a Minecraft world with two block objects, $b_1$ and $b_2$.
-If the agent picked up and swapped the position of $b_1$ and $b_2$ (and then returned to the agent's
-previous position in the world), the MDP state before the swap and after the swap would be the same,
-because the MDP state definition is invariant to which object holds which object state.
-Formally, if there exists a bijection between two sets of objects that maps each object
-in one set to an object in the other set with the same object state, 
-then the two sets of objects define the same
-MDP state. \jmnote{Should this be put in math?}
-This object reference invariance results in a smaller state space compared 
-to representations like feature vectors in which changes to value assignments
-always result in a different state.
+There are two advantages to using an object-oriented factored state
+representation instead of a single feature vector. First, different
+states in the same state space may contain different numbers of
+objects of varying classes, which is useful in domains like Minecraft
+in which the agent can dynamically add and remove blocks to the
+world. Second, MDP states can be defined invariantly to the specific
+object references.  For instance, consider a Minecraft world with two
+block objects, $b_1$ and $b_2$.  If the agent picked up and swapped
+the position of $b_1$ and $b_2$ (and then returned to the agent's
+previous position in the world), the MDP state before the swap and
+after the swap would be the same, because the MDP state definition is
+invariant to which object holds which object state.  Formally, if
+there exists a bijection between two sets of objects that maps each
+object in one set to an object in the other set with the same object
+state, then the two sets of objects define the same MDP state.  This
+object reference invariance results in a smaller state space compared
+to representations like feature vectors in which changes to value
+assignments always result in a different state.
 
-While the OO-MDP state definition is a good fit for the
-Minecraft domain, our motivation for using an OO-MDP lies in the
-ability to formulate predicates over classes of objects. That is, the OO-MDP definition also includes
-a set of predicates ${\cal P}$ that operate on the state of objects
-to provide additional high-level information about the MDP state. For example,
-in the Minecraft domain, an ${\tt on}({\tt BLOCK, BLOCK})$ predicate
-operates on two objects belonging to class ${\tt BLOCK}$; ${\tt on}(b_1,b_2)$,
-would evaluate to true when the $z$ position value of $b_1$'s state is one unit
-higher than the $z$ position value of $b_2$'s, and false otherwise.
-\jmnote{This should probably be replaced with an example of a predicate that is actually used in the Minecraft domain.}
-In the original OO-MDP work, these 
-predicates were used to model and learn an MDP's transition dynamics. In this work,
-we use the predicates to define action affordances that enable the planning algorithm 
-to prune irrelevant actions (see Section~\ref{sec:affordances}).
+While the OO-MDP state definition is a good fit for the Minecraft
+domain, our motivation for using an OO-MDP lies in the ability to
+formulate predicates over classes of objects. That is, the OO-MDP
+definition also includes a set of predicates ${\cal P}$ that operate
+on the state of objects to provide additional high-level information
+about the MDP state. For example, in the Minecraft domain, an ${\tt
+  on}({\tt BLOCK, BLOCK})$ predicate operates on two objects belonging
+to class ${\tt BLOCK}$; ${\tt on}(b_1,b_2)$, would evaluate to true
+when the $z$ position value of $b_1$'s state is one unit higher than
+the $z$ position value of $b_2$'s, and false otherwise.  \jmnote{This
+  should probably be replaced with an example of a predicate that is
+  actually used in the Minecraft domain.}  \stnote{I agree -- can we
+  use predicates that are relevant to bridgeworld?  Is moveable?  is
+  placeable?} In the original OO-MDP work, these predicates were used
+to model and learn an MDP's transition dynamics. In the next section,
+we use the predicates to define affordances that enable planning
+algorithms to prune irrelevant actions.
 
 
 % As we will
@@ -295,8 +304,227 @@ to prune irrelevant actions (see Section~\ref{sec:affordances}).
 %of states increases, the runtime of Value Iteration grows quite quickly.
 
 
-\subsection{SUBGOALS}
+
+\section{AFFORDANCES}
+\label{sec:affordances}
+
+%% Formalism
+
+In many planning scenarios, not all actions are needed in all
+states. In fact, many applications of actions in states do not
+contribute toward solving the planning task, but instead, cause the
+state-space to grow exponentially, especially true in domains in which
+the agent's actions can drastically shape the environment, such as in
+Minecraft.  To address this problem, we define an affordance,
+$\Delta$, as a tuple, $\langle p,g\rangle\ \longrightarrow \alpha$,
+where:
+\begin{itemize}
+\item[] $\alpha$ is a subset of the action space, $\mathcal{A}$
+\item[] $p$ is a predicate on states, $s \longrightarrow \{$0$, 1\}$
+  representing the {\em precondition} for the affordance.
+\item[] $g$ is a predicate on states, $s \longrightarrow \{$0$,1\}$
+  representing the {\em postcondition}.
+\end{itemize}
+
+The precondition, $p$, and goal, $g$, encode a subset of object states
+$\cup_{i = 1}^o o_i.state$ (see section 2.2).  The use of an OO-MDP
+gives us easy access to these robust predicates which completely
+describe the underlying MDP in a much more general manner.
+\jmnote{This text doesn't quite make sense to me. How are the OO-MDP
+  predicates subsets of the objects? I think what this is trying to
+  say is that $p$ and $g$ can be defined compactly using OO-MDP
+  predicates. However, it's not necessarily true that OO-MDP
+  predicates *completely* describe the MDP. In fact, unless you have
+  explicit position predicates, it won't completely describe the MDP
+  state space.  \\ I think an example of an affordance in terms of the
+  formal definition needs to be provided here as well.}  \stnote{Agree
+  with JM's comment.  We need to say how affordances connect to an
+  OO-MDP, but above isn't quite right. }
+
+
+
+The primary benefit of encoding goal relative knowledge in each
+affordance is that actions may be pruned with respect to a given goal.
+For instance, if the agent is at the trench in \texttt{BRIDGEWORLD}
+and trying to reach the goal then it would not consider destroying a
+block, as that does not further its ability to reach the goal.
+\stnote{Need to give examples of bridgeworld affordances that would
+  prevent it from destroying a block.}  Eliminating the ``destroy"
+action avoids exploring every consequent state in which that block has
+been destroyed.  As a result, agents may be endowed with huge action
+sets that enables them to solve a variety of problems across variable
+state-spaces, while only exploring a small action set that is relevant
+to each task.  We refer to any planning algorithm that prunes the
+actions set according to affordances an affordance-aware
+planner. Action set pruning affects different planning algorithms in
+different ways. In particular, we focus on how action pruning benefits
+{\em dynamic programming} and {\em policy rollout} planning paradigms.
+
+
+
+\jmnote{Pseudocode for the pruneActions function, for any arbitrary
+  input state, should be supplied here since it's the primary
+  contribution and is the code that would used to turn any planning
+  algorithm into an affordance-aware planning algorithm. We may also
+  want to mention the computation time of it}
+
+
+
+
+
+
+\subsection{Dynamic Programming}
+In dynamic programming paradigms, the planning algorithm estimates the
+optimal {\em value function} for each state. Formally, the optimal
+value function ($V^*$) defines the expected discounted return from
+following the optimal policy in each state:
+\begin{equation}
+\label{eq:bellman}
+V^*(s) = \max_{a \in \mathcal{A}(s)} \sum_{s'} \text{Pr}(s' \mid s, a)\left[\mathcal{R}(s,a,s') + \gamma V^*(s') \right];
+\end{equation}
+this equation is known as the Bellman
+equation~\citep{bellman57}. Given the optimal value function, the
+optimal policy is derived by taking the action that maximizes the
+values of each state. More specifically, by taking the action with the
+highest optimal state-action value:
+\begin{equation}
+\label{eq:qvalue}
+Q^*(s,a) = \sum_{s'} \text{Pr}(s' \mid s, a)\left[\mathcal{R}(s,a,s') + \gamma V^*(s') \right].
+\end{equation}
+Dynamic programming planning algorithms (such as Value
+Iteration~\citep{bellman57}) estimate the optimal value function by
+initializing the value of each state arbitrarily and iteratively
+updating the value of each state by setting its value to the result of
+the right-hand-side of the Bellman equation using its current estimate
+of $V$ instead of $V^*$. Iteratively updating the value function
+estimate in this way is guaranteed to converge to the optimal value
+function.
+
+Using a pruned action set
+in dynamic programming can accelerate its computation in two ways: (1) by reducing the number of actions
+over which the max operator in the Bellman equation must iterate and (2) by restricting the state space for which the value function is estimated to the states that are reachable with the pruned action set from the initial state. Note that neither of these computational gains come at the cost of solution optimality
+as long as the pruned action set contains the actions necessary for an optimal policy from the initial state. In the case of the Bellman equation, the max operator makes the value function indifferent to the effects of actions that are not part of the optimal policy; therefore, the action set can be reduced entirely to the actions in the optimal policy without sacrificing optimality. Similarly, since we are only concerned with finding a good policy to dictate behavior from some initial state, the state space for which the value function is computed can be reduced to that which is reachable using only the optimal actions without sacrificing optimality.
+
+\subsection{Policy Rollout}
+
+In policy rollout planning paradigms, the agent starts with some
+initial policy and follows it (or rolls out the policy) from an
+initial/current state to either some maximum time horizon or until a
+terminal state is reached. Often, these approaches use samples from
+the policy rollout to improve estimates of the value function and
+indirectly improve the rollout policy. Examples of planning algorithms
+in this paradigm include Monte Carlo methods~\citep{browne12,
+  silver10, barto95} and temporal difference
+methods~\citep{sutton99}. \stnote{James, can you see if these cites
+  are good enough, or otherwise edit/add more?}  By using a pruned
+action set, the policy space, and resulting state space explored from
+the searched policies, is reduced, thereby reducing the number of
+rollouts necessary to find a good policy. Similar to dynamic
+programming paradigms, as long as the pruned action set contains
+actions necessary for the optimal policy, solution optimality will not
+be sacrificed.
+
+In this work, we will explore how real time dynamic programming
+(RTDP)~\citep{barto95} benefits from affordances. RTDP is both a
+dynamic programming algorithm and a policy rollout algorithm. RTDP
+starts by initializing the value function optimistically. It then
+follows a rollout policy that is a function of its currently estimated
+value function, such as a Boltzmann policy distribution, where the
+probability of selecting any action in any given state ($\pi(s,a)$) is
+defined by the Boltzmann distribution
+\begin{equation}
+\label{eq:boltzmann}
+\pi(s,a) = \frac{e^{Q(s,a) / \tau}}{\sum_{a' \in {\cal A}(s)} e^{Q(s,a') / \tau}},
+\end{equation}
+where ${\cal A}(s)$ is the set of actions available in state $s$, and
+$\tau$ is a temperature parameter defining how greedy the policy
+selection is.  The higher the temperature the more uniform a
+distribution; the lower the temperature, the more greedy.  After each
+action selection in the policy rollout, RTDP updates its estimate of
+the value function for the last state using the Bellman equation. RTDP
+is guaranteed to converge to the optimal policy from some initial
+state and has the advantage that it iteratively refocuses its
+attention to states that are likely to be on the path of the optimal
+policy.
+
+In affordance-aware RTDP, the action selection of the rollout policy
+is restricted to the affordance-pruned action set and the Bellman
+equation is similarly restricted to operating on the affordance-pruned
+action set.
+
+
+
+%The Affordance Value-Iteration algorithm (for full pseudocode see Algorithm \ref{alg:aff_vi}) works by
+%only enumerating a subset of the actual state space. More specifically, the state space is generated
+%outward from the agent's start state by applying actions that are deemed relevant by the current
+%set of affordances. Thus, in most cases, a much smaller state space $\hat{\mathcal{S}}$ is produced,
+%on which Value-Iteration finds an optimal policy.%
+%
+%
+
+%\begin{figure}
+%\centering
+%\includegraphics[scale=0.22]{figures/bridgeworld_aff.png}
+%\caption{The affordance planner's state-action space on \texttt{BRIDGEWORLD}.}
+%\label{fig:bridgeworld_aff}
+%\end{figure}%
+
+%Furthermore, given perfect subgoal knowledge for a
+%particular planning task, the affordance formalism will find an
+%optimal policy {\it extremely} quickly. We imagine extensions in which
+%an agent gets stuck and must ask a human partner for help using
+%natural language, and the resulting dialog could endow the agent
+%with subgoal knowledge. This also allows the agent to prune way
+%unnecessary actions in $\mathcal{A}$ in each specific planning task,
+%making it possible to solve a engage with a large number of planning
+%scenarios that may call for different actions. %
+%
+
+%% VI pseudocode + Affordances
+%\begin{algorithm}
+%  \caption{Affordance-VI($\mathcal{A}$, $\mathcal{R}$, $s_0$, $kb$, $goal$, $\epsilon$, $\gamma$) \\ {\it Complexity:} $\mathcal{O}(|\mathcal{A}|\cdot |\hat{\mathcal{S}}|^2)$}
+%  \begin{algorithmic}[1]
+%    \State $\hat{\mathcal{A}} \gets pruneActions(kb, s_0, \mathcal{A}, goal)$
+%    \State $\hat{\mathcal{S}} \gets genStates(kb, \hat{\mathcal{A}})$
+%    \While {$\delta < \epsilon \frac{(1-\gamma)}{\gamma}$}
+%    \State $U \gets U';\delta \gets 0$
+%    \For {each state $s \in \hat{\mathcal{S}}$}
+%    \State $U'[s] \gets \mathcal{R}(s) + \gamma \max_{a \in \hat{\mathcal{A}}(s)} \sum_{s'} \text{Pr}(s'\mid s,a) U[s']$
+%    \If {$|U'[s] - U[s]| > \delta$}
+%    	\State $\delta \gets |U'[s] - U[s]|$ 
+%    \EndIf
+%    \EndFor
+%    \EndWhile\\
+%    \Return U;
+%  \end{algorithmic}
+%  \label{alg:aff_vi}
+%\end{algorithm}%
+
+%In the worst case, the Affordance-Value-Iteration Algorithm is 
+%bounded by $\mathcal{O}(|\mathcal{A}|\cdot |\hat{\mathcal{S}}|^2)$, where
+%$\hat{\mathcal{S}}$ is the subset of the states that were reachable using the
+%resulting pruned action set determined by the agent's affordances. Thus,
+%if the affordances were poorly designed, then the lower bound for the size of
+%$\hat{\mathcal{S}}$, is precisely the full state space, $\mathcal{S}$. However,
+%in general, when reasonable affordances are applied the agent is guaranteed to prune its
+%action set for any number of states, and thus will explore less of the state space
+%as a result.%
+
+%The affordance formalism introduced above and expanded on in this
+%paper resolves the weaknesses of these other frameworks by limiting
+%the complexity of the seed knowledge required of the designer, while
+%still providing enough knowledge to limit the search space but also
+%maintain scalability.
+
+
+
+\subsection{Subgoals}
 \label{sec:subgoals}
+
+\stnote{Subgoal planning drops right in as a third alternative
+  framework we explore along with VI and rollout methods.  This
+  section needs to be reorganized along these lines, where we define
+  it, then say how it can benefit from affordances. }
 
 Subgoal planning leverages the intuition that certain goals in
 planning domains may only be brought about if certain preconditions
@@ -304,7 +532,7 @@ are first satisfied. For instance, in the bridge problem, one must
 first place a block in the trench to create a bridge before crossing
 the trench.  \citet{branavan12a} explore learning subgoals from the
 Minecraft wiki and applying them in order to plan through a variety of
-problems in Minecraft.  
+problems in Minecraft.
 
 % Formalism
 Formally, in subgoal planning, the agent is set of subgoals, where each subgoal is a pair of predicates:
@@ -360,6 +588,8 @@ in minecraft: posessing wheat is always required to make bread, and it
 is impossible to construct a world where this precondition is not
 true.
 
+
+
 {\bf Problem 2: Efficient Search} The last problem with subgoal
 planning is that the use of subgoals actually requires that we
 research a huge portion of the state space. Consider the
@@ -388,158 +618,6 @@ at all complex, then Subgoal planning is out of luck.
 
 
 
-\section{AFFORDANCES}
-\label{sec:affordances}
-
-%% Formalism
-We define an affordance, $\Delta$, as a tuple, $\langle
-p,g\rangle\ \longrightarrow \alpha$, where:
-\begin{itemize}
-\item[] $\alpha$ is a subset of the action space, $\mathcal{A}$
-\item[] $p$ is a predicate on states, $s \longrightarrow \{$0$, 1\}$
-  representing the {\em precondition} for the affordance.
-\item[] $g$ is a predicate on states, $s \longrightarrow \{$0$,1\}$
-  representing the {\em postcondition}.
-\end{itemize}
-
-The intuition behind an Affordance is that in many planning 
-scenarios, not all actions are needed in all states. In fact, many applications 
-of actions in states do not contribute toward solving the planning task, but 
-instead, cause the state-space to grow exponentially. This is especially true 
-in domains in which the agent's actions can drastically shape the environment, 
-such as in Minecraft. Thus, Affordances are used in order to determine which 
-actions are relevant in which states, given a specific goal. For instance, if the 
-agent is at the trench in \texttt{BRIDGEWORLD} and trying to reach the goal then it
-would not consider destroying a block, as that does not further its ability
-to reach the goal. Eliminating the ``destroy" action avoids 
-exploring every consequent state in which that block has been destroyed.
-
-The predicate $p$ and goal $g$ that are constituents of an Affordances are both subsets of the union
-of object states $\cup_{i = 1}^o o_i.state$ (see section 2.2).  The use of an OO-MDP gives us easy access to these
-robust predicates which completely describe the underlying MDP in a much more general manner.
-\jmnote{This text doesn't quite make sense to me. How are the OO-MDP predicates subsets of the
-objects? I think what this is trying to say is that $p$ and $g$ can be defined compactly
-using OO-MDP predicates. However, it's not necessarily true that OO-MDP predicates *completely* describe the MDP. In fact, unless you have explicit position predicates, it won't completely describe the MDP state space.
-\\ I think an example of an affordance in terms of the formal definition needs
-to be provided here as well.}
-
-
-The primary benefit of encoding goal relative knowledge in each Affordance
-is that actions may be pruned with respect to a given goal. As a result,
-agents may be endowed with huge action sets that enables them to solve a variety of
-problems across variable state-spaces, while only exploring a small action set that is
-relevant to each task. This
-hints at the transferability that we will demonstrate empirically in the next section.
-\jmnote{Pseudocode for the pruneActions function, for any arbitrary input state, should be supplied here
-since it's the primary contribution and is the code that would used to turn any planning algorithm into an affordance-aware planning algorithm. We may also want to mention the computation time of it}
-
-We refer to any planning algorithm that prunes the actions set according to affordances
-an affordance-aware planner. Action set pruning can affect different planning
-algorithms in different ways. In particular, we will focus on how action pruning is beneficial to {\em dynamic programming} and {\em policy rollout} planning paradigms, although it may also be beneficial to other planning paradigms not investigated in this work.
-
-In dynamic programming paradigms, the planning algorithm estimates the optimal {\em value function} for each state. Formally, the optimal value function ($V^*$) defines the expected discounted return from following the optimal policy in each state:
-\begin{equation}
-\label{eq:bellman}
-V^*(s) = \max_{a \in \mathcal{A}(s)} \sum_{s'} \text{Pr}(s' \mid s, a)\left[\mathcal{R}(s,a,s') + \gamma V^*(s') \right];
-\end{equation}
-this equation is known as the Bellman equation [zzz cite]. Given the optimal value function, the optimal policy is derived by taking the action that maximizes the values of each state. More specifically,
-by taking the action with the highest optimal state-action value:
-\begin{equation}
-\label{eq:qvalue}
-Q^*(s,a) = \sum_{s'} \text{Pr}(s' \mid s, a)\left[\mathcal{R}(s,a,s') + \gamma V^*(s') \right].
-\end{equation}
-Dynamic programming planning algorithms (such as Value Iteration [zzz cite]) estimate the optimal value function by initializing the value of each state arbitrarily and iteratively updating the value
-of each state by setting its value to the result of the right-hand-side of the Bellman equation using its current estimate of $V$ instead of $V^*$. Iteratively updating
-the value function estimate in this way is guaranteed to converge to the optimal value function.
-
-Using a pruned action set
-in dynamic programming can accelerate its computation in two ways: (1) by reducing the number of actions
-over which the max operator in the Bellman equation must iterate and (2) by restricting the state space for which the value function is estimated to the states that are reachable with the pruned action set from the initial state. Note that neither of these computational gains come at the cost of solution optimality
-as long as the pruned action set contains the actions necessary for an optimal policy from the initial state. In the case of the Bellman equation, the max operator makes the value function indifferent to the effects of actions that are not part of the optimal policy; therefore, the action set can be reduced entirely to the actions in the optimal policy without sacrificing optimality. Similarly, since we are only concerned with finding a good policy to dictate behavior from some initial state, the state space for which the value function is computed can be reduced to that which is reachable using only the optimal actions without sacrificing optimality.
-
-In policy rollout planning paradigms, the agent starts with some initial policy and follows it (or rolls out the policy) from some initial/current state to either some maximum time horizon or until a terminal state is reached. Often, these approaches use samples from the policy rollout to improve estimates of the value function and indirectly improve the rollout policy. Examples of planning algorithms in this paradigm include Monte Carlo methods [zzz citations] and temporal difference methods [zzz citations]. By using a pruned action set, the policy space, and resulting state space explored from the searched policies, is reduced, thereby reducing the number of rollouts necessary to find a good policy. Similar to dynamic programming paradigms, as long as the pruned action set contains actions necessary for the optimal policy, solution optimality will not be sacrificed.
-
-In this work, we will explore how real time dynamic programming (RTDP) [zzz cite] can benefit from affordances. RTDP is both a dynamic programming algorithm and a policy rollout algorithm. RTDP starts
-by initializing the value function optimistically. It then follows a rollout policy that is a function
-of its currently estimated value function, such as a Boltzmann policy distribution, where the probability
-of selecting any action in any given state ($\pi(s,a)$) is defined by the Boltzmann distribution
-\begin{equation}
-\label{eq:boltzmann}
-\pi(s,a) = \frac{e^{Q(s,a) / \tau}}{\sum_{a' \in {\cal A}(s)} e^{Q(s,a') / \tau}},
-\end{equation}
-where ${\cal A}(s)$ is the set of actions available in state $s$, and $\tau$ is a temperature parameter
-defining how greedy the policy selection is; the higher the temperature the more uniform a distribution,
-the lower the temperature the more greedy.
-After each action selection in the policy rollout, RTDP updates its estimate of the value function for the
-last state using the Bellman equation. RTDP is guaranteed to converge to the optimal policy from some initial state and has the advantage that it iteratively refocuses its attention to states that are likely
-to be on the path of the optimal policy.
-
-In affordance-aware RTDP, the action selection of the rollout policy is restricted to the affordance-pruned action set and the Bellman equation is similarly restricted to operating on the affordance-pruned action set.
-
-\jmnote{May want to consider moving some of the content in here back to background so that the section stays focused on affordances}
-
-
-%The Affordance Value-Iteration algorithm (for full pseudocode see Algorithm \ref{alg:aff_vi}) works by
-%only enumerating a subset of the actual state space. More specifically, the state space is generated
-%outward from the agent's start state by applying actions that are deemed relevant by the current
-%set of affordances. Thus, in most cases, a much smaller state space $\hat{\mathcal{S}}$ is produced,
-%on which Value-Iteration finds an optimal policy.%
-%
-%
-
-%\begin{figure}
-%\centering
-%\includegraphics[scale=0.22]{figures/bridgeworld_aff.png}
-%\caption{The Affordance planner's state-action space on \texttt{BRIDGEWORLD}.}
-%\label{fig:bridgeworld_aff}
-%\end{figure}%
-
-%Furthermore, given perfect subgoal knowledge for a
-%particular planning task, the affordance formalism will find an
-%optimal policy {\it extremely} quickly. We imagine extensions in which
-%an agent gets stuck and must ask a human partner for help using
-%natural language, and the resulting dialog could endow the agent
-%with subgoal knowledge. This also allows the agent to prune way
-%unnecessary actions in $\mathcal{A}$ in each specific planning task,
-%making it possible to solve a engage with a large number of planning
-%scenarios that may call for different actions. %
-%
-
-%% VI pseudocode + Affordances
-%\begin{algorithm}
-%  \caption{Affordance-VI($\mathcal{A}$, $\mathcal{R}$, $s_0$, $kb$, $goal$, $\epsilon$, $\gamma$) \\ {\it Complexity:} $\mathcal{O}(|\mathcal{A}|\cdot |\hat{\mathcal{S}}|^2)$}
-%  \begin{algorithmic}[1]
-%    \State $\hat{\mathcal{A}} \gets pruneActions(kb, s_0, \mathcal{A}, goal)$
-%    \State $\hat{\mathcal{S}} \gets genStates(kb, \hat{\mathcal{A}})$
-%    \While {$\delta < \epsilon \frac{(1-\gamma)}{\gamma}$}
-%    \State $U \gets U';\delta \gets 0$
-%    \For {each state $s \in \hat{\mathcal{S}}$}
-%    \State $U'[s] \gets \mathcal{R}(s) + \gamma \max_{a \in \hat{\mathcal{A}}(s)} \sum_{s'} \text{Pr}(s'\mid s,a) U[s']$
-%    \If {$|U'[s] - U[s]| > \delta$}
-%    	\State $\delta \gets |U'[s] - U[s]|$ 
-%    \EndIf
-%    \EndFor
-%    \EndWhile\\
-%    \Return U;
-%  \end{algorithmic}
-%  \label{alg:aff_vi}
-%\end{algorithm}%
-
-%In the worst case, the Affordance-Value-Iteration Algorithm is 
-%bounded by $\mathcal{O}(|\mathcal{A}|\cdot |\hat{\mathcal{S}}|^2)$, where
-%$\hat{\mathcal{S}}$ is the subset of the states that were reachable using the
-%resulting pruned action set determined by the agent's affordances. Thus,
-%if the affordances were poorly designed, then the lower bound for the size of
-%$\hat{\mathcal{S}}$, is precisely the full state space, $\mathcal{S}$. However,
-%in general, when reasonable affordances are applied the agent is guaranteed to prune its
-%action set for any number of states, and thus will explore less of the state space
-%as a result.%
-
-%The affordance formalism introduced above and expanded on in this
-%paper resolves the weaknesses of these other frameworks by limiting
-%the complexity of the seed knowledge required of the designer, while
-%still providing enough knowledge to limit the search space but also
-%maintain scalability.
 
 \section{EXPERIMENTS}
 
@@ -574,8 +652,8 @@ explode exponentially and grow far too fast for (almost) any planner to
 finish in our lifetime. 
 
 
-Equation \ref{eq:mc_explode} gives the order of the state space for a 
-10x10x2 Minecraft world,
+Equation \ref{eq:mc_explode} gives the order of the state space for a
+$10\times10\times2$ Minecraft world,
 %Consider that the agent is capable of destroying and placing blocks 
 %in a 10x10x2 world; there are on the order of:%
 %\begin{align}
@@ -591,9 +669,9 @@ can solve even the most basic path planning (even on just a flat
 surface with no obstacles). We explore this ability in the results 
 seen in Table \ref{results_2}
 
-As discussed above, one of the major advantages of using Affordances 
+As discussed above, one of the major advantages of using affordances 
 to plan is that they enable an agent to have a massive action set, 
-making Affordances effectively transfer between domains. We 
+making affordances effectively transfer between domains. We 
 conducted an additional set of experiments on the 15x15 world 
 with no obstacles \texttt{15WORLD}. For this round of testing, we 
 varied the number of actions available to the agent (starting from 
@@ -601,9 +679,9 @@ $|\mathcal{A}| = 4$ up to $|\mathcal{A}| = 25$) and ran the planner
 on \texttt{15WORLD} with the same goal (to reach the goal in the corner).
 
 
-An additional advantage of planning with Affordances is that the 
+An additional advantage of planning with affordances is that the 
 problems of block-placement and block-destruction illustrated by 
-\ref{eq:mc_explode} are overcome. With Affordances, we are able 
+\ref{eq:mc_explode} are overcome. With affordances, we are able 
 to solve a variety of novel planning problems in the Minecraft 
 domain, such as building a bridge to cross a long trench, or digging 
 a hole through a wall to reach the goal (see Table \ref{results_2}). 
@@ -612,7 +690,7 @@ currently able to avoid falling prey to the state-space explosion
 mentioned above. Additionally, the malleability of Minecraft that 
 causes this explosion is a reasonable model of the way that an 
 agent in the real world is capable of modifying its surroundings. 
-Thus, we foresee the Affordance planner as being extremely deft 
+Thus, we foresee the affordance planner as being extremely deft 
 at handling real world planning scenarios.
 
 \section{RESULTS}
@@ -674,18 +752,18 @@ at handling real world planning scenarios.
 
 As one can see from Table \ref{results_2}, in those cases where
 $|\mathcal{A}| = 21$ and $|\mathcal{A}| = 25$, the only planning algorithm to
-actually complete the tasks was the Affordance planner. This is because each
+actually complete the tasks was the affordance planner. This is because each
 of these cases scaled to include block destruction and block placement actions.
 Thus, any case in which these actions are required to complete the task at hand,
-only Affordance planning will succeed. This is significant, as Table \ref{results_1}
-indicates that the Affordance planner plans more effectively than the other
+only affordance planning will succeed. This is significant, as Table \ref{results_1}
+indicates that the affordance planner plans more effectively than the other
 systems, but it can also handle novel problems involving those actions that
 alter the environment in sever ways.
 
 We also include a Bonus round indicating
-those tasks that only the Affordance planner was able to solve. Finally, since
-each Affordance is attached to a particular goal, a single knowledge base will
-scale across state-spaces and task types, causing Affordance planning to be
+those tasks that only the affordance planner was able to solve. Finally, since
+each affordance is attached to a particular goal, a single knowledge base will
+scale across state-spaces and task types, causing affordance planning to be
 extremely transferable. Additionally, we plan to add experiments in
 Non-deterministic planning scenarios, as well as testing on the planning scenarios
 from table \ref{results_1} where the knowledge bases remain constant across
