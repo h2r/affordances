@@ -400,10 +400,26 @@ of $V$ instead of $V^*$. Iteratively updating the value function
 estimate in this way is guaranteed to converge to the optimal value
 function.
 
-Using a pruned action set
-in dynamic programming can accelerate its computation in two ways: (1) by reducing the number of actions
-over which the max operator in the Bellman equation must iterate and (2) by restricting the state space for which the value function is estimated to the states that are reachable with the pruned action set from the initial state. Note that neither of these computational gains come at the cost of solution optimality
-as long as the pruned action set contains the actions necessary for an optimal policy from the initial state. In the case of the Bellman equation, the max operator makes the value function indifferent to the effects of actions that are not part of the optimal policy; therefore, the action set can be reduced entirely to the actions in the optimal policy without sacrificing optimality. Similarly, since we are only concerned with finding a good policy to dictate behavior from some initial state, the state space for which the value function is computed can be reduced to that which is reachable using only the optimal actions without sacrificing optimality.
+Using a pruned action set in dynamic programming can accelerate its
+computation in two ways: (1) by reducing the number of actions over
+which the max operator in the Bellman equation must iterate and (2) by
+restricting the state space for which the value function is estimated
+to the states that are reachable with the pruned action set from the
+initial state. Note that neither of these computational gains come at
+the cost of solution optimality as long as the pruned action set
+contains the actions necessary for an optimal policy from the initial
+state. In the case of the Bellman equation, the max operator makes the
+value function indifferent to the effects of actions that are not part
+of the optimal policy; therefore, the action set can be reduced
+entirely to the actions in the optimal policy without sacrificing
+optimality. Similarly, since we are only concerned with finding a good
+policy to dictate behavior from some initial state, the state space
+for which the value function is computed can be reduced to that which
+is reachable using only the optimal actions without sacrificing
+optimality.  \stnote{So the stuff about not sacrificing the optimal
+  policy seems right, but I wonder if we can say something more formal
+  about what has to be true about affordances in order for affordance
+  planning to still be optimal.}
 
 \subsection{Policy Rollout}
 
@@ -621,9 +637,12 @@ at all complex, then Subgoal planning is out of luck.
 
 \section{EXPERIMENTS}
 
-\jmnote{Reminder that this should be updated to be with respect to RTDP as a baseline
-and ideally should include a performance metric specifying the number of
-state backups that were used.}
+\jmnote{Reminder that this should be updated to be with respect to
+  RTDP as a baseline and ideally should include a performance metric
+  specifying the number of state backups that were used.}
+
+\stnote{Experiments and results should be merged.  Also I think we
+  need to think through how to structure the results. }
 
 %\stnote{To write the experiments section, it's good to say what we are
 %  interested in learning first.  What are we testing?  What is our
@@ -800,15 +819,18 @@ A critical difference between heuristics and affordances is that heuristics are 
 
 \subsection{Temporally Extended Actions}
 
-{\em Temporally extended actions} are actions that the agent can select like any other action
-of the domain, except executing them results in multiple primitive actions being executed
-in succession. Two common forms of temporally extended actions are {\em macro-actions} and {\em options}
-[zzz cite]. Macro-actions are actions that always execute the same sequence of primitive actions. Options 
-are defined with high-level policies that 
-accomplish specific sub tasks. For instance, when an agent is near 
-a door, the agent can engage the `door-opening-option-policy', which 
-switches from the standard high-level planner to running a policy 
-that is hand crafted to open doors. An option $o$ is defined as follows:
+{\em Temporally extended actions} are actions that the agent can
+select like any other action of the domain, except executing them
+results in multiple primitive actions being executed in
+succession. Two common forms of temporally extended actions are {\em
+  macro-actions}~\citep{hauskrecht98} and {\em
+  options}~\citep{sutton99}. Macro-actions are actions that always
+execute the same sequence of primitive actions. Options are defined
+with high-level policies that accomplish specific sub tasks. For
+instance, when an agent is near a door, the agent can engage the
+`door-opening-option-policy', which switches from the standard
+high-level planner to running a policy that is hand crafted to open
+doors. An option $o$ is defined as follows:
 
 $o\ =\ \langle \pi_0, I_0, \beta_0\rangle$, where:
 
