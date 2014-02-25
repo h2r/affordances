@@ -430,9 +430,10 @@ terminal state is reached. Often, these approaches use samples from
 the policy rollout to improve estimates of the value function and
 indirectly improve the rollout policy. Examples of planning algorithms
 in this paradigm include Monte Carlo methods~\citep{browne12,
-  silver10, barto95} and temporal difference
-methods~\citep{sutton99}. \stnote{James, can you see if these cites
-  are good enough, or otherwise edit/add more?}  By using a pruned
+  silver10} and temporal difference
+methods~\citep{sutton99,sutton1988lpm,rummery1994line,6313077,lagoudakis2003least,Peters:2008ve}. %\stnote{James, can you see if these cites
+ % are good enough, or otherwise edit/add more?}
+ \jmnote{Removed RTDP since it's not monte carlo even though it's very similar. The monte carlo survey covers a lot, so I only added to TD methods}  By using a pruned
 action set, the policy space, and resulting state space explored from
 the searched policies, is reduced, thereby reducing the number of
 rollouts necessary to find a good policy. Similar to dynamic
@@ -444,18 +445,10 @@ In this work, we will explore how real time dynamic programming
 (RTDP)~\citep{barto95} benefits from affordances. RTDP is both a
 dynamic programming algorithm and a policy rollout algorithm. RTDP
 starts by initializing the value function optimistically. It then
-follows a rollout policy that is a function of its currently estimated
-value function, such as a Boltzmann policy distribution, where the
-probability of selecting any action in any given state ($\pi(s,a)$) is
-defined by the Boltzmann distribution
-\begin{equation}
-\label{eq:boltzmann}
-\pi(s,a) = \frac{e^{Q(s,a) / \tau}}{\sum_{a' \in {\cal A}(s)} e^{Q(s,a') / \tau}},
-\end{equation}
-where ${\cal A}(s)$ is the set of actions available in state $s$, and
-$\tau$ is a temperature parameter defining how greedy the policy
-selection is.  The higher the temperature the more uniform a
-distribution; the lower the temperature, the more greedy.  After each
+follows a greedy rollout policy with respect to its currently estimated
+value function. \jmnote{I remembered that the boltzmann policy is only used
+when learning the transition dynamics; in planning, RTDP just uses the greedy
+policy. Text is corrected.} After each
 action selection in the policy rollout, RTDP updates its estimate of
 the value function for the last state using the Bellman equation. RTDP
 is guaranteed to converge to the optimal policy from some initial
@@ -810,9 +803,9 @@ Specifically, we discuss heuristics, temporally extended actions, and related ac
 \subsection{Heuristics}
 Heuristics in MDPs are used to convey information about the value of a given state or state-action pair with respect to the task being solved and typically take the form of either {\em value function initialization},
 or {\em reward shaping}. For planning algorithms that estimate state-value functions, heuristics are often
-provided by initializing the value function to values that are good approximations of the true value function. For example, RTDP has been shown to work much more effectively when its value function is initialized to a close approximation of the optimal value function, because it more greatly biases the states explored by the rollout policy and more quickly approaches the true value function [zzz cite]. Planning algorithms that estimate Q-values instead of the state value function may similarly initialize the Q-values to an approximation of the optimal Q-values. For instance, PROST creates a {\em determinized} version of a stochastic domain (that is, treating each action as if its most likely outcome always occurred), plans a solutions in the determinized domain, and then initializes Q-values to the value of each action in the determinized domain.
+provided by initializing the value function to values that are good approximations of the true value function. For example, initializing the value function to an admissible close approximation of the optimal value function has been shown to be effective for LAO* and RTDP, because it more greatly biases the states explored by the rollout policy to those important to the optimal policy~\cite{Hansen:1999qf}. Planning algorithms that estimate Q-values instead of the state value function may similarly initialize the Q-values to an approximation of the optimal Q-values. For instance, PROST~\cite{keller2012prost} creates a {\em determinized} version of a stochastic domain (that is, treating each action as if its most likely outcome always occurred), plans a solutions in the determinized domain, and then initializes Q-values to the value of each action in the determinized domain.
 
-Reward shaping is an alternative approach to providing heuristics in which the planning algorithm uses a modified version of the reward functions that returns larger reward values for state-action pairs that are expected to be useful. Reward shaping differs from value function initialization in that it may not preserve convergence to an optimal policy unless certain properties of the shaped reward are satisfied [zzz cite] that also have the effect of making reward shaping equivalent to value function initialization for a large class of planning/learning algorithms [zzz cite].
+Reward shaping is an alternative approach to providing heuristics in which the planning algorithm uses a modified version of the reward function that returns larger rewards for state-action pairs that are expected to be useful. Reward shaping differs from value function initialization in that it may not preserve convergence to an optimal policy unless certain properties of the shaped reward are satisfied~\cite{potshap} that also have the effect of making reward shaping equivalent to value function initialization for a large class of planning/learning algorithms~\cite{Wiewiora:2003fk}.
 
 A critical difference between heuristics and affordances is that heuristics are highly dependent on the task being solved; therefore, different tasks require different heuristics to be provided, whereas affordances are task independent and transferable between tasks. However, if a heuristic can be provided, the combination of heuristics and affordances may even more greatly accelerate planning algorithms than either approach alone.
 
@@ -823,7 +816,10 @@ A critical difference between heuristics and affordances is that heuristics are 
 select like any other action of the domain, except executing them
 results in multiple primitive actions being executed in
 succession. Two common forms of temporally extended actions are {\em
-  macro-actions}~\citep{hauskrecht98} and {\em
+  macro-actions}%~\citep{hauskrecht98}
+   \jmnote{looking at the citaiton you added for macros Stefanie, I think those are still ``options''
+  rather than fixed primitive action sequences. Unfortunatley the term is overloaded a lot.}
+  and {\em
   options}~\citep{sutton99}. Macro-actions are actions that always
 execute the same sequence of primitive actions. Options are defined
 with high-level policies that accomplish specific sub tasks. For
@@ -846,16 +842,16 @@ $\beta_0$ represent the post condition, which determines which
 states terminate the execution of the option policy.
 
 Although the classic options framework is not generalizable to different state spaces,
-creating {\em portable} options is a topic of active research~\citep{konidaris07}[zzz additional citations].
+creating {\em portable} options is a topic of active research~\citep{konidaris07,konidaris2009efficient,Ravindran03analgebraic,croonenborghs2008learning,andre2002state,konidaris2012transfer}.
 
 Although temporally extended actions are typically used
 because they represent action sequences (or sub policies) that are often useful to solving
 the current task, they can sometimes have the paradoxical effect
 of increasing the planning time because they increase the number of actions that must be explored.
 For example, deterministic planning algorithms that successfully make use of macro-actions often avoid the potential increase
-in planning time by developing algorithms that restrict the set of macro-actions to a small set that is expected to improve planning time [zzz citations] or by limiting the use of macro-actions to certain conditions
-in the planning algorithms like when the planner reaches heuristic plateaus (areas of the state space in which all child states have the same heuristic value) [zzz cite]. Similarly, it has been shown that the inclusion
-of even a small subset of unhelpful options can negatively impact planning/learning time [zzz cite].
+in planning time by developing algorithms that restrict the set of macro-actions to a small set that is expected to improve planning time~\cite{Botea:2005kx,Newton:2005vn} or by limiting the use of macro-actions to certain conditions
+in the planning algorithms like when the planner reaches heuristic plateaus (areas of the state space in which all child states have the same heuristic value)~\cite{Coles:2007ys}. Similarly, it has been shown that the inclusion
+of even a small subset of unhelpful options can negatively impact planning/learning time~\cite{Jong:2008zr}.
 
 Given the potential for unhelpful temporally extended actions to negatively impact planning time, we believe combing affordances with temporally extended actions
 may be especially valuable, because it will restrict the set of temporally extended actions to those
@@ -875,7 +871,7 @@ these approaches.
 \jmnote{We should also probably do a search for other MDP action pruning approaches, just to
 make sure we're not missing anything especially important.}
 
-Perhaps the most similar work to ours is Sherstov and Stone's action transfer work [zzz cite].
+Perhaps the most similar work to ours is Sherstov and Stone's action transfer work~\cite{sherstov2005improving}.
 In their work, they considered MDPs with a very large action set and for which the action
 set of the optimal policy of a source task could be transferred to a new, but similar, target
 task to reduce the learning time required to find the optimal policy in the target task. Since the actions
