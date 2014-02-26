@@ -12,7 +12,7 @@
 \usepackage[usenames,dvipsnames]{color}
 \newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{ST: #1}}}
 \newcommand{\jmnote}[1]{\textcolor{Green}{\textbf{JM: #1}}}
-\newcommand{\dgnote}[1]{\textcolor{Purple}{\textbf{DG: #1}}}
+\newcommand{\dgnote}[1]{\textcolor{Orange}{\textbf{DG: #1}}}
 
 
 \title{Planning with Affordances}
@@ -29,20 +29,20 @@
 Planning algorithms for non-deterministic domains are often
 intractable in large state and action spaces due to the well-known
 ``curse of dimensionality.''  Approaches to address this problem by
-providing the system with formally encoded knowledge such as
-macro-actions and options still fail to prevent the system from
-considering many actions which would be obviously irrelevant to a
-human solving the same problem.  To solve this issue, we introduce a
-novel approach which represents knowledge about the domain in terms of
-{\em affordances}~\citep{gibson77}.  Our affordance formalism and
-may be coupled with a variety of planning frameworks in what we call 
-``affordance-aware planning", allowing an agent to efficiently prune 
-its action space based on domain knowledge.  This pruning significantly 
-reduces the number of state/action pairs the agent needs to evaluate in order to act optimally.
-We demonstrate our approach in the Minecraft domain on several planning and building tasks
-by solving these tasks with affordance-aware versions of a variety of planning paradigms.
+providing the system with formally encoded knowledge still fail to 
+prevent the system from considering many actions which would 
+be obviously irrelevant to a human solving the same problem.  
+To solve this issue, we introduce a novel approach which represents 
+knowledge about the domain in terms of {\em affordances}~\citep{gibson77}.  
+Our affordance formalism and may be coupled with a variety of planning 
+frameworks in what we call  ``affordance-aware planning", allowing an 
+agent to efficiently prune  its action space based on domain knowledge.  
+This pruning significantly  reduces the number of state/action pairs the 
+agent needs to evaluate in order to act optimally. We demonstrate our 
+approach in the Minecraft domain on several planning and building tasks
+by solving these tasks with affordance-aware versions of planners from a variety of planning paradigms.
 We show a significant increase in speed and reduction in state-space exploration
-compared to the standard version of these planning algorithms.
+compared to the standard versions of these algorithms.
 
 % options, and macro actions
 \end{abstract}
@@ -73,7 +73,7 @@ becomes too large~\citep{grounds05}.
 
 To address this state-space explosion, prior work has explored adding
 knowledge to the planner to enable it to solve problems in these
-massive domains. However, prior approaches such as options and
+massive domains. However, previous approaches such as options and
 macro-actions work by providing additional high-level actions to the
 agent, which {\em increases} the size of the state/action space (while
 also allowing the agent to search more deeply within the space).  The
@@ -88,7 +88,7 @@ paradoxical effect of increasing the search time for a good policy.
 \subfigure[Planning with affordances.]{
 \includegraphics[width=0.5\linewidth]{figures/fig_1_aff_cropped.png}}%
   \caption{Scenes from a Minecraft agent planning using Value
-    Iteration (VI) compared to the affordance planner in a bridge
+    Iteration (VI) compared to affordance-aware VI in a bridge
     building task.  VI considers states which would be obviously
     irrelevant to a human solving the same problem, such as stacking
     blocks in the corner.  Our affordance agent, in contrast, focuses
@@ -96,8 +96,8 @@ paradoxical effect of increasing the search time for a good policy.
     reaching the goal.\label{fig:minecraft}}
 \end{figure}
 
-We propose to address this planning problem by focusing on
-problem-specific aspects of the environment which focus the search
+We propose addressing this issue by focusing on
+problem-specific aspects of the environment which guide the search
 toward the most relevant and useful parts of the state-action space.
 This approach aims to {\em reduce} the size of the explored state
 action space, leading to dramatic speedups in planning.  Our approach
@@ -145,18 +145,19 @@ scenes from a Minecraft world appear in Figure~ref{fig:minecraft}.
 
 % Stochasticity paragraph
 Minecraft serves as an effective parallel for the actual world, both in terms of
-approximating the complexity and scope of planning problems in the real world,
-as well as modeling the uncertainty presented to an agent that must overcome noise (as with a robot).
+approximating the complexity and scope of planning problems,
+as well as modeling the uncertainty and noise presented to an real world agent (e.g. a robot).
 For instance, robotic agents are prone to uncertainty all throughout their system, including noise in their sensors
 (cameras, Lidar, microphones, etc.), odometry, control, and actuation.
 In order to accurately capture some of the inherent difficulties of planning under
-uncertainty, the Minecraft agent (and the API by which it is controlled) as well as
-the planning tasks we experiment on all capture the aforementioned noise that affect robotics agents.
+uncertainty, the Minecraft agent (and the API through which it is controlled) as well as
+the planning tasks we experiment on all capture the stochasticity that affect robotics agents.
 We have chosen to give the Minecraft agent non-noisy sensory 
-data about the Minecraft world, as that is outside the scope of this project.
+data about the Minecraft world, as that is outside the scope of this project. \dgnote{Not sure how to phrase this bit,
+but we want to state that sensory noise is not a problem we are catering to}
 
 One of the most significant difficulties of dealing with an agent planning in a noisy world (such as a robot) is that many of its actions
-can have unintended consequences and lead to disastrous results. We
+can have unintended consequences, often leading to disastrous results. We
 model these potentially dangerous situations by requiring that the actions in the
 Minecraft domain be non-deterministic. Furthermore, we add pits of lava to many (but not all)
 of our experiments, which force the agent to plan conservatively in order to avoid
@@ -186,18 +187,19 @@ challenging for planning algorithms to solve because the reachable
 state space in Minecraft is so large. For example, the number of
 places an agent can place and destroy blocks alone can result in a
 combinatorial explosion of the state space. Given an
-agent capable placing and destroying blocks in a world with dimensions
+agent capable of placing and destroying blocks in a world with dimensions
 $w \times l \times h$ , there are:
 \begin{align}
 O\left(\sum_{n=1}^{w \cdot l \cdot h} \binom{w \cdot l \cdot h}{n}\right)
 \label{eq:mc_explode}
 \end{align}
-states, which is too large for a planning algorithm to explore in a
+states, which is too large for a standard planner to explore in a
 reasonable time.
 
 An affordance-aware planner, however, (when equipped with the proper
-affordances) will only attempt to place a block when it is useful (in terms of
-achieving the agent's current goal). Thus, when the agent is in states that
+affordances) will only attempt to place a or destroy a block when it is useful.
+The usefulness of a given action is congruent to how effective that action is
+at moving the agent closer to the goal (akin to a heuristic). Thus, when the agent is in states that
 are not considered useful (i.e. the predicate $p$ is false), the agent will
 not have access to the block placement action. This prevents the agent
 from trying countless applications of actions that would ultimately
@@ -334,8 +336,8 @@ states. In fact, many applications of actions in states do not
 contribute toward solving the planning task, but instead, cause the
 state-space to grow exponentially, especially true in domains in which
 the agent's actions can drastically shape the environment, such as in
-Minecraft.  To address this problem, we define an affordance,
-$\Delta$, as a tuple, $\langle p,g\rangle\ \longmapsto \alpha$,
+Minecraft. We capture this intuition via an affordance $\Delta$, defined 
+as a tuple, $\langle p,g\rangle\ \longmapsto \alpha$,
 where:
 \begin{itemize}
 \item[] $\alpha$ is a subset of the action space, $\mathcal{A}$
@@ -361,7 +363,7 @@ an affordance $p$ and $g$ are as prescribed by an OO-MDP.
   state space.  \\ I think an example of an affordance in terms of the
   formal definition needs to be provided here as well.}  \stnote{Agree
   with JM's comment.  We need to say how affordances connect to an
-  OO-MDP, but above isn't quite right. } \dgnote{Does this work? Do we need to be more specific?}
+  OO-MDP, but above isn't quite right. } \dgnote{Does this version work? Do we need to be more specific?}
 
 
 \begin{algorithm}
@@ -392,15 +394,15 @@ been destroyed.  As a result, agents may be endowed with huge action
 sets that enables them to solve a variety of problems across variable
 state-spaces, while only exploring a small action set that is relevant
 to each task. Currently, we provide each agent with sets of affordances
-that enable the agent to prune away its unnecessary actions optimally. However,
-we envision that these affordances may be learned as well.
+that enable the agent to prune away its unnecessary actions optimally.
+We envision that these affordances may be learned as well.
 
 
 We propose the notion of an {\it affordance-aware} planner, which refers to
 a planning algorithm that prunes the actions set according to affordances.
 Action set pruning affects different planning algorithms in
 different ways. In particular, we focus on how action pruning benefits
-{\em dynamic programming} and {\em policy rollout} planning paradigms.
+{\em dynamic programming}, {\em policy rollout}, and {\em subgoal} planning paradigms.
 
 
 \subsection{Dynamic Programming}
@@ -558,7 +560,7 @@ action set.
 
 
 
-\subsection{Subgoals}
+\subsection{Subgoal Planning}
 \label{sec:subgoals}
 
 Subgoal planning leverages the intuition that certain goals in
@@ -612,17 +614,17 @@ true.
 \end{figure}
 
 Subgoal planners benefit in many ways by being made affordance-aware.
-One of the main problems of subgoal planning is that the low-level planners still
-suffer from all of the standard issues of planning we have discussed above; 
-particularly in the Minecraft domain, planners cannot scale to accommodate that
-state space sizes that are possible in Minecraft (and thus, the real world). Thus, we may make Subgoal planners
-affordance-aware by equipping the subsequent low-level planners with affordances in
-order to plan efficiently from subgoal to subgoal. Furthermore, Subgoal planners
+One of the main problems of subgoal planning is that subgoal planners
 re-explore large portions of the state space, as illustrated by Fig. \ref{fig:bwsg}. The
 affordance-aware version of subgoal planners will tend to avoid this problem by focusing
 on actions that are likely to direct the agent to the goal. Since subgoals are handcrafted to be
 preconditions for arriving at the goal, a large portion of the state space should will be pruned away
-(namely, the portion that is only accessible through actions that do not take you toward the goal).
+(namely, the portion that is only accessible through actions that do not take you toward the goal). 
+Furthermore, the low-level planners still suffer from all of the standard issues of planning we have discussed above; 
+particularly in the Minecraft domain, planners cannot scale to accommodate that
+state space sizes that are possible in Minecraft (and thus, the real world). Thus, we may make Subgoal planners
+affordance-aware by equipping the subsequent low-level planners with affordances in
+order to plan efficiently from subgoal to subgoal.
 
 
 %{\bf Problem 2: Efficient Search} The last problem with subgoal
@@ -657,15 +659,15 @@ preconditions for arriving at the goal, a large portion of the state space shoul
 %  section, with subsections for each experiment + results}
 
 We conducted a series of experiments in the Minecraft domain that
-tested standard algorithms from each planning paradigm:
+tested standard planners from each planning paradigm:
 Value Iteration, RTDP, and Subgoal planning (with RTDP as the low-level
 planner). These planners were compared with {\it affordance-aware}
-versions of each algorithm, tasked with the same set of problems. Our experiments consisted
+versions of each algorithm tasked with the same set of problems. Our experiments consisted
 of a variety of tasks, ranging from basic path planning, to baking bread, to opening doors 
 and jumping over trenches.  We also tested each planner on worlds 
 of varying size and difficulty to demonstrate the scalability and flexibility of each the affordance
-formalism. The evaluation metric for each trial is based on the number of state backups that were 
-executed in each iteration of each specific planning algorithm.
+formalism. The evaluation metric for each trial is the number of state backups that were 
+executed in each iteration of each planning algorithm.
 
 \subsection{RESULTS}
 
@@ -728,12 +730,12 @@ executed in each iteration of each specific planning algorithm.
 \begin{tabular}{ l || c | c | c | c }
   & VI & RTDP & AFF-VI & AFF-RTDP \\
   \hline
-  \texttt{4BRIDGE} 		&	51867 		&	2299 		& 25990  	& 2314  \\
-  \texttt{6BRIDGE} 		&	234090 	 	& 	5971 		& 93840  	& 3732  \\
-  \texttt{8BRIDGE} 		&	? 	 		& 	? 			& ?	 	& ?  \\
-  \texttt{10BRIDGE} 		&	? 	 		& 	? 			& ?	 	& ?  \\
-  \texttt{BRIDGEDOOR} 	&	? 	 		& 	? 			& ?	 	& ?  \\
-  \texttt{LAVABRIDGE}  	&	? 	 		& 	? 			& ?	 	& ?  \\
+  \texttt{4BRIDGE} 		&	51867 		&	2299 		& 25990  		& 2314  \\
+  \texttt{6BRIDGE} 		&	234090 	 	& 	5971 		& 93840  		& 3732  \\
+  \texttt{8BRIDGE} 		&	679320 	 	& 	20682 		& 596453		& 226320  \\
+  \texttt{10BRIDGE} 		&	? 	 		& 	? 			& ?	 		& ?  \\
+  \texttt{BRIDGEDOOR} 	&	? 	 		& 	? 			& ?	 		& ?  \\
+  \texttt{LAVABRIDGE}  	&	? 	 		& 	? 			& ?	 		& ?  \\
 \end{tabular} 
 \label{results_main}
 \caption{Tests on a variety of tasks without block placement and destruction actions}
