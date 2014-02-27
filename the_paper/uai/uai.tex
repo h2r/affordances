@@ -727,32 +727,34 @@ executed in each iteration of each planning algorithm.
 % Should explain DNF
 
 \begin{table}
-\begin{tabular}{ l || c | c | c | c }
-  & VI & RTDP & AFF-VI & AFF-RTDP \\
+\centering
+\begin{tabular}{ l || c | c | c | c | c | c }
+  & VI & RTDP & SG & A-VI & A-RTDP & A-SG \\
   \hline
-  \texttt{4BRIDGE} 		&	51867 		&	2299 		& 25990  		& 2314  \\
-  \texttt{6BRIDGE} 		&	234090 	 	& 	5971 		& 93840  		& 3732  \\
-  \texttt{8BRIDGE} 		&	679320 	 	& 	20682 		& 596453		& 226320  \\
-  \texttt{10BRIDGE} 		&	? 	 		& 	? 			& ?	 		& ?  \\
-  \texttt{BRIDGEDOOR} 	&	? 	 		& 	? 			& ?	 		& ?  \\
-  \texttt{LAVABRIDGE}  	&	? 	 		& 	? 			& ?	 		& ?  \\
+  \texttt{4B} 		&	51867 		& 2285 	&	46137 		& 25990  		& 2075 	& 46025  \\
+  \texttt{6B} 		&	234090 	 	& 5994 	& 	202461 		& 93840  		& 4105 	& 154725  \\
+  \texttt{8B} 		&	679320 	 	& 20682 	&	596453 		& 226320		& 5540 	& 364821  \\
+  \texttt{10B} 		&	1565190 	 	& 54115 	&	?	 		& ?	 		& ?  		& ?\\
+  \texttt{BDOOR} 	&	? 	 		& ? 		&	? 			& ?	 		& ?  		& ?\\
+  \texttt{BLAVA}  	&	? 	 		& ? 		&	? 			& ?	 		& ?  		& ?\\
 \end{tabular} 
 \label{results_main}
-\caption{Tests on a variety of tasks without block placement and destruction actions}
+\caption{Tests on a variety of tasks without block placement and destruction actions \dgnote{Need to fit this on the page for final}}
 \end{table}
 
 \begin{table}
-\begin{tabular}{ l || c | c | c | c}
-  & VI & RTDP & AFF-VI & AFF-RTDP \\
+\centering
+\begin{tabular}{ l || c | c | c | c | c | c}
+  & VI & RTDP & SG & A-VI & A-RTDP & A-SG \\
   \hline
-  \texttt{10WORLD} 		&	1600		&	1467		&	1600	 & 	1473 \\
-  \texttt{15WORLD} 		&	5850		&	5880 	&	5850	 & 	5828 \\
-  \texttt{20WORLD} 		&	14400	&	15645 	&	?	 & 	? \\
-  \texttt{JUMPWORLD}  	&	?		&	? 		&	?	 & 	? \\
-  \texttt{DOORWORLD}  	&	?		&	? 		&	?	 & 	? \\
-  \texttt{MAZEWORLD}  	&	?		&	? 		&	?	 & 	? \\
-  \texttt{HARDWORLD} 	&	?		&	? 		&	?	 & 	? \\
-  \texttt{LAVAWORLD} 	&	?		&	? 		&	?	 & 	? \\
+  \texttt{10W} 		&	1600		& 1369 	&	2100		&	1600	 & 	1408 &	 2100 \\
+  \texttt{15W} 		&	5850		& 5920 	&	7770 	&	5850	 & 	5819 &	 7770 \\
+  \texttt{20W} 		&	14400	& 15645 	&	?	 	&	?	 & 	? 	&	?\\
+  \texttt{JUMPW}  	&	?		& ? 		&	? 		&	?	 & 	? 	&	?\\
+  \texttt{DOORW}  	&	?		& ? 		&	? 		&	?	 & 	? 	&	?\\
+  \texttt{MAZEW}  	&	?		& ? 		&	? 		&	?	 & 	? 	&	?\\
+  \texttt{HARDW} 	&	?		& ? 		&	? 		&	?	 & 	? 	&	?\\
+  \texttt{LAVAW} 	&	?		& ? 		&	? 		&	?	 & 	? 	&	?\\
 \end{tabular} 
 \label{results_1}
 \caption{Tests on a variety of tasks without block placement and destruction actions}
