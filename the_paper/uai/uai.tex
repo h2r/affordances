@@ -805,15 +805,13 @@ as well as for the affordance aware Subgoal Planner.
 
 The affordance aware planners did significantly better than their ordinary counterparts in the majority
 of these experiments. They proved especially effective when paired with subgoals, as can be seen by the
-results of the affordance aware subgoal planner. In the case of the bread baking world, standard value-iteration
-
+results of the affordance aware subgoal planner. As expected, in the bread baking world the Subgoal planner did extremely well. This is due to the fact that this world leads to extremely effective and simple subgoals (ie. pick up grain, use oven).
 
 
 Table 2 indicates the results of running the standard planners and their affordance aware counterparts
 on tasks that do {\it not} require the use of powerful actions like block placement and block destruction.
-In these cases, the affordance awareness did not improve any of the planners from their baseline versions.
-These are precisely the results we would expect to see, as affordances are only beneficial in those cases
-where powerful actions may be pruned. In each of these worlds, the agent only needed basic ``weak" actions,
+In these cases, the affordance awareness did not improve any of the planners from their baseline versions, which are precisely the results we would expect to see. Affordances are only beneficial in those cases
+where powerful actions, which allow the agent to combinatorially alter the state space, may be pruned. In each of these worlds, the agent only needed basic ``weak" actions,
 such as opening doors, jumping, and movement. Thus, they are not good candidate tasks for affordance
 aware planning.
 
@@ -832,17 +830,17 @@ they are specific to task types, as the lifted goal description $g$ of each affo
 with a task type (e.g. a predicate that defines the goal) in mind. Additionally, affordances (if defined optimally) 
 only prune away actions that are useless in achieving the goal, 
 but fail to prune away actions whose importance is not easily inferred. For instance,
-in \texttt{BREADWORLD}, when the agent is up against a trench, it will still explore the space in which it places
+in \texttt{BRIDGEWORLD}, when the agent is up against a trench, it will still explore the space in which it places
 blocks behind it, and to its side, despite the fact that these are not useful applications of the place action. In future
 work, we would like to change the precondition $p$ to a set of features that represent the salient portions of the agent's
-current surroundings, and output a Multinouli distribution over the agent's action set. This would allow an affordance
+current surroundings, and output a distribution over the agent's action set. This would allow an affordance
 aware planner to prioritize certain actions in each state, which would lead to pruning much larger portions of the state-space.
 
 The final factor to consider when augmenting a planner with affordances is whether or not the desired domain provides
 the agent with actions that can dramatically affect the state space. If the action set is relatively small and the actions
 don't significantly impact the shape of the state-space with each application (as is the case for block placement), then affordances are not likely to help. For instance, consider the classic Reinforcement Learning problem of balancing an inverted pendulum - in this task, the agent must choose between moving the base of an inverted pendulum $left$ and $right$, and attempt to balance the pendulum in equilibrium. For tasks such as this, equipping a planner with affordances would have no impact. However, in cases where actions can affect the state-space dramatically (i.e. result in combinatoric explosions of the state space), affordances can help many planning systems.
 
-One of the most compelling results is the scope of task that affordance-aware planners are capable of solving. With an affordance-aware Subgoal planner (i.e. using an affordance aware RTDP as the low level planner), a Minecraft agent was able to solve a task in which it must open a door to find a block of grain, pick up the grain, avoid lava, build a bridge over a trench, and finally place the grain in the oven and bake it.
+One of the most compelling results is the scope of task that affordance-aware planners are capable of solving. With an affordance-aware Subgoal planner (i.e. using an affordance aware RTDP as the low level planner), a Minecraft agent was able to solve an obstacle course in which it must open a door to find a block of grain, pick up the grain, avoid lava, build a bridge over a trench, and finally place the grain in the oven and bake it. In this course, the agent was capable of completing several different types of tasks (subgoals) with a single action space and affordance knowledge base. 
 
 % Picture?
 
