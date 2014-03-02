@@ -668,7 +668,7 @@ planner). These planners were compared with {\it affordance-aware}
 versions of each algorithm tasked with the same set of problems. Our experiments consisted
 of a variety of tasks, ranging from basic path planning, to baking bread, to opening doors 
 and jumping over trenches.  We also tested each planner on worlds 
-of varying size and difficulty to demonstrate the scalability and flexibility of each the affordance
+of varying size and difficulty to demonstrate the scalability and flexibility of the affordance
 formalism. The evaluation metric for each trial is the number of state backups that were 
 executed in each iteration of each planning algorithm.
 
@@ -729,22 +729,22 @@ Our entire set of experiments were repeated twice, the first iteration being det
 %\end{table}
 
 
-% Should explain DNF
+Here is a table
 
 \begin{table}
 \scalebox{0.75}{
 \begin{tabular}{ l || c | c | c | c | c | c }
   & VI & RTDP & SG & A-VI & A-RTDP & A-SG \\
   \hline
-  \texttt{4BRIDGE} 		&	51867 		& 2285 		&	2100 	& 25990  		& 2075 	& 319  \\
-  \texttt{6BRIDGE} 		&	234090 	 	& 5994 		& 	7770 	& 93840  		& 4105 	& 672  \\
-  \texttt{8BRIDGE} 		&	679320 	 	& 20682 		&	18400 	& 226320		& 5540 	& 1334  \\
-  \texttt{10BRIDGE} 		&	1565190 	 	& 54115 		&	?	 	& ?	 		& 52388  	& 1399	\\
-  \texttt{DOORB} 		&	312579 	 	& 11782 		&	? 		& ?	 		& ?  		& ?	\\
-  \texttt{LAVAB}  		&	177174 	 	& 3242 		&	? 		& 41860	 	& ?  		& 352\\
-  \texttt{TUNNEL}  		&	196810 	 	& 1879	 	&	? 		& 149	 	& ?  		& ?	\\
-  \texttt{BREAD}  		&	26502 	 	& 8501 		&	? 		& ?	 		& 1124  	& 232\\
-\end{tabular} 
+  \texttt{4BRIDGE} 		&	39015 		& 2368 		&		3674 	& 9660  		& 259 	& 214  \\
+  \texttt{6BRIDGE} 		&	162945 	 	& 4894 		&		4403  	& 23000  		& 916 	& 473  \\
+  \texttt{8BRIDGE} 		&	496179. 	 	& 16873 		&		? 		& 41860		& 1975 	& 944  \\
+%  \texttt{10BRIDGE} 		&	1565190^ 	 	& 54115^ 		&		?	 	& 66240	 	& 3889	  	& 1399	\\
+  \texttt{DOORB} 		&	312579 	 	& 11782 		&		11322	& 92460	 	& 3285  	& 1482	\\
+  \texttt{LAVAB}  		&	177174 	 	& 3242 		&		4490		& 41860	 	& 717  	& 359\\
+  \texttt{TUNNEL}  		&	196810 	 	& 30676		&		6443 	& 51430	 	& 581  	& 220	\\
+  \texttt{BREAD}  		&	26502 	 	& 8501 		&		8564 	& 1554	 	& 1124  	& 589
+\end{tabular}
 }
 \label{results_1}
 \caption{Tests on a variety of tasks that require block placement and destruction actions. (results incomplete as experiments are ongoing)}
@@ -756,14 +756,14 @@ Our entire set of experiments were repeated twice, the first iteration being det
 \begin{tabular}{ l || c | c | c | c | c | c}
   & VI & RTDP & SG & A-VI & A-RTDP & A-SG \\
   \hline
-  \texttt{10WORLD} 		&	1600		& 1369 	&	2100		&	1600	 	& 	1408 	&	?	\\
-  \texttt{15WORLD} 		&	5850		& 5920 	&	7770 	&	5850	 	& 	5819 	&	?  	\\
-  \texttt{20WORLD} 		&	14400	& 15645 	&	18400	&	14400	& 	16233 	&	?	\\
-  \texttt{JUMP}  			&	2940		& 2857 	&	2323 	&	2940	 	& 	2788		&	?	\\
-  \texttt{DOOR}  		&	6315		& 2952 	&	6999 	&	6315	 	& 	3143 	&	? 	\\
-  \texttt{MAZE}  			&	4266		& 2857 	&	2261 	&	4266	 	& 	3341 	&	?	\\
-  \texttt{LAVA} 			&	800		& 698	&	553 		&	800	 	& 	708 		&	?	\\
-  \texttt{HARD} 			&	16588	& 7359 	&	5741 	&	16588 	& 	8122 	&	3413\\
+  \texttt{10WORLD} 		&	1600		& 1369 	&	1166		&	1600	 	& 	1408 	&	1051	\\
+  \texttt{15WORLD} 		&	5850		& 5920 	&	4168 	&	5850	 	& 	4042 	&	6016 	\\
+  \texttt{20WORLD} 		&	14400	& 15645 	&	18400.	&	14400	& 	16233. 	&	10222	\\
+  \texttt{JUMP}  			&	2940		& 2857 	&	2323 	&	2940	 	& 	2435 	&	2146	\\
+  \texttt{DOOR}  		&	6315		& 2952 	&	3122 	&	6315	 	& 	3075 	&	2104 	\\
+  \texttt{MAZE}  			&	4266		& 2857 	&	1961 	&	4266	 	& 	2665 	&	1418	\\
+  \texttt{LAVA} 			&	800		& 698	&	570 		&	800	 	& 	638 		&	494	\\
+  \texttt{HARD} 			&	16588	& 7359 	&	3295 	&	16588 	& 	6611 	&	3413\\
 \end{tabular} 
 }
 \label{results_2}
