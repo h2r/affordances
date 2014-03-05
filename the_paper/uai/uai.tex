@@ -114,9 +114,21 @@ furnishes, either for good or ill.''
       uses dynamically based on the agent's current goal.  We call any
       planning algorithm that uses affordances to prune the action set
       an {\it affordance-aware} planning algorithm.  Affordances are
-      not specific to a particular reward function or goal, and thus,
+      not specific to a particular reward function or state space, and thus,
       provide the agent with transferable knowledge that is effective
-      in a wide variety of problems.
+      in a wide variety of problems. Because affordances
+      define the {\em kind} of goals for which actions are useful,
+      affordances also enable high-level reasoning that can
+      be combined with approaches like subgoal planning for even
+      greater performance gains.
+      \jmnote{I added a sentence here on the utility of 
+      affordances having a goal condition, because I think one
+      of the cool contributions is how affordances
+      can be integrate and strongly benefit subgoal planning,
+      which other action pruning/prior work cannot do. We might
+      want to think about making this a stronger point than I have
+      though.}
+
 
 %~\citep{kaelbling99} -- (JM: I don't think you should cite this. This paper involves
 %partially observable markov decision processes, which this work does not evaluate.)
@@ -136,6 +148,7 @@ furnishes, either for good or ill.''
 %problems.
 
 
+\section{Minecraft Domain}
 We use Minecraft as our planning and evaluation domain. Minecraft is a
 3-D blocks world game in which the user can place and destroy blocks
 of different types.  Minecraft players have constructed complex
@@ -147,25 +160,34 @@ scenes from a Minecraft world appear in Figure~\ref{fig:minecraft}.
 Minecraft serves as an effective parallel for the actual world, both
 in terms of approximating the complexity and scope of planning
 problems, as well as modeling the uncertainty and noise presented to
-an real world agent (e.g. a robot).  For instance, robotic agents are
+a real world agent (e.g. a robot).  For instance, robotic agents are
 prone to uncertainty all throughout their system, including noise in
 their sensors (cameras, LIDAR, microphones, etc.), odometry, control,
 and actuation.  In order to accurately capture some of the inherent
-difficulties of planning under uncertainty, the Minecraft agent (and
-the API through which it is controlled) as well as the planning tasks
-we experiment on all capture the stochasticity that affect robotics
-agents.  We have chosen to give the Minecraft agent non-noisy sensory
+difficulties of planning under uncertainty, the Minecraft agent's actions
+%(and
+%the API through which it is controlled) 
+were modified to have stochastic outcomes. These stocahstic outcomes
+may require important changes in the optimal policy in contrast
+to deterministic actions, such as keeping
+the agent's distance from a pit of lava, which is incuded in a number
+of our planning problems.
+%as well as the planning tasks
+%we experiment on all capture the stochasticity that affect robotics
+%agents. 
+ 
+ Although we made the actions of the Minecraft domain stochastic, we have chosen to give the Minecraft agent non-noisy sensory
 data about the Minecraft world, as that is outside the scope of this
 project.
 
-One of the difficulties of dealing with an agent planning in a noisy world, such as a robot, 
-is that many of its actions can have unintended consequences, often leading to disastrous results. A robotic agent,
-for instance, may unintentionally move its arm into a wall, damaging the wall or the robot itself. We
-model these potentially dangerous situations by requiring that the actions in the
-Minecraft domain be non-deterministic, and place pits of lava in many (but not all)
-of our experiments, which force the agent to plan conservatively in order to avoid
-falling in. This is intended to model the conservative nature of planning with a stochastic and potentially
-dangerous agent acting in the real world, such as a robot.
+%One of the difficulties of planning in a noisy world 
+%is that unintended consequences can lead to disastrous results. A robotic agent,
+%for instance, may unintentionally move its arm into a wall, damaging the wall or the robot itself. We
+%model these potentially dangerous situations by requiring that the actions in the
+%Minecraft domain be non-deterministic, and place pits of lava in many (but not all)
+%of our experiments, which force the agent to plan conservatively in order to avoid
+%falling in. This is intended to model the conservative nature of planning with a stochastic and potentially
+%dangerous agent acting in the real world, such as a robot.
 
 As a running example, we will consider the problem of an agent attempting
 to cross a trench in a $4 \times 4 \times 2$ Minecraft world shown in
@@ -220,7 +242,7 @@ not contribute towards reaching the goal.
 
 We define affordances in terms of propositional functions on states. \dgnote{After hearing George's concerns about using the term affordance, I think we need to include affordance background up here. The reader needs to be aware of how we are interpreting Gibson's definition, and how that translates to our formalism in the next section. Perhaps we can split background into two subsections, OO-MDPs/planning, and Affordances.}
 Our definition builds on the Object-Oriented Markov Decision Process
-(OO-MDP)~\citep{diuk08}.  OO-MDPs~\citep{diuk08} are an extension of
+(OO-MDP)~\citep{diuk08}.  OO-MDPs are an extension of
 the classic Markov Decision Process (MDP).  A classic MDP is a
 five-tuple: $\langle \mathcal{S}, \mathcal{A}, \mathcal{T},
 \mathcal{R}, \gamma \rangle$, where $\mathcal{S}$ is a state-space;
@@ -402,13 +424,13 @@ goal descriptions, thus enabling an agent with a single, relatively minimal
 knowledge base to tackle planning problems of scale from a variety of goal types.
 We envision extensions to equipping A* with affordances with applications
 to a robotic cooking companion, as well as PO-MDP planners with affordances, with
-applications in robotic care-giver companions.
+applications in robotic care-giver companions. \jmnote{I'm not sure this last sentence on extensions belongs here; maybe future work?}
 
 We propose the notion of an {\it affordance-aware} planner, which refers to
 a planning algorithm that prunes the actions set according to affordances.
 Action set pruning affects different planning algorithms in
 different ways. In particular, we focus on how action pruning benefits
-{\em dynamic programming}, {\em policy rollout}, and {\em subgoal} planning paradigms.
+{\em dynamic programming}, {\em policy rollout}, and {\em subgoal} planning paradigms. \jmnote{algorithm 1 needs to be referenced and explained in english.}
 
 \subsection{Dynamic Programming}
 In dynamic programming paradigms, the planning algorithm estimates the
@@ -422,7 +444,7 @@ V^*(s) = \max_{a \in \mathcal{A}(s)} \sum_{s'} \text{Pr}(s' \mid s, a)\left[\mat
 this equation is known as the Bellman
 equation~\citep{bellman57}. Given the optimal value function, the
 optimal policy is derived by taking the action that maximizes the
-values of each state. By taking the action with the
+values of each state; that is, by taking the action with the
 highest optimal state-action value:
 \begin{equation}
 \label{eq:qvalue}
@@ -629,7 +651,8 @@ Furthermore, the low-level planners still suffer from all of the standard issues
 particularly in the Minecraft domain, planners cannot scale to accommodate that
 state space sizes that are possible in Minecraft (and thus, the real world). Thus, we may make Subgoal planners
 affordance-aware by equipping the subsequent low-level planners with affordances in
-order to plan efficiently from subgoal to subgoal.
+order to plan efficiently from subgoal to subgoal. What makes affordances especially useful to subgoal planning, is that as long as the subgoals are
+defined using OO-MDP predicates, each subgoal may activate a different set of affordances, thereby even more greatly focusing the search. \jmnote{This last sentence I added is correct, right?}.
 
 
 %{\bf Problem 2: Efficient Search} The last problem with subgoal
@@ -667,14 +690,15 @@ We conducted a series of experiments in the Minecraft domain that
 tested standard planners from each planning paradigm:
 Value Iteration, RTDP, and Subgoal planning (with RTDP as the low-level
 planner). These planners were compared with {\it affordance-aware}
-versions of each algorithm tasked with the same set of problems, given a good set of affordances.. Our experiments consisted
+versions of each algorithm tasked with the same set of problems. We selected
+the affordances provided from our background knowledge of the domain. \jmnote{How many affordances were defined? We might want to list them all unless it's really large.} Our experiments consisted
 of a variety of tasks, ranging from basic path planning, to baking bread, to opening doors 
 and jumping over trenches.  We also tested each planner on worlds 
 of varying size and difficulty to demonstrate the scalability and flexibility of the affordance
 formalism. The evaluation metric for each trial is the number of state backups that were 
-executed in each iteration of each planning algorithm.
+executed in each iteration of each planning algorithm. Value Iteration was terminated when the maximum change in the value function was less than 0.01. RTDP terminated when the maximum change in the value function was less than 0.01 for ten consecutive policy rollouts. In subgoal planning, the high-level subgaol plan was solved using breadth-first search; which only took a small fraction of the time compared to the total low-level planning and therefore is not reported. \jmnote{Check this. Also, probably need to specify how the reward function was defined and the discount factor used.}
 
-Our entire set of experiments were repeated twice, the first iteration being deterministic, and the second iteration being non-deterministic. 
+Our entire set of experiments were repeated twice, the first iteration using deterministic actions, and the second iteration using stochastic actions. 
 
 \subsection{RESULTS}
 
