@@ -13,7 +13,8 @@
 \usepackage[usenames,dvipsnames]{color}
 \newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{ST: #1}}}
 \newcommand{\jmnote}[1]{\textcolor{Green}{\textbf{JM: #1}}}
-\newcommand{\dgnote}[1]{\textcolor{Orange}{\textbf{DG: #1}}}
+\newcommand{\dnote}[1]{\textcolor{Orange}{\textbf{D: #1}}}
+\newcommand{\gnote}[1]{\textcolor{Red}{\textbf{G: #1}}}
 
 
 \title{Planning with Affordances}
@@ -22,7 +23,7 @@
 \author{}
 \maketitle
 
-\dgnote{New title proposal: Affordance-Aware Planning}
+\dnote{New title proposal: Affordance-Aware Planning}
 
 \begin{abstract}
 %Current methods for decision-making under uncertainty require
@@ -127,7 +128,7 @@ furnishes, either for good or ill.''
       can be integrate and strongly benefit subgoal planning,
       which other action pruning/prior work cannot do. We might
       want to think about making this a stronger point than I have
-      though.}
+      though.}\dnote{Sounds good to me!}
 
 
 %~\citep{kaelbling99} -- (JM: I don't think you should cite this. This paper involves
@@ -165,16 +166,12 @@ prone to uncertainty all throughout their system, including noise in
 their sensors (cameras, LIDAR, microphones, etc.), odometry, control,
 and actuation.  In order to accurately capture some of the inherent
 difficulties of planning under uncertainty, the Minecraft agent's actions
-%(and
-%the API through which it is controlled) 
 were modified to have stochastic outcomes. These stocahstic outcomes
 may require important changes in the optimal policy in contrast
 to deterministic actions, such as keeping
-the agent's distance from a pit of lava, which is incuded in a number
+the agent's distance from a pit of lava, which is included in a number
 of our planning problems.
-%as well as the planning tasks
-%we experiment on all capture the stochasticity that affect robotics
-%agents. 
+
  
  Although we made the actions of the Minecraft domain stochastic, we have chosen to give the Minecraft agent non-noisy sensory
 data about the Minecraft world, as that is outside the scope of this
@@ -197,7 +194,6 @@ Figure~\ref{fig:bridgeworld}. The floor (at $z = 1)$\footnote{The
 of 8 solid blocks, with horizontal empty trenches at $y = 2$ and $y =
 3$. The agent is at the starting location $(1, 1, 2)$ and needs to
 reach the goal at $(4,4,2)$
-
 
 \begin{figure}
 \centering
@@ -225,10 +221,12 @@ reasonable time.
 An affordance-aware planner, however, (when equipped with the proper
 affordances) will only attempt to place a or destroy a block when it is useful.
 The usefulness of a given action is defined by how effectively that action moves 
-the agent closer to the goal (akin to a heuristic). Thus, when the agent is in states that
-are not considered useful, the agent will not have access to the block placement action. This prevents the agent
-from trying countless applications of actions that would ultimately
-not contribute towards reaching the goal.
+the agent closer to the goal. Thus, when the agent is in state under which block
+placement is not considered useful, the agent will not have access to the block 
+placement action (and will not be able to explore the states that result in 
+applying the block placement action in its current state). This prevents the 
+agent from trying countless applications of actions that do not contribute 
+towards reaching the goal.
 
 %However, when running an uninformed planning
 %technique such as value iteration, the agent must enumerate all
@@ -240,8 +238,13 @@ not contribute towards reaching the goal.
 
 \section{BACKGROUND}
 
-We define affordances in terms of propositional functions on states. \dgnote{After hearing George's concerns about using the term affordance, I think we need to include affordance background up here. The reader needs to be aware of how we are interpreting Gibson's definition, and how that translates to our formalism in the next section. Perhaps we can split background into two subsections, OO-MDPs/planning, and Affordances.}
-Our definition builds on the Object-Oriented Markov Decision Process
+\subsection{Affordances}
+
+\dnote{After hearing George's concerns about using the term affordance, I think we need to include affordance background up here. The reader needs to be aware of how we are interpreting Gibson's definition, and how that translates to our formalism in the next section. I propose we split the background into two subsections, OO-MDPs/planning, and Affordances. After the RelatedWork.Affordances section is complete, I will fill this section in, too (though it is sort of odd to have Affordances in background and its own section}
+
+\subsection{OO-MDP}
+
+We define affordances in terms of propositional functions on states. Our definition builds on the Object-Oriented Markov Decision Process
 (OO-MDP)~\citep{diuk08}.  OO-MDPs are an extension of
 the classic Markov Decision Process (MDP).  A classic MDP is a
 five-tuple: $\langle \mathcal{S}, \mathcal{A}, \mathcal{T},
@@ -255,7 +258,6 @@ and transitioning to state $s'$; and $\gamma \in [0, 1)$ is a discount
   factor that defines how much the agent prefers immediate rewards
   over distant rewards (the agent more greatly prefers to maximize
   more immediate rewards as $\gamma$ decreases).
-
 
 A classic way to provide a factored representation of an MDP state is to represent
 each MDP state as a single feature vector. By contrast, an OO-MDP represents the state space as a collection of objects,
@@ -288,7 +290,7 @@ assignments always result in a different state.
 \begin{figure}
 \centering
 \includegraphics[scale = 0.15]{figures/all_actions.png}
-\caption{The set of all actions in the Minecraft domain. \label{fig:all_actions} \dgnote{We could consider simplifying this figure to only include the action symbol (e.g. $\square$) and get rid of the arrows to indicate that it is a `directioned' action}}
+\caption{The set of all actions in the Minecraft domain. \label{fig:all_actions} \dnote{We could consider simplifying this figure to only include the action symbol (e.g. $\square$) and get rid of the arrows to indicate that it is a `directioned' action}}
 \end{figure}
 
 While the OO-MDP state definition is a good fit for the Minecraft
@@ -360,7 +362,9 @@ states. In fact, many applications of actions in states do not
 contribute toward solving the planning task, but instead, cause the
 state-space to grow exponentially, especially true in domains in which
 the agent's actions can drastically shape the environment, such as in
-Minecraft. We capture this intuition via an affordance $\Delta$, defined 
+Minecraft. As discussed above, Gibson proposed that agents perceive
+the environment in terms of affordances - further, which affordances are
+perceived is determined by the agent's current goal. We capture this intuition via an affordance $\Delta$, defined 
 as a tuple, $\langle p,g\rangle\ \longmapsto \alpha$,
 where:
 \begin{itemize}
@@ -379,7 +383,9 @@ planners may be untethered from specific state spaces, as the predicate of
 $p$  benefit from the richness of the predicates of an OO-MDP. Further, the 
 lifted goal description, $g$, is an ungrounded predicate, describing the type of task being solved. In Minecraft,
 this can range from reaching a particular cell ($reachGoal$), to constructing
-an object of a certain type (e.g. baking bread, building a pickaxe).
+an object of a certain type (e.g. baking bread, building a pickaxe). \dnote{Could consider adding a note that
+ties each piece more closely to affordance literature (i.e. showing that $p$ is equivalent to observation of
+environment, and so on)}
 %\jmnote{This text doesn't quite make sense to me. How are the OO-MDP
 %  predicates subsets of the objects? I think what this is trying to
 %  say is that $p$ and $g$ can be defined compactly using OO-MDP
@@ -389,7 +395,7 @@ an object of a certain type (e.g. baking bread, building a pickaxe).
 %  state space.  \\ I think an example of an affordance in terms of the
 %  formal definition needs to be provided here as well.}  \stnote{Agree
 %  with JM's comment.  We need to say how affordances connect to an
-%  OO-MDP, but above isn't quite right. } \dgnote{Does this version work? Do we need to be more specific?}
+%  OO-MDP, but above isn't quite right. } \dnote{Does this version work? Do we need to be more specific?}
 
 
 \begin{algorithm}
@@ -422,7 +428,6 @@ types to handle large state spaces.
 Further, agent's may be equipped with affordances with differing lifted
 goal descriptions, thus enabling an agent with a single, relatively minimal
 knowledge base to tackle planning problems of scale from a variety of goal types.
-
 
 We propose the notion of an {\it affordance-aware} planner, which refers to
 a planning algorithm that prunes the actions set according to affordances.
@@ -478,7 +483,7 @@ optimality.
 %  policy seems right, but I wonder if we can say something more formal
 %  about what has to be true about affordances in order for affordance
 %  planning to still be optimal.}
-%\dgnote{Agreed - that would be a compelling bit to include, though I think
+%\dnote{Agreed - that would be a compelling bit to include, though I think
 %we're ironing out the details of affordances still (more to come in our next email). So
 %for now I vote we table this until a few days down the line}
 
@@ -700,7 +705,7 @@ Our entire set of experiments were repeated twice, the first iteration using det
 
 \subsection{RESULTS}
 
-\dgnote{Results table is {\bf complete} for both deterministic and non-deterministic tasks, but we added some metrics. Now, for each task, for each planner, we get the number of bellman updates, the total accumulated reward in executing the resulting plan/following the returned policy, and a flag indicating if the plan got the agent to the goal or not. We want to chat with everyone about how to best to display these results (tables, charts, etc.)}
+\dnote{Results table is {\bf complete} for both deterministic and non-deterministic tasks, but we added some metrics. Now, for each task, for each planner, we get the number of bellman updates, the total accumulated reward in executing the resulting plan/following the returned policy, and a flag indicating if the plan got the agent to the goal or not. We want to chat with everyone about how to best to display these results (tables, charts, etc.)}
 
 %\begin{table}
 %\begin{tabular}{ l || c | c | c }
@@ -739,61 +744,47 @@ Our entire set of experiments were repeated twice, the first iteration using det
 %\caption{Plan on the simplest possible task (path planning in a flat plane with no obstacles - \texttt{15WORLD}) with incrementally larger action sets.}
 %\end{table}
 %
-%\vspace{4 mm}
-%
-%\begin{table}
-%\begin{tabular}{ l || c | c | c }
-%  & Affordances & Subgoals & VI \\
-%  \hline
-%  \texttt{BRIDGEWORLD} 		& 	? 	& 	DNF 		& DNF  \\
-%  \texttt{TUNNELWORLD} 		& 	? 	& 	DNF 		& DNF  \\
-%  \texttt{LADDERWORLD} 	& 	? 	& 	DNF 		& DNF  \\
-%  \texttt{TOWERWORLD} 		& 	? 	& 	DNF 		& DNF  \\
-%\end{tabular}
-%\label{results_2}
-%\caption{Bonus round: Minecraft specific tasks}
-%\end{table}
+
 
 % ==== DETERMINISTIC RESULTS =====
-%\begin{table}
-%\scalebox{0.75}{
-%\begin{tabular}{ l || c | c | c | c | c | c }
-%  & VI & RTDP & SG & A-VI & A-RTDP & A-SG \\
-%  \hline
-%  \texttt{4BRIDGE} 		&	39015 		& 2368 		&		3674 	& 9660  		& 259 	& 214  \\
-%  \texttt{6BRIDGE} 		&	162945 	 	& 4894 		&		4403  	& 23000  		& 916 	& 473  \\
-%  \texttt{8BRIDGE} 		&	496179 	 	& 16873 		&		? 		& 41860		& 1975 	& 944  \\
-%%  \texttt{10BRIDGE} 		&	1565190^ 	 	& 54115^ 		&		?	 	& 66240	 	& 3889	  	& 1399	\\
-%  \texttt{DOORB} 		&	312579 	 	& 11782 		&		11322	& 92460	 	& 3285  	& 1482	\\
-%  \texttt{LAVAB}  		&	177174 	 	& 3242 		&		4490		& 41860	 	& 717  	& 359\\
-%  \texttt{TUNNEL}  		&	196810 	 	& 30676		&		6443 	& 51430	 	& 581  	& 220	\\
-%  \texttt{BREAD}  		&	26502 	 	& 8501 		&		8564 	& 1554	 	& 1124  	& 589
-%\end{tabular}
-%}
-%\label{results_1}
-%\caption{Tests on a variety of tasks that require block placement and destruction actions. (results incomplete as experiments are ongoing)}
-%\end{table}
-%
-%\begin{table}
-%\scalebox{0.75}{
-%\centering
-%\begin{tabular}{ l || c | c | c | c | c | c}
-%  & VI & RTDP & SG & A-VI & A-RTDP & A-SG \\
-%  \hline
-%  \texttt{10WORLD} 		&	1600		& 1369 	&	1166		&	1600	 	& 	1408 	&	1051	\\
-%  \texttt{15WORLD} 		&	5850		& 5920 	&	4168 	&	5850	 	& 	4042 	&	6016 	\\
-%  \texttt{20WORLD} 		&	14400	& 15645 	&	18400.	&	14400	& 	16233 	&	15345	\\
-%  \texttt{JUMP}  			&	2940		& 2857 	&	2323 	&	2940	 	& 	2435 	&	2146	\\
-%  \texttt{DOOR}  		&	6315		& 2952 	&	3122 	&	6315	 	& 	3075 	&	2104 	\\
-%  \texttt{MAZE}  			&	4266		& 2857 	&	1961 	&	4266	 	& 	2665 	&	1418	\\
-%  \texttt{LAVA} 			&	800		& 698	&	570 		&	800	 	& 	638 		&	494	\\
-%  \texttt{HARD} 			&	16588	& 7359 	&	3295 	&	16588 	& 	6611 	&	3413\\
-%\end{tabular} 
-%}
-%\label{results_2}
-%\caption{Tests on a variety of tasks without block placement and destruction actions}
-%\end{table}
+\begin{table}
+\scalebox{0.75}{
+\begin{tabular}{ l || c | c | c | c | c | c }
+  & VI & RTDP & SG & A-VI & A-RTDP & A-SG \\
+  \hline
+  \texttt{4BRIDGE} 		&	39015 		& 2368 		&		3674 	& 9660  		& 259 	& 214  \\
+  \texttt{6BRIDGE} 		&	162945 	 	& 4894 		&		4403  	& 23000  		& 916 	& 473  \\
+  \texttt{8BRIDGE} 		&	496179 	 	& 16873 		&		? 		& 41860		& 1975 	& 944  \\
+%  \texttt{10BRIDGE} 		&	1565190^ 	 	& 54115^ 		&		?	 	& 66240	 	& 3889	  	& 1399	\\
+  \texttt{DOORB} 		&	312579 	 	& 11782 		&		11322	& 92460	 	& 3285  	& 1482	\\
+  \texttt{LAVAB}  		&	177174 	 	& 3242 		&		4490		& 41860	 	& 717  	& 359\\
+  \texttt{TUNNEL}  		&	196810 	 	& 30676		&		6443 	& 51430	 	& 581  	& 220	\\
+  \texttt{BREAD}  		&	26502 	 	& 8501 		&		8564 	& 1554	 	& 1124  	& 589
+\end{tabular}
+}
+\label{results_1}
+\caption{Tests on a variety of tasks that require block placement and destruction actions. (results incomplete as experiments are ongoing)}
+\end{table}
 
+\begin{table}
+\scalebox{0.75}{
+\centering
+\begin{tabular}{ l || c | c | c | c | c | c}
+  & VI & RTDP & SG & A-VI & A-RTDP & A-SG \\
+  \hline
+  \texttt{10WORLD} 		&	1600		& 1369 	&	1166		&	1600	 	& 	1408 	&	1051	\\
+  \texttt{15WORLD} 		&	5850		& 5920 	&	4168 	&	5850	 	& 	4042 	&	6016 	\\
+  \texttt{20WORLD} 		&	14400	& 15645 	&	18400.	&	14400	& 	16233 	&	15345	\\
+  \texttt{JUMP}  			&	2940		& 2857 	&	2323 	&	2940	 	& 	2435 	&	2146	\\
+  \texttt{DOOR}  		&	6315		& 2952 	&	3122 	&	6315	 	& 	3075 	&	2104 	\\
+  \texttt{MAZE}  			&	4266		& 2857 	&	1961 	&	4266	 	& 	2665 	&	1418	\\
+  \texttt{LAVA} 			&	800		& 698	&	570 		&	800	 	& 	638 		&	494	\\
+  \texttt{HARD} 			&	16588	& 7359 	&	3295 	&	16588 	& 	6611 	&	3413\\
+\end{tabular} 
+}
+\label{results_2}
+\caption{Tests on a variety of tasks without block placement and destruction actions}
+\end{table}
 
 
 %
@@ -845,7 +836,7 @@ In these cases, the affordance awareness did not improve any of the planners fro
 where powerful actions, which allow the agent to combinatorially alter the state space, may be pruned. In each of these worlds, the agent only needed basic ``weak" actions,
 such as opening doors, jumping, and movement. Thus, they are not good candidate tasks for affordance
 aware planning.
-\dgnote{Part of me thinks that we should come up with a term for these action types (e.g. ``harsh" actions) that have this combinatoric effect on the state space size. This might help in clarifying when an affordance aware planner is helpful (currently we split our results into two action types, which might be good enough}
+\dnote{Part of me thinks that we should come up with a term for these action types (e.g. ``harsh" actions) that have this combinatoric effect on the state space size. This might help in clarifying when an affordance aware planner is helpful (currently we split our results into two action types, which might be good enough}
 
 
 This highlights the fact that affordance aware planers are not always the right way to fix planning scalability issues - while effective in many cases, they suffer from a few shortcomings. For one, they are specific to task types, as the lifted goal description $g$ of each affordance must be defined with a task type (e.g. a predicate that defines the goal) in mind. Additionally, affordances (if defined optimally) 
@@ -967,16 +958,16 @@ are useful for a given planning task in general, but not in specific subspaces o
 with lifted goal descriptions, affordances may be attached to Subgoal planning for a huge
 benefit in planning tasks where complete subgoal knowledge is known (or may be inferred).
 
-\dgnote{Add Rosman/Ramamoorthy paragraph after discussion Thursday}
+\dnote{Add Rosman/Ramamoorthy paragraph after discussion Thursday}
 
-\dgnote{I also found several other action pruning papers we may want to talk about (see comments for list)}
+\dnote{I also found several other action pruning papers we may want to talk about (see comments for list)}
 % Mausam, Weld (2008): http://www.aaai.org/Papers/JAIR/Vol31/JAIR-3102.pdf
 % Raghavan, Khardon, Fern, Tadepalli: http://papers.nips.cc/paper/5143-symbolic-opportunistic-policy-iteration-for-factored-action-mdps.pdf
 % Oliehoek, Spaan: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.387.1488&rep=rep1&type=pdf}
 
 
 \subsection{Affordances}
-\dgnote{As mentioned above I think the background info needs to be above. This will (hopefully) serve to convince our readers that our formalism is a legitimate one. This section should focus primarily on related work in robotics/planning, not explaining background. Additional note to Stefanie, James, Gabe: this is a very preliminary first pass. Treat it as a place holder for now}
+\dnote{As mentioned above I think the background info on Affordances needs to be in background. This will (hopefully) serve to convince our readers that our formalism is a legitimate one. This section should focus primarily on related work in robotics/planning, not explaining background. Additional note to Stefanie, James, Gabe: this is a very preliminary first pass. Treat it as a place holder for now}
 % Overview paragraph on the status of affordances - probably not necessary.
 Even amongst the psychological literature there is no clear consensus on what to make of an affordance (cite: The Problem with Affordance, Oliver). Oliver even goes so far as to say that the term has lost analytic merit due to decades of ambiguity. One issues is that in Gibson's original formulation, he makes several claims about the ontological and empirical status of affordances that are indeed quite cryptic (quote) and appear as tangential to the core meaning of the concept. The result is a landscape of academic work that spans from psychological and cognitive science literature, to HCI and design, to Robotics and Planning, that is largely inconsistent about what is meant by the term {\it affordance}. This means that any work whose aim is to {\it use} the concept of affordances must begin by clearly defining what exactly is meant by an affordance. We have chosen to largely ignore ontological and empirical claims about affordances, and instead, formally specify an affordance based on the minimum set of information required to constitute an affordance. By our reading, an affordance consists of a perceiving, autonomous {\it agent} in an {\it environment}, along with a {\it goal} that the agent is trying to achieve. This is pulled directly from Gibson: (quote) (cite). 
 
@@ -994,7 +985,7 @@ Peter Gorniak and Deb Roy have jointly done a lot of work with what they call th
 in using the perception of affordances as a means of determining the set of possible interactions an agent may engage with in a given context.
 Gorniak's doctoral dissertation developed this theory, and they have since done a variety of projects leveraging it. (expand).
 
-\dgnote{There are many other affordance/robotics projects I've come across that we could consider including (commented out currently, see .tex file)}
+\dnote{There are many other affordance/robotics projects I've come across that we could consider including (commented out currently, see .tex file)}
 %Others:
 %\begin{itemize}
 %\item Learning Visual Object Categories for Robot Affordance Prediction 
