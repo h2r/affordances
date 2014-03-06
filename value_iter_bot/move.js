@@ -41,6 +41,12 @@ bot.on('chat', function(username, message) {
       actionKillSwitch = true;
       blockNum = MAXBLOCKS;
       break;
+    case "er":
+      bot.chat("/tp aye_priori 120.7 74.0 968.0");
+      bot.chat("/time set 10000");
+      actionKillSwitch = true;
+      blockNum = MAXBLOCKS;
+      break;
     case "reset":
       bot.chat("/tp aye_priori 150.7 74.0 968.0");
       bot.chat("/time set 10000");
@@ -66,7 +72,8 @@ bot.on('chat', function(username, message) {
       if (message.slice(0,4) == "plan") {
         planNum = message.slice(4);
         plan = parsePlan(planNum);
-        executePlanStep(plan, 1);
+        // executePlanStep(plan, 0);
+        execPlan(plan, 0);
       }
   } 
 });
@@ -83,7 +90,7 @@ function isInGoalState() {
   botY = bot.entity.position.y;
   botZ = bot.entity.position.z;
 
-  if (Math.floor(botX) == goalX && Math.floor(botY) == goalY && Math.floor(botZ) == goalZ) {
+  if (Math.abs(botX - goalX) < 1 && Math.abs(botX - goalX) < 1 && Math.abs(botX - goalX) < 1) {
     // console.log("WOOHOO I MADE IT! :)");
     bot.chat("WOOHOO I MADE IT! :)");
     return true;
@@ -94,6 +101,7 @@ function isInGoalState() {
 
 }
 
+// Takes as input a world number and returns a list (of strings) of steps to execute
 function parsePlan(worldNum) {
   var lines = fs.readFileSync('plan_world' + worldNum + '.p', 'utf8').split(',');
   var arr = new Array();
@@ -105,58 +113,21 @@ function parsePlan(worldNum) {
   return arr;
 }
 
-function executePlanStep(plan, step) {
-  
-  if(actionKillSwitch == true) {
+function execPlan(plan, step) {
+  // set curr step control state to true
+  bot.setControlState(plan[step], true)
+
+  // Clear control states
+  setTimeout(function() {bot.clearControlStates();}, 500)
+
+  // Celebrate and peace out if in goal state
+  if (isInGoalState()) {
     return;
   }
 
-  var startX = bot.entity.position.x;
-  var startY = bot.entity.position.y;
-  var startZ = bot.entity.position.z;
-
-  if(plan[step] == "placeForward") {
-    var loc = place("forward",1,movedOne);
-
-    x = loc[0];
-    y = loc[1];
-    z = loc[2];
-    
-  }
-  else if (canMakeMove(plan[step])) {
-    // Movement obstructed or there is a hole.
-    console.log("moving: " + plan[step])
-    bot.setControlState(plan[step], true);
-    bot.on('move', movedOne, false);
-  }
-  else {
-    // Try the next move, anyways
-    console.log("Can't move :(")
-
-    movedOne(true);
-  }
-  
-  function movedOne(skipFlag) {
-    if (Math.abs(bot.entity.position.x - startX) >= 1 || Math.abs(bot.entity.position.z - startZ) >= 1 || Math.abs(bot.entity.position.z - startZ) >= 1 || skipFlag == true) {
-      // Prints a celebratory message to the screen if we're in the goal state
-      console.log("in MovedOne")
-      isInGoalState()
-
-      // If we moved, remove listeners & clear control states.
-      if (plan[step] != "placeForward") {
-        bot.setControlState(plan[step], false);
-        bot.removeListener('move', movedOne);        
-      }
-      else {
-        bot.removeListener('blockUpdate',movedOne);
-
-      }
-
-      // Calls the next step of the plan, if there is one
-      if (step <= plan.length && isBotCommand(plan[step + 1])) {
-        executePlanStep(plan, step + 1);
-      }
-    }
+  // if not at end of plan, setInterval for next step
+  if (step < plan.length) {
+    setTimeout(function() {execPlan(plan, step + 1);}, 1000)
   }
 }
 
