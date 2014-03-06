@@ -422,9 +422,7 @@ types to handle large state spaces.
 Further, agent's may be equipped with affordances with differing lifted
 goal descriptions, thus enabling an agent with a single, relatively minimal
 knowledge base to tackle planning problems of scale from a variety of goal types.
-We envision extensions to equipping A* with affordances with applications
-to a robotic cooking companion, as well as PO-MDP planners with affordances, with
-applications in robotic care-giver companions. \jmnote{I'm not sure this last sentence on extensions belongs here; maybe future work?}
+
 
 We propose the notion of an {\it affordance-aware} planner, which refers to
 a planning algorithm that prunes the actions set according to affordances.
@@ -1035,9 +1033,9 @@ Further, we foresee extensions in natural language processing and information
 extraction, in which affordances may be inferred via text or from dialogue with a human partner.
 This promises extensions in which a robotic agent receives aid from a human partner through natural language
 dialogue; the agent may ask for help when it is stuck and
-receive affordance or subgoal {\it hints} from a human companion. Lastly, we consider applications to
-POMDPs, a classical extension of the MDP in which the agent must make decisions with respect to a distribution over a {\it belief} state,
-as opposed to knowing precisely what state it is in at all times.
+receive affordance or subgoal {\it hints} from a human companion. Lastly, we consider applications to a variety of other planning
+strategies, including making A* affordance aware for use in a robotic-cooking companion, and enhancing POMDPs\footnote{a classical extension of the MDP in which the agent must make decisions with respect to a distribution over a {\it belief} state,
+as opposed to knowing precisely what state it is in at all times} with affordances, directed at applications to robotic care-giver companions.
 
 \bibliographystyle{plainnat}
 \bibliography{main}  
