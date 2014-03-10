@@ -39,7 +39,30 @@ bot.on('chat', function(username, message) {
     case "openD":
       openDoor();
       break;
+    case "give":
+      bot.chat("/give aye_priori 35 64");
+      bot.chat("/give aye_priori 278");
+      break;
+    case "gm0":
+      bot.chat("/gamemode 0");
+      break;
     case "r":
+      bot.chat("/tp aye_priori 283 87 999");
+      bot.chat("/time set 1000");
+      bot.chat("/weather clear 99999");
+      actionKillSwitch = true;
+      blockNum = MAXBLOCKS;
+      orient();
+      break;
+    case "half":
+      bot.chat("/tp aye_priori 289.5 87 997.5");
+      bot.chat("/time set 1000");
+      bot.chat("/weather clear 99999");
+      actionKillSwitch = true;
+      blockNum = MAXBLOCKS;
+      orient();
+      break;
+    case "or":
       bot.chat("/tp aye_priori 151.3 74.0 968.5");
       bot.chat("/time set 10000");
       actionKillSwitch = true;
@@ -61,7 +84,10 @@ bot.on('chat', function(username, message) {
       blockNum = MAXBLOCKS;
       break;
     case "destroy":
-      destroy();
+      destroy("forward");
+      break;
+    case "grain":
+      pickUpGrain();
       break;
     case "placeF":
       place("forward");
@@ -85,8 +111,12 @@ bot.on('chat', function(username, message) {
 });
 
 function logBotLoc() {
-  botMessage = "curLoc = ( "  + String(Math.floor(bot.entity.position.x)) + ", " + String(Math.floor(bot.entity.position.y)) + ", " + String(Math.floor(bot.entity.position.z)) + " )";
+  botMessage = "curLoc = ( "  + String(bot.entity.position.x) + ", " + String(bot.entity.position.y) + ", " + String(bot.entity.position.z) + " )";
   console.log(botMessage);
+}
+
+function orient() {
+  bot.look(0, 0);
 }
 
 function isInGoalState() {
@@ -122,6 +152,7 @@ function parsePlan(worldNum) {
 
 function execPlan(plan, step) {
   // set curr step control state to true
+  orient();
 
   if (isMoveCommand(plan[step])) {
     bot.setControlState(plan[step], true)
@@ -129,12 +160,34 @@ function execPlan(plan, step) {
     openDoor();
   } else if (plan[step] == "jumpF") {
     jump("forward");
+  } else if (plan[step] == "jumpB") {
+    jump("back");  
+  } else if (plan[step] == "jumpL") {
+    jump("left");
+  } else if (plan[step] == "jumpR") {
+    jump("right");  
   } else if (plan[step] == "placeF") {
     place("forward");
+  } else if (plan[step] == "placeB") {
+    place("back");
+  } else if (plan[step] == "placeL") {
+    place("left");
+  } else if (plan[step] == "placeR") {
+    place("right");
+  } else if (plan[step] == "destroyF") {
+    destroy("forward");
+  } else if (plan[step] == "destroyB") {
+    destroy("back");
+  } else if (plan[step] == "destroyL") {
+    destroy("left");
+  } else if (plan[step] == "destroyR") {
+    destroy("right");
+  } else if (plan[step] == "pickUpGrain") {
+    pickUpGrain();
   }
 
   // Clear control states
-  setTimeout(function() {bot.clearControlStates();}, 260)
+  setTimeout(function() {bot.clearControlStates();}, 275)
 
   // Celebrate and peace out if in goal state
   if (isInGoalState()) {
@@ -147,9 +200,31 @@ function execPlan(plan, step) {
   }
 }
 
+function pickUpGrain() {
+  equip("pickaxe")
+  b1 = bot.blockAt(bot.entity.position.offset(1,0,0));
+  b2 = bot.blockAt(bot.entity.position.offset(-1,0,0));
+  b3 = bot.blockAt(bot.entity.position.offset(0,1,0));
+  b4 = bot.blockAt(bot.entity.position.offset(0,-1,0));
+
+  if (b1.name == "oreGold") {
+    destroy("right");
+  } else if (b2.name == "oreGold") {
+    destroy("left");
+  } else if (b3.name == "oreGold") {
+    destroy("forward");
+  } else if (b4.name == "oreGold") {
+    destroy("back");
+  } else {
+    console.log("Not near grain " + bot.entity.position);
+  }
+}
+
 function jump(dir) {
   bot.setControlState(dir, true);
   bot.setControlState("jump", true);
+  setTimeout(function() {bot.clearControlStates();}, 90)
+
 }
 
 function isMoveCommand(action) {
@@ -246,17 +321,72 @@ function move(dir) {
   }
 }
 
-function destroy() {
-  destroyBlock = bot.blockAt(bot.entity.position.offset(0,0,-1));
+function destroy(dir) {
+  equip("pickaxe")
+  if (dir == "forward") {
+    dx = 0
+    dy = 0
+    dz = -1
+  }
+  else if (dir == "back") {
+    dx = 0
+    dy = 0
+    dz = 1
+  }
+  else if (dir == "right") {
+    dx = 1
+    dy = 0
+    dz = 0
+  }
+  else if (dir == "left") {
+    dx = -1
+    dy = 0
+    dz = 0
+  }
+
+  destroyBlock = bot.blockAt(bot.entity.position.offset(dx,dy ,dz));
+  console.log("destroyingBOT: [" + destroyBlock.name + "]");
   if (bot.canDigBlock(destroyBlock)) {
     bot.dig(destroyBlock);
+
+    topBlock = bot.blockAt(bot.entity.position.offset(dx,dy + 1,dz));
+    
+    setTimeout(function() {
+      if (bot.canDigBlock(topBlock)) {
+        bot.dig(topBlock);
+        console.log("destroyingTOP: [" + topBlock.name + "]");
+      }
+    }, 1400)
+
+
   }
   return;
+}
+
+function equip(itemName) {
+  // 1 = pick
+  // 2 = placeBlock
+  console.log(bot.inventory.slots.length);
+  // Pickaxe
+  if (itemName == "pickaxe") {
+    item = itemByName("pickaxeDiamond");
+    bot.equip(item,'hand',null);
+  } else if (itemName == "block") {
+    item = itemByName("cloth");
+    bot.equip(item,'hand',function(err){});
+  }
+}
+
+function itemByName(name) {
+  return bot.inventory.items().filter(function(item) {
+    return item.name === name;
+  })[0];
 }
 
 function place(dir) {
   // dir = {"left", "right", "forward", "back"}
   // dist = {1, 2, 3, 4} // TODO: use dist.
+  equip("block")
 
   // Bot doesn't have any more blocks!
   if (blockNum  <= 0) {
