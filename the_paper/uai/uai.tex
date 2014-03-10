@@ -109,26 +109,26 @@ to dramatic speedups in planning.  Our approach is a formalization of
   environment] offers [an] animal, what [the environment] provides or
 furnishes, either for good or ill.''
       
-We formalize the notion of an affordance as a piece of planning
-knowledge provided to an agent operating in a Markov Decision Process
-(MDP). We explain how affordances can be leveraged by a variety of
-planning algorithms to prune the action set the agent uses dynamically
-based on the agent's current goal.  We call any planning algorithm
-that uses affordances to prune the action set an {\it
-  affordance-aware} planning algorithm.  Affordances are not specific
-to a particular reward function or state space, and thus, provide the
-agent with transferable knowledge that is effective in a wide variety
-of problems. Because affordances define the {\em kind} of goals for
-which actions are useful, they enable high-level reasoning that can be
-combined with approaches like subgoal planning for even greater
-performance gains. Figure \ref{fig:epic_world} shows the planner
-acting in a complex the effectiveness of affordance-aware subgoal
-planning on a complicated planning task in the Minecraft domain - a
-video is provided of the agent achieving this task.  We let other
-standard planners try to solve this task for (TIME), but they all
-failed to converge on a policy (while affordance-aware subgoal planner
-found a near-optimal policy in less than 5 minutes). \dnote{First
-  pass, will need to make stronger when we add figures}
+      We formalize the notion of an affordance as a piece of planning
+      knowledge provided to an agent operating in a Markov Decision
+      Process (MDP). We explain how affordances can be leveraged by a
+      variety of planning algorithms to prune the action set the agent
+      uses dynamically based on the agent's current goal.  We call any
+      planning algorithm that uses affordances to prune the action set
+      an {\it affordance-aware} planning algorithm.  Affordances are
+      not specific to a particular reward function or state space, and thus,
+      provide the agent with transferable knowledge that is effective
+      in a wide variety of problems. Because affordances
+      define the {\em kind} of goals for which actions are useful,
+      affordances also enable high-level reasoning that can
+      be combined with approaches like subgoal planning for even
+      greater performance gains. In Figure \ref{fig:epic_world} demonstrate the effectiveness of
+      affordance-aware subgoal planning on a complicated planning task
+      in the Minecraft domain - a video is provided of the agent achieving this task \footnote{Watch at: https://vimeo.com/88689171}.
+      We let other standard planners try to solve this task for (TIME), but they all failed
+      to converge on a policy (while affordance-aware subgoal planner found a near-optimal
+      policy in less than 5 minutes). \dnote{First pass, will need to make stronger when we add figures}
+
 
 
 %~\citep{kaelbling99} -- (JM: I don't think you should cite this. This paper involves
@@ -988,7 +988,22 @@ don't significantly impact the shape of the state-space with each application, t
 
 One of the most compelling results is the scope of task that affordance-aware planners are capable of solving. With an affordance-aware Subgoal planner (i.e. using an affordance aware RTDP as the low level planner), a Minecraft agent was able to solve an obstacle course in which it must jump over a trench, build a bridge over another trench, chop down a wall, mine a block of gold, open a door, avoid lava, and finally smelt the gold in a furnace. We have included a video of this task being executed as part of our supplementary materials. In this course, the agent was capable of completing several different types of tasks (subgoals) with a single action space and affordance knowledge base. None of the standard planners even came close to solving this problem - we let them run for several hours before cutting them off (while the affordance-aware subgoal planner found a working policy in under 5 minutes).
 
-\dnote{Insert 4 frame Picture of epic world here, maybe include link to video instead of comment about supplementary material}
+% Need to make this go all the way across
+\begin{figure*}
+\centering
+%\includegraphics[scale=0.18]{figures/bridgeworld_vi_vs_aff.png}
+\subfigure[EW1]{
+\includegraphics[width=0.23\linewidth]{figures/epicworld_1.png}}%
+\subfigure[EW2]{
+\includegraphics[width=0.23\linewidth]{figures/epicworld_2.png}}%
+\subfigure[EW3]{
+\includegraphics[width=0.23\linewidth]{figures/epicworld_3.png}}%
+\subfigure[EW4]{
+\includegraphics[width=0.23\linewidth]{figures/epicworld_4.png}}%
+  \caption{The affordance-aware subgoal planner solving a complicated task: the agent had to jump over trenches,
+  place blocks, destroy walls, mine gold, avoid lava, open a door, and finally smelt the gold in order to reach its goal. This task
+  was only achievable by the affordance-aware planners.}
+\end{figure*}
 
 
 \section{Related Work}
@@ -1092,7 +1107,7 @@ benefit in planning tasks where complete subgoal knowledge is known (or may be i
 
 Rosman and Ramamoorthy~\cite{rosman2012good} provide a method for learning action priors over a set of related tasks. Specifically, a Dirichlet distribution over actions was computed by extracting the frequency that each action was optimal in each state for each previously solved task. On a novel task learned with Q-learning, a variant of an $\epsilon$-greedy policy was followed in which the agent selcted a random action according to the Dirichlet distribution and $\epsilon$ fraction of the time, and the action with the max Q-value the rest of the time. To avoid dependence on a specific state space, the a Dirichlet distribtuion was created for each observation-action pair (where the observations were task indepdent) instead of each state-action pair.
 
-There are a few limitiations of the actions priors work that affordance-aware planning does not possess: (1) the action priors can only be used with planning/learning algorithms that work well with an $\epsilon$-greedy rollout policy; (2) the priors are only utilized for fraction $\epsilon$ of the time steps, which is typically quite small; and (3) as variance in tasks explored increases, the priors will become more uniform. In contrast, affordance-aware planning can be used in a wide range of planning algorithms, benefits from the pruned action set in every time step, and the affordance defined lifted goal-description and enables higher-level resoning such as subgoal planning. However, in the future, the action set each affordance defines could be learned using a similar approach.
+There are a few limitations of the actions priors work that affordance-aware planning does not possess: (1) the action priors can only be used with planning/learning algorithms that work well with an $\epsilon$-greedy rollout policy; (2) the priors are only utilized for fraction $\epsilon$ of the time steps, which is typically quite small; and (3) as variance in tasks explored increases, the priors will become more uniform. In contrast, affordance-aware planning can be used in a wide range of planning algorithms, benefits from the pruned action set in every time step, and the affordance defined lifted goal-description and enables higher-level resoning such as subgoal planning. However, in the future, the action set each affordance defines could be learned using a similar approach.
 
 \dnote{I also found several other action pruning papers we may want to talk about (see comments for list)}
 % Mausam, Weld (2008): http://www.aaai.org/Papers/JAIR/Vol31/JAIR-3102.pdf
