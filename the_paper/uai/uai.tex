@@ -122,13 +122,12 @@ furnishes, either for good or ill.''
       define the {\em kind} of goals for which actions are useful,
       affordances also enable high-level reasoning that can
       be combined with approaches like subgoal planning for even
-      greater performance gains. In Figure \ref{fig:epic_world} demonstrate the effectiveness of
-      affordance-aware subgoal planning on a complicated planning task
+      greater performance gains. In Figure \ref{fig:epicworld}, we demonstrate the effectiveness of
+      affordance-aware subgoal planning on a complicated task
       in the Minecraft domain - a video is provided of the agent achieving this task \footnote{Watch at: https://vimeo.com/88689171}.
-      We let other standard planners try to solve this task for (TIME), but they all failed
+      We let other standard planners try to solve this task for several hours, but they all failed
       to converge on a policy (while affordance-aware subgoal planner found a near-optimal
-      policy in less than 5 minutes). \dnote{First pass, will need to make stronger when we add figures}
-
+      policy in less than 5 minutes).
 
 
 %~\citep{kaelbling99} -- (JM: I don't think you should cite this. This paper involves
@@ -339,12 +338,12 @@ object reference invariance results in a smaller state space compared
 to representations like feature vectors in which changes to value
 assignments always result in a different state.
 
-\begin{figure}
-\centering
-\includegraphics[scale = 0.15]{figures/all_actions.png}
-\caption{The set of all actions in the Minecraft domain. \label{fig:all_actions} \dnote{We could consider simplifying this figure to only include the action symbol (e.g. $\square$) and get rid of the arrows to indicate that it is a `directioned' action}}
-\stnote{Agree about removing directional arrows.  Actually, I thought there was a version of this figure with ``bridgeworld'' vs ``vi''a ction space that was effective.  Just showing the legend graphically as this version does doesn't add much.  So I'd say, cut this figure, or add back the ``vi'' vs ``affordance'' plannign version of the figure.  }
-\end{figure}
+%\begin{figure}
+%\centering
+%\includegraphics[scale = 0.15]{figures/all_actions.png}
+%\caption{The set of all actions in the Minecraft domain. \label{fig:all_actions} \dnote{We could consider simplifying this figure to only include the action symbol (e.g. $\square$) and get rid of the arrows to indicate that it is a `directioned' action}}
+%\stnote{Agree about removing directional arrows.  Actually, I thought there was a version of this figure with ``bridgeworld'' vs ``vi''a ction space that was effective.  Just showing the legend graphically as this version does doesn't add much.  So I'd say, cut this figure, or add back the ``vi'' vs ``affordance'' plannign version of the figure.  }
+%\end{figure}
 
 While the OO-MDP state definition is a good fit for the Minecraft
 domain, our motivation for using an OO-MDP lies in the ability to
@@ -692,14 +691,6 @@ in Minecraft: possessing grain is always required to make bread, and it
 is impossible to construct a world where this precondition is not
 true.
 
-
-\begin{figure}
-\centering
-\includegraphics[scale=0.22]{figures/bridgeworld_sg.png}
-\caption{Subgoal planner in \texttt{BRIDGEWORLD}\stnote{I think we should cut this figure... it's confusing and we're short on space.}}
-\label{fig:bwsg}
-\end{figure}
-
 Subgoal planners benefit in many ways by being made affordance-aware.
 One of the main problems of subgoal planning is that subgoal planners
 re-explore large portions of the state space, as illustrated by
@@ -759,15 +750,7 @@ RTDP, and Subgoal planning (with RTDP as the low-level planner). These
 planners were compared with {\it affordance-aware} versions of each
 algorithm tasked with the same set of problems. We selected the
 affordances provided from our background knowledge of the domain. The
-agent was given anywhere from 4-15 affordances, depending on the
-task. \jmnote{How many affordances were defined? We might want to list
-  them all unless it's really large.}\dnote{Could consider including a
-  few example sets as an appendix/footnote? Without directioned
-  affordances, we only had 6 (at most), now we have about 15.}
-\stnote{I don't think listing them all is necessary, as long as we
-  have examples in the paper.  How come we can't use the same set for
-  all domains?  That's a major power, that we can have one consistent
-  set of affordances for everything.} Our experiments consisted of a
+agent was given a knowledge base 15 affordances. Our experiments consisted of a
 variety of tasks, ranging from basic path planning, to baking bread,
 to opening doors and jumping over trenches.  We also tested each
 planner on worlds of varying size and difficulty to demonstrate the
@@ -781,9 +764,6 @@ rollouts. In subgoal planning, the high-level subgoal plan was solved
 using breadth-first search; which only took a small fraction of the
 time compared to the total low-level planning and therefore is not
 reported.
-
-\jmnote{Check this. Also, probably need to specify how the reward function was defined and the discount factor used.}
-\dnote{Added (below). Is this all the correct terminology?}
 
 The reward function was defined as uniformly $-1$ except for states in
 which the agent stood in lava, which were given $-200$ reward (lava
@@ -986,25 +966,26 @@ The final factor to consider when augmenting a planner with affordances is wheth
 the agent with actions that can dramatically affect the state space. If the action set is relatively small and the actions
 don't significantly impact the shape of the state-space with each application, then affordances are not likely to help. For instance, consider the classic reinforcement learning problem of balancing an inverted pendulum - in this task, the agent must choose between moving the base of an inverted pendulum $left$ and $right$ and attempt to balance the pendulum in equilibrium. For tasks such as this, equipping a planner with affordances would have no impact. However, in cases where actions can affect the state-space dramatically (i.e. result in combinatoric explosions of the state space), making a planner affordance-aware can dramatically benefit planning.
 
-One of the most compelling results is the scope of task that affordance-aware planners are capable of solving. With an affordance-aware Subgoal planner (i.e. using an affordance aware RTDP as the low level planner), a Minecraft agent was able to solve an obstacle course in which it must jump over a trench, build a bridge over another trench, chop down a wall, mine a block of gold, open a door, avoid lava, and finally smelt the gold in a furnace. We have included a video of this task being executed as part of our supplementary materials. In this course, the agent was capable of completing several different types of tasks (subgoals) with a single action space and affordance knowledge base. None of the standard planners even came close to solving this problem - we let them run for several hours before cutting them off (while the affordance-aware subgoal planner found a working policy in under 5 minutes).
 
-% Need to make this go all the way across
 \begin{figure*}
 \centering
 %\includegraphics[scale=0.18]{figures/bridgeworld_vi_vs_aff.png}
-\subfigure[EW1]{
-\includegraphics[width=0.23\linewidth]{figures/epicworld_1.png}}%
-\subfigure[EW2]{
-\includegraphics[width=0.23\linewidth]{figures/epicworld_2.png}}%
-\subfigure[EW3]{
-\includegraphics[width=0.23\linewidth]{figures/epicworld_3.png}}%
-\subfigure[EW4]{
-\includegraphics[width=0.23\linewidth]{figures/epicworld_4.png}}%
+\subfigure[Start]{
+\includegraphics[width=0.24\linewidth]{figures/epicworld_1.png}}%
+\subfigure[Destroy Wall]{
+\includegraphics[width=0.24\linewidth]{figures/epicworld_2.png}}%
+\subfigure[Collect Ore]{
+\includegraphics[width=0.24\linewidth]{figures/epicworld_3.png}}%
+\subfigure[Smelt Ore]{
+\includegraphics[width=0.24\linewidth]{figures/epicworld_4.png}}%
   \caption{The affordance-aware subgoal planner solving a complicated task: the agent had to jump over trenches,
   place blocks, destroy walls, mine gold, avoid lava, open a door, and finally smelt the gold in order to reach its goal. This task
   was only achievable by the affordance-aware planners.}
+  \label{fig:epicworld}
 \end{figure*}
 
+
+One of the most compelling results is the scope of task that affordance-aware planners are capable of solving. With an affordance-aware Subgoal planner (i.e. using an affordance aware RTDP as the low level planner), a Minecraft agent was able to traverse a complicated obstacle course\footnote{A full video of the agent solving this task may be found at: https://vimeo.com/88689171}, as seen in Figure \ref{fig:epicworld}. In this task, the agent had to jump over a trench, build a bridge over another trench, chop down a wall, mine a block of gold, open a door, avoid lava, and finally smelt the gold in a furnace. We have included a video of this task being executed as part of our supplementary materials. In this course, the agent was capable of completing several different types of tasks (subgoals) with a single action space and affordance knowledge base. None of the standard planners even came close to solving this problem - we let them run for several hours before cutting them off (while the affordance-aware subgoal planner found a working policy in under 5 minutes).
 
 \section{Related Work}
 In the past, numerous different forms of background knowledge have be used to 
