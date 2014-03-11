@@ -867,19 +867,19 @@ Our entire set of experiments were run using stochastic actions. For all actions
 \begin{tabular}{ l || c | c | c | c | c | c }
   & VI & RTDP & SG & A-VI & A-RTDP & A-SG \\
   \hline
-  \texttt{4BRIDGE} 		&	71604 		& 836 		&		1373 	& 100  		& 152 	& 141  \\
-  \texttt{6BRIDGE} 		&	413559 	 	& 4561 		&		28185  	& 366  		& 392 	& 547  \\
-  \texttt{8BRIDGE} 		&	? 	 	& ? 		&		? 		& ?		& ? 	& ?  \\
-  \texttt{DOORB} 		&	? 	 	& ? 		&		?	& ?	 	& ?  	& ?	\\
-  \texttt{LAVAB}  		&	? 	 	& ? 		&		?		& ?	 	& ?  	& ?\\
-  \texttt{TUNNEL}  		&	? 	 	& ?		&		? 	& ?	 	& ?  	& ?	\\
-  \texttt{BREAD}  		&	? 	 	& ? 		&		? 	& ?	 	& ?  	& ?
+  \texttt{4BRIDGE} 		&	71604 		& 836 		&		1373 	& 100  		& 152 	& {\bf 141}  \\
+  \texttt{6BRIDGE} 		&	413559 	 	& 4561 		&		28185  	& {\bf 366}  	& 392 	& 547  \\
+  \texttt{8BRIDGE} 		&	? 	 		& ? 			&		? 		& 904		& {\bf 788} 	& 1001 			\\
+  \texttt{DOORB} 		&	? 	 		& 12207 		&		6368		& 4368	 	& 1945  	& {\bf 1381}	\\
+  \texttt{LAVAB}  		&	? 	 		& 4425. 		&		25792	& 366	 	& 993  	& {\bf 597}\\
+  \texttt{TUNNEL}  		&	? 	 		& 26624		&		5404 	& {\bf 105}	 	& 145  	& 182	\\
+  \texttt{BREAD}  		&	16406 		& 7738 		&		7412 	& 962		& 809  	& {\bf 578}
 \end{tabular}
 }
 
 \caption{The number of state backups performed by each algorithm for a
   variety of tasks requiring block placement and destruction.
-  Affordances dramatically improve performance. \label{table:blocks} \stnote{Bold best performing entry.}}
+  Affordances dramatically improve performance. \label{table:blocks} }
 \end{table}
 
 \begin{table}
@@ -888,21 +888,19 @@ Our entire set of experiments were run using stochastic actions. For all actions
 \begin{tabular}{ l || c | c | c | c | c | c}
   & VI & RTDP & SG & A-VI & A-RTDP & A-SG \\
   \hline
-  \texttt{10WORLD} 		&	800		& 1205 	&	1263		&	800	 	& 	985 	&	960	\\
-  \texttt{15WORLD} 		&	3150		& 3939 	&	3328 	&	3150	 	& 	3089 	&	2331 	\\
-  \texttt{20WORLD} 		&	7200		& 10719 	&	8738		&	7200		& 	8004 	&	6099	\\
-  \texttt{DOOR}  		&	6315		& 5646 	&	4104 	&	6315	 	& 	4059 	&	2886	\\
-  \texttt{JUMP}	  		&	2940		& 4313 	&	4262 	&	2940	 	& 	3548 	&	2922 	\\
+  \texttt{10WORLD} 		&	{\bf 800}	& 1205 	&	1263		&	{\bf 800}	& 	985 	&	960	\\
+  \texttt{15WORLD} 		&	3150		& 3939 	&	3328 	&	3150	 	& 	3089 	&	{\bf 2331} 	\\
+  \texttt{20WORLD} 		&	7200		& 10719 	&	8738		&	7200		& 	8004 	&	{\bf 6099}	\\
+  \texttt{DOOR}  		&	6315		& 5646 	&	4104 	&	6315	 	& 	4059 	&	{\bf 2886}	\\
+  \texttt{JUMP}	  		&	2940		& 4313 	&	4262 	&	2940	 	& 	3548 	&	{\bf 2922} 	\\
   \texttt{MAZE}  			&	4266		& 5648	&	?		&	?		&	?		&	?	\\
-  \texttt{LAVA} 			&	800		& 1328	&	1003 	&	800	 	& 	861 		&	772
-  \texttt{HARD} 			
+  \texttt{LAVA} 			&	800		& 1328	&	1003 	&	800	 	& 	861 		&	{\bf 772}
 \end{tabular}
 }
 
 \caption{The number of state backups performed by each algorithm for a
   variety of tasks without block placement and destruction actions.
-  Here affordances have a minimal effect. \dnote{Ongoing
-    experiments.}\label{table:noblocks}}
+  Here affordances have a diminished effect.\label{table:noblocks}}
 
 \end{table}
 
