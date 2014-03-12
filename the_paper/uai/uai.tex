@@ -91,13 +91,14 @@ policy.
 \subfigure[Planning with affordances.]{
 \includegraphics[width=0.5\linewidth]{figures/fig1_aff.jpg}}%
   \caption{Scenes from a Minecraft agent planning using Value
-    Iteration (VI) compared to affordance-aware VI in a bridge
-    building task.  VI considers applications of actions which would be obviously
-    irrelevant to a human solving the same problem, such as stacking
-    blocks in the corner (we had to threshold VI, as it ran for nearly a fully day without converging).
-     Our affordance agent, in contrast, focuses
-    on placing blocks in the trench, which are much more relevant to
-    reaching the goal.\label{fig:minecraft}}
+    Iteration (VI) compared to affordance-aware VI in a bridge building task. We were forced to cut off VI after several hours due to the large nature of the Minecraft state space, while the Affordance-Aware VI converged to a policy in under a minute.
+%    building task.  VI considers applications of actions which would be obviously
+%    irrelevant to a human solving the same problem, such as stacking
+%    blocks in the corner (we had to threshold VI, as it ran for nearly a fully day without converging).
+%     Our affordance agent, in contrast, focuses
+%    on placing blocks in the trench, which are much more relevant to
+%    reaching the goal.
+\label{fig:minecraft}}
 \end{figure}
 
 Instead, we propose a formalism that enables an agent to focus on
@@ -195,7 +196,7 @@ $(1, 1, 2)$ and needs to reach the goal at $(4,4,2)$
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.17]{figures/bridgeworld.jpg}
+\includegraphics[scale=0.14]{figures/bridgeworld.jpg}
 \caption{\texttt{BRIDGEWORLD}
 \label{fig:bridgeworld}}
 \end{figure}
@@ -1113,9 +1114,10 @@ benefit in planning tasks where complete subgoal knowledge is known (or may be i
 Rosman and Ramamoorthy~\cite{rosman2012good} provide a method for learning action priors over a set of related tasks. Specifically, a Dirichlet distribution over actions was computed by extracting the frequency that each action was optimal in each state for each previously solved task. On a novel task learned with Q-learning, a variant of an $\epsilon$-greedy policy was followed in which the agent selcted a random action according to the Dirichlet distribution and $\epsilon$ fraction of the time, and the action with the max Q-value the rest of the time. To avoid dependence on a specific state space, the a Dirichlet distribution was created for each observation-action pair (where the observations were task independent) instead of each state-action pair.
 
 There are a few limitations of the actions priors work that affordance-aware planning does not possess: (1) the action priors can only be used with planning/learning algorithms that work well with an $\epsilon$-greedy rollout policy; (2) the priors are only utilized for fraction $\epsilon$ of the time steps, which is typically quite small; and (3) as variance in tasks explored increases, the priors will become more uniform. In contrast, affordance-aware planning can be used in a wide range of planning algorithms, benefits from the pruned action set in every time step, and the affordance defined lifted goal-description and enables higher-level reasoning such as subgoal planning. However, in the future, the action set each affordance defines could be learned using a similar approach.
+
 \subsection{Affordances}
 % Steedman
-~\citep{steedman02} performed work in formalizing affordances through the Linear Dynamic Event Calculus (LDEC). This work was aimed at linking events and objects in the context of language and prelinguistic cognitive apparatuses, and is partially related to the Frame Problem and symbolic planning. ~\citep{koppula13a} developed an inference algorithm that enables a robotic agent to anticipate a human partner's actions based on the robots perceived affordances. Additionally, ~\citep{koppula13c} performed work in predicting object affordances by treating humans as a latent variable in a given scene. ~\citep{gorniak05} proposed the Affordance-Based-Concept. Their work is targeted at
+~\citep{steedman02} performed work in formalizing affordances through the Linear Dynamic Event Calculus (LDEC). This work was aimed at linking events and objects in the context of language and prelinguistic cognitive apparatuses, and is partially related to the Frame Problem and symbolic planning. ~\citep{koppula13a} developed an inference algorithm that enables a robotic agent to anticipate a human partner's actions based on the robots perceived affordances. Additionally, ~\citep{koppula13c} performed work in predicting object affordances by treating humans as a latent variable in a given scene. ~\citep{gorniak05} proposed the Affordance-Based-Concept, which targeted
  using the perception of affordances as a means of determining the set of possible interactions an agent may engage with in a given context.
 This was then applied toward situated-language understanding and language-generating agents. Lastly, many have used affordances as a paradigm for solving table top grasping problems ~\citep{pas13,sweeney07,detry09,montesano09}
 
