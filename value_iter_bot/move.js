@@ -67,7 +67,7 @@ bot.on('chat', function(username, message) {
       orient();
       break;
     case "or":
-      bot.chat("/tp aye_priori 151.3 74.0 968.5");
+      bot.chat("/tp aye_priori 155.3 84.0 922.5");
       bot.chat("/time set 10000");
       actionKillSwitch = true;
       blockNum = MAXBLOCKS;
@@ -235,11 +235,11 @@ function bakeBread() {
   b4 = bot.blockAt(bot.entity.position.offset(0,0,-1));
 
   if (b1.name == "furnace") {
-    bot.openFurnace(b1);
+    watchFurnace(b1);
     } else if (b2.name == "furnace") {
-    bot.openFurnace(b2);
+    watchFurnace(b2);
   } else if (b3.name == "furnace") {
-    bot.openFurnace(b3);
+    watchFurnace(b3);
   } else if (b4.name == "furnace") {
     // bot.openFurnace(b4);
     watchFurnace(b4);
@@ -257,39 +257,21 @@ function itemStr(item) {
 }
 
  function watchFurnace(furnaceBlock) {
-  // var furnaceBlock = findFurnace();
   if (! furnaceBlock) {
     bot.chat("no furnace found");
     return;
   }
   var furnace = bot.openFurnace(furnaceBlock);
-  furnace.on('open', function() {
-    var output = "";
-    output += "input: " + itemStr(furnace.inputItem()) + ", ";
-    output += "fuel: " + itemStr(furnace.fuelItem()) + ", ";
-    output += "output: " + itemStr(furnace.outputItem());
-    bot.chat(output);
-  });
-  furnace.on('updateSlot', function(oldItem, newItem) {
-    // bot.chat("furnace update: " + itemStr(oldItem) + " -> " + itemStr(newItem));
-  });
-  furnace.on('close', function() {
-    // bot.chat("furnace closed");
-  });
-  furnace.on('update', function() {
-    // console.log("fuel: " + Math.round(furnace.fuel * 100) +
-      // "% progress: " + Math.round(furnace.progress * 100) + "%");
-  });
+  furnace.on('open', onChat);
 
-  bot.on('chat', onChat);
   
   function onChat(username, message) {
-    equip("ore");
     var words, cmd, name, amount, item, fn;
+    message = "input 1"
     if (message === 'close') {
       furnace.close();
       bot.removeListener('chat', onChat);
-    } else if (/^(input) (\d+)/.test(message)) {
+    } else if (/^(input|fuel) (\d+)/.test(message)) {
       words = message.split(/\s+/);
       cmd = words[0];
       amount = parseInt(words[1], 10);
@@ -299,15 +281,12 @@ function itemStr(item) {
         bot.chat("unknown item " + name);
         return;
       }
-      console.log("MONEY SPOT");
       fn = cmd === 'input' ? furnace.putInput : furnace.putFuel;
       fn.call(furnace, item.type, null, amount, function(err) {
         if (err) {
-          // bot.chat("unable to put " + amount + " " + item.name);
+          bot.chat("unable to put " + amount + " " + item.name);
         } else {
-          bot.chat("put " + amount + " " + item.name);
-          furnace.close();
-
+          // bot.chat("put " + amount + " " + item.name);
         }
       });
     } else if (/^take (input|fuel|output)$/.test(message)) {
@@ -320,7 +299,7 @@ function itemStr(item) {
       }[cmd];
       fn.call(furnace, function(err, item) {
         if (err) {
-          // bot.chat("unable to take " + item.name + " from " + cmd);
+          bot.chat("unable to take " + item.name + " from " + cmd);
         } else {
           bot.chat("took " + item.name + " " + cmd);
         }
@@ -466,7 +445,7 @@ function destroy(dir) {
         bot.dig(topBlock);
         console.log("destroyingTOP: [" + topBlock.name + "]");
       }
-    }, 1400)
+    }, 700)
 
 
   }
