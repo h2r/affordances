@@ -1,7 +1,7 @@
 \documentclass[]{article} 
 \usepackage{proceed2e}
 \usepackage{subfigure}
-\usepackage[numbers,sort]{natbib}
+\usepackage[round]{natbib}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -149,7 +149,7 @@ furnishes, either for good or ill.''
 %problems.
 
 
-\section{Minecraft Domain}
+\section{MINECRAFT DOMAIN}
 We use Minecraft as our planning and evaluation domain. Minecraft is a
 3-D blocks world game in which the user can place and destroy blocks
 of different types.  Minecraft players have constructed complex
@@ -169,12 +169,11 @@ difficulties of planning under uncertainty, the Minecraft agent's
 actions were modified to have stochastic outcomes. These stochastic
 outcomes may require important changes in the optimal policy in
 contrast to deterministic actions, such as keeping the agent's
-distance from a pit of lava.
+distance from a pit of lava. We chose to give the Minecraft agent non-noisy sensory data about the Minecraft world.
 
-
- Although we made the actions of the Minecraft domain stochastic, we have chosen to give the Minecraft agent non-noisy sensory
-data about the Minecraft world, as vision is assumed to be outside the scope of this
-project.
+% Although we made the actions of the Minecraft domain stochastic, we have chosen to give the Minecraft agent non-noisy sensory
+%data about the Minecraft world, as vision is assumed to be outside the scope of this
+%project.
 
 %One of the difficulties of planning in a noisy world 
 %is that unintended consequences can lead to disastrous results. A robotic agent,
@@ -238,7 +237,7 @@ effective action space.
 
 \section{BACKGROUND}
 
-\subsection{Affordances}
+\subsection{AFFORDANCES}
 
 The term ``Affordance'' was introduced by \citet{gibson77}. At a
 high-level, an affordance may be thought of as the
@@ -251,13 +250,14 @@ of the environment itself, as an affordance must be defined with
 respect to the capabilities and features of a specific animal in
 addition to the environment.  There have been many attempts at
 properly grounding affordances in a variety of academic
-disciplines~\citep{koppula13a,harston03,koppula13b,gorniak06,kaschak00}. Even amongst the psychological literature
-there is no clear consensus on what to make of an
-affordance~\citep{oliver05}.  The result is a landscape of academic
-work that spans from psychological and cognitive science literature,
-to HCI and design, to Robotics and Planning, that is largely
-inconsistent about what is meant by the term {\it affordance}.  Our
-aim in this paper is to provide a simple, yet general definition of an
+disciplines~\citep{koppula13a,harston03,koppula13b,gorniak06,kaschak00}. 
+%Even amongst the psychological literature
+%there is no clear consensus on what to make of an
+%affordance~\citep{oliver05}.  The result is a landscape of academic
+%work that spans from psychological and cognitive science literature,
+%to HCI and design, to Robotics and Planning, that is largely
+%inconsistent about what is meant by the term {\it affordance}.  
+Our aim in this paper is to provide a simple, yet general definition of an
 affordance in terms of knowledge added to an MDP which enables
 dramatic speedups in planning times, depending on the agent's goal.
 Specifically, we define an affordance in terms of the agent's current
@@ -459,7 +459,7 @@ the goal. Instead, we provide\footnote{Currently, we provide a
   to pursue learning affordances directly} the agent with the
 following affordance: 
 \[
-\Delta_1 = \langle nearTrench, reachGoal \rangle \longmapsto \{\square\}
+\Delta_1 = \langle nearTrench, reachGoal \rangle \longmapsto \{place\}
 \]
 which tells the agent to try
 placing blocks when next to a trench (as the trench could inhibit its
@@ -469,14 +469,14 @@ when the predicate $nearTrench$ is true for the agent. For most
 $reachGoal$ tasks, we also provide the following affordances:
 \[
 \Delta_2 = \langle onPlane, reachGoal \rangle \longmapsto
-\{\updownarrow \leftrightarrow\}
+\{move\}
 \]
 \[
 \Delta_3 = \langle nearWall,
-reachGoal \rangle \longmapsto \{\boxtimes \}
+reachGoal \rangle \longmapsto \{destroy \}
 \]
 These two eliminate
-the possibility of applying the ``destroy" action in every state, and emphasize that
+the possibility of applying the $destroy$ action in every state, and emphasize that
 planes afford movement, but not much else.  As a result, the planner avoids exploring every consequent state in which
 that block has been destroyed, enabling an affordance-aware planner in
 $reachGoal$ task types to handle large state spaces.
@@ -494,7 +494,7 @@ focus on how action pruning benefits {\em dynamic programming}, {\em
   policy rollout}, and {\em subgoal} planning paradigms in the
 following sections.
 
-\subsection{Dynamic Programming}
+\subsection{DYNAMIC PROGRAMMING}
 In dynamic programming paradigms, the planning algorithm estimates the
 optimal {\em value function} for each state. Formally, the optimal
 value function ($V^*$) defines the expected discounted return from
@@ -546,7 +546,7 @@ optimality.
 %we're ironing out the details of affordances still (more to come in our next email). So
 %for now I vote we table this until a few days down the line}
 
-\subsection{Policy Rollout}
+\subsection{POLICY ROLLOUT}
 
 In policy rollout planning paradigms, the agent starts with some
 initial policy and follows it (or rolls out the policy) from an
@@ -575,8 +575,9 @@ rollout, RTDP updates its estimate of the value function for the last
 state using the Bellman equation. RTDP is guaranteed to converge to
 the optimal policy from some initial state and has the advantage that
 it iteratively refocuses its attention to states that are likely to be
-on the path of the optimal policy.  \stnote{Need a sentence about why
-  RTDP vs other methods reviewed above.}
+on the path of the optimal policy.  
+%\stnote{Need a sentence about why
+  %RTDP vs other methods reviewed above.}
 
 In affordance-aware RTDP, the action selection of the rollout policy
 is restricted to the affordance-pruned action set and the Bellman
@@ -649,7 +650,7 @@ action set.
 
 
 
-\subsection{Subgoal Planning}
+\subsection{SUBGOAL PLANNING}
 \label{sec:subgoals}
 
 Subgoal planning is based on the intuition that certain goals in
@@ -910,45 +911,48 @@ for convergence of $0.01$. For all experiments, the agent was given stochastic a
 
 % ==== NON-DETERMINISTIC RESULTS =====
 \begin{table}
-\scalebox{0.75}{
-\begin{tabular}{ l || c | c | c | c | c | c }
-  & VI & RTDP & SG & A-VI & A-RTDP & A-SG \\
-  \hline
-  \texttt{4BRIDGE} 		&	71604 		& 836 		&		1373 	& {\bf 100}  	& 152 	& 141  \\
-  \texttt{6BRIDGE} 		&	413559 	 	& 4561 		&		28185  	& {\bf 366}  	& 392 	& 547  \\
-  \texttt{8BRIDGE} 		&	1439883 	 	& 18833. 		&		15583	& 904		& {\bf 788} 	& 1001 			\\
-  \texttt{DOORB} 		&	861084 	 	& 12207 		&		6368		& 4368	 	& 1945  	& {\bf 1381}	\\
-  \texttt{LAVAB}  		&	413559 	 	& 4425. 		&		25792	& 366	 	& 993  	& {\bf 597}\\
-  \texttt{TUNNEL}  		&	203796 	 	& 26624		&		5404 	& {\bf 105}	 	& 145  	& 182	\\
-  \texttt{BREAD}  		&	16406 		& 7738 		&		7412 	& 962		& 809  	& {\bf 578}
+\caption{Mutable Results}
+%%The number of state backups performed by each algorithm for a
+%  variety of tasks requiring block placement and destruction.
+%  Affordances dramatically improve performance. }
+\vspace{11 pt}
+\scalebox{0.8}{
+\begin{tabular}{ l || c c | c c | c  c }
+  & VI & A-VI & RTDP & A-RTDP & SG & A-SG \\ \hline
+  \texttt{4BRIDGE} 		&	71604 		& 	100 		& 	836 	& 	152 		&	1373 	& 	141  			\\
+  \texttt{6BRIDGE} 		&	413559 	 	& 	{\bf 366}  	& 	4561 	& 	392 		&	28185 	& 	547  \\
+  \texttt{8BRIDGE} 		&	1439883 	& 	904			& 	18833	& 	{\bf 788}	&	15583	& 	1001 			\\
+  \texttt{DOORB} 		&	861084 	 	& 	4368		& 	12207	& 	1945		&	6368	& 	{\bf 1381}	\\
+  \texttt{LAVAB}  		&	413559 		& 	366	 		& 	4425 	& 	993  		&	25792	& 	{\bf 597}\\
+  \texttt{TUNNEL}  		&	203796 		& 	{\bf 105}	& 	26624	& 	145  		&	5404 	& 	182	\\
+  \texttt{BREAD}  		&	16406		& 	962			& 	7738 	& 	809  		&	7412 	& 	{\bf 578}
 \end{tabular}
 }
 
-\caption{The number of state backups performed by each algorithm for a
-  variety of tasks requiring block placement and destruction.
-  Affordances dramatically improve performance. \label{table:blocks} }
+% LAVAB RTDP, 8BRIDGE RTDP
+\label{table:blocks}
 \end{table}
-
 \begin{table}
-\scalebox{0.75}{
+\caption{Static Results}
+\vspace{11 pt}
 \centering
-\begin{tabular}{ l || c | c | c | c | c | c}
-  & VI & RTDP & SG & A-VI & A-RTDP & A-SG \\
-  \hline
-  \texttt{10WORLD} 		&	{\bf 800}	& 1205 	&	1263		&	{\bf 800}	& 	985 		&	960	\\
-  \texttt{15WORLD} 		&	3150		& 3939 	&	3328 	&	3150	 	& 	3089 	&	{\bf 2331} 	\\
-  \texttt{20WORLD} 		&	7200		& 10719 	&	8738		&	7200		& 	8004 	&	{\bf 6099}	\\
-  \texttt{DOOR}  		&	6315		& 5646 	&	4104 	&	6315	 	& 	4059 	&	{\bf 2886}	\\
-  \texttt{JUMP}	  		&	2940		& 4313 	&	4262 	&	2940	 	& 	3548 	&	{\bf 2922} 	\\
-  \texttt{MAZE}  			&	4266		& 5648	&	{\bf 1949}	&	4266		&	2864		&	3073	\\
-  \texttt{LAVA} 			&	800		& 1328	&	1003 	&	800	 	& 	861 		&	{\bf 772}
+\scalebox{0.8}{
+\begin{tabular}{ l || c c | c c | c  c }
+  & VI & A-VI & RTDP & A-RTDP & SG & A-SG \\ \hline
+  \texttt{10WORLD} 	&	{\bf 800}	&	{\bf 800} 	& 1205 	& 	985  		&	1263		&	960	\\
+  \texttt{15WORLD} 	&	3150		&	3150	  	& 3939 	& 	3089 	&	3328 	&	{\bf 2331} 	\\
+  \texttt{20WORLD} 	&	7200		&	7200	 	& 10719 	& 	8004 	&	8738		&	{\bf 6099}	\\
+  \texttt{DOOR}  	&	6315		&	6315	 	& 5646 	& 	4059 	&	4104 	&	{\bf 2886}	\\
+  \texttt{JUMP}	  	&	2940		&	2940	 	& 4313 	& 	3548 	&	4262 	&	{\bf 2922} 	\\
+  \texttt{MAZE}  		&	4266		&	4266	 	& 5648	&	2864 	&	{\bf 1949}	&	3073	\\
+  \texttt{LAVA} 		&	800		&	800	 	& 1328	& 	861  		&	1003 	&	{\bf 772}
 \end{tabular}
 }
 
-\caption{The number of state backups performed by each algorithm for a
-  variety of tasks without block placement and destruction actions.
-  Here affordances have a diminished effect.\label{table:noblocks}}
-
+%\caption{The number of state backups performed by each algorithm for a
+%  variety of tasks without block placement and destruction actions.
+%  Here affordances have a diminished effect.
+\label{table:noblocks}
 \end{table}
 
 Table~\ref{table:blocks} shows the results of running the standard
@@ -977,7 +981,11 @@ from their baseline versions. Affordances are only beneficial when
 they allow an agent to prune actions which could combinatorially alter
 the state space. In each of these worlds, the agent only needed to
 move itself through the environment, rather than alter the
-environment.  
+environment.
+
+We also collected data on the amount of accumulated reward that resulted
+from following each algorithm's policy, but found that the differences
+in accumulated reward between each planner to be negligible.
 
 %\dnote{Part of me thinks that we should come up with a term for these
 %  action types (e.g. ``harsh" actions) that have this combinatoric
@@ -1023,7 +1031,7 @@ Additionally, we elaborate on other recent attempts of employing Gibson's notion
 to the problems of computer science and robotics.
 
 
-\subsection{Heuristics}
+\subsection{HEURISTICS}
 Heuristics in MDPs are used to convey information about the value of a given state or state-action pair with respect to the task being solved and typically take the form of either {\em value function initialization},
 or {\em reward shaping}. For planning algorithms that estimate state-value functions, heuristics are often
 provided by initializing the value function to values that are good approximations of the true value function. For example, initializing the value function to an admissible close approximation of the optimal value function has been shown to be effective for LAO* and RTDP, because it more greatly biases the states explored by the rollout policy to those important to the optimal policy~\cite{Hansen:1999qf}. Planning algorithms that estimate Q-values instead of the state value function may similarly initialize the Q-values to an approximation of the optimal Q-values. For instance, PROST~\cite{keller2012prost} creates a {\em determinized} version of a stochastic domain (that is, treating each action as if its most likely outcome always occurred), plans a solution in the determinized domain, and then initializes Q-values to the value of each action in the determinized domain.
@@ -1033,7 +1041,7 @@ Reward shaping is an alternative approach to providing heuristics in which the p
 A critical difference between heuristics and affordances is that heuristics are highly dependent on the reward function and state space of the task being solved; therefore, different tasks require different heuristics to be provided, whereas affordances are state independent and transferable between different reward functions. However, if a heuristic can be provided, the combination of heuristics and affordances may even more greatly accelerate planning algorithms than either approach alone.
 
 
-\subsection{Temporally Extended Actions}
+\subsection{TEMPORALLY EXTENDED ACTIONS}
 
 {\em Temporally extended actions} are actions that the agent can
 select like any other action of the domain, except executing them
@@ -1089,7 +1097,7 @@ these approaches.
 %Additionally, providing an agent with an option policy is a difficult task for a human 
 %designer (especially if we want an optimal policy, which we do).
 
-\subsection{Action Pruning}
+\subsection{ACTION PRUNING}
 %\jmnote{We should also probably do a search for other MDP action pruning approaches, just to
 %make sure we're not missing anything especially important.}
 
@@ -1115,9 +1123,9 @@ Rosman and Ramamoorthy~\cite{rosman2012good} provide a method for learning actio
 
 There are a few limitations of the actions priors work that affordance-aware planning does not possess: (1) the action priors can only be used with planning/learning algorithms that work well with an $\epsilon$-greedy rollout policy; (2) the priors are only utilized for fraction $\epsilon$ of the time steps, which is typically quite small; and (3) as variance in tasks explored increases, the priors will become more uniform. In contrast, affordance-aware planning can be used in a wide range of planning algorithms, benefits from the pruned action set in every time step, and the affordance defined lifted goal-description and enables higher-level reasoning such as subgoal planning. However, in the future, the action set each affordance defines could be learned using a similar approach.
 
-\subsection{Affordances}
+\subsection{AFFORDANCES}
 % Steedman
-~\citep{steedman02} performed work in formalizing affordances through the Linear Dynamic Event Calculus (LDEC). This work was aimed at linking events and objects in the context of language and prelinguistic cognitive apparatuses, and is partially related to the Frame Problem and symbolic planning. ~\citep{koppula13a} developed an inference algorithm that enables a robotic agent to anticipate a human partner's actions based on the robots perceived affordances. Additionally, ~\citep{koppula13c} performed work in predicting object affordances by treating humans as a latent variable in a given scene. ~\citep{gorniak05} proposed the Affordance-Based-Concept, which targeted
+In ~\citep{steedman02}, work was done on formalizing affordances through the Linear Dynamic Event Calculus (LDEC). This work was aimed at linking events and objects in the context of language and prelinguistic cognitive apparatuses, and is partially related to the Frame Problem and symbolic planning. \citep{koppula13a} developed an inference algorithm that enables a robotic agent to anticipate a human partner's actions based on the robots perceived affordances. Additionally, ~\citep{koppula13c} performed work in predicting object affordances by treating humans as a latent variable in a given scene. \citep{gorniak05} proposed the Affordance-Based-Concept, which targeted
  using the perception of affordances as a means of determining the set of possible interactions an agent may engage with in a given context.
 This was then applied toward situated-language understanding and language-generating agents. Lastly, many have used affordances as a paradigm for solving table top grasping problems ~\citep{pas13,sweeney07,detry09,montesano09}
 
@@ -1162,6 +1170,7 @@ This promises extensions in which a robotic agent receives aid from a human part
 dialogue; the agent may ask for help when it is stuck and
 receive affordance or subgoal {\it hints} from a human companion. Lastly, we consider applications to a variety of other planning
 strategies, including A* for use in a robotic-cooking companion, as well as enhancing POMDPs with affordances, directed at applications to robotic care-giver companions.
+
 {\small
 \bibliographystyle{plainnat}
 \bibliography{main}  
