@@ -461,8 +461,8 @@ Given a set of $n$ domain affordances $Z = \{\Delta_1, ..., \Delta_n\}$ and a cu
   \label{alg:prune_actions}
 \end{algorithm}
 
-Specifically, the agent starts
-by initializing an empty set of actions $A'$ (line 1). The agent then iterates
+Specifically, the algorithm starts
+by initializing an empty set of actions $A'$ (line 1). The algorithm then iterates
 through each of the domain affordances (lines 2-6). If the affordance
 precondition ($\Delta.p$) is satisfied by some set of objects in the current state
 and the affordance goal condition ($\Delta.g$) is defined with the same predicate
@@ -628,7 +628,7 @@ for three reasons: (1) it demonstrates affordance-aware planning for
 both a dynamic programming paradigm and a policy rollout paradigm;
 (2) because one of the advantages of RTDP is that it is focused
 on finding solutions from an initial state rather than the whole
-state space, which is the type of planning problem our work addresess;
+state space, which is the type of planning problem our work addresses;
 and (3) it is easy to check for planning convergence in stochastic domains
 with RTDP.
 
