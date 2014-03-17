@@ -101,6 +101,24 @@ policy.
 \label{fig:minecraft}}
 \end{figure}
 
+      
+      \begin{figure*}
+\centering
+%\includegraphics[scale=0.18]{figures/bridgeworld_vi_vs_aff.jpg}
+\subfigure[Start]{
+\includegraphics[width=0.24\linewidth]{figures/epicworld_1.jpg}}%
+\subfigure[Destroy Wall]{
+\includegraphics[width=0.24\linewidth]{figures/epicworld_2.jpg}}%
+\subfigure[Collect Ore]{
+\includegraphics[width=0.24\linewidth]{figures/epicworld_3.jpg}}%
+\subfigure[Smelt Ore]{
+\includegraphics[width=0.24\linewidth]{figures/epicworld_4.jpg}}%
+  \caption{The affordance-aware subgoal planner solving an ore-smelting task with a variety of obstacles. This planning task was
+  only solved by an affordance-aware planner.}
+  \label{fig:epicworld}
+\end{figure*}
+
+
 Instead, we propose a formalism that enables an agent to focus on
 problem-specific aspects of the environment, guiding the search toward
 the most relevant and useful parts of the state-action space.  This
@@ -109,6 +127,7 @@ to dramatic speedups in planning.  Our approach is a formalization of
 {\em affordances}, introduced by \citet{gibson77} as ``what [the
   environment] offers [an] animal, what [the environment] provides or
 furnishes, either for good or ill.''
+
       
       We formalize the notion of an affordance as a piece of planning
       knowledge provided to an agent operating in a Markov Decision
@@ -125,7 +144,7 @@ furnishes, either for good or ill.''
       be combined with approaches like subgoal planning for even
       greater performance gains. In Figure \ref{fig:epicworld}, we demonstrate the effectiveness of
       affordance-aware subgoal planning on a complicated task
-      in the Minecraft domain - a video is provided of the agent achieving this task \footnote{Watch at: https://vimeo.com/88689171}.\stnote{Can we move figure 3 earlier to this reference?}
+      in the Minecraft domain - a video is provided of the agent achieving this task.\footnote{Watch at: https://vimeo.com/88689171}
       We let other standard planners try to solve this task for several hours, but they all failed
       to converge on a policy (while affordance-aware subgoal planner found a near-optimal
       policy in less than 5 minutes).
@@ -184,22 +203,23 @@ distance from a pit of lava. We chose to give the Minecraft agent non-noisy sens
 %falling in. This is intended to model the conservative nature of planning with a stochastic and potentially
 %dangerous agent acting in the real world, such as a robot.
 
-As a running example, we will consider the problem of an agent
-attempting to cross a trench in a $4 \times 4 \times 2$ Minecraft
-world; a schematic appears in Figure~\ref{fig:bridgeworld}.\stnote{Can we put a minecraft picture of the same scene next to it?} The floor
-(at $z = 1)$\footnote{The $z$-axis is the height of the Minecraft
-  world. Similarly, the $x$-axis is its width and the $y$-axis is its
-  length.} is composed of 8 solid blocks, with horizontal empty
-trenches at $y = 2$ and $y = 3$. The agent is at the starting location
-$(1, 1, 2)$ and needs to reach the goal at $(4,4,2)$
+%As a running example, we will consider the problem of an agent
+%attempting to cross a trench in a $4 \times 4 \times 2$ Minecraft
+%world; a schematic appears in Figure~\ref{fig:bridgeworld}.\stnote{Can we put a minecraft picture of the same scene next to it?} The floor
+%(at $z = 1)$\footnote{The $z$-axis is the height of the Minecraft
+%  world. Similarly, the $x$-axis is its width and the $y$-axis is its
+%  length.} is composed of 8 solid blocks, with horizontal empty
+%trenches at $y = 2$ and $y = 3$. The agent is at the starting location
+%$(1, 1, 2)$ and needs to reach the goal at $(4,4,2)$
+%
+%\begin{figure}
+%\centering
+%\includegraphics[scale=0.14]{figures/bridgeworld.jpg}
+%\caption{\texttt{BRIDGEWORLD}
+%\label{fig:bridgeworld}}
+%\end{figure}
 
-\begin{figure}
-\centering
-\includegraphics[scale=0.14]{figures/bridgeworld.jpg}
-\caption{\texttt{BRIDGEWORLD}
-\label{fig:bridgeworld}}
-\end{figure}
-
+As a running example, we will consider the problem an agent attempting to cross a trench, as seen in Fig. ~\ref{fig:minecraft}.
 To solve the problem, the agent must place a block in the trench to
 form a bridge, then cross the bridge to reach the goal.  This task is
 challenging for planning algorithms to solve because the reachable
@@ -233,7 +253,6 @@ effective action space.
 %subsequently destroying it.  Considering these actions (which are
 %obviously irrelevant to a human player) results in a combinatoric
 %explosion of the state space (see Equation \ref{eq:mc_explode}).
-
 
 \section{BACKGROUND}
 
@@ -400,8 +419,6 @@ algorithms to prune irrelevant actions.
 %is known to be $\mathcal{O}(|\mathcal{A}||\mathcal{S}|^2)$, so as the number
 %of states increases, the runtime of Value Iteration grows quite quickly.
 
-
-
 \section{AFFORDANCES}
 \label{sec:affordances}
 
@@ -489,6 +506,7 @@ the agent will not considering placing blocks in locations that cannot
 enable the agent to reach its goal location; as a result, the large number of
 irrelevant states that are otherwise reachable by placing different blocks
 in various locations are removed from the state space explored by the planner.
+
 
 %If the
 %agent is adjacent to the trench and is faced with a
@@ -720,16 +738,17 @@ Formally, in subgoal planning, the agent is given a set of subgoals, where each 
 SG = \langle x_k, x_l \rangle
 \end{align}
 
-\stnote{Isn't subgoal planning a directed graph?  Do the $\langle x_k, x_l\rangle>$'s
-  form a DAG and we search in the dag?  In that case I think this
-  defintiion is right but missing some of the intuition of subgoals,
-  and a few setences about the graph nature would help clarify that. }
+%\stnote{Isn't subgoal planning a directed graph?  Do the $\langle x_k, x_l\rangle>$'s
+%  form a DAG and we search in the dag?  In that case I think this
+%  defintiion is right but missing some of the intuition of subgoals,
+%  and a few setences about the graph nature would help clarify that. }
 
 where $x_l$ is the effect of some action sequence performed on 
-a state in which $x_k$ is true. Thus, subgoal planning requires 
-that we perform high-level planning in subgoal space, and low-level 
-planning to get from subgoal to subgoal. The low-level planner may vary, though
-Metric-FF and A* are popular choices (depending on domain constraints), as is Value Iteration.
+a state in which $x_k$ is true. A set of subgoals forms a Directed Acyclic Graph (DAG)
+that terminates in the goal condition. In subgoal planning, we perform high-level planning
+in the DAG (subgoal space), and low-level planning to get from subgoal to subgoal. 
+The low-level planner may vary, though Metric-FF and A* are popular choices 
+(depending on domain constraints), as is Value Iteration.
 
 In the case of \texttt{BRIDGEWORLD}, the agent might consider placing
 a block somewhere along the trench to be a subgoal. Then, it runs
@@ -811,7 +830,7 @@ definition and does not require any additional translation.
 %  say about the hypothesis.  I would make experiments and results one
 %  section, with subsections for each experiment + results}
 
-We conducted a series of experiments in the Minecraft domain that
+We conducted a series of experiments\footnote{We plan on releasing all of our code at a later date.} in the Minecraft domain that
 tested standard planners from each planning paradigm: Value Iteration,
 RTDP, and Subgoal planning (with RTDP as the low-level planner). These
 planners were compared with {\it affordance-aware} versions of each
@@ -837,21 +856,7 @@ $-200$. The goal was set to be terminal. The discount
 factor was set to $\lambda = 0.99$. For all experiments, the agent was given stochastic actions. Specifically, actions associated with a direction (e.g. movement, block placement, jumping, etc.), had a small probability ($0.1$) of being applied in the reverse direction.
 
 
-\begin{figure*}
-\centering
-%\includegraphics[scale=0.18]{figures/bridgeworld_vi_vs_aff.jpg}
-\subfigure[Start]{
-\includegraphics[width=0.24\linewidth]{figures/epicworld_1.jpg}}%
-\subfigure[Destroy Wall]{
-\includegraphics[width=0.24\linewidth]{figures/epicworld_2.jpg}}%
-\subfigure[Collect Ore]{
-\includegraphics[width=0.24\linewidth]{figures/epicworld_3.jpg}}%
-\subfigure[Smelt Ore]{
-\includegraphics[width=0.24\linewidth]{figures/epicworld_4.jpg}}%
-  \caption{The affordance-aware subgoal planner solving an ore-smelting task with a variety of obstacles. This task
-  was only achievable by an affordance-aware planner.}
-  \label{fig:epicworld}
-\end{figure*}
+% Epic world used to be here
 
 
 \subsection{RESULTS}
@@ -993,7 +998,6 @@ factor was set to $\lambda = 0.99$. For all experiments, the agent was given sto
   \texttt{BREAD}  		&	16406		& 	962			& 	7738 	& 	809  		&	7412 	& 	{\bf 578}
 \end{tabular}
 }
-
 % LAVAB RTDP, 8BRIDGE RTDP
 \label{table:blocks}
 \end{table}
@@ -1019,7 +1023,6 @@ factor was set to $\lambda = 0.99$. For all experiments, the agent was given sto
 %  Here affordances have a diminished effect.
 \label{table:noblocks}
 \end{table}
-
 Table~\ref{table:blocks} shows the results of running the standard
 planners and their affordance aware counterparts on a set of tasks
 that require the use of block placement and/or destruction.  The
@@ -1097,7 +1100,7 @@ reward across planners was negligible.
 
 %As can be seen by Table ~\ref{table:noblocks}, the critical factor in determining if affordances will benefit a planning scenario is whether or not the desired domain provides the agent with actions that can dramatically affect the state space. If the action set is relatively small and the actions don't significantly impact the shape of the state-space with each application, then affordances are not likely to help. For example, consider the classic reinforcement learning problem of balancing an inverted pendulum - in this task, the agent must choose between moving the base of an inverted pendulum $left$ and $right$ and attempt to balance the pendulum in equilibrium. For tasks like this equipping a planner with affordances would have little to no impact. However, in cases where actions can affect the state-space dramatically (i.e. result in combinatoric explosions of the state space), making a planner affordance-aware can dramatically benefit planning, as indicated by the results in Table ~\ref{table:blocks}.
 
-One of the most compelling results is the scope of task that affordance-aware planners are capable of solving. With an affordance-aware Subgoal planner (i.e. using an affordance aware RTDP as the low level planner), a Minecraft agent was able to traverse a complicated obstacle course\footnote{A full video of the agent solving this task may be found at: https://vimeo.com/88689171}, as seen in Figure \ref{fig:epicworld}. In this task, the agent had to smelt gold, but in order to do so, it had to jump over a trench, build a bridge over another trench, chop down a wall, mine a block of gold, open a door, avoid lava, and finally smelt the gold ore in a furnace. We have included a video of this task being executed as part of our supplementary materials. Here, the agent was capable of completing several different types of tasks (subgoals) with a single action space and affordance knowledge base. Using affordance-aware subgoal
+One of the most compelling results is the scope of task that affordance-aware planners are capable of solving. With an affordance-aware Subgoal planner (i.e. using an affordance aware RTDP as the low level planner), a Minecraft agent was able to traverse a complicated obstacle course, as seen in Figure \ref{fig:epicworld}. In this task, the agent had to smelt gold, but in order to do so, it had to jump over a trench, build a bridge over another trench, chop down a wall, mine a block of gold, open a door, avoid lava, and finally smelt the gold ore in a furnace. Here, the agent was capable of completing several different types of tasks (subgoals) with a single action space and affordance knowledge base. Using affordance-aware subgoal
 planning, this problem was solved in under five minutes, whereas other non-affordance-aware planning algorithms did not complete even after several hours on the same computer.
 
 \section{Related Work}
