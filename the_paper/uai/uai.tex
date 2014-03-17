@@ -40,7 +40,7 @@ formalism can be coupled with a variety of planning frameworks to
 create ``affordance-aware planning,'' allowing an agent to efficiently
 prune its action space based on domain knowledge and its current
 subgoal.  This pruning significantly reduces the number of
-state/action pairs the agent needs to evaluate in order to act
+state-action pairs the agent needs to evaluate in order to act
 optimally. We demonstrate our approach in the Minecraft domain,
 showing significant increase in speed and reduction in state-space
 exploration compared to the standard versions of these algorithms.
@@ -77,7 +77,7 @@ knowledge to the planner to solve problems in these
 massive domains, such as options~\citep{sutton99} and
 macroactions~\citep{Botea:2005kx,Newton:2005vn}. However, these
 approaches add knowledge in the form of additional high-level actions
-to the agent, which {\em increases} the size of the state/action space
+to the agent, which {\em increases} the size of the state-action space
 (while also allowing the agent to search more deeply within the
 space).  The resulting augmented space is even larger, which can have
 the paradoxical effect of increasing the search time for a good
@@ -86,19 +86,20 @@ policy.
 \begin{figure}
 \centering
 %\includegraphics[scale=0.18]{figures/bridgeworld_vi_vs_aff.jpg}
-\subfigure[Planning with VI.]{
+\subfigure[VI]{
 \includegraphics[width=0.5\linewidth]{figures/fig1_vi.jpg}}%
-\subfigure[Planning with affordances.]{
+\subfigure[affordance-aware VI]{
 \includegraphics[width=0.5\linewidth]{figures/fig1_aff.jpg}}%
-  \caption{Scenes from a Minecraft agent planning using Value
-    Iteration (VI) compared to affordance-aware VI in a bridge building task. We were forced to cut off VI after several hours due to the large nature of the Minecraft state space, while the Affordance-Aware VI converged to a policy in under a minute.
-%    building task.  VI considers applications of actions which would be obviously
+  \caption{A Minecraft agent planning with Value
+    Iteration (VI) compared to affordance-aware VI in a bridge building task. We were forced to cut off VI after several hours due to the large nature of the Minecraft state space, while the Affordance-Aware VI converged to a policy in under a minute.}
+    
+     %    building task.  VI considers applications of actions which would be obviously
 %    irrelevant to a human solving the same problem, such as stacking
 %    blocks in the corner (we had to threshold VI, as it ran for nearly a fully day without converging).
 %     Our affordance agent, in contrast, focuses
 %    on placing blocks in the trench, which are much more relevant to
 %    reaching the goal.
-\label{fig:minecraft}}
+\label{fig:minecraft}
 \end{figure}
 
       
@@ -119,19 +120,13 @@ policy.
 \end{figure*}
 
 
-Instead, we propose a formalism that enables an agent to focus on
-problem-specific aspects of the environment, guiding the search toward
-the most relevant and useful parts of the state-action space.  This
-approach reduces the size of the explored state action space, leading
-to dramatic speedups in planning.  Our approach is a formalization of
-{\em affordances}, introduced by \citet{gibson77} as ``what [the
-  environment] offers [an] animal, what [the environment] provides or
-furnishes, either for good or ill.''
+Instead, we propose a formalization of {\em affordances} \citep{gibson77} that enables an agent to focus on
+problem-specific aspects of the environment. Our approach avoids exploration of irrelevant parts of the 
+state-action space, which leads to dramatic speedups in planning.
 
-      
       We formalize the notion of an affordance as a piece of planning
       knowledge provided to an agent operating in a Markov Decision
-      Process (MDP). We explain how affordances can be leveraged by a
+      Process (MDP). Additionally, we explain how affordances can be leveraged by a
       variety of planning algorithms to prune the action set the agent
       uses dynamically based on the agent's current goal.  We call any
       planning algorithm that uses affordances to prune the action set
@@ -144,7 +139,7 @@ furnishes, either for good or ill.''
       be combined with approaches like subgoal planning for even
       greater performance gains. In Figure \ref{fig:epicworld}, we demonstrate the effectiveness of
       affordance-aware subgoal planning on a complicated task
-      in the Minecraft domain - a video is provided of the agent achieving this task.\footnote{Watch at: https://vimeo.com/88689171}
+      in the Minecraft domain.\footnote{Watch at: https://vimeo.com/88689171}
       We let other standard planners try to solve this task for several hours, but they all failed
       to converge on a policy (while affordance-aware subgoal planner found a near-optimal
       policy in less than 5 minutes).
@@ -267,7 +262,9 @@ provides or furnishes, either for good or ill'' ~\citep{gibson77}. He
 added that an affordance may not be thought of as a physical property
 of the environment itself, as an affordance must be defined with
 respect to the capabilities and features of a specific animal in
-addition to the environment.  There have been many attempts at
+addition to the environment.
+
+There have been many attempts at
 properly grounding affordances in a variety of academic
 disciplines~\citep{koppula13a,harston03,koppula13b,gorniak06,kaschak00}. 
 %Even amongst the psychological literature
@@ -278,14 +275,12 @@ disciplines~\citep{koppula13a,harston03,koppula13b,gorniak06,kaschak00}.
 %inconsistent about what is meant by the term {\it affordance}.  
 Our aim in this paper is to provide a simple, yet general definition of an
 affordance in terms of knowledge added to an MDP which enables
-dramatic speedups in planning times, depending on the agent's goal.
-Specifically, we define an affordance in terms of the agent's current
-goal; depending on the needs of the agent, it may only consider
-certain affordances. For instance, a rock may serve as a
-paper-weight to an agent seeking to weigh down a stack of papers. If
-the agent's goal changes and is instead looking for a means of
-propping a door open, then the agent may instead consider that the rock
-will serve as an adequate doorstop.
+dramatic speedups in planning times.
+
+It is important to note that in our formalism an affordance is defined with respect to the
+agent's current goal. For instance, an agent seeking a paper weight may perceive a coffee mug as a suitable
+solution. However, if the agent's goal changes to drinking a beverage, then it perceives a different
+set of affordances and would instead consider the coffee as an adequate container for liquid.
 
 %% The term is rich with potential,
 %% but due to the body of existing work, any project whose aim is to {\it
@@ -368,8 +363,8 @@ formulate predicates over classes of objects. That is, the OO-MDP
 definition also includes a set of predicates ${\cal P}$ that operate
 on the state of objects to provide additional high-level information
 about the MDP state. For example, in \texttt{BRIDGEWORLD}, a ${\tt
-  nearTrench}({\tt AGENT})$ predicate evaluates to true when the singular
-instance of class $\texttt{ AGENT}$ is directly adjacent to an empty location
+  nearTrench}({\tt STATE})$ predicate evaluates to true when the singular
+instance of class $\texttt{AGENT}$ is directly adjacent to an empty location
 at floor level (i.e. the cell beneath the agent in some direction does not
 contain a block). In the original OO-MDP work, these predicates were used
 to model and learn an MDP's transition dynamics. In the next section,
@@ -430,8 +425,8 @@ algorithms to prune irrelevant actions.
 %the agent's actions can drastically shape the environment, such as in
 %Minecraft. As discussed above, the affordances that an 
 %agent perceives are determined by the agent's current goal. 
-We define an affordance $\Delta$, 
-as a tuple, $\langle p,g\rangle\ \longmapsto \alpha$,
+We define an affordance $\Delta$ 
+as the mapping $\langle p,g\rangle \longmapsto \alpha$,
 where:
 \begin{itemize}
 \item[] $\alpha$ a subset of the action space, $\mathcal{A}$, representing the relevant {\it action-possibilities} of the environment.
@@ -599,11 +594,7 @@ state. In the case of the Bellman equation, the max operator makes the
 value function indifferent to the effects of actions that are not part
 of the optimal policy; therefore, the action set can be reduced
 entirely to the actions in the optimal policy without sacrificing
-optimality. Similarly, since we are only concerned with finding a good
-policy to dictate behavior from some initial state, the state space
-for which the value function is computed can be reduced to that which
-is reachable using only the optimal actions without sacrificing
-optimality.  
+optimality.
 %\stnote{So the stuff about not sacrificing the optimal
 %  policy seems right, but I wonder if we can say something more formal
 %  about what has to be true about affordances in order for affordance
@@ -728,7 +719,7 @@ Subgoal planning is based on the intuition that certain goals in
 planning domains may only be brought about if certain preconditions
 are first satisfied. For instance, in the bridge problem, the agent must
 first place a block in the trench to create a bridge before crossing
-the trench.  \citet{branavan12a} explore learning subgoals from the
+the trench.  \citep{branavan12a} explore learning subgoals from the
 Minecraft wiki and applying them in order to plan through a variety of
 problems in Minecraft.
 
@@ -745,13 +736,11 @@ SG = \langle x_k, x_l \rangle
 
 where $x_l$ is the effect of some action sequence performed on 
 a state in which $x_k$ is true. A set of subgoals forms a Directed Acyclic Graph (DAG)
-that terminates in the goal condition. In subgoal planning, we perform high-level planning
-in the DAG (subgoal space), and low-level planning to get from subgoal to subgoal. 
-The low-level planner may vary, though Metric-FF and A* are popular choices 
-(depending on domain constraints), as is Value Iteration.
+that terminates in the goal condition. In subgoal planning, we perform high-level search
+in the DAG (subgoal space), and low-level planning (e.g. use A*, Metric-FF, etc.)  to get from subgoal to subgoal. 
 
-In the case of \texttt{BRIDGEWORLD}, the agent might consider placing
-a block somewhere along the trench to be a subgoal. Then, it runs
+In the case of \texttt{BRIDGEWORLD}, one subgoal the agent might consider is placing
+a block somewhere in the trench. Then, it runs
 a low-level planner to get from its starting location to the subgoal.
 Next, it runs the same low-level planner from the first subgoal to the finish.
 
@@ -830,7 +819,7 @@ definition and does not require any additional translation.
 %  say about the hypothesis.  I would make experiments and results one
 %  section, with subsections for each experiment + results}
 
-We conducted a series of experiments\footnote{We plan on releasing all of our code at a later date.} in the Minecraft domain that
+We conducted a series of experiments\footnote{We plan on releasing all of our on notification of acceptance.} in the Minecraft domain that
 tested standard planners from each planning paradigm: Value Iteration,
 RTDP, and Subgoal planning (with RTDP as the low-level planner). These
 planners were compared with {\it affordance-aware} versions of each
@@ -850,7 +839,7 @@ using breadth-first search; which only took a small fraction of the
 time compared to the total low-level planning and therefore is not
 reported.
 
-The reward function is $-1$ for all transitions, except
+We set the reward function is $-1$ for all transitions, except
 transitions to states in which the agent was on lava, which returned 
 $-200$. The goal was set to be terminal. The discount
 factor was set to $\lambda = 0.99$. For all experiments, the agent was given stochastic actions. Specifically, actions associated with a direction (e.g. movement, block placement, jumping, etc.), had a small probability ($0.1$) of being applied in the reverse direction.
@@ -1027,7 +1016,7 @@ Table~\ref{table:blocks} shows the results of running the standard
 planners and their affordance aware counterparts on a set of tasks
 that require the use of block placement and/or destruction.  The
 affordance aware planners significantly outperformed their unaugmented
-counterparts in all of these experiments. They proved
+counterparts in all of these experiments (e.g. in \texttt{TUNNEL} all algorithms saw at least a 3,000\% improvement) . They proved
 especially effective when paired with subgoals, as can be seen by the
 results of the affordance aware subgoal planner, demonstrating that
 affordances are particularly useful if subgoal knowledge is known.
@@ -1100,7 +1089,8 @@ reward across planners was negligible.
 
 %As can be seen by Table ~\ref{table:noblocks}, the critical factor in determining if affordances will benefit a planning scenario is whether or not the desired domain provides the agent with actions that can dramatically affect the state space. If the action set is relatively small and the actions don't significantly impact the shape of the state-space with each application, then affordances are not likely to help. For example, consider the classic reinforcement learning problem of balancing an inverted pendulum - in this task, the agent must choose between moving the base of an inverted pendulum $left$ and $right$ and attempt to balance the pendulum in equilibrium. For tasks like this equipping a planner with affordances would have little to no impact. However, in cases where actions can affect the state-space dramatically (i.e. result in combinatoric explosions of the state space), making a planner affordance-aware can dramatically benefit planning, as indicated by the results in Table ~\ref{table:blocks}.
 
-One of the most compelling results is the scope of task that affordance-aware planners are capable of solving. With an affordance-aware Subgoal planner (i.e. using an affordance aware RTDP as the low level planner), a Minecraft agent was able to traverse a complicated obstacle course, as seen in Figure \ref{fig:epicworld}. In this task, the agent had to smelt gold, but in order to do so, it had to jump over a trench, build a bridge over another trench, chop down a wall, mine a block of gold, open a door, avoid lava, and finally smelt the gold ore in a furnace. Here, the agent was capable of completing several different types of tasks (subgoals) with a single action space and affordance knowledge base. Using affordance-aware subgoal
+One of the most compelling results is that affordance-aware planners are capable of solving a variety of difficult tasks.
+With an affordance-aware Subgoal planner (i.e. using an affordance aware RTDP as the low level planner), a Minecraft agent was able to traverse a complicated obstacle course, as seen in Figure \ref{fig:epicworld}. In this task, the agent had to smelt gold, but in order to do so, it had to jump over a trench, build a bridge over another trench, chop down a wall, mine a block of gold, open a door, avoid lava, and finally smelt the gold ore in a furnace. We uploaded a video of an affordance-aware Minecraft agent solving this task.\footnote{Watch at: https://vimeo.com/88689171} Here, the agent was capable of completing several different types of tasks (subgoals) with a single action space and affordance knowledge base. Using affordance-aware subgoal
 planning, this problem was solved in under five minutes, whereas other non-affordance-aware planning algorithms did not complete even after several hours on the same computer.
 
 \section{Related Work}
@@ -1108,17 +1098,17 @@ In this section, we discuss the differences between
 affordance-aware planning and other forms of background knowledge that
 have been used to accelerate planning.  Specifically, we discuss
 heuristics, temporally extended actions, and related action pruning
-work.  Additionally, we elaborate on other recent attempts of
-employing Gibson's notion of an affordance to the problems of computer
+work.  Additionally, we elaborate on other recent work that
+employs Gibson's notion of an affordance to the problems of computer
 science and robotics.
 
 
 \subsection{HEURISTICS}
 Heuristics in MDPs are used to convey information about the value of a given state or state-action pair with respect to the task being solved and typically take the form of either {\em value function initialization},
 or {\em reward shaping}. For planning algorithms that estimate state-value functions, heuristics are often
-provided by initializing the value function to values that are good approximations of the true value function. For example, initializing the value function to an admissible close approximation of the optimal value function has been shown to be effective for LAO* and RTDP, because it more greatly biases the states explored by the rollout policy to those important to the optimal policy~\cite{Hansen:1999qf}. Planning algorithms that estimate Q-values instead of the state value function may similarly initialize the Q-values to an approximation of the optimal Q-values. For instance, PROST~\cite{keller2012prost} creates a {\em determinized} version of a stochastic domain (that is, treating each action as if its most likely outcome always occurred), plans a solution in the determinized domain, and then initializes Q-values to the value of each action in the determinized domain.
+provided by initializing the value function to values that are good approximations of the true value function. For example, initializing the value function to an admissible close approximation of the optimal value function has been shown to be effective for LAO* and RTDP, because it more greatly biases the states explored by the rollout policy to those important to the optimal policy~\citep{Hansen:1999qf}. Planning algorithms that estimate Q-values instead of the state value function may similarly initialize the Q-values to an approximation of the optimal Q-values. For instance, PROST~\citep{keller2012prost} creates a {\em determinized} version of a stochastic domain (that is, treating each action as if its most likely outcome always occurred), plans a solution in the determinized domain, and then initializes Q-values to the value of each action in the determinized domain.
 
-Reward shaping is an alternative approach to providing heuristics in which the planning algorithm uses a modified version of the reward function that returns larger rewards for state-action pairs that are expected to be useful. Reward shaping differs from value function initialization in that it is not guaranteed to preserve convergence to an optimal policy unless certain properties of the shaped reward are satisfied~\cite{potshap} that also have the effect of making reward shaping equivalent to value function initialization for a large class of planning/learning algorithms~\cite{Wiewiora:2003fk}.
+Reward shaping is an alternative approach to providing heuristics in which the planning algorithm uses a modified version of the reward function that returns larger rewards for state-action pairs that are expected to be useful. Reward shaping differs from value function initialization in that it is not guaranteed to preserve convergence to an optimal policy unless certain properties of the shaped reward are satisfied~\citep{potshap} that also have the effect of making reward shaping equivalent to value function initialization for a large class of planning/learning algorithms~\citep{Wiewiora:2003fk}.
 
 A critical difference between heuristics and affordances is that heuristics are highly dependent on the reward function and state space of the task being solved; therefore, different tasks require different heuristics to be provided, whereas affordances are state independent and transferable between different reward functions. However, if a heuristic can be provided, the combination of heuristics and affordances may even more greatly accelerate planning algorithms than either approach alone.
 
@@ -1162,8 +1152,8 @@ the current task, they can sometimes have the paradoxical effect
 of increasing the planning time because they increase the number of actions that must be explored.
 For example, deterministic planning algorithms that successfully make use of macro-actions often avoid the potential increase
 in planning time by developing algorithms that restrict the set of macro-actions to a small set that is expected to improve planning time for the problem~\citep{Botea:2005kx,Newton:2005vn} or by limiting the use of macro-actions to certain conditions
-in the planning algorithms like when the planner reaches heuristic plateaus (areas of the state space in which all successor states have the same heuristic value)~\cite{Coles:2007ys}. Similarly, it has been shown that the inclusion
-of even a small subset of unhelpful options can negatively impact planning/learning time~\cite{Jong:2008zr}.
+in the planning algorithms like when the planner reaches heuristic plateaus (areas of the state space in which all successor states have the same heuristic value)~\citep{Coles:2007ys}. Similarly, it has been shown that the inclusion
+of even a small subset of unhelpful options can negatively impact planning/learning time~\citep{Jong:2008zr}.
 
 Given the potential for unhelpful temporally extended actions to negatively impact planning time, we believe combing affordances with temporally extended actions
 may be especially valuable, because it will restrict the set of temporally extended actions to those
@@ -1185,7 +1175,7 @@ these approaches.
 
 Work that prunes the action space is the most similar to our affordance-aware planning.
 %Perhaps the most similar work to ours is Sherstov and Stone's action transfer work~\cite{sherstov2005improving}.
-Sherstov and Stone~\cite{sherstov2005improving} considered MDPs with a very large action set and for which the action
+Sherstov and Stone~\citep{sherstov2005improving} considered MDPs with a very large action set and for which the action
 set of the optimal policy of a source task could be transferred to a new, but similar, target
 task to reduce the learning time required to find the optimal policy in the target task. Since the actions
 of the optimal policy of a source task may not include all the actions of the optimal policy
@@ -1203,19 +1193,19 @@ Further,
 with lifted goal descriptions, affordances may be attached to Subgoal planning for a significant
 benefit in planning tasks where complete subgoal knowledge is known (or may be inferred).
 
-Rosman and Ramamoorthy~\cite{rosman2012good} provide a method for learning action priors over a set of related tasks. Specifically, a Dirichlet distribution over actions was computed by extracting the frequency that each action was optimal in each state for each previously solved task. On a novel task learned with Q-learning, a variant of an $\epsilon$-greedy policy was followed in which the agent selected a random action according to the Dirichlet distribution an $\epsilon$ fraction of the time, and the action with the max Q-value the rest of the time. To avoid dependence on a specific state space, the a Dirichlet distribution was created for each observation-action pair (where the observations were task independent) instead of each state-action pair.
+Rosman and Ramamoorthy~\citep{rosman2012good} provide a method for learning action priors over a set of related tasks. Specifically, a Dirichlet distribution over actions was computed by extracting the frequency that each action was optimal in each state for each previously solved task. On a novel task learned with Q-learning, a variant of an $\epsilon$-greedy policy was followed in which the agent selected a random action according to the Dirichlet distribution an $\epsilon$ fraction of the time, and the action with the max Q-value the rest of the time. To avoid dependence on a specific state space, the a Dirichlet distribution was created for each observation-action pair (where the observations were task independent) instead of each state-action pair.
 
 There are a few limitations of the actions priors work that affordance-aware planning does not possess: (1) the action priors can only be used with planning/learning algorithms that work well with an $\epsilon$-greedy rollout policy; (2) the priors are only utilized for fraction $\epsilon$ of the time steps, which is typically quite small; and (3) as variance in tasks explored increases, the priors will become more uniform. In contrast, affordance-aware planning can be used in a wide range of planning algorithms, benefits from the pruned action set in every time step, and the affordance defined lifted goal-description enables higher-level reasoning such as subgoal planning. However, in the future, the action set each affordance defines could be learned using a similar approach.
 
 \subsection{AFFORDANCES}
-Steedman~\citep{steedman02} performed work in formalizing affordances through the 
+\citep{steedman02} performed work in formalizing affordances through the 
 Linear Dynamic Event Calculus (LDEC). This work was aimed at linking events and 
 objects in the context of language and prelinguistic cognitive apparatuses, and is 
-partially related to the Frame Problem and symbolic planning. Koppula and Saxena~\citep{koppula13a} 
+partially related to the Frame Problem and symbolic planning. ~\citep{koppula13a} 
 developed an inference algorithm that enables a robotic agent to anticipate a human partner's 
-actions based on the robots perceived affordances. Additionally, Koppula, and Gupta~\citep{koppula13c} 
+actions based on the robots perceived affordances. Additionally, ~\citep{koppula13c} 
 performed work in predicting object affordances by treating humans as a latent variable in a given scene. 
-Gorniak~\citep{gorniak05} proposed the Affordance-Based-Concept, which targeted using the perception 
+~\citep{gorniak05} proposed the Affordance-Based-Concept, which targeted using the perception 
 of affordances as a means of determining the set of possible interactions an agent may engage with in a given context.
 This was then applied toward situated-language understanding and language-generating agents. Lastly, 
 many have used affordances as a paradigm for solving table top grasping problems ~\citep{pas13,sweeney07,detry09,montesano09}.
@@ -1243,7 +1233,7 @@ We proposed a novel approach to representing knowledge in terms of
 {\em affordances}~\citep{gibson77} that allows an agent to efficiently
 prune its action space based on domain knowledge. This led to the 
 proposal of affordance-aware planners, which improve on classic planners
-by providing a significant reduction in the number of state/action pairs the
+by providing a significant reduction in the number of state-action pairs the
 agent needs to evaluate in order to act optimally. We demonstrated the efficacy 
 as well as the portability of the affordance model by comparing standard paradigm
 planners to their affordance-aware equivalents in a series of challenging planning tasks in the Minecraft
