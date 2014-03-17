@@ -125,7 +125,7 @@ furnishes, either for good or ill.''
       be combined with approaches like subgoal planning for even
       greater performance gains. In Figure \ref{fig:epicworld}, we demonstrate the effectiveness of
       affordance-aware subgoal planning on a complicated task
-      in the Minecraft domain - a video is provided of the agent achieving this task \footnote{Watch at: https://vimeo.com/88689171}.
+      in the Minecraft domain - a video is provided of the agent achieving this task \footnote{Watch at: https://vimeo.com/88689171}.\stnote{Can we move figure 3 earlier to this reference?}
       We let other standard planners try to solve this task for several hours, but they all failed
       to converge on a policy (while affordance-aware subgoal planner found a near-optimal
       policy in less than 5 minutes).
@@ -186,7 +186,7 @@ distance from a pit of lava. We chose to give the Minecraft agent non-noisy sens
 
 As a running example, we will consider the problem of an agent
 attempting to cross a trench in a $4 \times 4 \times 2$ Minecraft
-world; a schematic appears in Figure~\ref{fig:bridgeworld}. The floor
+world; a schematic appears in Figure~\ref{fig:bridgeworld}.\stnote{Can we put a minecraft picture of the same scene next to it?} The floor
 (at $z = 1)$\footnote{The $z$-axis is the height of the Minecraft
   world. Similarly, the $x$-axis is its width and the $y$-axis is its
   length.} is composed of 8 solid blocks, with horizontal empty
@@ -237,9 +237,9 @@ effective action space.
 
 \section{BACKGROUND}
 
-\subsection{AFFORDANCES}
+%\subsection{AFFORDANCES} % stefie10: removing subsection to avoid the empty seciton header.
 
-The term ``Affordance'' was introduced by \citet{gibson77}. At a
+The term ``affordance'' was introduced by \citet{gibson77}. At a
 high-level, an affordance may be thought of as the
 action-possibilities that an environment presents to an agent. More
 specifically, Gibson proposed that an affordance be thought of as
@@ -720,6 +720,11 @@ Formally, in subgoal planning, the agent is given a set of subgoals, where each 
 SG = \langle x_k, x_l \rangle
 \end{align}
 
+\stnote{Isn't subgoal planning a directed graph?  Do the $\langle x_k, x_l\rangle>$'s
+  form a DAG and we search in the dag?  In that case I think this
+  defintiion is right but missing some of the intuition of subgoals,
+  and a few setences about the graph nature would help clarify that. }
+
 where $x_l$ is the effect of some action sequence performed on 
 a state in which $x_k$ is true. Thus, subgoal planning requires 
 that we perform high-level planning in subgoal space, and low-level 
@@ -811,8 +816,7 @@ tested standard planners from each planning paradigm: Value Iteration,
 RTDP, and Subgoal planning (with RTDP as the low-level planner). These
 planners were compared with {\it affordance-aware} versions of each
 algorithm tasked with the same set of problems. We selected the
-affordances provided from our background knowledge of the domain. The
-agent was given a single knowledge base of 15 affordances for all of the tasks.
+affordances provided from our background knowledge of the domain.  We gave the agent  a single knowledge base of 15 affordances for all of the tasks.
 Our experiments consisted of a variety of tasks, ranging from basic path planning, to baking bread,
 to opening doors and jumping over trenches.  We also tested each
 planner on worlds of varying size and difficulty to demonstrate the
@@ -827,7 +831,7 @@ using breadth-first search; which only took a small fraction of the
 time compared to the total low-level planning and therefore is not
 reported.
 
-The reward function was defined as $-1$ for all transitions, except
+The reward function is $-1$ for all transitions, except
 transitions to states in which the agent was on lava, which returned 
 $-200$. The goal was set to be terminal. The discount
 factor was set to $\lambda = 0.99$. For all experiments, the agent was given stochastic actions. Specifically, actions associated with a direction (e.g. movement, block placement, jumping, etc.), had a small probability ($0.1$) of being applied in the reverse direction.
@@ -1045,19 +1049,22 @@ state faster than it would take RTDP to perform enough rollouts to find it.
 Table~\ref{table:noblocks} shows the results of running the standard
 planners and their affordance-aware counterparts on tasks that do {\it
   not} require the use of block placement and destruction.  In these
-cases, the affordance awareness did not consistently improve any of the planners
-from their baseline versions. Affordances are mostly beneficial when
-they allow an agent to prune actions which could combinatorially alter
-the state space. More generally, If the action set is relatively small 
-and the actions don't significantly impact the shape of the state space 
-with each application, then affordances are not likely to help. Since
-the tasks reported in Table~\ref{table:noblocks} only required
-the agent to move itself through the environment, rather than alter the
-environment, we did not expect affordances to improve performance.  
+cases, the affordance awareness did not consistently improve any of
+the planners from their baseline versions. Affordances are mostly
+beneficial when they allow an agent to prune actions which could
+combinatorially alter the state space. More generally, if the action
+set is relatively small and the actions do not significantly impact
+the shape of the state space with each application, then affordances
+will not increase speed of planning.  We also collected data on the
+amount of accumulated reward that resulted from following each
+algorithm's policy, but found that the difference in accumulated
+reward across planners was negligible.
 
-We also collected data on the amount of accumulated reward that resulted
-from following each algorithm's policy, but found that the difference
-in accumulated reward across planners was negligible.
+%Since
+%the tasks reported in Table~\ref{table:noblocks} only required
+%the agent to move itself through the environment, rather than alter the
+%environment, we did not expect affordances to improve performance.  
+
 
 %\dnote{Part of me thinks that we should come up with a term for these
 %  action types (e.g. ``harsh" actions) that have this combinatoric
@@ -1094,14 +1101,13 @@ One of the most compelling results is the scope of task that affordance-aware pl
 planning, this problem was solved in under five minutes, whereas other non-affordance-aware planning algorithms did not complete even after several hours on the same computer.
 
 \section{Related Work}
-In the past, numerous different forms of background knowledge have been used to 
-accelerate planning algorithms. In section \ref{sec:subgoals}, subgoal
-planning was discussed and in our experimental results, was compared against affordance-aware planning. 
-In this section, we discuss the differences between affordance-aware planning and other
-forms of background knowledge that have been used to accelerate planning.
-Specifically, we discuss heuristics, temporally extended actions, and related action pruning work.
-Additionally, we elaborate on other recent attempts of employing Gibson's notion of an affordance 
-to the problems of computer science and robotics.
+In this section, we discuss the differences between
+affordance-aware planning and other forms of background knowledge that
+have been used to accelerate planning.  Specifically, we discuss
+heuristics, temporally extended actions, and related action pruning
+work.  Additionally, we elaborate on other recent attempts of
+employing Gibson's notion of an affordance to the problems of computer
+science and robotics.
 
 
 \subsection{HEURISTICS}
