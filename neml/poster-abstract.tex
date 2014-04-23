@@ -1,0 +1,69 @@
+\documentclass[]{article} 
+
+\usepackage{subfigure}
+\usepackage[numbers,sort]{natbib}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{ifthen,version}
+\newboolean{include-notes}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{bm}
+%\usepackage{adjustbox}
+\usepackage[usenames,dvipsnames]{color}
+\newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{ST: #1}}}
+\newcommand{\jmnote}[1]{\textcolor{Green}{\textbf{JM: #1}}}
+\newcommand{\dnote}[1]{\textcolor{Orange}{\textbf{D: #1}}}
+\newcommand{\gnote}[1]{\textcolor{Red}{\textbf{G: #1}}}
+
+
+\title{\textbf{Learning Dirichlet Priors for \\Affordance Aware Planning}}
+
+\begin{document}
+\author{
+\textbf{David Abel, Gabriel Barth-Maron} \\ \textbf{James MacGlashan, Stefanie Tellex} \\
+Brown University \\
+Providence, RI, USA \\
+\texttt{\{dabel, gabrielbm, jmacglashan, stefie10\}@cs.brown.edu}}
+
+\date{}
+\maketitle
+
+\begin{center}
+\section*{Abstract}
+\end{center}
+Planning algorithms for non-deterministic domains are often
+intractable in large state spaces due to the well-known ``curse of
+dimensionality.'' In previous work, we introduced a novel, state- and reward- general approach to limiting the
+branching factor in large domains by reasoning about the
+domain in terms of {\em affordances}~\citep{gibson77}.  Our affordance
+formalism can be coupled with a variety of planning frameworks to
+create ``affordance aware planning,'' allowing an agent to efficiently
+search the state-space by focusing on relevant action possibilities. This corresponds
+to highlighting useful actions on a state by state basis when solving an MDP.
+
+The relevant actions that are returned by an affordance are a subset of
+the total available actions as defined by a Markov Decision Process (MDP). The probability
+that a set of actions is returned is given by a dirichlet-multinomial distribution, where the parameter
+$N$ (the number of actions in the set) is a random variable that determines the size of the action set to be returned.
+
+Previously, we provided planners with optimal affordances, leading to massive
+speed ups in planning compared to their affordance aware counterparts.  To improve 
+the transferability of affordance-aware planning, we propose learning affordances through 
+a scaffolding process~\citep{bruner76} to avoid hand crafting knowledge. We randomly generate a large number of 
+simplified state spaces that are representative of more complicated tasks the agent must form a policy over.
+Next, we form policies over each of the simplified state spaces and use these policies to create the 
+parameters $\boldsymbol{\alpha}$ for the  dirichlet-multinomial distribution.
+Additionally, we use a set of optimal trajectories taken from these policies to form a dirichlet distribution over $N$.
+
+We are still collecting experimental data on hard-coded vs learned affordances. We believe that the learned
+affordances will perform slightly worse than hand crafted affordances, and substantially better than planners
+without affordances. 
+
+{\small
+\bibliographystyle{plainnat}
+\bibliography{../the_paper/uai/main}  
+}
+
+\end{document}

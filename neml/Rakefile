@@ -1,0 +1,9 @@
+task :default do
+  sh "pdflatex poster-abstract.tex"
+  sh "pdflatex poster-abstract.tex"
+  sh "bibtex poster-abstract"
+  sh "pdflatex poster-abstract.tex"
+end
+task :clean do
+  sh "rm -rf *.aux *.bbl *.blg *.log"
+end
