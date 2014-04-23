@@ -44,18 +44,19 @@ search the state-space by focusing on relevant action possibilities. This corres
 to highlighting useful actions on a state by state basis when solving an MDP.
 
 The relevant actions that are returned by an affordance are a subset of
-the total available actions as defined by a Markov Decision Process (MDP). The probability
+the total available actions as defined by a Markov Decision Process (MDP). \jmnote{It might be better to only say that it's drawn from a probaility distribution, since in the case of determinisitic affordances currently tested, it's not a Dirichelt. Then, when you talk about learnign you can say a Dirichlet is used.} The probability
 that a set of actions is returned is given by a dirichlet-multinomial distribution, where the parameter
 $N$ (the number of actions in the set) is a random variable that determines the size of the action set to be returned.
 
-Previously, we provided planners with optimal affordances, leading to massive
-speed ups in planning compared to their affordance aware counterparts.  To improve 
+Previously, we provided planners with optimal affordances \jmnote{what an optimal affordance is will be unclear; maybe just say expert provided affordances?}, leading to massive
+speed ups in planning compared to the performance of the algorithms without affordances.  To improve 
 the transferability of affordance-aware planning, we propose learning affordances through 
-a scaffolding process~\citep{bruner76} to avoid hand crafting knowledge. We randomly generate a large number of 
-simplified state spaces that are representative of more complicated tasks the agent must form a policy over.
+a scaffolding process~\citep{bruner76} to avoid hand crafting knowledge \jmnote{I'm not sure I'd say that the purpose of learning affordances is to improve tansferability, but rather to remove the expert from the equation}. We randomly generate a large number of 
+simplified state spaces that are representative of more complicated tasks the agent must form a policy over. \jmnote{maybe instead: We randomly generate a large number of 
+simplified environments for possible tasks the agent will need to solve that are representative of the more complicated environments in which the agent will ultimatly need to solve the tasks.}
 Next, we form policies over each of the simplified state spaces and use these policies to create the 
 parameters $\boldsymbol{\alpha}$ for the  dirichlet-multinomial distribution.
-Additionally, we use a set of optimal trajectories taken from these policies to form a dirichlet distribution over $N$.
+Additionally, we use a set of optimal trajectories taken from these policies to form a dirichlet distribution over $N$. \jmnote{I'm not sure it will be entirely clear what you're doing here. Something probably needs to be said about looking at the frequency of optimal actions for each possible affordance to model what the important actions are. I'm also not sure I understand why trajectories are analyzed {\em} in addition to the policy, since the former is a superset of the latter.}
 
 We are still collecting experimental data on hard-coded vs learned affordances. We believe that the learned
 affordances will perform slightly worse than hand crafted affordances, and substantially better than planners
