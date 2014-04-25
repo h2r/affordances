@@ -17277,3 +17277,131 @@ java.io.IOException: Input/output error
 2014-03-11 22:27:24 [INFO] Althonse lost connection: disconnect.endOfStream
 2014-03-11 22:27:24 [INFO] §eAlthonse left the game.
 2014-03-11 22:31:54 [INFO] Stopping server
+2014-03-12 11:05:57 [INFO] Starting minecraft server version 1.6.4
+2014-03-12 11:05:57 [INFO] Loading properties
+2014-03-12 11:05:57 [INFO] Default game type: CREATIVE
+2014-03-12 11:05:57 [INFO] Generating keypair
+2014-03-12 11:05:58 [INFO] Starting Minecraft server on *:25565
+2014-03-12 11:05:58 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-3-g9532cb6-b2889jnks (MC: 1.6.4) (Implementing API version 1.6.4-R0.1-SNAPSHOT)
+2014-03-12 11:05:58 [INFO] Preparing level "world"
+2014-03-12 11:05:58 [INFO] Preparing start region for level 0 (Seed: -9012370949578142817)
+2014-03-12 11:05:58 [WARNING] ----- Bukkit Auto Updater -----
+2014-03-12 11:05:58 [WARNING] Your version of CraftBukkit is out of date. Version 1.6.4-R2.0 (build #2918) was released on Wed Oct 30 23:39:40 EDT 2013.
+2014-03-12 11:05:58 [WARNING] Details: /downloads/craftbukkit/view/02389_1.6.4-R2.0/
+2014-03-12 11:05:58 [WARNING] Download: /downloads/craftbukkit/get/02389_1.6.4-R2.0/craftbukkit.jar
+2014-03-12 11:05:58 [WARNING] ----- ------------------- -----
+2014-03-12 11:05:59 [INFO] Preparing start region for level 1 (Seed: -9012370949578142817)
+2014-03-12 11:05:59 [INFO] Preparing start region for level 2 (Seed: -9012370949578142817)
+2014-03-12 11:05:59 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2014-03-12 11:05:59 [INFO] Done (1.606s)! For help, type "help" or "?"
+2014-03-12 11:06:02 [INFO] aye_priori[/127.0.0.1:57109] logged in with entity id 93 at ([world] 151.52592031866743, 84.001, 915.131715295538)
+2014-03-12 11:06:03 [INFO] Althonse[/127.0.0.1:57112] logged in with entity id 101 at ([world] 150.3431502469596, 89.90041406604668, 925.1563528040081)
+2014-03-12 11:06:05 [INFO] <Althonse> or[m
+2014-03-12 11:06:05 [INFO] aye_priori issued server command: /tp aye_priori 155.3 84.0 922.5
+2014-03-12 11:06:05 [INFO] aye_priori: Teleported aye_priori to 155.30, 84.00, 922.50[m
+2014-03-12 11:06:05 [INFO] aye_priori issued server command: /time set 10000
+2014-03-12 11:06:05 [INFO] aye_priori: Set time to 10000[m
+2014-03-12 11:07:32 [INFO] <Althonse> or[m
+2014-03-12 11:07:32 [INFO] aye_priori issued server command: /tp aye_priori 155.3 84.0 922.5
+2014-03-12 11:07:32 [INFO] aye_priori: Teleported aye_priori to 155.30, 84.00, 922.50[m
+2014-03-12 11:07:32 [INFO] aye_priori issued server command: /time set 10000
+2014-03-12 11:07:32 [INFO] aye_priori: Set time to 10000[m
+2014-03-12 11:08:00 [INFO] Althonse lost connection: disconnect.endOfStream
+2014-03-12 11:08:00 [INFO] §eAlthonse left the game.
+2014-03-12 11:13:07 [INFO] aye_priori lost connection: disconnect.endOfStream
+2014-03-12 11:13:07 [INFO] §eaye_priori left the game.
+2014-03-12 11:13:09 [INFO] Stopping server
+2014-03-12 12:07:12 [INFO] Starting minecraft server version 1.6.4
+2014-03-12 12:07:12 [INFO] Loading properties
+2014-03-12 12:07:12 [INFO] Default game type: CREATIVE
+2014-03-12 12:07:12 [INFO] Generating keypair
+2014-03-12 12:07:12 [INFO] Starting Minecraft server on *:25565
+2014-03-12 12:07:12 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-3-g9532cb6-b2889jnks (MC: 1.6.4) (Implementing API version 1.6.4-R0.1-SNAPSHOT)
+2014-03-12 12:07:12 [INFO] Preparing level "world"
+2014-03-12 12:07:12 [INFO] Preparing start region for level 0 (Seed: -9012370949578142817)
+2014-03-12 12:07:12 [WARNING] ----- Bukkit Auto Updater -----
+2014-03-12 12:07:12 [WARNING] Your version of CraftBukkit is out of date. Version 1.6.4-R2.0 (build #2918) was released on Wed Oct 30 23:39:40 EDT 2013.
+2014-03-12 12:07:12 [WARNING] Details: /downloads/craftbukkit/view/02389_1.6.4-R2.0/
+2014-03-12 12:07:12 [WARNING] Download: /downloads/craftbukkit/get/02389_1.6.4-R2.0/craftbukkit.jar
+2014-03-12 12:07:12 [WARNING] ----- ------------------- -----
+2014-03-12 12:07:13 [INFO] Preparing start region for level 1 (Seed: -9012370949578142817)
+2014-03-12 12:07:13 [INFO] Preparing start region for level 2 (Seed: -9012370949578142817)
+2014-03-12 12:07:13 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2014-03-12 12:07:13 [INFO] Done (1.487s)! For help, type "help" or "?"
+2014-03-12 12:07:19 [INFO] aye_priori[/127.0.0.1:57296] logged in with entity id 85 at ([world] 155.3, 84.001, 922.5)
+2014-03-12 12:07:19 [INFO] Althonse [/127.0.0.1:57299] lost connection
+2014-03-12 12:07:22 [INFO] Althonse [/127.0.0.1:57302] lost connection
+2014-03-12 12:07:31 [INFO] Althonse [/127.0.0.1:57303] lost connection
+2014-03-12 12:07:35 [INFO] Stopping server
+2014-03-12 12:07:37 [INFO] Starting minecraft server version 1.6.4
+2014-03-12 12:07:37 [INFO] Loading properties
+2014-03-12 12:07:37 [INFO] Default game type: CREATIVE
+2014-03-12 12:07:37 [INFO] Generating keypair
+2014-03-12 12:07:37 [INFO] Starting Minecraft server on *:25565
+2014-03-12 12:07:37 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-3-g9532cb6-b2889jnks (MC: 1.6.4) (Implementing API version 1.6.4-R0.1-SNAPSHOT)
+2014-03-12 12:07:37 [INFO] Preparing level "world"
+2014-03-12 12:07:37 [INFO] Preparing start region for level 0 (Seed: -9012370949578142817)
+2014-03-12 12:07:37 [WARNING] ----- Bukkit Auto Updater -----
+2014-03-12 12:07:37 [WARNING] Your version of CraftBukkit is out of date. Version 1.6.4-R2.0 (build #2918) was released on Wed Oct 30 23:39:40 EDT 2013.
+2014-03-12 12:07:37 [WARNING] Details: /downloads/craftbukkit/view/02389_1.6.4-R2.0/
+2014-03-12 12:07:37 [WARNING] Download: /downloads/craftbukkit/get/02389_1.6.4-R2.0/craftbukkit.jar
+2014-03-12 12:07:37 [WARNING] ----- ------------------- -----
+2014-03-12 12:07:38 [INFO] Preparing start region for level 1 (Seed: -9012370949578142817)
+2014-03-12 12:07:38 [INFO] Preparing start region for level 2 (Seed: -9012370949578142817)
+2014-03-12 12:07:38 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2014-03-12 12:07:38 [INFO] Done (1.112s)! For help, type "help" or "?"
+2014-03-12 12:07:40 [INFO] Althonse [/127.0.0.1:57306] lost connection
+2014-03-12 12:08:08 [INFO] Althonse [/127.0.0.1:57326] lost connection
+2014-03-12 12:08:28 [INFO] Starting minecraft server version 1.6.4
+2014-03-12 12:08:28 [INFO] Loading properties
+2014-03-12 12:08:28 [INFO] Default game type: CREATIVE
+2014-03-12 12:08:28 [INFO] Generating keypair
+2014-03-12 12:08:28 [INFO] Starting Minecraft server on *:25565
+2014-03-12 12:08:29 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-3-g9532cb6-b2889jnks (MC: 1.6.4) (Implementing API version 1.6.4-R0.1-SNAPSHOT)
+2014-03-12 12:08:29 [INFO] Preparing level "world"
+2014-03-12 12:08:29 [INFO] Preparing start region for level 0 (Seed: -9012370949578142817)
+2014-03-12 12:08:29 [WARNING] ----- Bukkit Auto Updater -----
+2014-03-12 12:08:29 [WARNING] Your version of CraftBukkit is out of date. Version 1.6.4-R2.0 (build #2918) was released on Wed Oct 30 23:39:40 EDT 2013.
+2014-03-12 12:08:29 [WARNING] Details: /downloads/craftbukkit/view/02389_1.6.4-R2.0/
+2014-03-12 12:08:29 [WARNING] Download: /downloads/craftbukkit/get/02389_1.6.4-R2.0/craftbukkit.jar
+2014-03-12 12:08:29 [WARNING] ----- ------------------- -----
+2014-03-12 12:08:29 [INFO] Preparing start region for level 1 (Seed: -9012370949578142817)
+2014-03-12 12:08:29 [INFO] Preparing start region for level 2 (Seed: -9012370949578142817)
+2014-03-12 12:08:30 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2014-03-12 12:08:30 [INFO] Done (1.127s)! For help, type "help" or "?"
+2014-03-12 12:08:50 [INFO] Althonse [/127.0.0.1:57348] lost connection
+2014-03-12 12:09:32 [INFO] Althonse [/127.0.0.1:57369] lost connection
+2014-03-12 12:09:35 [INFO] Stopping server
+2014-04-20 10:46:04 [INFO] Starting minecraft server version 1.6.4
+2014-04-20 10:46:04 [INFO] Loading properties
+2014-04-20 10:46:04 [INFO] Default game type: CREATIVE
+2014-04-20 10:46:04 [INFO] Generating keypair
+2014-04-20 10:46:04 [INFO] Starting Minecraft server on *:25565
+2014-04-20 10:46:05 [INFO] This server is running CraftBukkit version git-Bukkit-1.6.2-R1.0-3-g9532cb6-b2889jnks (MC: 1.6.4) (Implementing API version 1.6.4-R0.1-SNAPSHOT)
+2014-04-20 10:46:05 [INFO] Preparing level "world"
+2014-04-20 10:46:05 [INFO] Preparing start region for level 0 (Seed: -9012370949578142817)
+2014-04-20 10:46:05 [WARNING] ----- Bukkit Auto Updater -----
+2014-04-20 10:46:05 [WARNING] Your version of CraftBukkit is out of date. Version 1.6.4-R2.0 (build #2918) was released on Wed Oct 30 23:39:40 EDT 2013.
+2014-04-20 10:46:05 [WARNING] Details: /downloads/craftbukkit/view/02389_1.6.4-R2.0/
+2014-04-20 10:46:05 [WARNING] Download: /downloads/craftbukkit/get/02389_1.6.4-R2.0/craftbukkit.jar
+2014-04-20 10:46:05 [WARNING] ----- ------------------- -----
+2014-04-20 10:46:06 [INFO] Preparing start region for level 1 (Seed: -9012370949578142817)
+2014-04-20 10:46:06 [INFO] Preparing start region for level 2 (Seed: -9012370949578142817)
+2014-04-20 10:46:06 [INFO] Server permissions file permissions.yml is empty, ignoring it
+2014-04-20 10:46:06 [INFO] Done (1.476s)! For help, type "help" or "?"
+2014-04-20 10:46:08 [INFO] aye_priori [/127.0.0.1:59994] lost connection
+2014-04-20 10:46:13 [INFO] aye_priori [/127.0.0.1:59997] lost connection
+2014-04-20 10:46:50 [INFO] aye_priori [/127.0.0.1:59998] lost connection
+2014-04-20 10:48:41 [SEVERE] null
+java.io.IOException: Input/output error
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:272)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:235)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:254)
+	at java.io.FilterInputStream.read(FilterInputStream.java:83)
+	at org.bukkit.craftbukkit.libs.jline.console.ConsoleReader$1.read(ConsoleReader.java:167)
+	at org.bukkit.craftbukkit.libs.jline.internal.InputStreamReader.read(InputStreamReader.java:267)
+	at org.bukkit.craftbukkit.libs.jline.internal.InputStreamReader.read(InputStreamReader.java:204)
+	at org.bukkit.craftbukkit.libs.jline.console.ConsoleReader.readCharacter(ConsoleReader.java:995)
+	at org.bukkit.craftbukkit.libs.jline.console.ConsoleReader.readLine(ConsoleReader.java:1167)
+	at net.minecraft.server.v1_6_R3.ThreadCommandReader.run(ThreadCommandReader.java:31)
