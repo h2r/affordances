@@ -7,3 +7,10 @@ end
 task :clean do
   sh "rm -rf *.aux *.bbl *.blg *.log"
 end
+
+
+task :aff do
+  sh "pdflatex aff-learning.tex"
+  sh "pdflatex aff-learning.tex"
+  sh "pdflatex aff-learning.tex"
+end
