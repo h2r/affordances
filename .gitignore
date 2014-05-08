@@ -11,3 +11,4 @@ minecraft_api/world_the_end/
 *.blg
 *~
 *.key
+*.out

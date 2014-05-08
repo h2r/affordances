@@ -2,10 +2,39 @@
 \input{p.tex}
 \title{Soft Affordance Math}
 \usepackage{fullpage}
+\usepackage{natbib}
 \date{}
 \begin{document}
 
 \maketitle
+
+\section{Soft Affordances}
+
+Our aim is to estimate a distribution over subsections of actions,
+$\mathcal{A} \subset A$, where $A$ are actions defined in the MDP
+given the current state, $s$, and known affordances, $\Delta_0 \dots
+\Delta_N$.
+
+\begin{align}
+P(\mathcal{A} | s, \Delta_0 \dots \Delta_N)
+\end{align}
+
+\noindent We assume that each affordance $\Delta_i$ contributes a subset of
+actions, $\mathcal{A}_i$:
+\begin{align}
+P(\mathcal{A}_0 \cup \mathcal{A}_N | s, \Delta_u \dots \Delta_N)
+\intertext{We approximate this term assuming the sets $\mathcal{A}_i$
+  are disjoint:} \sum_i P(\mathcal{A}_i | s, \Delta_i)
+\end{align}
+
+
+\noindent Now we focus on estimating each term.  Dirichelet stuff goes here: 
+\begin{align}
+P(\mathcal{A}_i | s, \Delta_i) = \mbox{Dirichelte stuff}
+\end{align}
+
+
+\section{Specifying Expert Affordances}
 
 \noindent \texttt{Input:} Everything in {\bf bold} (and an optional parameter $c$ for case $1$, that specifies the emphasis of the given priorities (multiply each count given to each Dirichlet by $c$))
 
@@ -38,5 +67,12 @@
 \vdots \\
 \Delta_k(\PR{n_k}) &= \left\{\{a_1,\boldsymbol{0.1}\},\{a_2,\boldsymbol{0.6}\}, \ldots, \{a_{|A| - 1},\boldsymbol{0}\}, \{a_{|A|},\boldsymbol{0}\} \right\} \\
 \end{align*}
+
+\citet{tellex11}
+
+{\small
+\bibliographystyle{plainnat}
+\bibliography{main}  
+}
 
 \end{document}
