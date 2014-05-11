@@ -16,22 +16,30 @@ given the current state, $s$, and known affordances, $\Delta_0 \dots
 \Delta_N$.
 
 \begin{align}
-P(\mathcal{A} | s, \Delta_0 \dots \Delta_N)
+P(\mathcal{A}^* | s, \Delta_0 \dots \Delta_N)
 \end{align}
 
 \noindent We assume that each affordance $\Delta_i$ contributes a subset of
-actions, $\mathcal{A}_i$:
+actions, $\mathcal{A'}_i$:
 \begin{align}
-P(\mathcal{A}_0 \cup \mathcal{A}_N | s, \Delta_u \dots \Delta_N)
+P(\mathcal{A}'_0 \cup \mathcal{A}'_N | s, \Delta_0 \dots \Delta_N)
 \intertext{We approximate this term assuming the sets $\mathcal{A}_i$
-  are disjoint:} \sum_i P(\mathcal{A}_i | s, \Delta_i)
+  are disjoint:} \sum_i P(\mathcal{A}'_i | s, \Delta_i)
 \end{align}
 
 
 \noindent Now we focus on estimating each term.  Dirichelet stuff goes here: 
 \begin{align}
-P(\mathcal{A}_i | s, \Delta_i) = \mbox{Dirichelte stuff}
+%P(\mathcal{A}_i | s, \Delta_i) = \mbox{Dirichelte stuff}
+P(\mathcal{A}_i \mid s,\Delta_i) = P(\mathcal{A} \mid n, \lambda) = P(\lambda \mid a) P (n \mid \beta)
 \end{align}
+
+Where:
+\begin{align*}
+%P(\mathcal{A}_i | s, \Delta_i) = \mbox{Dirichelte stuff}
+P(\lambda \mid \alpha) &= DirMult(\alpha) \\
+P (n \mid \beta) &= Dir(\beta) \\
+\end{align*}
 
 
 \section{Specifying Expert Affordances}
