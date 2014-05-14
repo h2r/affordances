@@ -4,6 +4,7 @@
 \usepackage{algpseudocode}
 \usepackage{graphicx}
 \usepackage{subfloat}
+\usepackage{amsmath}
 
 % numbers option provides compact numerical references in the text. 
 \usepackage[numbers]{natbib}
@@ -291,7 +292,6 @@ factor was set to $\lambda = 0.99$. For all experiments, the agent was given sto
 
 \subsection{Results}
 
-% ==== NON-DETERMINISTIC RESULTS =====
 \begin{table}
 \centering
 \caption{Expert Affordance Results}
@@ -334,13 +334,102 @@ tasks.
 \section{Learning-Affordances}
 \label{sec:learning-affordances}
 
-\subsection{Extended Formalism}
+We have demonstrated that providing an (OO-)MDP solver with
+a knowledge base of affordances can lead to dramatic speed ups in
+planning. However, relying on experts to hand craft affordances is
+not satisfying. Instead, we would like to have the agent learn these affordances
+through experience to remove this strict dependence on experts. Here, we propose
+a methodology for learning affordances directly, with some preliminary results
+indicating the effectiveness of the system.
 
 \subsection{Learning Process}
 
+First, we require a slightly different formalism. If we kept the same formalism as in the expert
+case, then our learned affordances would often completely get rid of many actions. Since the
+learned affordances are likely more prone to make mistakes, we can't prune actions in this harsh way,
+as we will lose optimality guarantees of the OO-MDP solver.
+
+\begin{algorithm}
+  \caption{$\Delta_i.getActions(s)$}
+  \begin{algorithmic}[1]
+    \State $\lambda \leftarrow DirMult(\Delta_i.\alpha)$
+    \State $N \leftarrow Dir(\Delta_i.\beta)$
+    \For {$1$ to $N$}
+    \State $\Delta_i.\mathcal{A}' \leftarrow \lambda$
+    \EndFor \\
+    \Return $\Delta_i.\mathcal{A}'$
+  \end{algorithmic}
+  \label{alg:prune_actions}
+\end{algorithm}
+
+
+
+Instead, for a given state, we solve for the probability of getting a particular action set $\mathcal{A}^*$, and sample
+from this distribution.
+\begin{equation}
+\text{Pr}(\mathcal{A}^* | s, \Delta_0 \dots \Delta_N)
+\end{equation}
+We know each affordance contributes a set $\mathcal{A}'$ in each state:
+\begin{align}
+\text{Pr}(\mathcal{A}'_0 \cup \mathcal{A}'_N | s, \Delta_0 \dots \Delta_N)
+\intertext{We approximate this term assuming the sets $\mathcal{A}_i'$
+  are disjoint:} \sum_i \text{Pr}(\mathcal{A}'_i | s, \Delta_i)
+\end{align}
+
+For each affordance, to get an action set $\mathcal{A}'$, we form a Dirichlet Multinomial
+over actions ($\lambda$), and a Dirichlet over the size ($N$) of each action set:
+
+\begin{equation}
+\text{Pr}(\lambda \mid \alpha) = DirMult(\alpha) \\
+\end{equation}
+\begin{equation}
+\text{Pr}(N \mid \beta) = Dir(\beta)
+\end{equation}
+
+Then, for each affordance we sample from our distribution over $N$ to get a candidate action set size, $n$, and then
+take $n$ samples from our distribution over $\lambda$ to get a candidate action set $\mathcal{A}'$.
+
+\begin{equation}
+\text{Pr}(\mathcal{A}_i \mid s,\Delta_i) = \text{Pr}(\mathcal{A}_i' \mid N, \lambda) = \text{Pr}(\lambda \mid \alpha) \text{Pr}(N \mid \beta)
+\end{equation}
+\subsection{Computing $\alpha$ and $\beta$}
+
+We require that an expert provide a set $\mathcal{P}$ of propositional functions
+for the domain of relevance (i.e. Minecraft). Additionally, they must specify a set
+$\mathcal{G} \subset \mathcal{P}$, that indicates which PropositionalFunctions may serve as goals.
+We form a set of candidate affordances $\Delta$ with every combination of $\langle p, g \rangle$, for $p \in \mathcal{P}$ and $g \in \mathcal{G}$.
+
+Then, we randomly generate a large number of small state spaces (typically on the order of several thousand), annotated with their
+lifted goal description $g \in \mathcal{G}$. We solve the OO-MDP in each state space and get an optimal policy $\pi_j$. For each optimal policy,
+we count the number of policies that used each action when each affordance was activated\footnote{An affordance is `activated' when its predicate is true
+and the lifted goal description $g$ matches the agent's current goal}. These counts represent $\alpha$. Then, we count the number of unique actions
+used by each policy, representing $\beta$.
+
+
 \subsection{Experiments}
 
+We tested our learning procedure on several simple worlds of varying size. We compared the performance of RTDP solving the OO-MDP
+in each of these worlds with (1) No affordances, (2) Expert provided affordances, and (3) Learned affordances. 
+
 \subsection{Results}
+
+Table \ref{table:learned-results} indicates the average number of bellman updates required by RTDP to solve the OO-MDP
+in each of the four candidate worlds. The learned affordances clearly improved on standard RTDP by a significant margin, though
+there is still a substantial gap between the learned affordance performance and that of the expert affordances. This indicates that
+there is likely a lot to improve in the learning process.
+
+\begin{table}
+\centering
+\caption{Learned Affordance Results}
+\begin{tabular}{ l || c c c }
+  & No Affordances & Learned & Expert  \\ \hline
+  \texttt{Tiny World}  		& 	879		&	576	&	 94	\\
+  \texttt{Small World}  	& 	1460		&	1159	&	321  \\
+  \texttt{Medium World}  	& 	3993		&	2412	&	693  \\
+  \texttt{Large World}  	& 	8344		&	5100	&	1458
+\end{tabular}
+\label{table:learned-results}
+\end{table}
 
 
 % ====== Section: Conclusion ======
