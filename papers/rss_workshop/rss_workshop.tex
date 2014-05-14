@@ -1,5 +1,9 @@
 \documentclass[conference]{IEEEtran}
 \usepackage{times}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{graphicx}
+\usepackage{subfloat}
 
 % numbers option provides compact numerical references in the text. 
 \usepackage[numbers]{natbib}
@@ -7,20 +11,20 @@
 \usepackage[bookmarks=true]{hyperref}
 
 \pdfinfo{
-   /Author (Homer Simpson)
-   /Title  (Robots: Our new overlords)
+   /Author (David Abel  & Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex)
+   /Title  (Affordace-Aware Planning)
    /CreationDate (D:20101201120000)
-   /Subject (Robots)
-   /Keywords (Robots;Overlords)
+   /Subject (Planning, Affordances, Sequential Decision Making)
+   /Keywords (Planning, Affordance, MDP, Learning)
 }
 
 \begin{document}
 
 % paper title
-\title{Template paper for the \\Robotics: Science and Systems Conference}
+\title{Affordance-Aware Planning}
 
 % You will get a Paper-ID when submitting a pdf file to the conference system
-\author{Author Names Omitted for Anonymous Review. Paper-ID [add your ID here]}
+\author{Paper-ID [add your ID here]}
 
 %\author{\authorblockN{Michael Shell}
 %\authorblockA{School of Electrical and\\Computer Engineering\\
@@ -65,25 +69,283 @@
 \maketitle
 
 \begin{abstract}
-The abstract goes here.
+Planning algorithms for non-deterministic domains are often
+intractable in large state spaces due to the well-known ``curse of
+dimensionality.'' Existing approaches to address this problem fail to
+prevent the planner from considering many actions which would be
+obviously irrelevant to a human solving the same problem. We
+introduce a novel, state- and reward- general approach to pruning
+actions while solving an MDP by encoding knowledge about the
+domain in terms of {\em affordances}~\citep{gibson77}. This pruning 
+significantly reduces the number of state-action pairs the agent needs 
+to evaluate in order to act optimally. We demonstrate our approach 
+in the Minecraft domain, showing significant increase in speed and 
+reduction in state-space exploration compared to the standard 
+versions of these algorithms. Further, we provide a learning framework
+based on simulation through scaffolding that enables an agent
+to learn affordances through experience, removing the dependence
+on the expert. We provide preliminary results indicating that the learning
+process effectively produces affordances that help solve an MDP faster.
 \end{abstract}
 
 \IEEEpeerreviewmaketitle
 
+% ====== Section: Introduction ======
 \section{Introduction}
-This demo file is intended to serve as a ``starter file" for the
-Robotics: Science and Systems conference papers produced under \LaTeX\
-using IEEEtran.cls version 1.7a and later.  
+\label{sec:introduction}
+As robots move out of the lab and into the real world, planning
+algorithms need to scale to domains of increased noise, size, and
+complexity.  A classic formalization of this problem is a stochastic
+sequential decision making problem in which the agent must find a
+policy (a mapping from states to actions) for some subset of the state
+space that enables the agent to achieve a goal from some initial
+state, while minimizing any costs along the way.
+Increases in planning problem size and complexity directly correspond
+to an explosion in the state-action space. Current approaches to solving 
+sequential decision making problems in the face of uncertainty cannot tackle these problems 
+as the state-action space becomes too large~\citep{grounds05}.
 
-\section{Section}
+To address this state-space explosion, prior work has explored adding
+knowledge to the planner to solve problems in these
+massive domains, such as options~\citep{sutton99} and
+macroactions~\citep{Botea:2005kx,Newton:2005vn}. However, these
+approaches add knowledge in the form of additional high-level actions
+to the agent, which {\em increases} the size of the state-action space
+(while also allowing the agent to search more deeply within the
+space).  The resulting augmented space is even larger, which can have
+the paradoxical effect of increasing the search time for a good
+policy. Further, other approaches fall short of learning useful, transferable knowledge,
+either due to complexity or lack of generalizability (cite? where is this stated? George?).
 
-Section text here. 
+Instead, we propose a formalization of {\em affordances} \citep{gibson77} that enables an agent to focus on
+problem-specific aspects of the environment. Our approach avoids exploration of irrelevant parts of the 
+state-action space, which leads to dramatic speedups in planning.
 
-\subsection{Subsection Heading Here}
-Subsection text here.
+We formalize the notion of an affordance as a piece of planning
+knowledge provided to an agent operating in a Markov Decision
+Process (MDP). Affordances are not specific to a particular reward 
+function or state space, and thus, provide the agent with transferable 
+knowledge that is effective in a wide variety of problems. Because affordances
+define the {\em kind} of goals for which actions are useful,
+affordances also enable high-level reasoning that can
+be combined with approaches like subgoal planning for even
+greater performance gains. In Figure \ref{fig:epicworld}, we demonstrate the effectiveness of
+affordance-aware subgoal planning on a complicated task
+in the Minecraft domain.\footnote{Watch at: https://vimeo.com/88689171}
+We let other standard planners try to solve this task for several hours, but they all failed
+to converge on a policy (while affordance-aware subgoal planner found a near-optimal
+policy in less than 5 minutes).
 
-\subsubsection{Subsubsection Heading Here}
-Subsubsection text here.
+
+
+% ====== Section: Background ======
+\section{Background}
+\label{sec:background}
+We use Minecraft as our planning and evaluation domain. Minecraft is a
+3-D blocks world game in which the user can place and destroy blocks
+of different types.  Minecraft's physics and action space is expressive
+enough to allow very complex worlds to be created by users, such as a
+functional scientific graphing calculator\footnote{https://www.youtube.com/watch?v=wgJfVRhotlQ};
+simple scenes from a Minecraft world appear in Figure~\ref{fig:minecraft}.  
+
+Minecraft serves as an effective parallel for the actual world, both
+in terms of approximating the complexity and scope of planning
+problems, as well as modeling the uncertainty and noise presented to a
+real world agent.  For instance, robotic agents are prone to
+uncertainty all throughout their system, including noise in their
+sensors (cameras, LIDAR, microphones, etc.), odometry, control, and
+actuation.  In order to accurately capture some of the inherent
+difficulties of planning under uncertainty, the Minecraft agent's
+actions were modified to have stochastic outcomes. These stochastic
+outcomes may require important changes in the optimal policy in
+contrast to deterministic actions, such as keeping the agent's
+distance from a pit of lava. We chose to give the Minecraft agent perfect
+sensor data about the Minecraft world, as that is outside the focus of this
+work.
+
+
+
+\subsection{OO-MDPs}
+We define affordances in terms of propositional functions on states. Our definition builds on the Object-Oriented Markov Decision Process
+(OO-MDP)~\citep{diuk08}.  OO-MDPs are an extension of
+the classic Markov Decision Process (MDP).  A classic MDP is a
+five-tuple: $\langle \mathcal{S}, \mathcal{A}, \mathcal{T},
+\mathcal{R}, \gamma \rangle$, where $\mathcal{S}$ is a state-space;
+$\mathcal{A}$ is the agent's set of actions; $\mathcal{T}$ denotes
+$\mathcal{T}(s' \mid s,a)$, the transition probability of an agent
+applying action $a \in \mathcal{A}$ in state $s \in \mathcal{S}$ and
+arriving in $s' \in \mathcal{S}$; $\mathcal{R}(s,a,s')$ denotes the
+reward received by the agent for applying action $a$ in state $s$ and
+and transitioning to state $s'$; and $\gamma \in [0, 1)$ is a discount
+  factor that defines how much the agent prefers immediate rewards
+  over distant rewards (the agent more greatly prefers to maximize
+  more immediate rewards as $\gamma$ decreases).
+
+A classic way to provide a factored representation of an MDP state is to represent
+each MDP state as a single feature vector. By contrast, an OO-MDP represents the state space as a collection of objects,
+$O = \{o_1, \ldots, o_o \}$.  Each object $o_i$ belongs to a
+class $c_j \in  \{c_1, \ldots, c_c\}$. Every class has a set of attributes
+$Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of which has a domain $Dom(c.a)$ of possible values.
+Upon instantiation of an object class, its attributes are given a state $o.state$
+(an assignment of values to its attributes).  The underlying MDP state is the set
+of all the object states: $s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$.
+
+There are two advantages to using an object-oriented factored state
+representation instead of a single feature vector. First, different
+states in the same state space may contain different numbers of
+objects of varying classes, which is useful in domains like Minecraft
+in which the agent can dynamically add and remove blocks to the
+world. Second, MDP states can be defined invariantly to the specific
+object references.  For instance, consider a Minecraft world with two
+block objects, $b_1$ and $b_2$.  If the agent picked up and swapped
+the position of $b_1$ and $b_2$, the MDP state before the swap and
+after the swap would be the same, because the MDP state definition is
+invariant to which object holds which object state. This
+object reference invariance results in a smaller state space compared
+to representations like feature vectors in which changes to value
+assignments always result in a different state.
+
+While the OO-MDP state definition is a good fit for the Minecraft
+domain, our motivation for using an OO-MDP lies in the ability to
+formulate predicates over classes of objects. That is, the OO-MDP
+definition also includes a set of predicates ${\cal P}$ that operate
+on the state of objects to provide additional high-level information
+about the MDP state. For example, in \texttt{BRIDGEWORLD}, a ${\tt
+  nearTrench}({\tt STATE})$ predicate evaluates to true when the singular
+instance of class $\texttt{AGENT}$ is directly adjacent to an empty location
+at floor level (i.e. the cell beneath the agent in some direction does not
+contain a block). In the original OO-MDP work, these predicates were used
+to model and learn an MDP's transition dynamics. In the next section,
+we use the predicates to define affordances that enable planning
+algorithms to prune irrelevant actions.
+
+
+% ====== Section: Hard-Affordances ======
+\section{Hard-Affordances}
+\label{sec:hard-affordances}
+
+We define an affordance $\Delta$ 
+as the mapping $\langle p,g\rangle \longmapsto \mathcal{A}^*$,
+where:
+\begin{itemize}
+\item[] $\mathcal{A}'$ a subset of the action space, $\mathcal{A}$, representing the relevant {\it action-possibilities} of the environment.
+\item[] $p$ is a predicate on states, $s \longrightarrow \{$0$, 1\}$
+  representing the {\em precondition} for the affordance.
+\item[] $g$ is an ungrounded predicate on states, $g$, representing a {\it lifted goal description}.
+\end{itemize}
+The precondition and goal description predicates refer to predicates that are defined in the OO-MDP definition. 
+%over an OO-MDP state,
+%where an OO-MDP state is represented as a union of all of the objects'
+%current attribute values: $\cup_{i = 1}^o o_i.state$.  
+%The use of an
+%OO-MDP here makes predicates more general tasks (e.g. OO-MDP
+%predicates may be relational) 
+Using OO-MDP predicates for affordance preconditions and goal descriptions 
+allows for state space independent preconditions and goal conditions 
+to be defined and is why the affordances provided to an
+affordance-aware planner can be used in any number of different tasks. For instance, the affordances defined for Minecraft navigation problems can be used in any task regardless of the spatial size of the world, number of blocks in the world, and specific goal location that needs to be reached.
+
+Given a set of $n$ domain affordances $Z = \{\Delta_1, ..., \Delta_n\}$ and a current agent goal condition defined with an OO-MDP predicate $G$, the action set that a planning algorithm considers may be pruned on a state by state basis as shown in Algorithm~\ref{alg:prune_actions}.
+\begin{algorithm}
+  \caption{getActionsForState($state$, $Z$, $G$)}
+  \begin{algorithmic}[1]
+    \State $\mathcal{A}^* \leftarrow \{\}$
+    \For {$\Delta \in Z$}
+    \If {$\Delta.p(state)$ and $\Delta.g = G$}
+    \State $\mathcal{A}^* \leftarrow \mathcal{A}^* \cup \Delta.\mathcal{A}'$
+    \EndIf
+    \EndFor \\
+    \Return $\mathcal{A}^*$
+  \end{algorithmic}
+  \label{alg:prune_actions}
+\end{algorithm}
+
+Specifically, the algorithm starts
+by initializing an empty set of actions $\mathcal{A}^*$ (line 1). The algorithm then iterates
+through each of the domain affordances (lines 2-6). If the affordance
+precondition ($\Delta.p$) is satisfied by some set of objects in the current state
+and the affordance goal condition ($\Delta.g$) is defined with the same predicate
+as the current goal (line 3), then the actions associated with the affordance ($\Delta.\mathcal{A}'$) are added to the action set $\mathcal{A}^*$ (line 4). Finally, $\mathcal{A}^*$ is returned (line 7). 
+
+\subsection{Experiments}
+
+We conducted a series of experiments in the Minecraft domain that
+compared the performance of Real Time Dynamic Programming (RTDP) without affordances,
+to RTDP when provided with an expert set of affordances. We selected the
+affordances provided from our background knowledge of the domain.  
+We gave the agent a single knowledge base of 5 types of affordances, which are listed in Figure %\ref{fig:afford_kb_exp}.
+Our experiments consisted of a variety of common tasks in Minecraft, ranging from basic path planning, to smelting gold,
+to opening doors and jumping over trenches.  We also tested each
+planner on worlds of varying size and difficulty to demonstrate the
+scalability and flexibility of the affordance formalism. The
+evaluation metric for each trial was the number of state backups that
+were executed by each planning algorithm. RTDP terminated when the maximum change in the
+value function was less than 0.01 for five consecutive policy
+rollouts.
+
+We set the reward function to $-1$ for all transitions, except
+transitions to states in which the agent was on lava, which returned 
+$-200$. The goal was set to be terminal. The discount
+factor was set to $\lambda = 0.99$. For all experiments, the agent was given stochastic actions. Specifically, actions associated with a direction (e.g. movement, block placement, jumping, etc.), had a small probability ($0.3$) of moving in another random direction.
+
+
+\subsection{Results}
+
+% ==== NON-DETERMINISTIC RESULTS =====
+\begin{table}
+\centering
+\caption{Expert Affordance Results}
+\begin{tabular}{ l || c c }
+  & RTDP & A-RTDP \\ \hline
+  \texttt{4BRIDGE}  		& 	836 		& 	{\bf 152} 		\\
+  \texttt{6BRIDGE} 		& 	4561 	& 	{\bf 392}   	\\
+  \texttt{8BRIDGE} 		& 	18833	& 	{\bf 788}	\\
+  \texttt{DOORB} 		& 	12207	& 	{\bf 1945}		\\
+  \texttt{LAVAB}  		& 	4425 	& 	{\bf 993}  		\\
+  \texttt{TUNNEL}  		& 	26624	& 	{\bf 145}  		\\
+  \texttt{GOLD}  		& 	7738 	& 	{\bf 809}  	
+\end{tabular}
+\label{table:blocks}
+%\quad
+%%\caption{Static Results}
+%\begin{tabular}{ l || c c }
+%  & RTDP & A-RTDP \\ \hline
+%  \texttt{10WORLD} 	& 1205 	& 	{\bf 985}  		\\
+%  \texttt{15WORLD} 	& 3939 	& 	{\bf 3089} 	\\
+%  \texttt{20WORLD} 	& 10719 	& 	{\bf 8004} 	\\
+%  \texttt{DOOR}  	& 5646 	& 	{\bf 4059} 	\\
+%  \texttt{JUMP}	  	& 4313 	& 	{\bf 3548} 	\\
+%  \texttt{MAZE}  		& 5648	&	{\bf 2864} 	\\
+%  \texttt{LAVA} 		& 1328	& 	{\bf 861}  		
+%  \end{tabular}
+\label{table:hard-results}
+\end{table}
+
+Table~\ref{table:hard-results} shows the number of bellman updates required when solving the OO-MDP with RTDP (left column)
+compared to solving the OO-MDP with an Affordance-Aware RTDP (right column).  The
+affordance aware planner significantly outperformed its unaugmented
+counterpart in all of these experiments. This
+result demonstrates that affordances prune away many useless action in
+these block building, block destruction, and gold smelting types of
+tasks. 
+
+
+% ====== Section: Learning-Affordances ======
+\section{Learning-Affordances}
+\label{sec:learning-affordances}
+
+\subsection{Extended Formalism}
+
+\subsection{Learning Process}
+
+\subsection{Experiments}
+
+\subsection{Results}
+
+
+% ====== Section: Conclusion ======
+\section{Conclusion}
+\label{sec:conclusion}
 
 
 \section{RSS citations}
@@ -171,10 +433,7 @@ yet we strongly encourage to link to archival or publisher sites
 (such as IEEE Xplore or Sage Journals).  We encourage all authors to use this feature to
 the extent possible.
 
-\section{Conclusion} 
-\label{sec:conclusion}
 
-The conclusion goes here.
 
 \section*{Acknowledgments}
 
