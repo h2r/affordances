@@ -166,7 +166,7 @@ the classic Markov Decision Process (MDP).  A classic MDP is a
 five-tuple: $\langle \mathcal{S}, \mathcal{A}, \mathcal{T},
 \mathcal{R}, \gamma \rangle$, where $\mathcal{S}$ is a state-space;
 $\mathcal{A}$ is the agent's set of actions; $\mathcal{T}$ denotes
-$\mathcal{T}(s' |\ s,a)$, the transition probability of an agent
+$\mathcal{T}(s' \mid s,a)$, the transition probability of an agent
 applying action $a \in \mathcal{A}$ in state $s \in \mathcal{S}$ and
 arriving in $s' \in \mathcal{S}$; $\mathcal{R}(s,a,s')$ denotes the
 reward received by the agent for applying action $a$ in state $s$ and
@@ -230,7 +230,7 @@ Using OO-MDP predicates for affordance preconditions and goal descriptions
 allows for state space independence. Thus, a planner equipped with
 affordances can be used in any number of different tasks. For instance, the affordances defined for Minecraft navigation problems can be used in any task regardless of the spatial size of the world, number of blocks in the world, and specific goal location that needs to be reached.
 
-Let any planner (MDP solver, etc.) that is equipped with a knowledge base of Affordances be known as {\it affordance-aware}.
+We call any planner that uses affordances and {\it affordance-aware} planner.
 
 Given a set of $n$ domain affordances $Z = \{\Delta_1, ..., \Delta_n\}$ and a current agent goal condition defined with an OO-MDP predicate $G$, the action set that a planning algorithm considers may be pruned on a state by state basis as shown in Algorithm~\ref{alg:prune_actions}.
 \begin{algorithm}
@@ -271,13 +271,13 @@ affordances from our background knowledge of the domain.
 \Delta_5 &= \langle nearOre, makeGold \rangle \longmapsto \{destroy\}
 \vspace{6 pt}
 \end{empheq}
-\caption{The five affordance types used for all experiments.}
+\caption{The five affordance types used in expert experiments.}
 \label{fig:afford_kb_exp}
 \end{figure}
 
 We gave the agent a single knowledge base of 5 types of affordances, which are listed in Figure \ref{fig:afford_kb_exp}.
 Our experiments consisted of a variety of common tasks in Minecraft, ranging from basic path planning, to smelting gold,
-to opening doors and jumping over trenches.  We also tested each
+to opening doors and tunneling through walls.  We also tested each
 planner on worlds of varying size and difficulty to demonstrate the
 scalability and flexibility of the affordance formalism. The
 evaluation metric for each trial was the number of state backups that
@@ -288,7 +288,7 @@ value function was less than 0.01 for five consecutive policy
 rollouts. In subgoal planning, the high-level subgoal plan was solved
 using breadth-first search; which only took a small fraction of the
 time compared to the total low-level planning and therefore is not
-reported.
+reported. RTDP was used as the low-level planner for subgoal planning.
 
 We set the reward function to $-1$ for all transitions, except
 transitions to states in which the agent was on lava, which returned 
@@ -331,17 +331,17 @@ tasks.
 
 We have demonstrated that providing an (OO-)MDP solver with
 a knowledge base of affordances can lead to dramatic speed ups in
-planning. However, relying on experts to hand craft affordances is
-not satisfying. Instead, we would like to have the agent learn these affordances
-through experience to remove this strict dependence on experts. Here, we propose
+planning. However, relying on experts to hand craft affordances removes autonomy
+from the agent and places dependence on an expert. Instead we would like to have the agent learn these affordances
+through experience to remove this strict dependence. We propose
 a methodology for learning affordances directly, with some preliminary results
 indicating the effectiveness of the system.
 
 \subsection{Learning Process}
 
-First, we modify our original formalism to account for the lack of expert knowledge. If we kept the same formalism as in the expert
-case, then our learned affordances would often toss out actions. Since the
-learned affordances are more prone to make mistakes, we can't prune actions in this extreme way,
+First, we modify our original formalism to account for the lack of expert knowledge. If we used the same formalism as in the expert
+case, our learned affordances would often completely eliminate actions. Since the
+learned affordances are more prone to make mistakes we cannot prune actions in this extreme way,
 as we will lose optimality guarantees of the OO-MDP solver.
 
 \begin{algorithm}
@@ -358,7 +358,7 @@ as we will lose optimality guarantees of the OO-MDP solver.
 \end{algorithm}
 
 Instead, for a given state, we solve for the probability of getting a particular action set $\mathcal{A}^*$, and approximate sampling
-from this distribution.
+from this distribution. This ensures that in the limit, it is possible to apply each action in each state.
 \begin{equation}
 \text{Pr}(\mathcal{A}^* | s, \Delta_0 \dots \Delta_N)
 \end{equation}
@@ -379,8 +379,8 @@ over actions ($\lambda$), and a Dirichlet over the size ($N$) of each action set
 \text{Pr}(N \mid \beta) = Dir(\beta)
 \end{equation}
 
-For each affordance we sample from our distribution over $N$ to get a candidate action set size and then
-take that many samples from our distribution over $\lambda$ to get a candidate action set $\mathcal{A}'$.
+For each affordance we sample from our distribution over action set size to get a candidate action set size. We then
+take that many samples from our distribution over actions to get a candidate action set $\mathcal{A}'$.
 
 \begin{equation}
 \text{Pr}(\mathcal{A}_i \mid s,\Delta_i) = \text{Pr}(\mathcal{A}_i' \mid N, \lambda) = \text{Pr}(\lambda \mid \alpha) \cdot \text{Pr}(N \mid \beta)
