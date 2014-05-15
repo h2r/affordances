@@ -432,13 +432,96 @@ there is a lot of room for improvement in the learning process.
 \section{Related Work}
 \label{sec:related-work}
 
-\subsection{Temporarily Extended Actions}
+In this section, we discuss the differences between
+affordance-aware planning and other forms of knowledge that
+have been used to accelerate planning.  Specifically, we discuss
+temporally extended actions, logical methods, heuristics, and related action pruning
+work.
 
+% --- Subsection: Temporarily Extended Actions ---
+\subsection{Temporarily Extended Actions}
+Temporally extended actions are actions that the agent can
+select like any other action of the domain, except executing them
+results in multiple primitive actions being executed in
+succession. Two common forms of temporally extended actions are {\em
+  macro-actions}~\citep{hauskrecht98}
+%   \jmnote{looking at the citaiton you added for macros Stefanie, I think those are still ``options''
+%  rather than fixed primitive action sequences. Unfortunatley the term is overloaded a lot.}
+  ~and {\em
+  options}~\citep{sutton99}. Macro-actions are actions that always
+execute the same sequence of primitive actions. Options are defined
+with high-level policies that accomplish specific sub tasks. For
+instance, when an agent is near a door, the agent can engage the
+`door-opening-option-policy', which switches from the standard
+high-level planner to running a policy that is hand crafted to open
+doors. An option $o$ is defined as follows:
+
+$o\ =\ \langle \pi_0, I_0, \beta_0\rangle$, where:
+\begin{align*}
+&\pi_0 : {\cal S} \times {\cal A} \rightarrow [0,1] \\
+&I_0 : {\cal S} \rightarrow \{0,1\} \\
+&\beta_0 : {\cal S} \rightarrow [0,1]
+\end{align*}
+
+Here, $\pi_0$ represents the {\it option policy}, $I_0$ represents
+a precondition, under which the option policy may initiate, and 
+$\beta_0$ represent the post condition, which determines which 
+states terminate the execution of the option policy.
+
+Although the classic options framework is not generalizable to different state spaces,
+creating {\em portable} options is a topic of active research~\citep{konidaris07,konidaris2009efficient,Ravindran03analgebraic,croonenborghs2008learning,andre2002state,konidaris2012transfer}.
+
+Although temporally extended actions are typically used
+because they represent action sequences (or sub policies) that are often useful to solving
+the current task, they can sometimes have the paradoxical effect
+of increasing the planning time because they increase the number of actions that must be explored.
+For example, deterministic planning algorithms that successfully make use of macro-actions often avoid the potential increase
+in planning time by developing algorithms that restrict the set of macro-actions to a small set that is expected to improve planning time for the problem~\citep{Botea:2005kx,Newton:2005vn} or by limiting the use of macro-actions to certain conditions
+in the planning algorithms like when the planner reaches heuristic plateaus (areas of the state space in which all successor states have the same heuristic value)~\citep{Coles:2007ys}. Similarly, it has been shown that the inclusion
+of even a small subset of unhelpful options can negatively impact planning/learning time~\citep{Jong:2008zr}.
+
+Given the potential for unhelpful temporally extended actions to negatively impact planning time, we believe combing affordances with temporally extended actions
+may be especially valuable because it will restrict the set of temporally extended actions to those
+useful for a task. In the future, we plan to explore the benefit from combining
+these approaches.
+
+% --- Subsection: Action Pruning ---
 \subsection{Action Pruning}
 
+Work that prunes the action space is the most similar to our affordance-aware planning.
+Sherstov and Stone~\citep{sherstov2005improving} considered MDPs with a very large action set and for which the action
+set of the optimal policy of a source task could be transferred to a new, but similar, target
+task to reduce the learning time required to find the optimal policy in the target task. Since the actions
+of the optimal policy of a source task may not include all the actions of the optimal policy
+in the target task, source task action bias was reduced by randomly perturbing the value function
+of the source task to produce new synthetic tasks. The action set transferred to the target task
+was then taken as the union of the actions in the optimal policies for the source task and all the
+synthetic tasks generated from it.
+
+A critical difference between our affordance-based action set pruning and this action transfer
+work is that affordances prune away actions on a state by state basis, where
+as the learned action pruning is on per task level.
+Further,
+with lifted goal descriptions, affordances may be attached to subgoal planning for a significant
+benefit in planning tasks where complete subgoal knowledge is known (or may be inferred).
+
+Rosman and Ramamoorthy~\citep{rosman2012good} provide a method for learning action priors over a set of related tasks. Specifically, a Dirichlet distribution over actions was computed by extracting the frequency that each action was optimal in each state for each previously solved task. On a novel task learned with Q-learning, a variant of an $\epsilon$-greedy policy was followed in which the agent selected a random action according to the Dirichlet distribution an $\epsilon$ fraction of the time, and the action with the max Q-value the rest of the time. To avoid dependence on a specific state space, the a Dirichlet distribution was created for each observation-action pair (where the observations were task independent) instead of each state-action pair.
+
+There are a few limitations of the actions priors work that affordance-aware planning does not possess: (1) the action priors can only be used with planning/learning algorithms that work well with an $\epsilon$-greedy rollout policy; (2) the priors are only utilized for fraction $\epsilon$ of the time steps, which is typically quite small; and (3) as variance in tasks explored increases, the priors will become more uniform. In contrast, affordance-aware planning can be used in a wide range of planning algorithms, benefits from the pruned action set in every time step, and the affordance defined lifted goal-description enables higher-level reasoning such as subgoal planning. However, in the future, the action set each affordance defines could be learned using a similar approach.
+
+% --- Subsection: Temporal Logic ---
 \subsection{Temporal Logic}
 
+% --- Subsection: Heuristics ---
 \subsection{Heuristics}
+Heuristics in MDPs are used to convey information about the value of a given state or state-action pair with respect to the task being solved and typically take the form of either {\em value function initialization},
+or {\em reward shaping}. For planning algorithms that estimate state-value functions, heuristics are often
+provided by initializing the value function to values that are good approximations of the true value function. For example, initializing the value function to an admissible close approximation of the optimal value function has been shown to be effective for LAO* and RTDP, because it more greatly biases the states explored by the rollout policy to those important to the optimal policy~\citep{Hansen:1999qf}. Planning algorithms that estimate Q-values instead of the state value function may similarly initialize the Q-values to an approximation of the optimal Q-values. For instance, PROST~\citep{keller2012prost} creates a {\em determinized} version of a stochastic domain (that is, treating each action as if its most likely outcome always occurred), plans a solution in the determinized domain, and then initializes Q-values to the value of each action in the determinized domain.
+
+Reward shaping is an alternative approach to providing heuristics in which the planning algorithm uses a modified version of the reward function that returns larger rewards for state-action pairs that are expected to be useful. Reward shaping differs from value function initialization in that it is not guaranteed to preserve convergence to an optimal policy unless certain properties of the shaped reward are satisfied~\citep{potshap} that also have the effect of making reward shaping equivalent to value function initialization for a large class of planning/learning algorithms~\citep{Wiewiora:2003fk}.
+
+A critical difference between heuristics and affordances is that heuristics are highly dependent on the reward function and state space of the task being solved; therefore, different tasks require different heuristics to be provided, whereas affordances are state independent and transferable between different reward functions. However, if a heuristic can be provided, the combination of heuristics and affordances may even more greatly accelerate planning algorithms than either approach alone.
+
 
 % ====== Section: Conclusion ======
 \section{Conclusion}
@@ -465,95 +548,60 @@ to incorporate approaches to learning subgoals from text for use in conjunction 
 
 \section{RSS citations}
 
-Please make sure to include \verb!natbib.sty! and to use the
-\verb!plainnat.bst! bibliography style. \verb!natbib! provides additional
-citation commands, most usefully \verb!\citet!. For example, rather than the
-awkward construction 
-
-{\small
-\begin{verbatim}
-\cite{kalman1960new} demonstrated...
-\end{verbatim}
-}
-
-\noindent
-rendered as ``\cite{kalman1960new} demonstrated...,''
-or the
-inconvenient 
-
-{\small
-\begin{verbatim}
-Kalman \cite{kalman1960new} 
-demonstrated...
-\end{verbatim}
-}
-
-\noindent
-rendered as 
-``Kalman \cite{kalman1960new} demonstrated...'', 
-one can
-write 
-
-{\small
-\begin{verbatim}
-\citet{kalman1960new} demonstrated... 
-\end{verbatim}
-}
-\noindent
-which renders as ``\citet{kalman1960new} demonstrated...'' and is 
-both easy to write and much easier to read.
-  
-\subsection{RSS Hyperlinks}
-
-This year, we would like to use the ability of PDF viewers to interpret
-hyperlinks, specifically to allow each reference in the bibliography to be a
-link to an online version of the reference. 
-As an example, if you were to cite ``Passive Dynamic Walking''
-\cite{McGeer01041990}, the entry in the bibtex would read:
-
-{\small
-\begin{verbatim}
-@article{McGeer01041990,
-  author = {McGeer, Tad}, 
-  title = {\href{http://ijr.sagepub.com/content/9/2/62.abstract}{Passive Dynamic Walking}}, 
-  volume = {9}, 
-  number = {2}, 
-  pages = {62-82}, 
-  year = {1990}, 
-  doi = {10.1177/027836499000900206}, 
-  URL = {http://ijr.sagepub.com/content/9/2/62.abstract}, 
-  eprint = {http://ijr.sagepub.com/content/9/2/62.full.pdf+html}, 
-  journal = {The International Journal of Robotics Research}
-}
-\end{verbatim}
-}
-\noindent
-and the entry in the compiled PDF would look like:
-
-\def\tmplabel#1{[#1]}
-
-\begin{enumerate}
-\item[\tmplabel{1}] Tad McGeer. \href{http://ijr.sagepub.com/content/9/2/62.abstract}{Passive Dynamic
-Walking}. {\em The International Journal of Robotics Research}, 9(2):62--82,
-1990.
-\end{enumerate}
+%Please make sure to include \verb!natbib.sty! and to use the
+%\verb!plainnat.bst! bibliography style. \verb!natbib! provides additional
+%citation commands, most usefully \verb!\citet!. 
+%  
+%\subsection{RSS Hyperlinks}
 %
-where the title of the article is a link that takes you to the article on IJRR's website. 
-
-
-Linking cited articles will not always be possible, especially for
-older articles. There are also often several versions of papers
-online: authors are free to decide what to use as the link destination
-yet we strongly encourage to link to archival or publisher sites
-(such as IEEE Xplore or Sage Journals).  We encourage all authors to use this feature to
-the extent possible.
+%This year, we would like to use the ability of PDF viewers to interpret
+%hyperlinks, specifically to allow each reference in the bibliography to be a
+%link to an online version of the reference. 
+%As an example, if you were to cite ``Passive Dynamic Walking''
+%\cite{McGeer01041990}, the entry in the bibtex would read:
+%
+%{\small
+%\begin{verbatim}
+%@article{McGeer01041990,
+%  author = {McGeer, Tad}, 
+%  title = {\href{http://ijr.sagepub.com/content/9/2/62.abstract}{Passive Dynamic Walking}}, 
+%  volume = {9}, 
+%  number = {2}, 
+%  pages = {62-82}, 
+%  year = {1990}, 
+%  doi = {10.1177/027836499000900206}, 
+%  URL = {http://ijr.sagepub.com/content/9/2/62.abstract}, 
+%  eprint = {http://ijr.sagepub.com/content/9/2/62.full.pdf+html}, 
+%  journal = {The International Journal of Robotics Research}
+%}
+%\end{verbatim}
+%}
+%\noindent
+%and the entry in the compiled PDF would look like:
+%
+%\def\tmplabel#1{[#1]}
+%
+%\begin{enumerate}
+%\item[\tmplabel{1}] Tad McGeer. \href{http://ijr.sagepub.com/content/9/2/62.abstract}{Passive Dynamic
+%Walking}. {\em The International Journal of Robotics Research}, 9(2):62--82,
+%1990.
+%\end{enumerate}
+%%
+%where the title of the article is a link that takes you to the article on IJRR's website. 
+%
+%
+%Linking cited articles will not always be possible, especially for
+%older articles. There are also often several versions of papers
+%online: authors are free to decide what to use as the link destination
+%yet we strongly encourage to link to archival or publisher sites
+%(such as IEEE Xplore or Sage Journals).  We encourage all authors to use this feature to
+%the extent possible.
 
 
 
 \section*{Acknowledgments}
 
 %% Use plainnat to work nicely with natbib. 
-
 \bibliographystyle{plainnat}
 \bibliography{main}
 
