@@ -2,9 +2,12 @@
 \usepackage{times}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{subfigure}
 \usepackage{graphicx}
 \usepackage{subfloat}
 \usepackage{amsmath,empheq}
+\usepackage{amssymb}
+\usepackage{latexsym}
 
 % numbers option provides compact numerical references in the text. 
 \usepackage[numbers]{natbib}
@@ -84,7 +87,7 @@ in the Minecraft domain, showing significant increase in speed and
 reduction in state-space exploration compared to the standard 
 versions of these algorithms. Further, we provide a learning framework
 that enables an agent to learn affordances through experience, removing 
-the dependence on the expert. We provide preliminary results indicating that the learning
+the agent's dependence on the expert. We provide preliminary results indicating that the learning
 process effectively produces affordances that help solve an MDP faster.
 \end{abstract}
 
@@ -142,7 +145,23 @@ We use Minecraft as our planning and evaluation domain. Minecraft is a
 of different types.  Minecraft's physics and action space is expressive
 enough to allow very complex worlds to be created by users, such as a
 functional scientific graphing calculator\footnote{https://www.youtube.com/watch?v=wgJfVRhotlQ};
-simple scenes from a Minecraft world appear in Figure~\ref{fig:minecraft}.  
+simple scenes from a Minecraft world appear in Figure~\ref{fig:epicworld}.  
+
+\begin{figure*}
+\centering
+%\includegraphics[scale=0.18]{figures/bridgeworld_vi_vs_aff.jpg}
+\subfigure[Start]{
+\includegraphics[width=0.24\linewidth]{figures/epicworld_1.jpg}}%
+\subfigure[Destroy Wall]{
+\includegraphics[width=0.24\linewidth]{figures/epicworld_2.jpg}}%
+\subfigure[Collect Ore]{
+\includegraphics[width=0.24\linewidth]{figures/epicworld_3.jpg}}%
+\subfigure[Smelt Ore]{
+\includegraphics[width=0.24\linewidth]{figures/epicworld_4.jpg}}%
+  \caption{An affordance-aware RTDP tasked with a gold-smelting task with a variety of obstacles. This planning task was
+  only solved by an affordance-aware planner.}
+  \label{fig:epicworld}
+\end{figure*}
 
 Minecraft serves as an effective parallel for the actual world, both
 in terms of approximating the complexity and scope of planning
@@ -228,11 +247,8 @@ where:
 The precondition and goal description predicates refer to predicates that are defined in the OO-MDP definition. 
 Using OO-MDP predicates for affordance preconditions and goal descriptions 
 allows for state space independence. Thus, a planner equipped with
-affordances can be used in any number of different tasks. For instance, the affordances defined for Minecraft navigation problems can be used in any task regardless of the spatial size of the world, number of blocks in the world, and specific goal location that needs to be reached.
+affordances can be used in any number of different tasks. 
 
-We call any planner that uses affordances and {\it affordance-aware} planner.
-
-Given a set of $n$ domain affordances $Z = \{\Delta_1, ..., \Delta_n\}$ and a current agent goal condition defined with an OO-MDP predicate $G$, the action set that a planning algorithm considers may be pruned on a state by state basis as shown in Algorithm~\ref{alg:prune_actions}.
 \begin{algorithm}
   \caption{getActionsForState($state$, $Z$, $G$)}
   \begin{algorithmic}[1]
@@ -247,6 +263,10 @@ Given a set of $n$ domain affordances $Z = \{\Delta_1, ..., \Delta_n\}$ and a cu
   \label{alg:prune_actions}
 \end{algorithm}
 
+Given a set of $n$ domain affordances $Z = \{\Delta_1, ..., \Delta_n\}$ and a current agent goal condition defined with an OO-MDP predicate $G$, the action set that a planning algorithm considers may be pruned on a state by state basis as shown in Algorithm~\ref{alg:prune_actions}.
+
+For instance, the affordances defined for Minecraft navigation problems can be used in any task regardless of the spatial size of the world, number of blocks in the world, and specific goal location that needs to be reached. We call any planner that uses affordances and {\it affordance-aware} planner.
+
 Specifically, the algorithm starts
 by initializing an empty set of actions $\mathcal{A}^*$ (line 1). The algorithm then iterates
 through each of the domain affordances (lines 2-6). If the affordance
@@ -256,14 +276,8 @@ as the current goal (line 3), then the actions associated with the affordance ($
 
 \subsection{Experiments}
 
-We conducted a series of experiments in the Minecraft domain that
-compared the performance of several OO-MDP solvers without affordances,
-to their affordance-aware counterparts. We selected the expert
-affordances from our background knowledge of the domain.  
-
 \begin{figure}
 \begin{empheq}{align*}
-\vspace{6 pt}
 \Delta_1 &= \langle nearTrench, reachGoal \rangle \longmapsto \{place, jump\} \\
 \Delta_2 &= \langle onPlane, reachGoal \rangle \longmapsto \{move\} \\
 \Delta_3 &= \langle nearWall,reachGoal \rangle \longmapsto \{destroy \} \\
@@ -274,6 +288,11 @@ affordances from our background knowledge of the domain.
 \caption{The five affordance types used in expert experiments.}
 \label{fig:afford_kb_exp}
 \end{figure}
+
+We conducted a series of experiments in the Minecraft domain that
+compared the performance of several OO-MDP solvers without affordances,
+to their affordance-aware counterparts. We selected the expert
+affordances from our background knowledge of the domain.  
 
 We gave the agent a single knowledge base of 5 types of affordances, which are listed in Figure \ref{fig:afford_kb_exp}.
 Our experiments consisted of a variety of common tasks in Minecraft, ranging from basic path planning, to smelting gold,
@@ -298,23 +317,7 @@ factor was set to $\lambda = 0.99$. For all experiments, the agent was given sto
 
 \subsection{Results}
 
-\begin{table}
-\centering
-\caption{Expert Affordance Results: Avg. Number of Bellman Updates per converged policy}
-\begin{tabular}{ l || c c | c c | c  c }
-  & VI & A-VI & RTDP & A-RTDP & SG & A-SG \\ \hline
-  \texttt{4BRIDGE} 		&	71604 		& 	{\bf 100} 		& 	836 		& 	{\bf 152} 		&	1373 	& 	{\bf 141}  			\\
-  \texttt{6BRIDGE} 		&	413559 	 	& 	{\bf 366}  		& 	4561 	& 	{\bf 392} 		&	28185 	& 	{\bf 547}  \\
-  \texttt{8BRIDGE} 		&	1439883 		& 	{\bf 904}		& 	18833	& 	{\bf 788}		&	15583	& 	{\bf 1001} 			\\
-  \texttt{DOORB} 		&	861084 	 	& 	{\bf 4368}		& 	12207	& 	{\bf 1945}		&	6368		& 	{\bf 1381}	\\
-  \texttt{LAVAB}  		&	413559 		& 	{\bf 366}	 	& 	4425 	& 	{\bf 993}  		&	25792	& 	{\bf 597}   \\
-  \texttt{TUNNEL}  		&	203796 		& 	{\bf 105}		& 	26624	& 	{\bf 145}  		&	5404 	& 	{\bf 182}	\\
-  \texttt{GOLD}  		&	16406		& 	{\bf 962}		& 	7738 	& 	{\bf 809}  		&	7412 	& 	{\bf 578}
-\end{tabular}
-\label{table:blocks}	
-%  \end{tabular}
-\label{table:hard-results}
-\end{table}
+
 
 Table~\ref{table:hard-results} shows the number of bellman updates required when solving the OO-MDP with RTDP (left column)
 compared to solving the OO-MDP with an Affordance-Aware RTDP (right column).  The
@@ -323,6 +326,24 @@ counterpart in all of these experiments. This
 result demonstrates that affordances prune away many useless action in
 these block building, block destruction, and gold smelting types of
 tasks. 
+
+\begin{table}
+\centering
+\caption{Expert Affordance Results: Avg. Number of Bellman Updates per converged policy}
+\begin{tabular}{ l || c c | c c | c  c }
+  & VI & A-VI & RTDP & A-RTDP & SG & A-SG \\ \hline
+  \texttt{4TRENCH} 		&	71604 		& 	{\bf 100} 		& 	836 		& 	{\bf 152} 		&	1373 	& 	{\bf 141}  			\\
+  \texttt{6TRENCH} 		&	413559 	 	& 	{\bf 366}  		& 	4561 	& 	{\bf 392} 		&	28185 	& 	{\bf 547}  \\
+  \texttt{8TRENCH} 		&	1439883 		& 	{\bf 904}		& 	18833	& 	{\bf 788}		&	15583	& 	{\bf 1001} 			\\
+  \texttt{DOOR} 		&	861084 	 	& 	{\bf 4368}		& 	12207	& 	{\bf 1945}		&	6368		& 	{\bf 1381}	\\
+  \texttt{LAVA}  		&	413559 		& 	{\bf 366}	 	& 	4425 	& 	{\bf 993}  		&	25792	& 	{\bf 597}   \\
+  \texttt{TUNNEL}  		&	203796 		& 	{\bf 105}		& 	26624	& 	{\bf 145}  		&	5404 	& 	{\bf 182}	\\
+  \texttt{GOLD}  		&	16406		& 	{\bf 962}		& 	7738 	& 	{\bf 809}  		&	7412 	& 	{\bf 578}
+\end{tabular}
+\label{table:blocks}	
+%  \end{tabular}
+\label{table:hard-results}
+\end{table}
 
 
 % ====== Section: Learning-Affordances ======
@@ -340,7 +361,7 @@ indicating the effectiveness of the system.
 \subsection{Learning Process}
 
 First, we modify our original formalism to account for the lack of expert knowledge. If we used the same formalism as in the expert
-case, our learned affordances would often completely eliminate actions. Since the
+case, learned affordances would often completely eliminate actions. Since the
 learned affordances are more prone to make mistakes we cannot prune actions in this extreme way,
 as we will lose optimality guarantees of the OO-MDP solver.
 
@@ -360,43 +381,53 @@ as we will lose optimality guarantees of the OO-MDP solver.
 Instead, for a given state, we solve for the probability of getting a particular action set $\mathcal{A}^*$, and approximate sampling
 from this distribution. This ensures that in the limit, it is possible to apply each action in each state.
 \begin{equation}
-\text{Pr}(\mathcal{A}^* | s, \Delta_0 \dots \Delta_N)
+\text{Pr}(\mathcal{A}^* \mid s, \Delta_0 \dots \Delta_N)
 \end{equation}
 We let know that each affordance contributes a set $\mathcal{A}'$ in each state:
 \begin{align}
-\text{Pr}(\mathcal{A}'_0 \cup \mathcal{A}'_N | s, \Delta_0 \dots \Delta_N)
-\intertext{We approximate this term assuming the sets $\mathcal{A}_i'$
-  are disjoint:} \sum_i \text{Pr}(\mathcal{A}'_i | s, \Delta_i)
+\text{Pr}(\mathcal{A}'_0 \cup \mathcal{A}'_N \mid s, \Delta_0 \dots \Delta_N)
+\end{align}
+We approximate this term assuming the sets $\mathcal{A}_i'$ are disjoint:
+\begin{align}
+\sum_i^K \text{Pr}(\mathcal{A}'_i \mid s, \Delta_i)
 \end{align}
 
-For each affordance, to get an action set $\mathcal{A}'$, we form a Dirichlet Multinomial
-over actions ($\lambda$), and a Dirichlet over the size ($N$) of each action set:
+\noindent Thus:
+\begin{align}
+\mathcal{A}^* = \bigcup_{i=1}^K \Delta_i.getActions(s)
+\end{align}
 
-\begin{equation}
+Where $\Delta_i.getActions(s)$ is defined by Algorithm \ref{alg:prune_actions}. For each affordance, to get an action set $\mathcal{A}'$, we form a Dirichlet Multinomial
+over actions ($\lambda$), and a Dirichlet over the size ($N$) of each action set:
+\begin{align}
 \text{Pr}(\lambda \mid \alpha) = DirMult(\alpha) \\
-\end{equation}
-\begin{equation}
 \text{Pr}(N \mid \beta) = Dir(\beta)
-\end{equation}
+\end{align}
 
 For each affordance we sample from our distribution over action set size to get a candidate action set size. We then
 take that many samples from our distribution over actions to get a candidate action set $\mathcal{A}'$.
-
 \begin{equation}
 \text{Pr}(\mathcal{A}_i \mid s,\Delta_i) = \text{Pr}(\mathcal{A}_i' \mid N, \lambda) = \text{Pr}(\lambda \mid \alpha) \cdot \text{Pr}(N \mid \beta)
 \end{equation}
 \subsection{Computing $\alpha$ and $\beta$}
 
-We require that an expert provide a set $\mathcal{P}$ of propositional functions
+We require that an expert provide a set $\mathcal{P}$ of predicates
 for the domain of relevance (i.e. Minecraft). Additionally, they must specify a set
-$\mathcal{G} \subset \mathcal{P}$, that indicates which PropositionalFunctions may serve as goals.
+$\mathcal{G} \subset \mathcal{P}$, that indicates which predicates may serve as goal conditions.
 We form a set of candidate affordances $\Delta$ with every combination of $\langle p, g \rangle$, for $p \in \mathcal{P}$ and $g \in \mathcal{G}$.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.15]{figures/learn_graphical_model.png}%
+  \caption{The full graphical model approximating a distribution over $\mathcal{A}^*$, the pruned action set for a given state $s$}
+  \label{fig:graphical_model}
+\end{figure}
 
 Then, we randomly generate a large number of small state spaces (typically on the order of several thousand), annotated with their
 lifted goal description $g \in \mathcal{G}$. We solve the OO-MDP in each state space and get an optimal policy $\pi_j$. For each optimal policy,
 we count the number of policies that used each action when each affordance was activated\footnote{An affordance is `activated' when its predicate is true
 and the lifted goal description $g$ matches the agent's current goal}. These counts represent $\alpha$. Then, we count the number of unique actions
-used by each policy, representing $\beta$.
+used by each policy, representing $\beta$. The full generative model is outlined in Figure \ref{fig:graphical_model}.
 
 \subsection{Experiments}
 
@@ -435,7 +466,7 @@ there is a lot of room for improvement in the learning process.
 In this section, we discuss the differences between
 affordance-aware planning and other forms of knowledge that
 have been used to accelerate planning.  Specifically, we discuss
-temporally extended actions, logical methods, heuristics, and related action pruning
+temporally extended actions, heuristics, and related action pruning
 work.
 
 % --- Subsection: Temporarily Extended Actions ---
@@ -511,6 +542,10 @@ There are a few limitations of the actions priors work that affordance-aware pla
 
 % --- Subsection: Temporal Logic ---
 \subsection{Temporal Logic}
+
+Temporal Logic has been used to successfully guide planners to avoid exploring areas of the search space that do not lead to a goal ~\citep{Bacchus95usingtemporal, Bacchus99usingtemporal}. They introduce domain dependent knowledge in the form of a first-order version of linear temporal logic (LTL), which allows for effective search control of a forward-chaining planner, often achieving polynomial time planning in exponential space. LTL introduces several modal operators $\bigcup$ (until), $\square$ (always), $\Diamond$ (eventually), $\bigcirc$ (next), along with several formation rules and that allow for reasoning over possible futures. With this methodology, a \textsc{STRIPS} style planner may be guided through the search space by checking whether candidate plans do not falsify a given knowledge base of LTL formulas.
+
+While this approach is theoretically sound and has resulted in some empirical success, its main drawback is the complexity of its knowledge. LTL formulas are not simple, and require extensive knowledge to understand, encode, and decode. The primary difference between this body of work and our own is that the affordance formalism strikes the right balance between simplicity and effectiveness, while LTL formulas are far too complicated to learn effectively.
 
 % --- Subsection: Heuristics ---
 \subsection{Heuristics}
