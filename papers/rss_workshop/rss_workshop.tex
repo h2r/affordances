@@ -15,6 +15,7 @@
 \usepackage[bookmarks=true]{hyperref}
 \usepackage[usenames,dvipsnames]{color}
 \newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{ST: #1}}}
+\newcommand{\dnote}[1]{\textcolor{Green}{\textbf{D: #1}}}
 
 \pdfinfo{
    /Author (David Abel  & Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex)
@@ -120,7 +121,7 @@ to the agent, which {\em increases} the size of the state-action space
 space).  The resulting augmented space is even larger, which can have
 the paradoxical effect of increasing the search time for a good
 policy. Further, other approaches fall short of learning useful, transferable knowledge,
-either due to complexity or lack of generalizability (cite? where is this stated? George?).
+either due to complexity or lack of generalizability. \dnote{Do we have a citation for this claim?}
 
 Instead, we propose a formalization of {\em affordances} \citep{gibson77} that enables an agent to focus on
 problem-specific aspects of the environment. Our approach avoids exploration of irrelevant parts of the 
@@ -136,7 +137,7 @@ affordances also enable high-level reasoning that can
 be combined with approaches like high-level subgoal planning for even
 greater performance gains. Further, we propose a learning process that
 enables agents to autonomously learn affordances through experience, lessening
-the dependence on expert knowledge.
+the agent's dependence on expert knowledge.
 
 
 % ====== Section: Background ======
@@ -147,7 +148,7 @@ We use Minecraft as our planning and evaluation domain. Minecraft is a
 of different types.  Minecraft's physics and action space is expressive
 enough to allow very complex worlds to be created by users, such as a
 functional scientific graphing calculator\footnote{https://www.youtube.com/watch?v=wgJfVRhotlQ};
-simple scenes from a Minecraft world appear in Figure~\ref{fig:epicworld}.   Miencraft serves as a model for robotic tasks such as cooking assistance, assembling items in a factory, and object retrieval.  As in these tasks,  the agent operates in a very large state/action space in an uncertain environment. 
+simple scenes from a Minecraft world appear in Figure~\ref{fig:epicworld}.   Minecraft serves as a model for robotic tasks such as cooking assistance, assembling items in a factory, and object retrieval.  As in these tasks,  the agent operates in a very large state/action space in an uncertain environment. 
 
 \begin{figure*}
 \centering
@@ -160,7 +161,7 @@ simple scenes from a Minecraft world appear in Figure~\ref{fig:epicworld}.   Mie
 \includegraphics[width=0.24\linewidth]{figures/epicworld_3.jpg}}%
 \subfigure[Smelt Ore]{
 \includegraphics[width=0.24\linewidth]{figures/epicworld_4.jpg}}%
-  \caption{An affordance-aware RTDP tasked with a gold-smelting task with a variety of obstacles. This planning task was
+  \caption{Affordance-aware RTDP tasked with a gold-smelting task with a variety of obstacles. This planning task was
   only solved by an affordance-aware planner.}
   \label{fig:epicworld}
 \end{figure*}
@@ -220,16 +221,14 @@ object reference invariance results in a smaller state space compared
 to representations like feature vectors in which changes to value
 assignments always result in a different state.
 
-\stnote{I think we should say something about why OO-MDPs don't solve
-  the problem, which will transition into the next section.  Why don't
-  OO-MDPs solve minecraft?}
+
 
 While the OO-MDP state definition is a good fit for the Minecraft
 domain, our motivation for using an OO-MDP lies in the ability to
 formulate predicates over classes of objects. That is, the OO-MDP
 definition also includes a set of predicates ${\cal P}$ that operate
 on the state of objects to provide additional high-level information
-about the MDP state. For example, in \texttt{BRIDGEWORLD}, a ${\tt
+about the MDP state. For example, in Figure \ref{fig:epic world}, a ${\tt
   nearTrench}({\tt STATE})$ predicate evaluates to true when the
 singular instance of class $\texttt{AGENT}$ is directly adjacent to an
 empty location at floor level (i.e. the cell beneath the agent in some
@@ -237,16 +236,24 @@ direction does not contain a block). In the original OO-MDP work,
 these predicates were used to model and learn an MDP's transition
 dynamics.
 
+%\stnote{I think we should say something about why OO-MDPs don't solve
+%  the problem, which will transition into the next section.  Why don't
+%  OO-MDPs solve minecraft?}
+While an OO-MDP reduces the size of the Minecraft state space
+by a significant factor, the resulting state space is still far too large to
+solve with any existing (OO)-MDP solver. This is the primary motivator
+for incorporating affordances as a means of reducing the amount of the
+state space that an OO-MDP agent will have to explore.
 
-% ====== Section: Expert-Affordances ======
-\section{Expert-Affordances}
-\label{sec:expert-affordances}
+% ====== Section: Affordances ======
+\section{Affordances}
+\label{sec:affordances}
 
 We define an affordance $\Delta$ 
 as the mapping $\langle p,g\rangle \longmapsto \mathcal{A}'$,
 where:
 \begin{itemize}
-\item[] $\mathcal{A}'$ a subset of the action space, $\mathcal{A}$, representing the relevant {\it action-possibilities} of the environment.
+\item[] $\mathcal{A}' \subseteq \mathcal{A}$, a subset of the action space, representing the relevant {\it action-possibilities} of the environment.
 \item[] $p$ is a predicate on states, $s \longrightarrow \{$0$, 1\}$
   representing the {\em precondition} for the affordance.
 \item[] $g$ is an ungrounded predicate on states, $g$, representing a {\it lifted goal description}.
@@ -256,6 +263,32 @@ Using OO-MDP predicates for affordance preconditions and goal descriptions
 allows for state space independence. Thus, a planner equipped with
 affordances can be used in any number of different tasks. 
 
+\subsection{Affordance Aware Planning}
+We call any planner that
+uses affordances an {\it affordance-aware} planner.
+
+For a given state, our goal is to solve for the probability of getting a particular action set $\mathcal{A}^*$, and approximate sampling
+from this distribution. This ensures that in the limit, it is possible to apply each action in each state.
+\begin{equation}
+\text{Pr}(\mathcal{A}^* \mid s, \Delta_0 \dots \Delta_N)
+\end{equation}
+We let each affordance contribute a set $\mathcal{A}'$ in each state:
+\begin{align}
+\text{Pr}(\mathcal{A}'_0 \cup \mathcal{A}'_N \mid s, \Delta_0 \dots \Delta_N)
+\end{align}
+We approximate this term assuming the sets $\mathcal{A}_i'$ are disjoint:
+\begin{align}
+\sum_i^K \text{Pr}(\mathcal{A}'_i \mid s, \Delta_i)
+\end{align}
+
+Given a set of $K$ domain affordances $Z = \{\Delta_1, ..., \Delta_K\}$ and a current 
+agent goal condition defined with an OO-MDP predicate $G$, the action set that a 
+planning algorithm considers is pruned on a state by state basis as shown in 
+Algorithm~\ref{alg:prune_actions}. For instance, the affordances defined for Minecraft 
+navigation problems can be used in any task regardless of the spatial size of the world, 
+number of blocks in the world, and specific goal location that needs to be reached. Each 
+activated affordance contributes a suggested action set, determined by Algorithm \ref{alg:get_actions}. 
+We call an affordance {\it activated} when its predicate is true and the lifted goal description $g$ matches the agent's current goal.
 
 \begin{algorithm}
   \caption{getActionsForState($state$, $Z$, $G$)}
@@ -263,7 +296,7 @@ affordances can be used in any number of different tasks.
     \State $\mathcal{A}^* \leftarrow \{\}$
     \For {$\Delta \in Z$}
     \If {$\Delta.p(state)$ and $\Delta.g = G$}
-    \State $\mathcal{A}^* \leftarrow \mathcal{A}^* \cup \Delta.\mathcal{A}'$
+    \State $\mathcal{A}^* \leftarrow \mathcal{A}^* \cup \Delta.getActions(s)$
     \EndIf
     \EndFor \\
     \Return $\mathcal{A}^*$
@@ -271,36 +304,87 @@ affordances can be used in any number of different tasks.
   \label{alg:prune_actions}
 \end{algorithm}
 
-Given a set of $n$ domain affordances $Z = \{\Delta_1, ..., \Delta_n\}$ and a current agent goal condition defined with an OO-MDP predicate $G$, the action set that a planning algorithm considers may be pruned on a state by state basis as shown in Algorithm~\ref{alg:prune_actions}.
-
-For instance, the affordances defined for Minecraft navigation problems can be used in any task regardless of the spatial size of the world, number of blocks in the world, and specific goal location that needs to be reached. We call any planner that uses affordances and {\it affordance-aware} planner.
-
-Specifically, the algorithm starts
+Specifically, we prune actions on a state by state basis
 by initializing an empty set of actions $\mathcal{A}^*$ (line 1). The algorithm then iterates
 through each of the domain affordances (lines 2-6). If the affordance
 precondition ($\Delta.p$) is satisfied by some set of objects in the current state
 and the affordance goal condition ($\Delta.g$) is defined with the same predicate
-as the current goal (line 3), then the actions associated with the affordance ($\Delta.\mathcal{A}'$) are added to the action set $\mathcal{A}^*$ (line 4). Finally, $\mathcal{A}^*$ is returned (line 7). 
-
-\subsection{Experiments}
+as the current goal (line 3), then the actions associated with the affordance ($\Delta.\mathcal{A}' = \Delta.getActions(s)$) are added to the action set $\mathcal{A}^*$ (line 4). Finally, $\mathcal{A}^*$ is returned (line 7).
 
 \begin{figure}
-\begin{empheq}{align*}
-\Delta_1 &= \langle nearTrench, reachGoal \rangle \longmapsto \{place, jump\} \\
-\Delta_2 &= \langle onPlane, reachGoal \rangle \longmapsto \{move\} \\
-\Delta_3 &= \langle nearWall,reachGoal \rangle \longmapsto \{destroy \} \\
-\Delta_4 &= \langle nearFurnace, makeGold \rangle \longmapsto \{place\} \\
-\Delta_5 &= \langle nearOre, makeGold \rangle \longmapsto \{destroy\}
-\vspace{6 pt}
-\end{empheq}
-\caption{The five affordance types used in expert experiments.}
-\label{fig:afford_kb_exp}
+\centering
+\includegraphics[scale=0.15]{figures/learn_graphical_model.png}%
+  \caption{The full graphical model approximating a distribution over $\mathcal{A}^*$, the pruned action set for a given state $s$}
+  \label{fig:graphical_model}
 \end{figure}
+
+Thus, for each affordance, we get an action set $\mathcal{A}'$. This 
+process is outlined by Algorithm \ref{alg:get_actions}. We form a Dirichlet Multinomial
+over actions ($\lambda$), and a Dirichlet over the size ($N$) of each action set:
+\begin{equation}
+\text{Pr}(\mathcal{A}_i \mid s,\Delta_i) = \text{Pr}(\mathcal{A}_i' \mid N, \lambda) = \text{Pr}(\lambda \mid \alpha) \cdot \text{Pr}(N \mid \beta)
+\end{equation}
+
+For a given affordance $\Delta_i$, we sample from our distribution over action set size to get a candidate action set size (lines 1-2). We then
+take that many samples from our distribution over actions to get a candidate action set $\mathcal{A}'$ (lines 3-5).
+\begin{align}
+\text{Pr}(\lambda \mid \alpha) = DirMult(\alpha) \\
+\text{Pr}(N \mid \beta) = Dir(\beta)
+\end{align}
+
+\begin{algorithm}
+  \caption{$\Delta_i.getActions(s)$}
+  \begin{algorithmic}[1]
+    \State $\lambda \leftarrow DirMult(\Delta_i.\alpha)$
+    \State $N \leftarrow Dir(\Delta_i.\beta)$
+    \For {$1$ to $N$}
+    \State $\Delta_i.\mathcal{A}' \leftarrow \lambda$
+    \EndFor \\
+    \Return $\Delta_i.\mathcal{A}'$
+  \end{algorithmic}
+  \label{alg:get_actions}
+\end{algorithm}
+
+Through the use of Algorithms \ref{alg:prune_actions} \& \ref{alg:get_actions}, any OO-MDP solver made be made
+{\it affordance aware}. For a planner to be made affordance-aware, we require that an expert provide a set $\mathcal{P}$ of predicates
+for the domain of relevance (i.e. Minecraft). Additionally, the expert must specify a set
+$\mathcal{G} \subset \mathcal{P}$, that indicates which predicates may serve as goal conditions. If the expert wishes
+to provide the affordances directly, they must specify the Dirichlet parameters $\alpha$ and $\beta$. Note that
+in the limit, the expert may fix $\alpha$ and $\beta$ in a way that forces a given
+affordance to always suggest a specific set of actions.
+
+The real strength of our affordance formalism is that it is simple enough to learn useful affordances directly.
+
+\subsection{Learning Affordances}
+
+To learn affordances, we propose a scaffolded learning process that computes $\alpha$ and $\beta$.
+
+Given the set of predicates $\mathcal{P}$ and possible goals $\mathcal{G} \subset \mathcal{P}$, we form a set of candidate affordances $\Delta$ with every combination of $\langle p, g \rangle$, for $p \in \mathcal{P}$ and $g \in \mathcal{G}$.
+
+
+Then, we randomly generate a large number of state spaces which are small 
+enough to be solved using tabular methods (typically on the order of several thousand), 
+annotated with their lifted goal description $g \in \mathcal{G}$. We solve the 
+OO-MDP in each state space to find an optimal policy $\pi_j$.
+
+For each optimal policy, we count the number of policies that used each action 
+when each affordance was activated.\footnote{Recall we call an affordance {\it activated} 
+when its predicate is true and the lifted goal description $g$ matches the agent's current goal.} 
+These counts represent $\alpha$. Then, we count the number of unique actions used by each policy, representing $\beta$. 
+
+\dnote{I think we'll have enough space for an example figure now?}
+
+% ====== Section: Experiments ======
+\section{Experiments}
+\label{sec:experiments}
 
 We conducted a series of experiments in the Minecraft domain that
 compared the performance of several OO-MDP solvers without affordances,
 to their affordance-aware counterparts. We selected the expert
-affordances from our background knowledge of the domain.  
+affordances from our background knowledge of the domain. Additionally, we
+tested our learning procedure and compared the performance of RTDP solving the OO-MDP
+with (1) No affordances, (2) Learned affordances, and (3) Expert provided affordances. We generated between 10-5000 simple state
+spaces to learn on, each a $3\times3\times3$ world with randomized features based on the features of the agent's actual state space.
 
 We gave the agent a single knowledge base of 5 types of affordances,
 which are listed in Figure \ref{fig:afford_kb_exp}.  Our experiments
@@ -324,16 +408,28 @@ transitions to states in which the agent was on lava, which returned
 $-200$. The goal was set to be terminal. The discount
 factor was set to $\lambda = 0.99$. For all experiments, the agent was given stochastic actions. Specifically, actions associated with a direction (e.g. movement, block placement, jumping, etc.), had a small probability ($0.3$) of moving in another random direction.
 
+\begin{figure}[b]
+\begin{empheq}{align*}
+\Delta_1 &= \langle nearTrench, reachGoal \rangle \longmapsto \{place, jump\} \\
+\Delta_2 &= \langle onPlane, reachGoal \rangle \longmapsto \{move\} \\
+\Delta_3 &= \langle nearWall,reachGoal \rangle \longmapsto \{destroy \} \\
+\Delta_4 &= \langle nearFurnace, makeGold \rangle \longmapsto \{place\} \\
+\Delta_5 &= \langle nearOre, makeGold \rangle \longmapsto \{destroy\}
+\vspace{6 pt}
+\end{empheq}
+\caption{The five affordance types used in expert experiments.}
+\label{fig:afford_kb_exp}
+\end{figure}
 
-\subsection{Results}
-
-
+% ==== SECTION: RESULTS ====
+\section{Results}
+\label{sec:experiments}
 
 Table~\ref{table:hard-results} shows the number of Bellman updates required when solving the OO-MDP with conventional methods (left column)
 compared to solving the OO-MDP with an Affordance-Aware method (right column).  The
-affordance aware methods significantly outperformed its unaugmented
-counterpart in all of these experiments. These
-results, while unsurprising, concretely demonstrate that a small set of task-general affordances prune away many useless actions across many different types of Minecraft tasks. 
+affordance aware methods significantly outperformed their unaugmented
+counterparts in all of these experiments. These
+results, while unsurprising, concretely demonstrate that a small set of affordances prune away many useless actions across many different types of Minecraft tasks. 
 
 \begin{table}
 \centering
@@ -353,113 +449,12 @@ results, while unsurprising, concretely demonstrate that a small set of task-gen
 \label{table:hard-results}
 \end{table}
 
-
-% ====== Section: Learning-Affordances ======
-\section{Learning-Affordances}
-\label{sec:learning-affordances}
-
-We have demonstrated that providing an (OO-)MDP solver with
-a knowledge base of affordances can lead to dramatic speed ups in
-planning. However, relying on experts to hand craft affordances removes autonomy
-from the agent and places dependence on an expert. Instead we would like to have the agent learn these affordances
-through experience to remove this strict dependence. We propose
-a methodology for learning affordances directly, with some preliminary results
-indicating the effectiveness of the system.
-
-\subsection{Learning Process}
-
-First, we modify our original formalism to account for the lack of expert knowledge. If we used the same formalism as in the expert
-case, learned affordances would often completely eliminate actions. Since the
-learned affordances are more prone to make mistakes we cannot prune actions in this extreme way,
-as we will lose optimality guarantees of the OO-MDP solver.
-
-\begin{algorithm}
-  \caption{$\Delta_i.getActionsForState(s)$}
-  \begin{algorithmic}[1]
-    \State $\lambda \leftarrow DirMult(\Delta_i.\alpha)$
-    \State $N \leftarrow Dir(\Delta_i.\beta)$
-    \For {$1$ to $N$}
-    \State $\Delta_i.\mathcal{A}' \leftarrow \lambda$
-    \EndFor \\
-    \Return $\Delta_i.\mathcal{A}'$
-  \end{algorithmic}
-  \label{alg:prune_actions}
-\end{algorithm}
-
-
-Instead, for a given state, we solve for the probability of getting a particular action set $\mathcal{A}^*$, and approximate sampling
-from this distribution. This ensures that in the limit, it is possible to apply each action in each state.
-\begin{equation}
-\text{Pr}(\mathcal{A}^* \mid s, \Delta_0 \dots \Delta_N)
-\end{equation}
-We let know that each affordance contributes a set $\mathcal{A}'$ in each state:
-\begin{align}
-\text{Pr}(\mathcal{A}'_0 \cup \mathcal{A}'_N \mid s, \Delta_0 \dots \Delta_N)
-\end{align}
-We approximate this term assuming the sets $\mathcal{A}_i'$ are disjoint:
-\begin{align}
-\sum_i^K \text{Pr}(\mathcal{A}'_i \mid s, \Delta_i)
-\end{align}
-
-\noindent Thus:
-\begin{align}
-\mathcal{A}^* = \bigcup_{i=1}^K \Delta_i.getActions(s)
-\end{align}
-\stnote{I'm not sure we need this equation...}
-
-Where $\Delta_i.getActions(s)$ is defined by Algorithm \ref{alg:prune_actions}. For each affordance, to get an action set $\mathcal{A}'$, we form a Dirichlet Multinomial
-over actions ($\lambda$), and a Dirichlet over the size ($N$) of each action set:
-\stnote{I'm confused about this jump.  HOw does this connect to equation 3?}
-\begin{align}
-\text{Pr}(\lambda \mid \alpha) = DirMult(\alpha) \\
-\text{Pr}(N \mid \beta) = Dir(\beta)
-\end{align}
-
-For each affordance we sample from our distribution over action set size to get a candidate action set size. We then
-take that many samples from our distribution over actions to get a candidate action set $\mathcal{A}'$.
-\stnote{Oh I see.  This equation should go first, after equation 4.  Then give equation 5 and 6.}
-\begin{equation}
-\text{Pr}(\mathcal{A}_i \mid s,\Delta_i) = \text{Pr}(\mathcal{A}_i' \mid N, \lambda) = \text{Pr}(\lambda \mid \alpha) \cdot \text{Pr}(N \mid \beta)
-\end{equation}
-
-
-\subsection{Computing $\alpha$ and $\beta$}
-
-We require that an expert provide a set $\mathcal{P}$ of predicates
-for the domain of relevance (i.e. Minecraft). Additionally, they must specify a set
-$\mathcal{G} \subset \mathcal{P}$, that indicates which predicates may serve as goal conditions.
-We form a set of candidate affordances $\Delta$ with every combination of $\langle p, g \rangle$, for $p \in \mathcal{P}$ and $g \in \mathcal{G}$.
-
-\begin{figure}
-\centering
-\includegraphics[scale=0.15]{figures/learn_graphical_model.png}%
-  \caption{The full graphical model approximating a distribution over $\mathcal{A}^*$, the pruned action set for a given state $s$}
-  \label{fig:graphical_model}
-\end{figure}
-
-Then, we randomly generate a large number of state spaces which are small enough to be solved using tabular methods (typically on the order of several thousand), annotated with their
-lifted goal description $g \in \mathcal{G}$. We solve the OO-MDP in each state space to find an optimal policy $\pi_j$. For each optimal policy,
-we count the number of policies that used each action when each affordance was activated\footnote{An affordance is `activated' when its predicate is true
-and the lifted goal description $g$ matches the agent's current goal}. These counts represent $\alpha$. Then, we count the number of unique actions
-used by each policy, representing $\beta$. The full generative model is outlined in Figure \ref{fig:graphical_model}.
-
-\subsection{Experiments}
-
-We tested our learning procedure on several simple worlds of varying size. We compared the performance of RTDP solving the OO-MDP
-in each of these worlds with (1) No affordances, (2) Learned affordances, and (3) Expert provided affordances. We generated 100 simple state
-spaces to learn on, each a $3\times3\times3$ world with randomized features based on the features of the agent's actual state space. As with
-the expert affordance experiments, RTDP terminated when the maximum change in the
-value function was less than 0.01 for five consecutive policy
-rollouts. We set the reward function to $-1$ for all transitions and the discount
-factor to $\lambda = 0.99$.
-
-\subsection{Results}
-
 Table \ref{table:learned-results} indicates the average number of Bellman updates required by RTDP to solve the OO-MDP
 in each of the four candidate worlds. The learned affordances clearly improved on standard RTDP by a significant margin, though
 there is still a substantial gap between the learned affordance performance and that of the expert affordances. This indicates that
-there is a lot of room for improvement in the learning process.
+there is still room for improvement in the learning process.
 \stnote{It would be great to add the results showing performance increasing as you add more training data. }
+\dnote{Will have these results soon, hopefully}
 \begin{table}
 \centering
 \caption{Learned Affordance Results: Avg. Number of Bellman Updates per converged policy}
@@ -489,41 +484,26 @@ Temporally extended actions are actions that the agent can
 select like any other action of the domain, except executing them
 results in multiple primitive actions being executed in
 succession. Two common forms of temporally extended actions are {\em
-  macro-actions}~\citep{hauskrecht98}
-%   \jmnote{looking at the citaiton you added for macros Stefanie, I think those are still ``options''
-%  rather than fixed primitive action sequences. Unfortunatley the term is overloaded a lot.}
-  ~and {\em
-  options}~\citep{sutton99}. Macro-actions are actions that always
+  macro-actions}~\citep{hauskrecht98} ~and {\em options}~\citep{sutton99}. 
+Macro-actions are actions that always
 execute the same sequence of primitive actions. Options are defined
 with high-level policies that accomplish specific sub tasks. For
 instance, when an agent is near a door, the agent can engage the
 `door-opening-option-policy', which switches from the standard
 high-level planner to running a policy that is hand crafted to open
-doors. An option $o$ is defined as follows:
-
-$o\ =\ \langle \pi_0, I_0, \beta_0\rangle$, where:
-\begin{align*}
-&\pi_0 : {\cal S} \times {\cal A} \rightarrow [0,1] \\
-&I_0 : {\cal S} \rightarrow \{0,1\} \\
-&\beta_0 : {\cal S} \rightarrow [0,1]
-\end{align*}
-
-Here, $\pi_0$ represents the {\it option policy}, $I_0$ represents
-a precondition, under which the option policy may initiate, and 
-$\beta_0$ represent the post condition, which determines which 
-states terminate the execution of the option policy.
+doors. 
 
 Although the classic options framework is not generalizable to different state spaces,
 creating {\em portable} options is a topic of active research~\citep{konidaris07,konidaris2009efficient,Ravindran03analgebraic,croonenborghs2008learning,andre2002state,konidaris2012transfer}.
 
-Although temporally extended actions are typically used
+Temporally extended actions are typically used
 because they represent action sequences (or sub policies) that are often useful to solving
-the current task, they can sometimes have the paradoxical effect
-of increasing the planning time because they increase the number of actions that must be explored.
-For example, deterministic planning algorithms that successfully make use of macro-actions often avoid the potential increase
-in planning time by developing algorithms that restrict the set of macro-actions to a small set that is expected to improve planning time for the problem~\citep{Botea:2005kx,Newton:2005vn} or by limiting the use of macro-actions to certain conditions
-in the planning algorithms like when the planner reaches heuristic plateaus (areas of the state space in which all successor states have the same heuristic value)~\citep{Coles:2007ys}. Similarly, it has been shown that the inclusion
-of even a small subset of unhelpful options can negatively impact planning/learning time~\citep{Jong:2008zr}.
+the current task. However, they can sometimes have the paradoxical effect
+of increasing the planning time because they increase the number of actions that must be explored~\citep{Jong:2008zr}.
+%For example, deterministic planning algorithms that successfully make use of macro-actions often avoid the potential increase
+%in planning time by developing algorithms that restrict the set of macro-actions to a small set that is expected to improve planning time for the problem~\citep{Botea:2005kx,Newton:2005vn} or by limiting the use of macro-actions to certain conditions
+%in the planning algorithms like when the planner reaches heuristic plateaus (areas of the state space in which all successor states have the same heuristic value)~\citep{Coles:2007ys}. Similarly, it has been shown that the inclusion
+%of even a small subset of unhelpful options can negatively impact planning/learning time
 
 Given the potential for unhelpful temporally extended actions to negatively impact planning time, we believe combing affordances with temporally extended actions
 may be especially valuable because it will restrict the set of temporally extended actions to those
@@ -536,36 +516,30 @@ these approaches.
 Work that prunes the action space is the most similar to our affordance-aware planning.
 Sherstov and Stone~\citep{sherstov2005improving} considered MDPs with a very large action set and for which the action
 set of the optimal policy of a source task could be transferred to a new, but similar, target
-task to reduce the learning time required to find the optimal policy in the target task. Since the actions
-of the optimal policy of a source task may not include all the actions of the optimal policy
-in the target task, source task action bias was reduced by randomly perturbing the value function
-of the source task to produce new synthetic tasks. The action set transferred to the target task
-was then taken as the union of the actions in the optimal policies for the source task and all the
-synthetic tasks generated from it.
+task to reduce the learning time required to find the optimal policy in the target task.
 
 A critical difference between our affordance-based action set pruning and this action transfer
 work is that affordances prune away actions on a state by state basis, where
 as the learned action pruning is on per task level.
-Further,
-with lifted goal descriptions, affordances may be attached to subgoal planning for a significant
+Further, with lifted goal descriptions, affordances may be attached to subgoal planning for a significant
 benefit in planning tasks where complete subgoal knowledge is known (or may be inferred).
 
-Rosman and Ramamoorthy~\citep{rosman2012good} provide a method for learning action priors over a set of related tasks. Specifically, a Dirichlet distribution over actions was computed by extracting the frequency that each action was optimal in each state for each previously solved task. On a novel task learned with Q-learning, a variant of an $\epsilon$-greedy policy was followed in which the agent selected a random action according to the Dirichlet distribution an $\epsilon$ fraction of the time, and the action with the max Q-value the rest of the time. To avoid dependence on a specific state space, the a Dirichlet distribution was created for each observation-action pair (where the observations were task independent) instead of each state-action pair.
+Rosman and Ramamoorthy~\citep{rosman2012good} provide a method for learning action priors over a set of related tasks. Specifically, a Dirichlet distribution over actions was computed by extracting the frequency that each action was optimal in each state for each previously solved task. On a novel task learned with Q-learning, a variant of an $\epsilon$-greedy policy was followed in which the agent selected a random action according to the Dirichlet distribution an $\epsilon$ fraction of the time, and the action with the max Q-value the rest of the time.
 
-There are a few limitations of the actions priors work that affordance-aware planning does not possess: (1) the action priors can only be used with planning/learning algorithms that work well with an $\epsilon$-greedy rollout policy; (2) the priors are only utilized for fraction $\epsilon$ of the time steps, which is typically quite small; and (3) as variance in tasks explored increases, the priors will become more uniform. In contrast, affordance-aware planning can be used in a wide range of planning algorithms, benefits from the pruned action set in every time step, and the affordance defined lifted goal-description enables higher-level reasoning such as subgoal planning. However, in the future, the action set each affordance defines could be learned using a similar approach.
+There are a few limitations of the actions priors work that affordance-aware planning does not possess: (1) the action priors can only be used with planning/learning algorithms that work well with an $\epsilon$-greedy rollout policy; (2) the priors are only utilized for fraction $\epsilon$ of the time steps, which is typically quite small; and (3) as variance in tasks explored increases, the priors will become more uniform. In contrast, affordance-aware planning can be used in a wide range of planning algorithms, benefits from the pruned action set in every time step, and the affordance defined lifted goal-description enables higher-level reasoning such as subgoal planning.
 
 % --- Subsection: Temporal Logic ---
 \subsection{Temporal Logic}
 
-Temporal Logic has been used to successfully guide planners to avoid exploring areas of the search space that do not lead to a goal ~\citep{Bacchus95usingtemporal, Bacchus99usingtemporal}. They introduce domain dependent knowledge in the form of a first-order version of linear temporal logic (LTL), which allows for effective search control of a forward-chaining planner, often achieving polynomial time planning in exponential space. LTL introduces several modal operators $\bigcup$ (until), $\square$ (always), $\Diamond$ (eventually), $\bigcirc$ (next), along with several formation rules and that allow for reasoning over possible futures. With this methodology, a \textsc{STRIPS} style planner may be guided through the search space by checking whether candidate plans do not falsify a given knowledge base of LTL formulas.
+Bacchus and Ady~\citep{Bacchus95usingtemporal, Bacchus99usingtemporal} used Temporal Logic to successfully guide planners to avoid exploring areas of the search space that do not lead to a goal. They provide planners with domain dependent knowledge in the form of a first-order version of linear temporal logic (LTL), which allows for effective search control of a forward-chaining planner, often achieving polynomial time planning in exponential space. LTL introduces several modal operators $\bigcup$ (until), $\square$ (always), $\Diamond$ (eventually), $\bigcirc$ (next), along with several formation rules and that allow for reasoning over possible futures. With this methodology, a \textsc{strips} style planner may be guided through the search space by checking whether candidate plans do not falsify a given knowledge base of LTL formulas.
 
-While this approach is theoretically sound and has resulted in some empirical success, its main drawback is the complexity of its knowledge. LTL formulas are not simple, and require extensive knowledge to understand, encode, and decode. The primary difference between this body of work and our own is that the affordance formalism strikes the right balance between simplicity and effectiveness, while LTL formulas are far too complicated to learn effectively.
+While this approach is theoretically sound, and has achieved empirical success, its main drawback is the complexity of its knowledge. LTL formulas are not simple, and require extensive knowledge on behalf of the expert. The primary difference between this body of work and our own is that the affordance formalism may be learned, while LTL formulas are far too complicated to learn effectively.
 
 % --- Subsection: Heuristics ---
 \subsection{Heuristics}
 Heuristics in MDPs are used to convey information about the value of a given state or state-action pair with respect to the task being solved and typically take the form of either {\em value function initialization},
 or {\em reward shaping}. For planning algorithms that estimate state-value functions, heuristics are often
-provided by initializing the value function to values that are good approximations of the true value function. For example, initializing the value function to an admissible close approximation of the optimal value function has been shown to be effective for LAO* and RTDP, because it more greatly biases the states explored by the rollout policy to those important to the optimal policy~\citep{Hansen:1999qf}. Planning algorithms that estimate Q-values instead of the state value function may similarly initialize the Q-values to an approximation of the optimal Q-values. For instance, PROST~\citep{keller2012prost} creates a {\em determinized} version of a stochastic domain (that is, treating each action as if its most likely outcome always occurred), plans a solution in the determinized domain, and then initializes Q-values to the value of each action in the determinized domain.
+provided by initializing the value function to values that are good approximations of the true value function. For example, initializing the value function to an admissible close approximation of the optimal value function has been shown to be effective for LAO* and RTDP, because it more greatly biases the states explored by the rollout policy to those important to the optimal policy~\citep{Hansen:1999qf}.
 
 Reward shaping is an alternative approach to providing heuristics in which the planning algorithm uses a modified version of the reward function that returns larger rewards for state-action pairs that are expected to be useful. Reward shaping differs from value function initialization in that it is not guaranteed to preserve convergence to an optimal policy unless certain properties of the shaped reward are satisfied~\citep{potshap} that also have the effect of making reward shaping equivalent to value function initialization for a large class of planning/learning algorithms~\citep{Wiewiora:2003fk}.
 
