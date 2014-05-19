@@ -13,6 +13,8 @@
 \usepackage[numbers]{natbib}
 \usepackage{multicol}
 \usepackage[bookmarks=true]{hyperref}
+\usepackage[usenames,dvipsnames]{color}
+\newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{ST: #1}}}
 
 \pdfinfo{
    /Author (David Abel  & Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex)
@@ -77,18 +79,18 @@ Planning algorithms for non-deterministic domains are often
 intractable in large state spaces due to the well-known ``curse of
 dimensionality.'' Existing approaches to address this problem fail to
 prevent the planner from considering many actions which would be
-obviously irrelevant to a human solving the same problem. We
-introduce a novel, state- and reward- general approach to pruning
-actions while solving an MDP by encoding knowledge about the
-domain in terms of {\em affordances}~\citep{gibson77}. This pruning 
-significantly reduces the number of state-action pairs the agent needs 
-to evaluate in order to act optimally. We demonstrate our approach 
-in the Minecraft domain, showing significant increase in speed and 
-reduction in state-space exploration compared to the standard 
-versions of these algorithms. Further, we provide a learning framework
-that enables an agent to learn affordances through experience, removing 
-the agent's dependence on the expert. We provide preliminary results indicating that the learning
-process effectively produces affordances that help solve an MDP faster.
+obviously irrelevant to a human solving the same problem.  We
+formalize the notion of affordances~\citep{gibson77} as knowledge
+added to an MDP that prunes actions in a state- and reward- general
+way. This pruning significantly reduces the number of state-action
+pairs the agent needs to evaluate in order to act optimally. We
+demonstrate our approach in the Minecraft domain, showing significant
+increase in speed and reduction in state-space exploration compared to
+the standard versions of these algorithms. Further, we provide a
+learning framework that enables an agent to learn affordances through
+experience, removing the agent's dependence on the expert. We provide
+preliminary results indicating that the learning process effectively
+produces affordances that help solve an MDP faster.
 \end{abstract}
 
 \IEEEpeerreviewmaketitle
@@ -145,7 +147,7 @@ We use Minecraft as our planning and evaluation domain. Minecraft is a
 of different types.  Minecraft's physics and action space is expressive
 enough to allow very complex worlds to be created by users, such as a
 functional scientific graphing calculator\footnote{https://www.youtube.com/watch?v=wgJfVRhotlQ};
-simple scenes from a Minecraft world appear in Figure~\ref{fig:epicworld}.  
+simple scenes from a Minecraft world appear in Figure~\ref{fig:epicworld}.   Miencraft serves as a model for robotic tasks such as cooking assistance, assembling items in a factory, and object retrieval.  As in these tasks,  the agent operates in a very large state/action space in an uncertain environment. 
 
 \begin{figure*}
 \centering
@@ -218,17 +220,22 @@ object reference invariance results in a smaller state space compared
 to representations like feature vectors in which changes to value
 assignments always result in a different state.
 
+\stnote{I think we should say something about why OO-MDPs don't solve
+  the problem, which will transition into the next section.  Why don't
+  OO-MDPs solve minecraft?}
+
 While the OO-MDP state definition is a good fit for the Minecraft
 domain, our motivation for using an OO-MDP lies in the ability to
 formulate predicates over classes of objects. That is, the OO-MDP
 definition also includes a set of predicates ${\cal P}$ that operate
 on the state of objects to provide additional high-level information
 about the MDP state. For example, in \texttt{BRIDGEWORLD}, a ${\tt
-  nearTrench}({\tt STATE})$ predicate evaluates to true when the singular
-instance of class $\texttt{AGENT}$ is directly adjacent to an empty location
-at floor level (i.e. the cell beneath the agent in some direction does not
-contain a block). In the original OO-MDP work, these predicates were used
-to model and learn an MDP's transition dynamics.
+  nearTrench}({\tt STATE})$ predicate evaluates to true when the
+singular instance of class $\texttt{AGENT}$ is directly adjacent to an
+empty location at floor level (i.e. the cell beneath the agent in some
+direction does not contain a block). In the original OO-MDP work,
+these predicates were used to model and learn an MDP's transition
+dynamics.
 
 
 % ====== Section: Expert-Affordances ======
@@ -248,6 +255,7 @@ The precondition and goal description predicates refer to predicates that are de
 Using OO-MDP predicates for affordance preconditions and goal descriptions 
 allows for state space independence. Thus, a planner equipped with
 affordances can be used in any number of different tasks. 
+
 
 \begin{algorithm}
   \caption{getActionsForState($state$, $Z$, $G$)}
@@ -294,20 +302,22 @@ compared the performance of several OO-MDP solvers without affordances,
 to their affordance-aware counterparts. We selected the expert
 affordances from our background knowledge of the domain.  
 
-We gave the agent a single knowledge base of 5 types of affordances, which are listed in Figure \ref{fig:afford_kb_exp}.
-Our experiments consisted of a variety of common tasks in Minecraft, ranging from basic path planning, to smelting gold,
-to opening doors and tunneling through walls.  We also tested each
-planner on worlds of varying size and difficulty to demonstrate the
-scalability and flexibility of the affordance formalism. The
-evaluation metric for each trial was the number of state backups that
-were executed by each planning algorithm. Value
-Iteration was terminated when the maximum change in the value function
-was less than 0.01. RTDP terminated when the maximum change in the
-value function was less than 0.01 for five consecutive policy
-rollouts. In subgoal planning, the high-level subgoal plan was solved
-using breadth-first search; which only took a small fraction of the
-time compared to the total low-level planning and therefore is not
-reported. RTDP was used as the low-level planner for subgoal planning.
+We gave the agent a single knowledge base of 5 types of affordances,
+which are listed in Figure \ref{fig:afford_kb_exp}.  Our experiments
+consisted of a variety of common tasks in Minecraft, ranging from
+basic path planning, to smelting gold, to opening doors and tunneling
+through walls.  We also tested each planner on worlds of varying size
+and difficulty to demonstrate the scalability and flexibility of the
+affordance formalism. The evaluation metric for each trial was the
+number of state backups that were executed by each planning
+algorithm. Value Iteration was terminated when the maximum change in
+the value function was less than 0.01. RTDP terminated when the
+maximum change in the value function was less than 0.01 for five
+consecutive policy rollouts. In subgoal planning, the high-level
+subgoal plan was solved using breadth-first search; which only took a
+small fraction of the time compared to the total low-level planning
+and therefore is not reported.  We used RTDP as the low-level planner
+for subgoal planning.
 
 We set the reward function to $-1$ for all transitions, except
 transitions to states in which the agent was on lava, which returned 
@@ -319,13 +329,11 @@ factor was set to $\lambda = 0.99$. For all experiments, the agent was given sto
 
 
 
-Table~\ref{table:hard-results} shows the number of bellman updates required when solving the OO-MDP with RTDP (left column)
-compared to solving the OO-MDP with an Affordance-Aware RTDP (right column).  The
-affordance aware planner significantly outperformed its unaugmented
-counterpart in all of these experiments. This
-result demonstrates that affordances prune away many useless action in
-these block building, block destruction, and gold smelting types of
-tasks. 
+Table~\ref{table:hard-results} shows the number of Bellman updates required when solving the OO-MDP with conventional methods (left column)
+compared to solving the OO-MDP with an Affordance-Aware method (right column).  The
+affordance aware methods significantly outperformed its unaugmented
+counterpart in all of these experiments. These
+results, while unsurprising, concretely demonstrate that a small set of task-general affordances prune away many useless actions across many different types of Minecraft tasks. 
 
 \begin{table}
 \centering
@@ -366,7 +374,7 @@ learned affordances are more prone to make mistakes we cannot prune actions in t
 as we will lose optimality guarantees of the OO-MDP solver.
 
 \begin{algorithm}
-  \caption{$\Delta_i.getActions(s)$}
+  \caption{$\Delta_i.getActionsForState(s)$}
   \begin{algorithmic}[1]
     \State $\lambda \leftarrow DirMult(\Delta_i.\alpha)$
     \State $N \leftarrow Dir(\Delta_i.\beta)$
@@ -377,6 +385,7 @@ as we will lose optimality guarantees of the OO-MDP solver.
   \end{algorithmic}
   \label{alg:prune_actions}
 \end{algorithm}
+
 
 Instead, for a given state, we solve for the probability of getting a particular action set $\mathcal{A}^*$, and approximate sampling
 from this distribution. This ensures that in the limit, it is possible to apply each action in each state.
@@ -396,9 +405,11 @@ We approximate this term assuming the sets $\mathcal{A}_i'$ are disjoint:
 \begin{align}
 \mathcal{A}^* = \bigcup_{i=1}^K \Delta_i.getActions(s)
 \end{align}
+\stnote{I'm not sure we need this equation...}
 
 Where $\Delta_i.getActions(s)$ is defined by Algorithm \ref{alg:prune_actions}. For each affordance, to get an action set $\mathcal{A}'$, we form a Dirichlet Multinomial
 over actions ($\lambda$), and a Dirichlet over the size ($N$) of each action set:
+\stnote{I'm confused about this jump.  HOw does this connect to equation 3?}
 \begin{align}
 \text{Pr}(\lambda \mid \alpha) = DirMult(\alpha) \\
 \text{Pr}(N \mid \beta) = Dir(\beta)
@@ -406,9 +417,12 @@ over actions ($\lambda$), and a Dirichlet over the size ($N$) of each action set
 
 For each affordance we sample from our distribution over action set size to get a candidate action set size. We then
 take that many samples from our distribution over actions to get a candidate action set $\mathcal{A}'$.
+\stnote{Oh I see.  This equation should go first, after equation 4.  Then give equation 5 and 6.}
 \begin{equation}
 \text{Pr}(\mathcal{A}_i \mid s,\Delta_i) = \text{Pr}(\mathcal{A}_i' \mid N, \lambda) = \text{Pr}(\lambda \mid \alpha) \cdot \text{Pr}(N \mid \beta)
 \end{equation}
+
+
 \subsection{Computing $\alpha$ and $\beta$}
 
 We require that an expert provide a set $\mathcal{P}$ of predicates
@@ -423,8 +437,8 @@ We form a set of candidate affordances $\Delta$ with every combination of $\lang
   \label{fig:graphical_model}
 \end{figure}
 
-Then, we randomly generate a large number of small state spaces (typically on the order of several thousand), annotated with their
-lifted goal description $g \in \mathcal{G}$. We solve the OO-MDP in each state space and get an optimal policy $\pi_j$. For each optimal policy,
+Then, we randomly generate a large number of state spaces which are small enough to be solved using tabular methods (typically on the order of several thousand), annotated with their
+lifted goal description $g \in \mathcal{G}$. We solve the OO-MDP in each state space to find an optimal policy $\pi_j$. For each optimal policy,
 we count the number of policies that used each action when each affordance was activated\footnote{An affordance is `activated' when its predicate is true
 and the lifted goal description $g$ matches the agent's current goal}. These counts represent $\alpha$. Then, we count the number of unique actions
 used by each policy, representing $\beta$. The full generative model is outlined in Figure \ref{fig:graphical_model}.
@@ -441,7 +455,7 @@ factor to $\lambda = 0.99$.
 
 \subsection{Results}
 
-Table \ref{table:learned-results} indicates the average number of bellman updates required by RTDP to solve the OO-MDP
+Table \ref{table:learned-results} indicates the average number of Bellman updates required by RTDP to solve the OO-MDP
 in each of the four candidate worlds. The learned affordances clearly improved on standard RTDP by a significant margin, though
 there is still a substantial gap between the learned affordance performance and that of the expert affordances. This indicates that
 there is a lot of room for improvement in the learning process.
