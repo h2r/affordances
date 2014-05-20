@@ -16,6 +16,7 @@
 \usepackage[usenames,dvipsnames]{color}
 \newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{ST: #1}}}
 \newcommand{\dnote}[1]{\textcolor{Green}{\textbf{D: #1}}}
+\newcommand{\gnote}[1]{\textcolor{Purple}{\textbf{G: #1}}}
 
 \pdfinfo{
    /Author (David Abel  & Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex)
@@ -496,16 +497,19 @@ doors.
 Although the classic options framework is not generalizable to different state spaces,
 creating {\em portable} options is a topic of active research~\citep{konidaris07,konidaris2009efficient,Ravindran03analgebraic,croonenborghs2008learning,andre2002state,konidaris2012transfer}.
 
-Temporally extended actions are typically used
-because they represent action sequences (or sub policies) that are often useful to solving
-the current task. However, they can sometimes have the paradoxical effect
-of increasing the planning time because they increase the number of actions that must be explored~\citep{Jong:2008zr}.
+%Temporally extended actions are typically used
+%because they represent action sequences (or sub policies) that are often useful to solving
+%the current task. However, they can sometimes have the paradoxical effect
+%of increasing the planning time because they increase the number of actions that must be explored~\citep{Jong:2008zr}.
+
+\gnote{I took out the paragraph on increasing planning time. We mention it in the intro and I've moved the citation to below}
+
 %For example, deterministic planning algorithms that successfully make use of macro-actions often avoid the potential increase
 %in planning time by developing algorithms that restrict the set of macro-actions to a small set that is expected to improve planning time for the problem~\citep{Botea:2005kx,Newton:2005vn} or by limiting the use of macro-actions to certain conditions
 %in the planning algorithms like when the planner reaches heuristic plateaus (areas of the state space in which all successor states have the same heuristic value)~\citep{Coles:2007ys}. Similarly, it has been shown that the inclusion
 %of even a small subset of unhelpful options can negatively impact planning/learning time
 
-Given the potential for unhelpful temporally extended actions to negatively impact planning time, we believe combing affordances with temporally extended actions
+Given the potential for unhelpful temporally extended actions to negatively impact planning time~\citep{Jong:2008zr}, we believe combing affordances with temporally extended actions
 may be especially valuable because it will restrict the set of temporally extended actions to those
 useful for a task. In the future, we plan to explore the benefit from combining
 these approaches.
@@ -539,9 +543,9 @@ While this approach is theoretically sound, and has achieved empirical success, 
 \subsection{Heuristics}
 Heuristics in MDPs are used to convey information about the value of a given state or state-action pair with respect to the task being solved and typically take the form of either {\em value function initialization},
 or {\em reward shaping}. For planning algorithms that estimate state-value functions, heuristics are often
-provided by initializing the value function to values that are good approximations of the true value function. For example, initializing the value function to an admissible close approximation of the optimal value function has been shown to be effective for LAO* and RTDP, because it more greatly biases the states explored by the rollout policy to those important to the optimal policy~\citep{Hansen:1999qf}.
+provided by initializing the value function to values that are good approximations of the true value function. For example, initializing the value function to an admissible close approximation of the optimal value function has been shown to be effective for LAO* and RTDP~\citep{Hansen:1999qf}.%, because it more greatly biases the states explored by the rollout policy to those important to the optimal policy~\citep{Hansen:1999qf}.
 
-Reward shaping is an alternative approach to providing heuristics in which the planning algorithm uses a modified version of the reward function that returns larger rewards for state-action pairs that are expected to be useful. Reward shaping differs from value function initialization in that it is not guaranteed to preserve convergence to an optimal policy unless certain properties of the shaped reward are satisfied~\citep{potshap} that also have the effect of making reward shaping equivalent to value function initialization for a large class of planning/learning algorithms~\citep{Wiewiora:2003fk}.
+Reward shaping is an alternative approach to providing heuristics in which the planning algorithm uses a modified version of the reward function that returns larger rewards for state-action pairs that are expected to be useful. Reward shaping differs from value function initialization in that it is not guaranteed to preserve convergence to an optimal policy unless certain properties of the shaped reward are satisfied~\citep{potshap}.% that also have the effect of making reward shaping equivalent to value function initialization for a large class of planning/learning algorithms~\citep{Wiewiora:2003fk}.
 
 A critical difference between heuristics and affordances is that heuristics are highly dependent on the reward function and state space of the task being solved; therefore, different tasks require different heuristics to be provided, whereas affordances are state independent and transferable between different reward functions. However, if a heuristic can be provided, the combination of heuristics and affordances may even more greatly accelerate planning algorithms than either approach alone.
 
