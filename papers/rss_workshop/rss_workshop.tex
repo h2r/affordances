@@ -136,17 +136,13 @@ the agent's dependence on expert knowledge. Affordances are not specific to a pa
 function or state space, and thus, provide the agent with transferable 
 knowledge that is effective in a wide variety of problems. 
 
-We capture the intuition that affordances are an inherent property of
-an environment containing a goal-oriented agent by focusing the agent on
-specific actions when trying to satisfy a particular goal. The affordances
-that are on hand to the agent will be determined by what the agent is trying to accomplish
-at any given time, thus determining which actions are most pertinent. Because affordances
+Because affordances
 define the {\em kind} of goals for which actions are useful,
 affordances also enable high-level reasoning that can
 be combined with approaches like high-level subgoal planning for even
 greater performance gains. For now, we have chosen to ignore the direct 
 perception of affordances in the environment, and have instead opted to emphasize an
-affordances ability to direct a planning agent through large stochastic state spaces. We foresee
+affordance's ability to direct a planning agent through large stochastic state spaces. We foresee
 future methods that incorporate vision and perception solutions with affordance-aware planners
 to create robust, near-autonomous robotic agents.
 
@@ -158,7 +154,7 @@ We use Minecraft as our planning and evaluation domain. Minecraft is a
 of different types.  Minecraft's physics and action space is expressive
 enough to allow very complex worlds to be created by users, such as a
 functional scientific graphing calculator\footnote{https://www.youtube.com/watch?v=wgJfVRhotlQ};
-simple scenes from a Minecraft world appear in Figure~\ref{fig:epicworld}. Minecraft serves as a model for robotic tasks such as cooking assistance, assembling items in a factory, and object retrieval.  As in these tasks,  the agent operates in a very large state-action space in an uncertain environment.
+simple scenes from a Minecraft world appear in Figure~\ref{fig:epicworld} - a video demonstration of our system may be seen online\footnote{Watch at: https://vimeo.com/88689171}. Minecraft serves as a model for robotic tasks such as cooking assistance, assembling items in a factory, and object retrieval.  As in these tasks,  the agent operates in a very large state-action space in an uncertain environment.
 
 
 \begin{figure*}
