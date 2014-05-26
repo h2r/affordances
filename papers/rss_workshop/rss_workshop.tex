@@ -141,7 +141,7 @@ be combined with approaches like high-level subgoal planning for even
 greater performance gains. For now, we chose to ignore approaches to affordances that emphasize
 direct perception of affordances in the environment, and instead opted to emphasize an
 affordance's role as a means of guiding a planning agent through large stochastic state spaces. We foresee
-future methods that bring together affordance-aware planners with approaches to affordances
+future methods that bring together affordance-aware planners with these approaches to affordances
 in the perception and sensing pipeline to create robust, near-autonomous robotic agents.
 
 % ====== Section: Background ======
@@ -173,7 +173,7 @@ and object retrieval.  As in these tasks, the agent operates in a very large sta
   \label{fig:epicworld}
 \end{figure*}
 
-Minecraft serves as an effective parallel for the actual world, both
+Minecraft is also an effective parallel for the actual world, both
 in terms of approximating the complexity and scope of planning
 problems, as well as modeling the uncertainty and noise presented to a
 real world agent.  For instance, robotic agents are prone to
@@ -211,7 +211,7 @@ class $c_j \in  \{c_1, \ldots, c_c\}$. Every class has a set of attributes
 $Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of which has a domain $Dom(c.a)$ of possible values.
 Upon instantiation of an object class, its attributes are given a state $o.state$
 (an assignment of values to its attributes).  The underlying MDP state is the set
-of all the object states: $s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$.
+of all the object states: $s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$. \gnote{Is this last equation right? If $o_i.state$ is an attribute assignment for one object then wouldn't $s$ be one object's attribute assignment, and $\mathcal{S}$ be a state.}
 
 There are two advantages to using an object-oriented factored state
 representation instead of a single feature vector. First, different
@@ -276,9 +276,9 @@ from this distribution. This ensures that in the limit, it is possible to apply 
 \begin{equation}
 \text{Pr}(\mathcal{A}^* \mid s, \Delta_0 \dots \Delta_N)
 \end{equation}
-We let each affordance contribute a set $\mathcal{A}'$ in each state:
+We let each affordance contribute a set $\mathcal{A}' \subseteq A^*$ in each state:
 \begin{align}
-\text{Pr}(\mathcal{A}'_0 \cup \mathcal{A}'_N \mid s, \Delta_0 \dots \Delta_N)
+\text{Pr}(\mathcal{A}'_0 \cup \ldots \cup \mathcal{A}'_N \mid s, \Delta_0 \dots \Delta_N)
 \end{align}
 We approximate this term assuming the sets $\mathcal{A}_i'$ are disjoint:
 \begin{align}
@@ -292,7 +292,7 @@ Algorithm~\ref{alg:prune_actions}. For instance, the affordances defined for Min
 navigation problems can be used in any task regardless of the spatial size of the world, 
 number of blocks in the world, and specific goal location that needs to be reached. Each 
 activated affordance contributes a suggested action set, determined by Algorithm \ref{alg:get_actions}. 
-We call an affordance {\it activated} when its predicate is true and the lifted goal description $g$ matches the agent's current goal.
+We call an affordance {\it activated} when its predicate is true and its lifted goal description $g$ matches the agent's current goal.
 
 \begin{algorithm}
   \caption{getActionsForState($state$, $Z$, $G$)}
@@ -323,13 +323,14 @@ as the current goal (line 3), then the actions associated with the affordance ($
 \end{figure}
 
 For each affordance, we get an action set $\mathcal{A}'$. This 
-process is outlined by Algorithm \ref{alg:get_actions}. To compute $\mathcal{A}'$, we form a Dirichlet Multinomial
-over actions ($\lambda$), and a Dirichlet over the size ($N$) of each action set:
+process is outlined by Algorithm \ref{alg:get_actions}. To compute $\mathcal{A}'$, we form a Dirichlet-multinomial distribution
+over actions ($\lambda$), and a Dirichlet distribution over the size ($N$) of each action set. Therefore, the probability of getting an action set from affordance $i$ in state $s$ is:
 \begin{equation}
-\text{Pr}(\mathcal{A}_i \mid s,\Delta_i) = \text{Pr}(\mathcal{A}_i' \mid N, \lambda) = \text{Pr}(\lambda \mid \alpha) \cdot \text{Pr}(N \mid \beta)
+\text{Pr}(\mathcal{A}_i' \mid s,\Delta_i) = \text{Pr}(\mathcal{A}_i' \mid N, \lambda) = \text{Pr}(\lambda \mid \alpha) \cdot \text{Pr}(N \mid \beta)
 \end{equation}
+\gnote{I changed $\text{Pr}(\mathcal{A}_i \mid s,\Delta_i)$ to $\text{Pr}(\mathcal{A}_i' \mid s,\Delta_i)$, just wanted to make sure that is right.}
 
-For a given affordance $\Delta_i$, we sample from our distribution over action set size to get a candidate action set size (lines 1-2). We then
+For a given affordance $\Delta_i$, first we sample from our distribution over action set size to get a candidate action set size (lines 1-2). We then
 take that many samples from our distribution over actions to get a candidate action set $\mathcal{A}'$ (lines 3-5).
 \begin{align}
 \text{Pr}(\lambda \mid \alpha) = DirMult(\alpha) \\
@@ -423,7 +424,7 @@ probability ($0.3$) of moving in another random direction.
 \label{fig:afford_kb_exp}
 \end{figure}
 
-Lastly, we conducted experiments in which we varied the number training worlds
+Lastly, we conducted experiments in which we varied the number of training worlds
 used in the learning process from 0-1000 to demonstrate that planning
 performance improves with more training data.
 
