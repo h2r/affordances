@@ -119,16 +119,22 @@ to the agent, which {\em increases} the size of the state-action space
 (while also allowing the agent to search more deeply within the
 space).  The resulting augmented space is even larger, which can have
 the paradoxical effect of increasing the search time for a good
-policy. Further, other approaches fall short of learning useful, transferable knowledge,
+policy~\citep{Jong:2008zr}. Further, other approaches fall short of learning useful, transferable knowledge,
 either due to complexity or lack of generalizability.
 
-Instead, we propose a formalization of {\em affordances} \citep{gibson77} that enables an agent to focus on
-aspects of the environment that are most relevant toward solving its current goal. Our approach avoids exploration of irrelevant parts of the 
+Instead, we propose a formalization of {\em affordances} \citep{gibson77} for Markov Decision Processes (MDPs) that
+specifies which actions an agent should consider in different kinds of states to achive a certain kind of goal.
+Our apporach enables an agent to focus on
+aspects of the environment that are most relevant toward solving its current goal 
+%Our approach 
+and avoids exploration of irrelevant parts of the 
 state-action space, which leads to dramatic speedups in planning.
 
-We formalize the notion of an affordance as a piece of planning
-knowledge provided to an agent operating in a Markov Decision
-Process (MDP). Further, we propose a learning process that
+%We formalize the notion of an affordance as a piece of planning
+%knowledge provided to an agent
+%operating in a Markov Decision
+%Process (MDP). 
+Further, we propose a learning process that
 enables agents to autonomously learn affordances through experience, lessening
 the agent's dependence on expert knowledge. Affordances are not specific to a particular reward 
 function or state space, and thus, provide the agent with transferable 
@@ -211,7 +217,10 @@ class $c_j \in  \{c_1, \ldots, c_c\}$. Every class has a set of attributes
 $Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of which has a domain $Dom(c.a)$ of possible values.
 Upon instantiation of an object class, its attributes are given a state $o.state$
 (an assignment of values to its attributes).  The underlying MDP state is the set
-of all the object states: $s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$. \gnote{Is this last equation right? If $o_i.state$ is an attribute assignment for one object then wouldn't $s$ be one object's attribute assignment, and $\mathcal{S}$ be a state.}
+of all the object states: $s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$. 
+%\gnote{Is this last equation right? If $o_i.state$ is an attribute assignment for one object then wouldn't $s$ be one object's attribute assignment, and $\mathcal{S}$ be a state.}
+%JM - yes, it is correct. Note that s is being assigned a *union* of sets of a single objects, which gives
+% you a set of objects for the state.
 
 There are two advantages to using an object-oriented factored state
 representation instead of a single feature vector. First, different
@@ -261,12 +270,15 @@ where:
 \item[] $\mathcal{A}' \subseteq \mathcal{A}$, a subset of the action space, representing the relevant {\it action-possibilities} of the environment.
 \item[] $p$ is a predicate on states, $s \longrightarrow \{$0$, 1\}$
   representing the {\em precondition} for the affordance.
-\item[] $g$ is an ungrounded predicate on states, $g$, representing a {\it lifted goal description}.
+\item[] $g$ is an ungrounded predicate on states representing a {\it lifted goal description}.
 \end{itemize}
-The precondition and goal description refer to predicates that are defined in the OO-MDP definition. 
+The precondition and goal description refer to predicates that are defined in the OO-MDP definition.
+We call an affordance {\it activated} when its predicate is true and its lifted goal description $g$ matches the agent's current goal. 
 Using OO-MDP predicates for affordance preconditions and goal descriptions 
 allows for state space independence. Thus, a planner equipped with
-affordances can be used in any number of different tasks. 
+affordances can be used in any number of different environments. For instance, the affordances defined for Minecraft 
+navigation problems can be used in any task regardless of the spatial size of the world, 
+number of blocks in the world, and specific goal location that needs to be reached.
 
 \subsection{Affordance Aware Planning}
 We call any planner that
@@ -288,11 +300,9 @@ We approximate this term assuming the sets $\mathcal{A}_i'$ are disjoint:
 Given a set of $K$ domain affordances $Z = \{\Delta_1, ..., \Delta_K\}$ and a current 
 agent goal condition defined with an OO-MDP predicate $G$, the action set that a 
 planning algorithm considers is pruned on a state by state basis as shown in 
-Algorithm~\ref{alg:prune_actions}. For instance, the affordances defined for Minecraft 
-navigation problems can be used in any task regardless of the spatial size of the world, 
-number of blocks in the world, and specific goal location that needs to be reached. Each 
+Algorithm~\ref{alg:prune_actions}.  Each 
 activated affordance contributes a suggested action set, determined by Algorithm \ref{alg:get_actions}. 
-We call an affordance {\it activated} when its predicate is true and its lifted goal description $g$ matches the agent's current goal.
+
 
 \begin{algorithm}
   \caption{getActionsForState($state$, $Z$, $G$)}
@@ -328,8 +338,8 @@ over actions ($\lambda$), and a Dirichlet distribution over the size ($N$) of ea
 \begin{equation}
 \text{Pr}(\mathcal{A}_i' \mid s,\Delta_i) = \text{Pr}(\mathcal{A}_i' \mid N, \lambda) = \text{Pr}(\lambda \mid \alpha) \cdot \text{Pr}(N \mid \beta)
 \end{equation}
-\gnote{I changed $\text{Pr}(\mathcal{A}_i \mid s,\Delta_i)$ to $\text{Pr}(\mathcal{A}_i' \mid s,\Delta_i)$, just wanted to make sure that is right.}
-
+%\gnote{I changed $\text{Pr}(\mathcal{A}_i \mid s,\Delta_i)$ to $\text{Pr}(\mathcal{A}_i' \mid s,\Delta_i)$, just wanted to make sure that is right.}
+%JM - that seems like a correct change to me.
 For a given affordance $\Delta_i$, first we sample from our distribution over action set size to get a candidate action set size (lines 1-2). We then
 take that many samples from our distribution over actions to get a candidate action set $\mathcal{A}'$ (lines 3-5).
 \begin{align}
@@ -362,18 +372,24 @@ experiments.
 \subsection{Learning Affordances}
 
 A strength of our affordance formalism is that it is simple enough to learn useful affordances directly.
-To learn affordances, we propose a scaffolded learning process that computes $\alpha$ and $\beta$ by solving OO-MDPs in small state-spaces that present similar sorts of features to the state spaces the agent might expect to see.
+Given the set of predicates $\mathcal{P}$ and possible goals $\mathcal{G} \subset \mathcal{P}$, we first form a set of candidate affordances $\Delta$ with every combination of $\langle p, g \rangle$, for $p \in \mathcal{P}$ and $g \in \mathcal{G}$.
+To learn the action set for each of these candidate affordances, we propose a scaffolded learning process that computes $\alpha$ and $\beta$ from the
+solved policy of $m$ goal-annotated OO-MDPs that have small state spaces, but still present similar sorts of features to the state spaces the agent might expect to see in more complex environments.
 
-Given the set of predicates $\mathcal{P}$ and possible goals $\mathcal{G} \subset \mathcal{P}$, we form a set of candidate affordances $\Delta$ with every combination of $\langle p, g \rangle$, for $p \in \mathcal{P}$ and $g \in \mathcal{G}$.
 
-Then, we randomly generate a large number of state spaces which are small 
-enough to be solved using tabular methods (typically on the order of several hundred to a few thousand), 
-annotated with their lifted goal description $g \in \mathcal{G}$. We solve the 
-OO-MDP in each state space to find an optimal policy $\pi_j$.
+%by solving OO-MDPs in small state-spaces that present similar sorts of features to the state spaces the agent might expect to see.
+
+
+
+%Then, we randomly generate a large number of state spaces which are small 
+%enough to be solved using tabular methods (typically on the order of several hundred to a few thousand), 
+%annotated with their lifted goal description $g \in \mathcal{G}$. We solve the 
+%OO-MDP in each state space to find an optimal policy $\pi_j$.
 
 For each optimal policy, we count the number of policies that used each action 
-when each affordance was activated.
-These counts represent $\alpha$. Then, we count the number of unique actions used by each policy, representing $\beta$. 
+when each affordance was activated. $\alpha$ is set to this count. Then, we count the number
+of unique actions used by each policy and set $\beta$ to this value.
+%These counts represent $\alpha$. Then, we count the number of unique actions used by each policy, representing $\beta$. 
 
 % ====== Section: Experiments ======
 \section{Experiments}
@@ -545,7 +561,7 @@ or {\em reward shaping}. Initializing the value function to an admissible close 
 
 Reward shaping is an alternative approach to providing heuristics. The planning algorithm uses a modified version of the reward function that returns larger rewards for state-action pairs that are expected to be useful, but does not guarantee convergence to an optimal policy unless certain properties of the shaped reward are satisfied~\citep{potshap}.
 
-A critical difference between heuristics and affordances is that heuristics are highly dependent on the reward function and state space of the task being solved, whereas affordances are state independent and transferable between different reward functions. However, if a heuristic can be provided, the combination of heuristics and affordances may even more greatly accelerate planning algorithms than either approach alone.
+A critical difference between heuristics and affordances is that heuristics are highly dependent on the reward function and state space of the task being solved, whereas affordances are state space independent and transferable between different reward functions. However, if a heuristic can be provided, the combination of heuristics and affordances may even more greatly accelerate planning algorithms than either approach alone.
 
 % ====== Section: Conclusion ======
 \section{Conclusion}
