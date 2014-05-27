@@ -283,7 +283,7 @@ We call any planner that
 uses affordances an {\it affordance-aware} planner. For a given state, 
 our goal is to solve for the probability of getting a particular action set $\mathcal{A}^*$, and approximate sampling
 from this distribution. This ensures that in the limit, it is possible to apply each action in each state. $\mathcal{A}^*$ represents
-a drawn action subset from the OO-MDP action set $\mathcal{A}$ that is likely to contain the optimal action(s) for a given state,
+a drawn action subset from the OO-MDP action set that is likely to contain the optimal action(s) for a given state,
 but not suboptimal actions.
 \begin{equation}
 \text{Pr}(\mathcal{A}^* \mid s, \Delta_0 \dots \Delta_N)
@@ -365,7 +365,7 @@ for the domain of relevance (i.e. Minecraft). Additionally, the expert must spec
 $\mathcal{G} \subset \mathcal{P}$ that indicates which predicates may serve as goal conditions. If the expert wishes
 to provide the affordances directly, they must specify the Dirichlet parameters $\alpha$ and $\beta$. Note that
 in the limit, the expert may fix $\alpha$ and $\beta$ in a way that forces a given
-affordance to always suggest a specific set of actions - this type of expert affordances was given for all
+affordance to always suggest a specific set of actions - this type of expert affordance was given for all
 experiments.
 
 \subsection{Learning Affordances}
@@ -386,7 +386,7 @@ solved policy of $m$ goal-annotated OO-MDPs that have small state spaces, but st
 For each optimal policy, we count the number of policies that used each action 
 when each affordance was activated. $\alpha$ is set to this count. Additionally, we define $\beta$ as a vector of the integers $1$ to $|\mathcal{A}$.
 Then, for each optimal policy, we count the number of different actions that were optimal for each activated affordance $\Delta_i$, and increment
-that value for $\Delta_i.\beta$. This captures how large or small optimal action sets are expected to be.
+that value for $\Delta_i.\beta$. This captures how large or small optimal action sets are expected to be for each affordance.
 
 % ====== Section: Experiments ======
 \section{Experiments}
@@ -443,7 +443,7 @@ Lastly, we conducted experiments in which we varied the number of training world
 used in the learning process from 0-1000 to demonstrate that planning
 performance improves with more training data. As in Table \ref{table:learned-results}, we generated 0 to 1000 simple state
 spaces, each a $3\times3\times3$ world with randomized features that mirrored the agent's actual state space. We then solved
-the OO-MDP with training data of 0 up to 1000 simple state spaces to demonstrate the effectiveness of added training data.
+the OO-MDP with training data of 0 to 1000 simple state spaces to demonstrate the effectiveness of added training data.
 
 % ==== SECTION: RESULTS ====
 \section{Results}
@@ -473,7 +473,7 @@ results, while unsurprising, concretely demonstrate that a small set of affordan
 
 Table \ref{table:learned-results} indicates the average number of Bellman updates required by RTDP to solve the OO-MDP
 in each of the four candidate worlds. The learned affordances clearly improved on standard RTDP by a significant margin, though
-there is clearly still room to improve the learning process to learn near-expert level affordances.
+there is clearly still room to improve the learning process to approach learned affordances that are near-expert level.
 \begin{table}
 \centering
 \caption{Learned Affordance Results: Avg. Number of Bellman Updates per converged policy}
@@ -550,7 +550,7 @@ temporal logic (LTL), which they used for control of a forward-chaining planner.
 whether candidate plans do not falsify a given knowledge base of LTL formulas, often
 achieving polynomial time planning in exponential space.
 
-The primary difference between this body of work and our affordance formalism is that affordances may be learned, increasing autonomy of the agent, while LTL formulas are far too complicated to learn effectively, placing dependence on an expert.
+The primary difference between this body of work and affordance-aware planning is that affordances may be learned (increasing autonomy of the agent), while LTL formulas are far too complicated to learn effectively, placing dependence on an expert.
 
 % --- Subsection: Heuristics ---
 \subsection{Heuristics}
