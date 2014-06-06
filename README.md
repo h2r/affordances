@@ -24,6 +24,12 @@ Five main sets of files here:
 	(5) paper/presentation/proposal
 		- Collection of supplementary material for the project
 
+	(6) modeling
+		- Miscellaneous attempts at modeling affordances and related structures
+
+	(7) dependencies
+		- Mallet: http://mallet.cs.umass.edu/
+
 TO USE:
 	
 	[a] run sh start_server.sh in located in /minecraft_api
