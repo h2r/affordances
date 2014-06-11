@@ -1,8 +1,6 @@
 package minecraft;
 
 import java.util.HashMap;
-import java.util.List;
-
 import burlap.oomdp.auxiliary.StateParser;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectInstance;
@@ -31,7 +29,6 @@ public class MinecraftStateParser implements StateParser {
 		
 		sbuf.append(a.getDiscValForAttribute(xa)).append(",").append(a.getDiscValForAttribute(ya)).append(",").append(a.getDiscValForAttribute(za)).append(" ");
 		sbuf.append(goal.getDiscValForAttribute(xa)).append(",").append(goal.getDiscValForAttribute(ya)).append(",").append(goal.getDiscValForAttribute(za)).append(" ");
-		
 		
 		return sbuf.toString();
 	}

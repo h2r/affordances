@@ -6,24 +6,35 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+/**
+ * Used to turn .map minecraft ascii files into easily usable data structures
+ * @author Dhershkowitz
+ *
+ */
 public class MapIO {
+	//-----CLASS VARIABLES-----
 	/**
 	 * Stores the first line of the map ascii file as a hashing from keys to values
 	 */
 	private HashMap<String, Integer> headerMap;
+	
 	/**
-	 * Stores the map as a string
+	 * Stores the ascii map (header excluded) as a 3D map of chars
 	 */
 	private char[][][] mapAsCharArray;
+	
 	/**
 	 * Stores what separates horizontal planes in the ascii files
 	 */
 	private static String 							planeSeparator = "\n~~~\n";
+	
 	/**
 	 * Stores what separates rows within a plane in the ascii files
 	 */
 	private static String 							rowSeparator = "\n";	
 
+	
+	//-----CLASS METHODS-----
 	public MapIO(String filePath) {
 		//Open file
 		BufferedReader reader = null;
@@ -54,14 +65,12 @@ public class MapIO {
 	}
 	
 	/**
-	 * 
-	 * @return a 3d char array of the map of the ascii file
+	 * @return a copy of 3D char array of the map of the ascii file
 	 */
 	public char[][][] getMapAs3DCharArray() {
 		return this.mapAsCharArray.clone();
 	}
 	/**
-	 * 
 	 * @return a hashmap mapping string keys to values in the first line of the ascii file
 	 */
 	@SuppressWarnings("unchecked")
@@ -69,8 +78,6 @@ public class MapIO {
 		return (HashMap<String, Integer>) this.headerMap.clone();
 	}
 	
-	
-		
 	/**
 	 * Used to process the first line of a map file formatted "param1=value1,param2=value2..."
 	 * @param stateInfo the first line of a map file with CSV values
@@ -90,10 +97,10 @@ public class MapIO {
 		
 		return toReturn;
 	}
+	
 	/**
-	 * 
-	 * @param mapString the ascii map stored as a string
-	 * @return the input map string as a 3d char array
+	 * @param mapString the ascii map stored as a string (header excluded)
+	 * @return the input map string as a 3D char array
 	 */
 	public static char[][][] processMapString(String mapString) {
 		String[] splitByHorPlanes = mapString.split(planeSeparator);
