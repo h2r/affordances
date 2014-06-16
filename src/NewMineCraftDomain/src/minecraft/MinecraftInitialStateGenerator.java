@@ -84,7 +84,6 @@ public class MinecraftInitialStateGenerator {
 	}
 	
 	
-	
 	//METHODS FOR CREATING OBJECTS TO ADD TO THE STATE
 	private static ObjectInstance createGoal(Domain d, int x, int y, int z, int objectIndex) {
 		String objectName = NameSpace.CLASSGOAL;

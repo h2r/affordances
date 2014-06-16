@@ -1,6 +1,9 @@
 package minecraft;
 
 import burlap.behavior.singleagent.*;
+import burlap.behavior.singleagent.planning.OOMDPPlanner;
+import burlap.behavior.singleagent.planning.QComputablePlanner;
+import burlap.behavior.singleagent.planning.commonpolicies.GreedyQPolicy;
 import burlap.behavior.singleagent.planning.deterministic.DeterministicPlanner;
 import burlap.behavior.singleagent.planning.deterministic.SDPlannerPolicy;
 import burlap.behavior.singleagent.planning.deterministic.TFGoalCondition;
@@ -12,6 +15,7 @@ import burlap.oomdp.singleagent.common.*;
 import burlap.behavior.statehashing.DiscreteStateHashFactory;
 
 import java.util.HashMap;
+
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
 
 /**
@@ -33,7 +37,9 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfAgentAtGoal;
 	
 	//Params for Planners
-	//None right now...
+	private double						gamma = 0.99;
+	private double						minDelta = 0.01;
+	private int							maxSteps = 200;
 
 	
 	// ----- CLASS METHODS -----
@@ -50,7 +56,7 @@ public class MinecraftBehavior {
 	 * @param filePathOfMap a filepath to the location of the ascii map to update the behavior to
 	 */
 	public void updateMap(String filePathOfMap) {
-		//Perform IO on map§
+		//Perform IO on mapï¿½
 		MapIO mapIO = new MapIO(filePathOfMap);
 		char[][][] mapAs3DArray = mapIO.getMapAs3DCharArray();
 		HashMap<String, Integer> headerInfo = mapIO.getHeaderHashMap();
@@ -80,6 +86,28 @@ public class MinecraftBehavior {
 		this.terminalFunction = new SinglePFTF(pfAgentAtGoal);
 	}
 	
+	// ---------- PLANNERS ---------- 
+	
+	/**
+	 * Takes in an instance of an OOMDP planner and solves the OO-MDP
+	 * @param planner
+	 * @return p: The Policy from the solved OO-MDP
+	 */
+	public Policy solve(OOMDPPlanner planner) {
+		// Solve the OO-MDP
+		planner.planFromState(initialState);
+
+		// Create a Q-greedy policy from the planner
+		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
+		
+		// Print out some infos
+		EpisodeAnalysis ea = p.evaluateBehavior(initialState, this.rewardFunction, this.terminalFunction, maxSteps);
+		
+		System.out.println(ea.getActionSequenceString());
+
+		return p;
+	}
+	
 	public void BFSExample(String outputPath) {
 		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
 		
@@ -102,6 +130,32 @@ public class MinecraftBehavior {
 		mcBeh.BFSExample(outputPath);
 		
 		
+	}
+	
+	// --- ACCESSORS ---
+	
+	public Domain getDomain() {
+		return this.domain;
+	}
+	
+	public RewardFunction getRewardFunction() {
+		return this.rewardFunction;
+	}
+	
+	public TerminalFunction getTerminalFunction() {
+		return this.terminalFunction;
+	}
+	
+	public double getGamma() {
+		return this.gamma;
+	}
+	
+	public DiscreteStateHashFactory getHashFactory() {
+		return this.hashingFactory;
+	}
+
+	public double getMinDelta() {
+		return this.minDelta;
 	}
 	
 }
