@@ -19,7 +19,7 @@
 \newcommand{\gnote}[1]{\textcolor{Purple}{\textbf{G: #1}}}
 
 \pdfinfo{
-   /Author (David Abel  & Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex)
+   /Author (David Abel  \& Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex)
    /Title  (Affordace-Aware Planning)
    /CreationDate (D:20101201120000)
    /Subject (Planning, Affordances, Sequential Decision Making)
@@ -32,24 +32,26 @@
 \title{Affordance-Aware Planning}
 
 % You will get a Paper-ID when submitting a pdf file to the conference system
-\author{Paper-ID: 5}
+\author{David Abel \& Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex \\ Department of Computer Science, Brown University \\ \texttt{\{dabel,gabrielbm,jmacglashan,stefie10\}@cs.brown.edu}}
 
-%\author{\authorblockN{Michael Shell}
-%\authorblockA{School of Electrical and\\Computer Engineering\\
-%Georgia Institute of Technology\\
-%Atlanta, Georgia 30332--0250\\
-%Email: mshell@ece.gatech.edu}
+%\author{\authorblockN{David Abel, Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex}
+%\authorblockA{Department of Computer Science\\
+%Brown University\\
+%Providence, RI 02912\\
+%Email: \texttt{\{dabel,gabrielbm,jmacglashan,stefie10\}@cs.brown.edu}}
 %\and
-%\authorblockN{Homer Simpson}
-%\authorblockA{Twentieth Century Fox\\
-%Springfield, USA\\
-%Email: homer@thesimpsons.com}
+%\authorblockN{Gabriel Barth-Maron}
+%\authorblockA{Computer Science Department\\
+%Brown University\\
+%Providence, RI 02912\\
+%Email: dabel@cs.brown.edu}
 %\and
 %\authorblockN{James Kirk\\ and Montgomery Scott}
-%\authorblockA{Starfleet Academy\\
-%San Francisco, California 96678-2391\\
-%Telephone: (800) 555--1212\\
-%Fax: (888) 555--1212}}
+%\authorblockA{Computer Science Department\\
+%Brown University\\
+%Providence, RI 02912\\
+%Email: dabel@cs.brown.edu}
+%\and
 
 
 % avoiding spaces at the end of the author lines is not a problem with
@@ -123,17 +125,12 @@ policy~\citep{Jong:2008zr}. Further, other approaches fall short of learning use
 either due to complexity or lack of generalizability.
 
 Instead, we propose a formalization of {\em affordances} \citep{gibson77} for Markov Decision Processes (MDPs) that
-specifies which actions an agent should consider in different kinds of states to achive a certain kind of goal.
-Our apporach enables an agent to focus on
+specifies which actions an agent should consider in different kinds of states to achieve a certain kind of goal.
+Our approach enables an agent to focus on
 aspects of the environment that are most relevant toward solving its current goal 
-%Our approach 
 and avoids exploration of irrelevant parts of the 
 state-action space, which leads to dramatic speedups in planning.
 
-%We formalize the notion of an affordance as a piece of planning
-%knowledge provided to an agent
-%operating in a Markov Decision
-%Process (MDP). 
 Further, we propose a learning process that
 enables agents to autonomously learn affordances through experience, lessening
 the agent's dependence on expert knowledge. Affordances are not specific to a particular reward 
@@ -147,8 +144,8 @@ be combined with approaches like high-level subgoal planning for even
 greater performance gains. For now, we chose to ignore approaches to affordances that emphasize
 direct perception of affordances in the environment, and instead emphasize an
 affordance's role as a means of guiding a planning agent through large stochastic state spaces. We foresee
-future methods that bring together affordance-aware planners with these approaches to affordances
-in the perception and sensing pipeline to create robust, near-autonomous robotic agents.
+future methods that bring together affordance-aware planners with approaches to affordances
+in the perception and sensing pipeline to endow robotic agents with substantial reasoning and sensing capabilities.
 
 % ====== Section: Background ======
 \section{Background}
@@ -189,8 +186,11 @@ difficulties of planning under uncertainty, the Minecraft agent's
 actions were modified to have stochastic outcomes. These stochastic
 outcomes may require important changes in the optimal policy in
 contrast to deterministic actions, such as keeping the agent's
-distance from high cost areas of the state-space, such as lava. We chose to give the Minecraft agent perfect
-sensor data about the Minecraft world.
+distance from high cost areas of the state-space, such as lava. 
+
+We chose to give the Minecraft agent perfect sensor data about the Minecraft world.
+However, affordances typically relate to the agent's immediate surroundings,
+so limiting the perceptual scope should not impede the performance gains of affordances.
 
 \subsection{OO-MDPs}
 We define affordances in terms of propositional functions on states. Our definition builds on the Object-Oriented Markov Decision Process
@@ -216,9 +216,6 @@ $Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of which has a domain $Dom(c.a)$ of p
 Upon instantiation of an object class, its attributes are given a state $o.state$
 (an assignment of values to its attributes).  The underlying MDP state is the set
 of all the object states: $s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$. 
-%\gnote{Is this last equation right? If $o_i.state$ is an attribute assignment for one object then wouldn't $s$ be one object's attribute assignment, and $\mathcal{S}$ be a state.}
-%JM - yes, it is correct. Note that s is being assigned a *union* of sets of a single objects, which gives
-% you a set of objects for the state.
 
 There are two advantages to using an object-oriented factored state
 representation instead of a single feature vector. First, different
@@ -247,9 +244,6 @@ about the MDP state.
 %singular instance of class $\texttt{AGENT}$ is directly adjacent to an
 %empty location at floor level (i.e. the cell beneath the agent in some
 %direction does not contain a block). 
-In the original OO-MDP work,
-these predicates were used to model and learn an MDP's transition
-dynamics.
 
 While an OO-MDP reduces the size of the Minecraft state space
 by a significant factor, the resulting state space is still far too large to
@@ -278,7 +272,7 @@ affordances can be used in any number of different environments. For instance, t
 navigation problems can be used in any task regardless of the spatial size of the world, 
 number of blocks in the world, and specific goal location that needs to be reached.
 
-\subsection{Affordance Aware Planning}
+\subsection{Affordance-Aware Planning}
 We call any planner that
 uses affordances an {\it affordance-aware} planner. For a given state, 
 our goal is to solve for the probability of getting a particular action set $\mathcal{A}^*$, and approximate sampling
@@ -286,11 +280,11 @@ from this distribution. This ensures that in the limit, it is possible to apply 
 a drawn action subset from the OO-MDP action set that is likely to contain the optimal action(s) for a given state,
 but not suboptimal actions.
 \begin{equation}
-\text{Pr}(\mathcal{A}^* \mid s, \Delta_0 \dots \Delta_N)
+\text{Pr}(\mathcal{A}^* \mid s, \Delta_1 \dots \Delta_K)
 \end{equation}
 We let each affordance contribute a set $\mathcal{A}' \subseteq A^*$ in each state:
 \begin{align}
-\text{Pr}(\mathcal{A}'_0 \cup \ldots \cup \mathcal{A}'_N \mid s, \Delta_0 \dots \Delta_N)
+\text{Pr}(\mathcal{A}'_1 \cup \ldots \cup \mathcal{A}'_K \mid s, \Delta_1 \dots \Delta_K)
 \end{align}
 We approximate this term assuming the sets $\mathcal{A}_i'$ are disjoint:
 \begin{align}
@@ -360,7 +354,7 @@ take that many samples from our distribution over actions to get a candidate act
 \end{algorithm}
 
 Through the use of Algorithms \ref{alg:prune_actions} \& \ref{alg:get_actions}, any OO-MDP solver can be made
-{\it affordance aware}. For a planner to be made affordance-aware, we require that an expert provide a set $\mathcal{P}$ of predicates
+{\it affordance-aware}. For a planner to be made affordance-aware, we require that an expert provide a set $\mathcal{P}$ of predicates
 for the domain of relevance (i.e. Minecraft). Additionally, the expert must specify a set
 $\mathcal{G} \subset \mathcal{P}$ that indicates which predicates may serve as goal conditions. If the expert wishes
 to provide the affordances directly, they must specify the Dirichlet parameters $\alpha$ and $\beta$. Note that
@@ -425,7 +419,6 @@ $-200$. The goal was set to be terminal. The discount
 factor was set to $\lambda = 0.99$. For all experiments, actions associated with
 a direction (e.g. movement, block placement, jumping, etc.), had a small 
 probability ($0.3$) of moving in another random direction.
-
 \begin{figure}[b]
 \begin{empheq}{align*}
 \Delta_1 &= \langle nearTrench, reachGoal \rangle \longmapsto \{place, jump\} \\
@@ -487,13 +480,15 @@ there is clearly still room to improve the learning process to approach learned 
 \label{table:learned-results}
 \end{table}
 
-Figure \ref{fig:training_results} demonstrates the added effect of more training data. In these experiments, we tested on map types that mirrored the features of the worlds generated during training, but this process could be extended to allow for scaffolded learning and more complicated maps (such as the gold smelting task in Figure \ref{fig:epicworld}). The averages reported are from solving the OO-MDP 20 times for each world, with each knowledge base. There was a negligible difference in the quality of the policies generated.
 \begin{figure}[b]
 \centering
-\includegraphics[scale=0.23]{figures/training_results.png}%
+\includegraphics[scale=0.195]{figures/training_results.png}%
   \caption{The effectiveness of added training data on planning performance.}
   \label{fig:training_results}
 \end{figure}
+
+Figure \ref{fig:training_results} demonstrates the added effect of more training data. In these experiments, we tested on map types that mirrored the features of the worlds generated during training, but this process could be extended to allow for scaffolded learning and more complicated maps (such as the gold smelting task in Figure \ref{fig:epicworld}). The averages reported are from solving the OO-MDP 20 times for each world, with each knowledge base. There was a negligible difference in the quality of the policies generated.
+
 
 % ====== Section: Related Work ======
 \section{Related Work}
@@ -512,12 +507,15 @@ succession. Two common forms of temporally extended actions are {\em
   macro-actions}~\citep{hauskrecht98} ~and {\em options}~\citep{sutton99}. 
 Macro-actions are actions that always
 execute the same sequence of primitive actions. Options are defined
-with high-level policies that accomplish specific sub tasks. For
-instance, when an agent is near a door, the agent can engage the
-`door-opening-option-policy', which switches from the standard
-high-level planner to running a policy that is hand crafted to open
-doors. Although the classic options framework is not generalizable to different state spaces,
+with high-level policies that accomplish specific sub tasks. Although 
+the classic options framework is not generalizable to different state spaces,
 creating {\em portable} options is a topic of active research~\citep{konidaris07,konidaris2009efficient,Ravindran03analgebraic,croonenborghs2008learning,andre2002state,konidaris2012transfer}.
+
+%For
+%instance, when an agent is near a door, the agent can engage the
+%`door-opening-option-policy', which switches from the standard
+%high-level planner to running a policy that is hand crafted to open
+%doors. 
 
 Given the potential for unhelpful temporally extended actions to negatively impact planning time~\citep{Jong:2008zr}, we believe combing affordances with temporally extended actions
 may be especially valuable because it will restrict the set of temporally extended actions to those
@@ -529,9 +527,7 @@ these approaches.
 
 Sherstov and Stone~\citep{sherstov2005improving} considered MDPs with a very large action set and for which the action
 set of the optimal policy of a source task could be transferred to a new, but similar, target
-task to reduce the learning time required to find the optimal policy in the target task.
-
-The main difference between our affordance-based action set pruning and this action transfer
+task to reduce the learning time required to find the optimal policy in the target task. The main difference between our affordance-based action set pruning and this action transfer
 work is that affordances prune away actions on a state by state basis, where
 as the learned action pruning is on per task level. Further, with lifted goal descriptions, affordances may be attached to subgoal planning for a significant
 benefit in planning tasks where complete subgoal knowledge is known.
@@ -543,7 +539,7 @@ There are a few limitations of the actions priors work that affordance-aware pla
 % --- Subsection: Temporal Logic ---
 \subsection{Temporal Logic}
 
-Bacchus and Ady~\citep{Bacchus95usingtemporal, Bacchus99usingtemporal} provided
+Bacchus and Kabanza~\citep{Bacchus95usingtemporal, Bacchus99usingtemporal} provided
 planners with domain dependent knowledge in the form of a first-order version of linear
 temporal logic (LTL), which they used for control of a forward-chaining planner. With this methodology, 
 \textsc{Strips} style planner may be guided through the search space by checking 
@@ -577,59 +573,6 @@ the agent may be able to learn to tackle new types of problems on its own.
 
 In the future, we hope to increase our coverage of Minecraft to solve even more difficult planning problems, and apply this
 approach beyond the Minecraft domain and onto actual robots and other domains of interest.
-
-%\section{RSS citations}
-
-%Please make sure to include \verb!natbib.sty! and to use the
-%\verb!plainnat.bst! bibliography style. \verb!natbib! provides additional
-%citation commands, most usefully \verb!\citet!. 
-%  
-%\subsection{RSS Hyperlinks}
-%
-%This year, we would like to use the ability of PDF viewers to interpret
-%hyperlinks, specifically to allow each reference in the bibliography to be a
-%link to an online version of the reference. 
-%As an example, if you were to cite ``Passive Dynamic Walking''
-%\cite{McGeer01041990}, the entry in the bibtex would read:
-%
-%{\small
-%\begin{verbatim}
-%@article{McGeer01041990,
-%  author = {McGeer, Tad}, 
-%  title = {\href{http://ijr.sagepub.com/content/9/2/62.abstract}{Passive Dynamic Walking}}, 
-%  volume = {9}, 
-%  number = {2}, 
-%  pages = {62-82}, 
-%  year = {1990}, 
-%  doi = {10.1177/027836499000900206}, 
-%  URL = {http://ijr.sagepub.com/content/9/2/62.abstract}, 
-%  eprint = {http://ijr.sagepub.com/content/9/2/62.full.pdf+html}, 
-%  journal = {The International Journal of Robotics Research}
-%}
-%\end{verbatim}
-%}
-%\noindent
-%and the entry in the compiled PDF would look like:
-%
-%\def\tmplabel#1{[#1]}
-%
-%\begin{enumerate}
-%\item[\tmplabel{1}] Tad McGeer. \href{http://ijr.sagepub.com/content/9/2/62.abstract}{Passive Dynamic
-%Walking}. {\em The International Journal of Robotics Research}, 9(2):62--82,
-%1990.
-%\end{enumerate}
-%%
-%where the title of the article is a link that takes you to the article on IJRR's website. 
-%
-%
-%Linking cited articles will not always be possible, especially for
-%older articles. There are also often several versions of papers
-%online: authors are free to decide what to use as the link destination
-%yet we strongly encourage to link to archival or publisher sites
-%(such as IEEE Xplore or Sage Journals).  We encourage all authors to use this feature to
-%the extent possible.
-
-
 
 %\section*{Acknowledgments}
 
