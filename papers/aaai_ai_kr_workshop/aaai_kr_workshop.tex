@@ -135,7 +135,7 @@ and object retrieval.  As in these tasks, the agent operates in a very large sta
 Minecraft is also an effective parallel for the actual world, both
 in terms of approximating the complexity and scope of planning
 problems, as well as modeling the uncertainty and noise presented to a
-real world agent.  For instance, robotic agents are prone to
+robotic agent.  For instance, robotic agents are prone to
 uncertainty throughout their system, including noise in their
 sensors (cameras, LIDAR, microphones, etc.), odometry, control, and
 actuation.  In order to accurately capture some of the inherent
@@ -148,8 +148,9 @@ distance from high cost areas of the state-space, such as lava.
 We chose to give the Minecraft agent perfect sensor data about the Minecraft world.
 However, affordances typically relate to the agent's immediate surroundings,
 so limiting the perceptual scope should not impede the performance gains of affordances.
-We have considered extensions to Partially Observable tasks, though at a distance
-solving a POMDP
+We have considered extensions to Partially Observable domains, though at a distance
+solving a POMDP is effectively unchanged by the presence of affordances (beyond the
+performance gains provided by ignoring irrelevant actions).
 
 \subsection{OO-MDPs}
 We define affordances in terms of propositional functions on states. Our definition builds on the Object-Oriented Markov Decision Process
@@ -289,8 +290,7 @@ over actions ($\lambda$), and a Dirichlet distribution over the size ($N$) of ea
 \begin{equation}
 \text{Pr}(\mathcal{A}_i' \mid s,\Delta_i) = \text{Pr}(\mathcal{A}_i' \mid N, \lambda) = \text{Pr}(\lambda \mid \alpha) \cdot \text{Pr}(N \mid \beta)
 \end{equation}
-%\gnote{I changed $\text{Pr}(\mathcal{A}_i \mid s,\Delta_i)$ to $\text{Pr}(\mathcal{A}_i' \mid s,\Delta_i)$, just wanted to make sure that is right.}
-%JM - that seems like a correct change to me.
+
 For a given affordance $\Delta_i$, first we sample from our distribution over action set size to get a candidate action set size (lines 1-2). We then
 take that many samples from our distribution over actions to get a candidate action set $\mathcal{A}'$ (lines 3-5).
 \begin{align}
@@ -331,6 +331,9 @@ For each optimal policy, we count the number of policies that used each action
 when each affordance was activated. $\alpha$ is set to this count. Additionally, we define $\beta$ as a vector of the integers $1$ to $|\mathcal{A}|$.
 Then, for each optimal policy, we count the number of different actions that were optimal for each activated affordance $\Delta_i$, and increment
 that value for $\Delta_i.\beta$. This captures how large or small optimal action sets are expected to be for each affordance.
+
+% Automatically discovering subgoals has been a topic of active research recently (branavan, McGovern/Bar to, Simsek/Wolfe/Barto). We are interested
+% in applying and expanding on these approaches to further increase the autonomy and strength of planning agents.
 
 % ====== Section: Experiments ======
 \section{Experiments}
