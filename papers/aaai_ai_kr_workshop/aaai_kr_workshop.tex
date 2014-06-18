@@ -6,6 +6,7 @@
 \usepackage{courier}
 \usepackage{subfigure}
 \usepackage{graphicx}
+\usepackage{graphics}
 \usepackage{amsmath,empheq}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -356,6 +357,19 @@ through walls.  We also tested each planner on worlds of varying size
 and difficulty to demonstrate the scalability and flexibility of the
 affordance formalism. 
 
+\begin{figure}[b]
+\begin{empheq}{align*}
+\Delta_1 &= \langle nearTrench, reachGoal \rangle \longmapsto \{place, jump\} \\
+\Delta_2 &= \langle onPlane, reachGoal \rangle \longmapsto \{move\} \\
+\Delta_3 &= \langle nearWall,reachGoal \rangle \longmapsto \{destroy \} \\
+\Delta_4 &= \langle nearFurnace, makeGold \rangle \longmapsto \{place\} \\
+\Delta_5 &= \langle nearOre, makeGold \rangle \longmapsto \{destroy\}
+\vspace{6 pt}
+\end{empheq}
+\caption{The five affordance types used in expert experiments.}
+\label{fig:afford_kb_exp}
+\end{figure}
+
 Additionally, we tested our learning procedure and compared the performance of RTDP solving the OO-MDP
 with (1) No affordances, (2) Learned affordances, and (3) Expert provided affordances. The training data consisted of 1000 simple state
 spaces, each a $3\times3\times3$ world with randomized features that mirrored the agent's actual state space. The same training data was used
@@ -380,18 +394,6 @@ $-200$. The goal was set to be terminal. The discount
 factor was set to $\lambda = 0.99$. For all experiments, actions associated with
 a direction (e.g. movement, block placement, jumping, etc.), had a small 
 probability ($0.3$) of moving in another random direction.
-\begin{figure}[b]
-\begin{empheq}{align*}
-\Delta_1 &= \langle nearTrench, reachGoal \rangle \longmapsto \{place, jump\} \\
-\Delta_2 &= \langle onPlane, reachGoal \rangle \longmapsto \{move\} \\
-\Delta_3 &= \langle nearWall,reachGoal \rangle \longmapsto \{destroy \} \\
-\Delta_4 &= \langle nearFurnace, makeGold \rangle \longmapsto \{place\} \\
-\Delta_5 &= \langle nearOre, makeGold \rangle \longmapsto \{destroy\}
-\vspace{6 pt}
-\end{empheq}
-\caption{The five affordance types used in expert experiments.}
-\label{fig:afford_kb_exp}
-\end{figure}
 
 Lastly, we conducted experiments in which we varied the number of training worlds
 used in the learning process from 0-1000 to demonstrate that planning
@@ -411,7 +413,8 @@ results, while unsurprising, concretely demonstrate that a small set of affordan
 
 \begin{table}
 \centering
-\caption{Expert Affordance Results: Avg. Number of Bellman Updates per converged policy}
+
+\resizebox{\columnwidth}{!}{
 \begin{tabular}{ l || c c | c c | c  c }
   State Space& VI & A-VI & RTDP & A-RTDP & SG & A-SG \\ \hline
   \texttt{1} 		&	71604 		& 	{\bf 100} 		& 	836 		& 	{\bf 152} 		&	1373 	& 	{\bf 141}  			\\ % 4trench
@@ -421,7 +424,8 @@ results, while unsurprising, concretely demonstrate that a small set of affordan
   \texttt{5}  		&	413559 		& 	{\bf 366}	 	& 	4425 	& 	{\bf 993}  		&	25792	& 	{\bf 597}   \\ %lava
   \texttt{6}  		&	203796 		& 	{\bf 105}		& 	26624	& 	{\bf 145}  		&	5404 	& 	{\bf 182}	\\ %tunnel
   \texttt{7}  		&	16406		& 	{\bf 962}		& 	7738 	& 	{\bf 809}  		&	7412 	& 	{\bf 578} %gold
-\end{tabular}
+\end{tabular}}
+\caption{Expert Affordance Results: Avg. Number of Bellman Updates per converged policy}
 \label{table:hard-results}
 \end{table}
 
@@ -430,7 +434,6 @@ in each of the four candidate worlds. The learned affordances clearly improved o
 there is clearly still room to improve the learning process to approach learned affordances that are near-expert level.
 \begin{table}
 \centering
-\caption{Learned Affordance Results: Avg. Number of Bellman Updates per converged policy}
 \begin{tabular}{ l || c c c }
   State Space & No Affordances & Learned & Expert  \\ \hline
   \texttt{Tiny}  		& 	879		&	414	&	 94	\\
@@ -438,6 +441,7 @@ there is clearly still room to improve the learning process to approach learned 
   \texttt{Medium}  	& 	3993		&	2412	&	693  \\
   \texttt{Large}  	& 	8344		&	5100	&	1458
 \end{tabular}
+\caption{Learned Affordance Results: Avg. Number of Bellman Updates per converged policy}
 \label{table:learned-results}
 \end{table}
 
