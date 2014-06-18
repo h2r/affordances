@@ -1,4 +1,4 @@
-%File: formatting-instruction.tex
+%File: aaai_kr_workshop.tex
 \documentclass[letterpaper]{article}
 \usepackage{aaai}
 \usepackage{times}
@@ -12,13 +12,8 @@
 \frenchspacing
 \setlength{\pdfpagewidth}{8.5in}
 \setlength{\pdfpageheight}{11in}
-\pdfinfo{
-/Title (Insert Your Title Here)
-/Author (Put All Your Authors Here, Separated by Commas)}
 \setcounter{secnumdepth}{0}  
 \begin{document}
-% The file aaai.sty is the style file for AAAI Press 
-% proceedings, working notes, and technical reports.
 
 \pdfinfo{
    /Author (David Abel  \& Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex)
@@ -27,7 +22,6 @@
    /Subject (Robotics, Planning, Affordances, Knowledge)
    /Keywords (Planning, Affordance, MDP, Learning)
 }
-
 
 \title{Affordances as Transferable Knowledge for Autonomous Agents}
 \author{David Abel \& Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex\\
@@ -109,9 +103,9 @@ in the perception and sensing pipeline to endow robotic agents with substantial 
 
 We use Minecraft as our planning and evaluation domain. Minecraft is a
 3-D blocks world game in which the user can place and destroy blocks
-of different types.  Minecraft's physics and action space is expressive
-enough to allow very complex worlds to be created by users, such as a
-functional scientific graphing calculator\footnote{https://www.youtube.com/watch?v=wgJfVRhotlQ};
+of different types.  Minecraft's physics and action space are expressive
+enough to allow very complex systems to be created by users, including logic gates and 
+functional scientific graphing calculators\footnote{https://www.youtube.com/watch?v=wgJfVRhotlQ};
 simple scenes from a Minecraft world appear in Figure~\ref{fig:epicworld} - a video demonstration of
 an affordance-aware planner solving this task may be seen online\footnote{Watch at: https://vimeo.com/88689171}.
 Minecraft serves as a model for robotic tasks such as cooking assistance, assembling items in a factory, 
@@ -143,14 +137,14 @@ difficulties of planning under uncertainty, the Minecraft agent's
 actions were modified to have stochastic outcomes. These stochastic
 outcomes may require important changes in the optimal policy in
 contrast to deterministic actions, such as keeping the agent's
-distance from high cost areas of the state-space, such as lava. 
+distance from high cost areas of the state-space, such as lava or cliffs.
 
 We chose to give the Minecraft agent perfect sensor data about the Minecraft world.
 However, affordances typically relate to the agent's immediate surroundings,
 so limiting the perceptual scope should not impede the performance gains of affordances.
 We have considered extensions to Partially Observable domains, though at a distance
 solving a POMDP is effectively unchanged by the presence of affordances (beyond the
-performance gains provided by ignoring irrelevant actions).
+performance gains provided by pruning actions).
 
 \subsection{OO-MDPs}
 We define affordances in terms of propositional functions on states. Our definition builds on the Object-Oriented Markov Decision Process
@@ -209,6 +203,13 @@ by a significant factor, the resulting state space is still far too large to
 solve with any existing (OO)-MDP solver. This is the primary motivator
 for incorporating affordances - to reduce the amount of the
 state space that an OO-MDP agent will have to explore.
+
+The Brown UMBC Reinforcement Learning And Planning framework (BURLAP\footnote{http://burlap.cs.brown.edu/})
+is working toward integrating planning and reinforcement learning algorithms with a variety of planning domains, represented
+as an OO-MDP, including ROS. In this way, transferable knowledge like affordances can be quickly deployed
+to domains like Mountain Car \cite{Moore90efficientmemory-based} and Minecraft, but also to a variety
+of Robots that utilize ROS. Work is currently underway in our group to deploy affordances as a
+means of knowledge representation and reasoning for collaborative cooking with Baxter.
 
 % ====== Section: Affordances ======
 \section{Affordances}
@@ -317,12 +318,14 @@ for the domain of relevance (i.e. Minecraft). Additionally, the expert must spec
 $\mathcal{G} \subset \mathcal{P}$ that indicates which predicates may serve as goal conditions. If the expert wishes
 to provide the affordances directly, they must specify the Dirichlet parameters $\alpha$ and $\beta$. Note that
 in the limit, the expert may fix $\alpha$ and $\beta$ in a way that forces a given
-affordance to always suggest a specific set of actions - this type of expert affordance was given for all
-experiments.
+affordance to always suggest a specific set of actions - all expert affordances given during experiments
+were provided in this form.
 
 \subsection{Learning Affordances}
 
-A strength of our affordance formalism is that it is simple to learn useful affordances directly.
+A strength of our affordance formalism is that it is simple to learn useful affordances directly. Furthermore, since affordances
+are not dependent on a specific reward function or state-space, affordances learned during training may be transferred to a wide variety
+of different tasks.
 Given the set of predicates $\mathcal{P}$ and possible goals $\mathcal{G} \subset \mathcal{P}$, we form a set of candidate affordances $\Delta$ with every combination of $\langle p, g \rangle$, for $p \in \mathcal{P}$ and $g \in \mathcal{G}$.
 To learn the action set for each of these candidate affordances, we propose a scaffolded learning process that computes $\alpha$ and $\beta$ from the
 solved policy of $m$ goal-annotated OO-MDPs that have small state spaces (small enough to be solved using tabular method), but still present similar sorts of features to the state spaces the agent might expect to see in more complex environments.
@@ -363,10 +366,15 @@ number of Bellman updates that were executed by each planning
 algorithm. Value Iteration was terminated when the maximum change in
 the value function was less than 0.01. RTDP terminated when the
 maximum change in the value function was less than 0.01 for five
-consecutive policy rollouts. In subgoal planning, the high-level
+consecutive policy rollouts. In subgoal planning, we gave the agent
+a set of candidate subgoals for each task. From these subgoals, the high-level
 subgoal plan was solved using breadth-first search, which only took a
 small fraction of the time compared to the total low-level planning
-and therefore is not reported. We set the reward function to $-1$ for all transitions, except
+and therefore is not reported. In future work, we hope to explore
+automatic discovery of useful subgoals to further reduce the amount of
+knowledge given by an expert and to increase the effectiveness of affordances.
+
+We set the reward function to $-1$ for all transitions, except
 transitions to states in which the agent was on lava, which returned 
 $-200$. The goal was set to be terminal. The discount
 factor was set to $\lambda = 0.99$. For all experiments, actions associated with
@@ -468,12 +476,6 @@ doors.
 Although the classic options framework is not generalizable to different state spaces,
 creating {\em portable} options is a topic of active research~\cite{konidaris07,konidaris2009efficient,Ravindran03analgebraic,croonenborghs2008learning,andre2002state,konidaris2012transfer}.
 
-%For
-%instance, when an agent is near a door, the agent can engage the
-%`door-opening-option-policy', which switches from the standard
-%high-level planner to running a policy that is hand crafted to open
-%doors. 
-
 Given the potential for unhelpful temporally extended actions to negatively impact planning time~\cite{Jong:2008zr}, we believe combing affordances with temporally extended actions
 may be especially valuable because it will restrict the set of temporally extended actions to those
 useful for a task. In the future, we plan to explore the benefit from combining
@@ -520,6 +522,22 @@ A critical difference between heuristics and affordances is that heuristics are 
 % ====== Section: Conclusion ======
 \section{Conclusion}
 \label{sec:conclusion}
+
+We proposed a novel approach to representing knowledge in terms of
+{\em affordances}~\citep{gibson77} that allows an agent to efficiently
+prune its action space based on domain knowledge,
+providing a significant reduction in the number of state-action pairs the
+agent needs to evaluate in order to act optimally. We demonstrated the efficacy of the affordance model by comparing standard paradigm
+planners to their affordance-aware equivalents in a series of challenging planning tasks in the Minecraft
+domain. Further, we designed a full learning process that allows an agent to autonomously learn useful affordances that may be used
+across a variety of task types, reward functions, and state-spaces, allowing for convenient extensions to robotic applications.
+We provided preliminary results indicating the effectiveness of the learned affordances, suggesting that
+the agent may be able to learn to tackle new types of problems on its own.
+
+In the future, we hope to increase our coverage of Minecraft to solve even more difficult planning problems, and apply this
+approach beyond the Minecraft domain and onto actual robots and other domains of interest. Additionally, in certain cases, we provide
+the agent with extensive state-space-specific subgoal knowledge that is essential in solving some difficult planning problems. In future work,
+we hope to automatically discover useful subgoals (a topic of some active research \cite{Mcgovern01automaticdiscovery, Simsek:2005:IUS:1102351.1102454}) so that affordances are maximally effective in reducing the size of the explored state-action space without requiring knowledge from an expert.
 
 \bibliographystyle{aaai}
 \bibliography{main}
