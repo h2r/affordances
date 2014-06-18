@@ -2,13 +2,10 @@ affordances
 ===========
 A collection of files currently being used in our Affordances project.
 
-Five main sets of files here:
-
 	(1) src
 		- NewMinecraftDomain/ := Eclipse project containing Minecraft BURLAP code
 			> affordances := Affordances + Learning code
 			> Minecraft := Minecraft specific OO-MDP model
-
 
 	(2) minecraft_api_bot
 		- Mineflayer API side code for the Minecraft BOT
