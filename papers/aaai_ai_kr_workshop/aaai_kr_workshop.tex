@@ -33,9 +33,9 @@ Providence, RI 02912-1910}
 
 \maketitle
 \begin{abstract}
-Robotic agents are often restricted to simplified representations of their surroundings
+Robotic agents are often restricted to internalize their surroundings through simplified representations
 that do not reflect the complexity and richness of the world. This is due in large part to the limitations
-of planning algorithms, which fail in large stochastic state spaces due to the well-known ``curse of
+of planning algorithms, which fail in large stochastic state spaces on account of the well-known ``curse of
 dimensionality.'' Existing approaches to address this problem fail to
 prevent autonomous agents from considering many actions which would be
 obviously irrelevant to a human solving the same problem. We formalize the notion of affordances
@@ -217,8 +217,8 @@ The Brown UMBC Reinforcement Learning And Planning framework (BURLAP\footnote{ht
 is working toward integrating planning and reinforcement learning algorithms with a variety of planning domains, represented
 as an OO-MDP, including ROS. In this way, transferable knowledge like affordances can be quickly deployed
 to domains like Mountain Car \cite{Moore90efficientmemory-based} and Minecraft, but also to a variety
-of Robots that utilize ROS. Work is currently underway in our group to deploy affordances as a
-means of knowledge representation and reasoning for collaborative cooking with Baxter.
+of Robots that utilize ROS. Our group is also working to deploy affordances as a
+means of knowledge representation and reasoning for collaborative cooking with ReThink's Baxter.
 
 % ====== Section: Affordances ======
 \section{Affordances}
@@ -550,18 +550,18 @@ We proposed a novel approach to representing transferable knowledge in terms of
 {\em affordances}~\cite{gibson77} that allows an agent to efficiently
 prune its action space based on domain knowledge,
 providing a significant reduction in the number of state-action pairs the
-agent needs to evaluate in order to act optimally. We demonstrated the efficacy of the affordance model by comparing standard paradigm
+agent needs to evaluate in order to act optimally. We demonstrated the effectiveness of the affordance model by comparing standard paradigm
 planners to their affordance-aware equivalents in a series of challenging planning tasks in the Minecraft
-domain. Further, we designed a full learning process that allows an agent to autonomously learn useful affordances that may be used
+domain, a domain that is an apt model for many robotic tasks. Further, we designed a full learning process that allows an agent to autonomously learn useful affordances that may be used
 across a variety of task types, reward functions, and state-spaces, allowing for convenient extensions to robotic applications.
 We provided preliminary results indicating the effectiveness of the learned affordances, suggesting that
 the agent may be able to learn to tackle new types of problems on its own.
 
 In the future, we hope to increase our coverage of Minecraft to solve even more difficult planning problems, and apply this
 approach beyond the Minecraft domain and onto actual robots and other domains of interest. Additionally, in certain cases, we provide
-the agent with extensive state-space-specific subgoal knowledge that is essential in solving some difficult planning problems. Lastly,
-we hope to automatically discover useful subgoals - a topic of some active research \cite{Mcgovern01automaticdiscovery,Simsek:2005:IUS:1102351.1102454}.
-This will allow for affordances to reduce the size of the explored state-action space without requiring knowledge from an expert, increasing generalizability and transferability.
+the agent with extensive state-space-specific subgoal knowledge that is essential in solving some difficult planning problems.
+We hope to automatically discover useful subgoals - a topic of some active research \cite{Mcgovern01automaticdiscovery,Simsek:2005:IUS:1102351.1102454}.
+This will allow for affordances to reduce the size of the explored state-action space without requiring knowledge from an expert, increasing transferability across task types.
 
 \bibliographystyle{aaai}
 \bibliography{main}
