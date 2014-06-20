@@ -37,7 +37,7 @@ Robotic agents are often restricted to simplified representations of their surro
 that do not reflect the complexity and richness of the world. This is due in large part to the limitations
 of planning algorithms, which fail in large stochastic state spaces due to the well-known ``curse of
 dimensionality.'' Existing approaches to address this problem fail to
-prevent autonomous agent's from considering many actions which would be
+prevent autonomous agents from considering many actions which would be
 obviously irrelevant to a human solving the same problem. We formalize the notion of affordances
 as knowledge added to an MDP that prunes actions in a state- and reward- general
 way. This pruning significantly reduces the number of state-action
@@ -100,7 +100,7 @@ affordances also enable high-level reasoning that can
 be combined with approaches like high-level subgoal planning for even
 greater performance gains. In our current model, ideal subgoals are given directly
 to planning agents by an expert - however, we are interested in automatically
-discovering subgoals in an online way, a task which has already enjoyed some success \cite{Mcgovern01automaticdiscovery, Simsek:2005:IUS:1102351.1102454}.
+discovering subgoals in an online way, a task which has already enjoyed some success \cite{Mcgovern01automaticdiscovery,Simsek:2005:IUS:1102351.1102454}.
 
 For now, we chose to ignore approaches to affordances that emphasize
 direct perception of affordances in the environment, and instead emphasize an
@@ -510,7 +510,7 @@ There are a few limitations of the actions priors work that affordance-aware pla
 % --- Subsection: Temporal Logic ---
 \subsection{Temporal Logic}
 
-Bacchus and Kabanza~\cite{Bacchus95usingtemporal, Bacchus99usingtemporal} provided
+Bacchus and Kabanza~\cite{Bacchus95usingtemporal,Bacchus99usingtemporal} provided
 planners with domain dependent knowledge in the form of a first-order version of linear
 temporal logic (LTL), which they used for control of a forward-chaining planner. With this methodology, 
 \textsc{Strips} style planner may be guided through the search space by checking 
@@ -560,7 +560,8 @@ the agent may be able to learn to tackle new types of problems on its own.
 In the future, we hope to increase our coverage of Minecraft to solve even more difficult planning problems, and apply this
 approach beyond the Minecraft domain and onto actual robots and other domains of interest. Additionally, in certain cases, we provide
 the agent with extensive state-space-specific subgoal knowledge that is essential in solving some difficult planning problems. Lastly,
-we hope to automatically discover useful subgoals - a topic of some active research \cite{Mcgovern01automaticdiscovery, Simsek:2005:IUS:1102351.1102454}. This will allow for affordances to reduce the size of the explored state-action space without requiring knowledge from an expert, increasing generalizability and transferability.
+we hope to automatically discover useful subgoals - a topic of some active research \cite{Mcgovern01automaticdiscovery,Simsek:2005:IUS:1102351.1102454}.
+This will allow for affordances to reduce the size of the explored state-action space without requiring knowledge from an expert, increasing generalizability and transferability.
 
 \bibliographystyle{aaai}
 \bibliography{main}
