@@ -1,103 +1,98 @@
 #EL#
-16,4,2 0,0,2 
+0,0,1 0
 #ES#
-north
+rotateClockwise
 -1.0
 #EL#
-16,3,2 0,0,2 
+0,0,1 0
 #ES#
-north
+moveAction
 -1.0
 #EL#
-16,2,2 0,0,2 
+1,0,1 0
 #ES#
-north
+rotateClockwise
 -1.0
 #EL#
-16,1,2 0,0,2 
+1,0,1 0
 #ES#
-north
+destroyBlock
 -1.0
 #EL#
-16,0,2 0,0,2 
+1,0,1 0
 #ES#
-west
+jump
 -1.0
 #EL#
-15,0,2 0,0,2 
+1,0,2 0
 #ES#
-west
+moveAction
 -1.0
 #EL#
-14,0,2 0,0,2 
+1,1,2 1
 #ES#
-west
+rotateClockwise
 -1.0
 #EL#
-13,0,2 0,0,2 
+1,1,2 1
 #ES#
-west
+lookdown
 -1.0
 #EL#
-12,0,2 0,0,2 
+1,1,2 1
 #ES#
-west
+lookdown
 -1.0
 #EL#
-11,0,2 0,0,2 
+1,1,2 1
 #ES#
-west
+lookdown
 -1.0
 #EL#
-10,0,2 0,0,2 
+1,1,2 1
 #ES#
-west
+destroyBlock
 -1.0
 #EL#
-9,0,2 0,0,2 
+1,1,1 2
 #ES#
-west
+moveAction
 -1.0
 #EL#
-8,0,2 0,0,2 
+0,1,1 2
 #ES#
-west
+rotateClockwise
 -1.0
 #EL#
-7,0,2 0,0,2 
+0,1,1 2
 #ES#
-west
+moveAction
 -1.0
 #EL#
-6,0,2 0,0,2 
+0,0,1 2
 #ES#
-west
+jump
 -1.0
 #EL#
-5,0,2 0,0,2 
+0,0,2 2
 #ES#
-west
+placeBlock
 -1.0
 #EL#
-4,0,2 0,0,2 
+0,0,2 1
 #ES#
-west
+jump
 -1.0
 #EL#
-3,0,2 0,0,2 
+0,0,3 1
 #ES#
-west
+placeBlock
 -1.0
 #EL#
-2,0,2 0,0,2 
+0,0,3 0
 #ES#
-west
--1.0
-#EL#
-1,0,2 0,0,2 
-#ES#
-west
+jump
 10.0
 #EL#
-0,0,2 0,0,2 
+0,0,4 0
 #ES#

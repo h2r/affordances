@@ -1,6 +1,8 @@
 package minecraft;
 
 import java.util.HashMap;
+import java.util.List;
+
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.State;
@@ -20,17 +22,47 @@ public class MinecraftInitialStateGenerator {
 		//Process stateInfo hashmap
 		processStateInfoHM(stateInfo, domain,  toReturn);
 		
+		//Assert relevant info
+		assertInfo(toReturn);
+		
 		return toReturn;
 	}
+	
+	private static void assertInfo (State state) {
+		//Assert 1 agent
+		List<ObjectInstance> agents = state.getObjectsOfTrueClass(NameSpace.CLASSAGENTFEET);
+		assert(agents.size() == 1);
+		//Assert 1 agent feet
+		List<ObjectInstance> feets =state.getObjectsOfTrueClass(NameSpace.CLASSAGENTFEET);
+		assert(feets.size() == 1);
+	}
+	
 	
 	/**
 	 * Parses the header as a hashmap and adjusts the state as necessary
 	 * @param stateInfo the header as a hashmap from string keys to int values.
-	 *  Used for things like the nuber of blocks that the agent can carry.
+	 *  Used for things like the number of blocks that the agent can carry.
 	 * @param domain the relevant domain
 	 * @param stateToAddTo
 	 */
 	private static void processStateInfoHM(HashMap<String, Integer> stateInfo, Domain domain, State stateToAddTo) {
+		ObjectInstance agent = stateToAddTo.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
+		
+		for (String key : stateInfo.keySet()) {
+			Integer value = stateInfo.get(key);
+			char keyAsChar = key.charAt(0);
+			switch(keyAsChar) {
+			case NameSpace.PLACEABLEBLOCKS:
+				agent.setValue(NameSpace.ATPLACEBLOCKS, value);
+				break;
+			default:
+				break;
+			}
+
+			
+			
+		}
+		
 	}
 	
 	/**
@@ -74,6 +106,9 @@ public class MinecraftInitialStateGenerator {
 		case NameSpace.AGENT:
 			toAdd = createAgent(domain, col, row, height, objectIndex);
 			break;
+		case NameSpace.AGENTFEET:
+			toAdd = createAgentFeet(domain, col, row, height, objectIndex);
+			break;
 		default:
 			return false;
 		}
@@ -88,25 +123,41 @@ public class MinecraftInitialStateGenerator {
 	private static ObjectInstance createGoal(Domain d, int x, int y, int z, int objectIndex) {
 		String objectName = NameSpace.CLASSGOAL;
 		ObjectInstance goal = new ObjectInstance(d.getObjectClass(objectName), objectName + objectIndex);
-		setObjectLocation(goal, x, y, z, false);
+		setObjectLocation(goal, x, y, z, false, true, false);
 		return goal;
 	}
 	
-	private static ObjectInstance createDirtBlock(Domain d, int x, int y, int z, int objectIndex) {
+	public static ObjectInstance createDirtBlock(Domain d, int x, int y, int z, int objectIndex) {
 		String objectName = NameSpace.CLASSDIRTBLOCK;
 		ObjectInstance block = new ObjectInstance(d.getObjectClass(objectName), objectName+objectIndex);
-		setObjectLocation(block, x, y, z, true);
+		setObjectLocation(block, x, y, z, true, true, false);
+		block.setValue(NameSpace.ATDEST, 1);
 		return block;	
+	}
+	
+	public static ObjectInstance createDirtBlockItem(Domain d, int x, int y, int z, int objectIndex) {
+		String objectName = NameSpace.CLASSDIRTBLOCK;
+		ObjectInstance block = new ObjectInstance(d.getObjectClass(objectName), objectName+objectIndex);
+		setObjectLocation(block, x, y, z, false, false, true);
+		block.setValue(NameSpace.ATDEST, 0);
+		return block;
 	}
 	
 	private static ObjectInstance createAgent(Domain d, int x, int y, int z, int objectIndex) {
 		String objectName = NameSpace.CLASSAGENT;
 		ObjectInstance agent = new ObjectInstance(d.getObjectClass(objectName), objectName + objectIndex);
-		setObjectLocation(agent, x, y, z, false);
+		agent.setValue(NameSpace.ATROTDIR, NameSpace.RotDirection.NORTH.toInt());//Facing north by default
+		agent.setValue(NameSpace.ATVERTDIR, NameSpace.VertDirection.AHEAD.toInt());//Facing ahead by default
+		setObjectLocation(agent, x, y, z, false, false, false);
 		return agent;
 	}
 	
-	
+	private static ObjectInstance createAgentFeet(Domain d, int x, int y, int z, int objectIndex) {
+		String objectName = NameSpace.CLASSAGENTFEET;
+		ObjectInstance agentFeet = new ObjectInstance(d.getObjectClass(objectName), objectName + objectIndex);
+		setObjectLocation(agentFeet, x, y, z, false, false, false);
+		return agentFeet;
+	}
 	
 	
 	/**
@@ -116,17 +167,36 @@ public class MinecraftInitialStateGenerator {
 	 * @param y y of object
 	 * @param z z of object
 	 * @param collidesWithAgent a boolean of if the object collides with the agent
+	 * 
 	 */
-	private static void setObjectLocation(ObjectInstance object, int x, int y, int z, boolean collidesWithAgent) {
-		object.setValue(NameSpace.ATTX, x);
-		object.setValue(NameSpace.ATTY, y);
-		object.setValue(NameSpace.ATTZ, z);
-		if (collidesWithAgent) {
-			object.setValue(NameSpace.ATTCOLLIDESWITHAGENT, 1);
+	private static void setObjectLocation(ObjectInstance object, int x, int y, int z, boolean collides, boolean objectFloats, boolean destroyedWhenWalked) {
+		object.setValue(NameSpace.ATX, x);
+		object.setValue(NameSpace.ATY, y);
+		object.setValue(NameSpace.ATZ, z);
+		if (collides) {
+			object.setValue(NameSpace.ATCOLLIDES, 1);
 		}
 		else {
-			object.setValue(NameSpace.ATTCOLLIDESWITHAGENT, 0);
+			object.setValue(NameSpace.ATCOLLIDES, 0);
 		}
+		
+		if (objectFloats) {
+			object.setValue(NameSpace.ATFLOATS, 1);
+		}
+		
+		else {
+			object.setValue(NameSpace.ATFLOATS, 0);
+		}
+		
+		if (destroyedWhenWalked) {
+			object.setValue(NameSpace.ATDESTWHENWALKED, 1);
+		}
+		
+		else {
+			object.setValue(NameSpace.ATDESTWHENWALKED, 0);
+		}
+		
+		
 	}
 	
 
