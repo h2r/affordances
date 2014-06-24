@@ -23,15 +23,7 @@ public class MapIO {
 	 */
 	private char[][][] mapAsCharArray;
 	
-	/**
-	 * Stores what separates horizontal planes in the ascii files
-	 */
-	private static String 							planeSeparator = "\n~\n";
-	
-	/**
-	 * Stores what separates rows within a plane in the ascii files
-	 */
-	private static String 							rowSeparator = "\n";	
+
 
 	
 	//-----CLASS METHODS-----
@@ -103,16 +95,16 @@ public class MapIO {
 	 * @return the input map string as a 3D char array
 	 */
 	public static char[][][] processMapString(String mapString) {
-		String[] splitByHorPlanes = mapString.split(planeSeparator);
+		String[] splitByHorPlanes = mapString.split(NameSpace.planeSeparator);
 		int height = splitByHorPlanes.length;
-		int rows = splitByHorPlanes[0].split(rowSeparator).length;
-		int cols = splitByHorPlanes[0].split(rowSeparator)[0].length();
+		int rows = splitByHorPlanes[0].split(NameSpace.rowSeparator).length;
+		int cols = splitByHorPlanes[0].split(NameSpace.rowSeparator)[0].length();
 				
 		char[][][] arrayToReturn = new char[rows][cols][height];
 		
 		for(int currHeight = height-1; currHeight >= 0; currHeight--) {
 			String currPlane = splitByHorPlanes[currHeight];
-			String[] planeIntoRows = currPlane.split(rowSeparator);
+			String[] planeIntoRows = currPlane.split(NameSpace.rowSeparator);
 			for(int row = 0; row < rows; row++) {
 				String currRow = planeIntoRows[row];
 				for(int col = 0; col < cols; col++) {

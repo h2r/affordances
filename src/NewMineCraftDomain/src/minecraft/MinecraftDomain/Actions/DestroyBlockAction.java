@@ -21,9 +21,7 @@ public class DestroyBlockAction extends AgentAction {
 		
 		for (ObjectInstance object: objectsInfrontAgent) {
 			if (object.getObjectClass().hasAttribute(NameSpace.ATDEST) && object.getDiscValForAttribute(NameSpace.ATDEST) == 1) {
-				if (ActionHelpers.agentHasVisualAccessTo(object, 1, state)) {
 					ActionHelpers.removeObjectFromState(object, state, this.domain);
-				}
 			}
 		}
 		

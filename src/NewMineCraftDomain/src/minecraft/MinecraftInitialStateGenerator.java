@@ -55,14 +55,15 @@ public class MinecraftInitialStateGenerator {
 			case NameSpace.PLACEABLEBLOCKS:
 				agent.setValue(NameSpace.ATPLACEBLOCKS, value);
 				break;
+			case NameSpace.STARTINGGOLDORE:
+				agent.setValue(NameSpace.ATAMTGOLDORE, value);
+				break;
+			case NameSpace.STARTINGGOLDBAR:
+				agent.setValue(NameSpace.ATAMTGOLDBAR, value);
 			default:
 				break;
 			}
-
-			
-			
 		}
-		
 	}
 	
 	/**
@@ -109,6 +110,15 @@ public class MinecraftInitialStateGenerator {
 		case NameSpace.AGENTFEET:
 			toAdd = createAgentFeet(domain, col, row, height, objectIndex);
 			break;
+		case NameSpace.GOLDBLOCK:
+			toAdd = createGoldBlock(domain, col, row, height, objectIndex);
+			break;
+		case NameSpace.FURNACE:
+			toAdd = createFurnace(domain, col, row, height, objectIndex);
+			break;
+		case NameSpace.INDWALL:
+			toAdd = createIndWall(domain, col, row, height, objectIndex);
+			break;
 		default:
 			return false;
 		}
@@ -123,23 +133,35 @@ public class MinecraftInitialStateGenerator {
 	private static ObjectInstance createGoal(Domain d, int x, int y, int z, int objectIndex) {
 		String objectName = NameSpace.CLASSGOAL;
 		ObjectInstance goal = new ObjectInstance(d.getObjectClass(objectName), objectName + objectIndex);
-		setObjectLocation(goal, x, y, z, false, true, false);
+		setObjectLocation(goal, x, y, z, false, true, false, false);
 		return goal;
+	}
+	
+	private static ObjectInstance createGoldBlock(Domain d, int x, int y, int z, int objectIndex) {
+		String objectName = NameSpace.CLASSGOLDBLOCK;
+		ObjectInstance block = new ObjectInstance(d.getObjectClass(objectName), objectName+objectIndex);
+		setObjectLocation(block, x, y, z, true, true, false, true);
+		return block;
+	}
+	
+	public static ObjectInstance createGoldBlockItem(Domain d, int x, int y, int z, int objectIndex) {
+		String objectName = NameSpace.CLASSGOLDBLOCK;
+		ObjectInstance block = new ObjectInstance(d.getObjectClass(objectName), objectName+objectIndex);
+		setObjectLocation(block, x, y, z, false, false, true, false);
+		return block;
 	}
 	
 	public static ObjectInstance createDirtBlock(Domain d, int x, int y, int z, int objectIndex) {
 		String objectName = NameSpace.CLASSDIRTBLOCK;
 		ObjectInstance block = new ObjectInstance(d.getObjectClass(objectName), objectName+objectIndex);
-		setObjectLocation(block, x, y, z, true, true, false);
-		block.setValue(NameSpace.ATDEST, 1);
+		setObjectLocation(block, x, y, z, true, true, false, true);
 		return block;	
 	}
 	
 	public static ObjectInstance createDirtBlockItem(Domain d, int x, int y, int z, int objectIndex) {
 		String objectName = NameSpace.CLASSDIRTBLOCK;
 		ObjectInstance block = new ObjectInstance(d.getObjectClass(objectName), objectName+objectIndex);
-		setObjectLocation(block, x, y, z, false, false, true);
-		block.setValue(NameSpace.ATDEST, 0);
+		setObjectLocation(block, x, y, z, false, false, true, false);
 		return block;
 	}
 	
@@ -148,28 +170,43 @@ public class MinecraftInitialStateGenerator {
 		ObjectInstance agent = new ObjectInstance(d.getObjectClass(objectName), objectName + objectIndex);
 		agent.setValue(NameSpace.ATROTDIR, NameSpace.RotDirection.NORTH.toInt());//Facing north by default
 		agent.setValue(NameSpace.ATVERTDIR, NameSpace.VertDirection.AHEAD.toInt());//Facing ahead by default
-		setObjectLocation(agent, x, y, z, false, false, false);
+		setObjectLocation(agent, x, y, z, false, false, false, false);
 		return agent;
 	}
 	
 	private static ObjectInstance createAgentFeet(Domain d, int x, int y, int z, int objectIndex) {
 		String objectName = NameSpace.CLASSAGENTFEET;
 		ObjectInstance agentFeet = new ObjectInstance(d.getObjectClass(objectName), objectName + objectIndex);
-		setObjectLocation(agentFeet, x, y, z, false, false, false);
+		setObjectLocation(agentFeet, x, y, z, false, false, false, false);
 		return agentFeet;
 	}
 	
+	public static ObjectInstance createFurnace(Domain d, int x, int y, int z, int objectIndex) {
+		String objectName = NameSpace.CLASSFURNACE;
+		ObjectInstance block = new ObjectInstance(d.getObjectClass(objectName), objectName+objectIndex);
+		setObjectLocation(block, x, y, z, true, true, false, false);
+		return block;
+	}
 	
-	/**
-	 * Sets the necessary attributes for an object with a spatial component
-	 * @param object object to add to
-	 * @param x x of object
-	 * @param y y of object
-	 * @param z z of object
-	 * @param collidesWithAgent a boolean of if the object collides with the agent
-	 * 
-	 */
-	private static void setObjectLocation(ObjectInstance object, int x, int y, int z, boolean collides, boolean objectFloats, boolean destroyedWhenWalked) {
+	public static ObjectInstance createIndWall(Domain d, int x, int y, int z, int objectIndex) {
+		String objectName = NameSpace.CLASSINDWALL;
+		ObjectInstance block = new ObjectInstance(d.getObjectClass(objectName), objectName+objectIndex);
+		setObjectLocation(block, x, y, z, true, true, false, false);
+		return block;
+	}
+	
+/**
+ * 
+ * @param object
+ * @param x
+ * @param y
+ * @param z
+ * @param collides
+ * @param objectFloats
+ * @param destroyedWhenWalked
+ * @param destroyable
+ */
+	private static void setObjectLocation(ObjectInstance object, int x, int y, int z, boolean collides, boolean objectFloats, boolean destroyedWhenWalked, boolean destroyable) {
 		object.setValue(NameSpace.ATX, x);
 		object.setValue(NameSpace.ATY, y);
 		object.setValue(NameSpace.ATZ, z);
@@ -196,6 +233,12 @@ public class MinecraftInitialStateGenerator {
 			object.setValue(NameSpace.ATDESTWHENWALKED, 0);
 		}
 		
+		if (destroyable) {
+			object.setValue(NameSpace.ATDEST, 1);
+		}
+		else {
+			object.setValue(NameSpace.ATDEST, 0);
+		}
 		
 	}
 	

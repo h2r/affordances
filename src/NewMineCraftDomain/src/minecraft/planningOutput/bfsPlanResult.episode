@@ -6,22 +6,12 @@ rotateClockwise
 #EL#
 0,0,1 0
 #ES#
-moveAction
--1.0
-#EL#
-1,0,1 0
-#ES#
-rotateClockwise
--1.0
-#EL#
-1,0,1 0
-#ES#
-destroyBlock
--1.0
-#EL#
-1,0,1 0
-#ES#
 jump
+-1.0
+#EL#
+0,0,2 0
+#ES#
+moveAction
 -1.0
 #EL#
 1,0,2 0
@@ -29,70 +19,20 @@ jump
 moveAction
 -1.0
 #EL#
-1,1,2 1
+2,0,1 0
 #ES#
 rotateClockwise
 -1.0
 #EL#
-1,1,2 1
-#ES#
-lookdown
--1.0
-#EL#
-1,1,2 1
-#ES#
-lookdown
--1.0
-#EL#
-1,1,2 1
-#ES#
-lookdown
--1.0
-#EL#
-1,1,2 1
-#ES#
-destroyBlock
--1.0
-#EL#
-1,1,1 2
+2,0,1 0
 #ES#
 moveAction
 -1.0
 #EL#
-0,1,1 2
-#ES#
-rotateClockwise
--1.0
-#EL#
-0,1,1 2
+2,1,1 0
 #ES#
 moveAction
--1.0
-#EL#
-0,0,1 2
-#ES#
-jump
--1.0
-#EL#
-0,0,2 2
-#ES#
-placeBlock
--1.0
-#EL#
-0,0,2 1
-#ES#
-jump
--1.0
-#EL#
-0,0,3 1
-#ES#
-placeBlock
--1.0
-#EL#
-0,0,3 0
-#ES#
-jump
 10.0
 #EL#
-0,0,4 0
+2,2,1 0
 #ES#

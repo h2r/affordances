@@ -21,6 +21,16 @@ public class ActionHelpers {
 		return true;		
 	}
 	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param cols
+	 * @param rows
+	 * @param height
+	 * @return
+	 */
 	public static Boolean withinMapAt(int x, int y, int z, int cols, int rows, int height) {
 		boolean toReturn = x >= 0 && x < cols && y >=0 && y < rows && z >= 0 && z < height;
 		return toReturn;
@@ -103,7 +113,8 @@ public class ActionHelpers {
 	}
 	
 	public static List<ObjectInstance> getBlocksInfrontOfAgent(int distanceFromAgent, State state) {
-
+		assert(distanceFromAgent <= 2);
+		
 		int[] positionInfrontAgent = positionInFrontOfAgent(distanceFromAgent, state);
 		assert(positionInfrontAgent.length == 3);
 		int newX = positionInfrontAgent[0];
@@ -114,10 +125,19 @@ public class ActionHelpers {
 		//Get objects at this position
 		List<ObjectInstance> objectsHere = ActionHelpers.objectsAt(newX, newY, newZ, state);
 		
-		return objectsHere;
+		//Filter out those that agent can't see
+		ArrayList<ObjectInstance> toReturn = new ArrayList<ObjectInstance>();
+		for (ObjectInstance object: objectsHere) {
+			if (agentHasVisualAccessToCloseFace(object, distanceFromAgent, state)) {
+				toReturn.add(object);
+			}
+			
+		}
+		
+		return toReturn;
 	}
 	
-	public static boolean agentHasVisualAccessTo(ObjectInstance block, int distanceOfBlock, State state) {
+	private static boolean agentHasVisualAccessToCloseFace(ObjectInstance block, int distanceOfBlock, State state) {
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 		
 		int blockX = block.getDiscValForAttribute(NameSpace.ATX);
@@ -128,16 +148,27 @@ public class ActionHelpers {
 		int agentY = agent.getDiscValForAttribute(NameSpace.ATY);
 		int agentZ = agent.getDiscValForAttribute(NameSpace.ATZ);
 		
+		int zDif = agentZ-blockZ;
+		
 		//If looking down two, can't see block if there is a block above it
-		if (distanceOfBlock == 1 && agentZ-blockZ == 2 && !emptySpaceAt(blockX, blockY, blockZ+1, state) ){
+		if (distanceOfBlock == 1 && zDif == 2 && !emptySpaceAt(blockX, blockY, blockZ+1, state) ){
 			return false;
 		}
 		
 		//If looking down two, can't see block if there is a block above it and towards the agent
-		if (distanceOfBlock == 2 && agentZ-blockZ == 2 && !emptySpaceAt(agentX + (blockX - agentX)/2, blockY, blockZ+1, state)) {
+		if (distanceOfBlock == 2 && zDif == 2 && !emptySpaceAt(agentX + (blockX - agentX)/2, blockY, blockZ+1, state)) {
 			return false;
 		}
 		
+		//If looking two ahead, straight ahead and there's a block in the way, don't have access
+		if (distanceOfBlock == 2 && zDif == 0 && !emptySpaceAt(agentX + (blockX - agentX)/2, blockY, blockZ, state)) {
+			return false;
+		}
+		
+		//If looking two ahead, down one and there's a block in the way, don't have access
+		if (distanceOfBlock == 2 && zDif == 1 && !emptySpaceAt(agentX + (blockX - agentX)/2, blockY, blockZ, state)) {
+			return false;
+		}
 		
 		return true;
 	}
@@ -148,27 +179,43 @@ public class ActionHelpers {
 		
 		//DIRTBLOCKS
 		if (objectName.equals(NameSpace.CLASSDIRTBLOCK)) {
-			//A block item
+			//A dirt block item
 			if (object.getDiscValForAttribute(NameSpace.ATDESTWHENWALKED) == 1){
 				ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 				int oldBlocksPlaced = agent.getDiscValForAttribute(NameSpace.ATPLACEBLOCKS);
 				agent.setValue(NameSpace.ATPLACEBLOCKS, oldBlocksPlaced+1);
+				state.removeObject(object);
 			}
-			//A block
+			//A dirt block
 			else {
-				int x = object.getDiscValForAttribute(NameSpace.ATX);
-				int y = object.getDiscValForAttribute(NameSpace.ATY);
-				int z = object.getDiscValForAttribute(NameSpace.ATZ);
-				int numberOfObjects = state.getAllObjects().toArray().length;
-				
-				ObjectInstance itemToAdd = MinecraftInitialStateGenerator.createDirtBlockItem(domain, x, y, z, numberOfObjects);
-				state.addObject(itemToAdd);
-				
+				blockToItem(object);
+			}
+		}
+		//GOLDBLOCKS
+		else if (objectName.equals(NameSpace.CLASSGOLDBLOCK)) {
+			//A gold block item
+			if (object.getDiscValForAttribute(NameSpace.ATDESTWHENWALKED) == 1){
+				ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
+				int oldGoldBlockItemsCarried = agent.getDiscValForAttribute(NameSpace.ATAMTGOLDORE);
+				agent.setValue(NameSpace.ATAMTGOLDORE, oldGoldBlockItemsCarried+1);
+				state.removeObject(object);
+			}
+			//A gold block
+			else {
+				blockToItem(object);
 			}
 		}
 		
 		
-		state.removeObject(object);
+		
 	}
+	
+	private static void blockToItem(ObjectInstance block) {
+		block.setValue(NameSpace.ATDEST, 0);
+		block.setValue(NameSpace.ATFLOATS, 0);
+		block.setValue(NameSpace.ATDESTWHENWALKED, 1);
+		block.setValue(NameSpace.ATCOLLIDES, 0);
+	}
+	
 
 }

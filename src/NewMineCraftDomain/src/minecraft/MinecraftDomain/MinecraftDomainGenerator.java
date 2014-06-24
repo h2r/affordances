@@ -14,6 +14,9 @@ import minecraft.MinecraftDomain.Actions.MovementAction;
 import minecraft.MinecraftDomain.Actions.PlaceBlockAction;
 import minecraft.MinecraftDomain.Actions.RotateAction;
 import minecraft.MinecraftDomain.Actions.RotateVertAction;
+import minecraft.MinecraftDomain.Actions.UseBlockAction;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldBarPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldOrePF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AtGoalPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockAtPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptySpacePF;
@@ -79,13 +82,14 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 	 * @param collAtt the x position attribute
 	 * @param shouldCollide a boolean of if the spatial object should collide with the agent
 	 */
-	private void addSpatialAttributes(ObjectClass object, Attribute xAt, Attribute yAt, Attribute zAt, Attribute collAt, Attribute floatsAt, Attribute destroyWhenWalkedAt) {
+	private void addSpatialAttributes(ObjectClass object, Attribute xAt, Attribute yAt, Attribute zAt, Attribute collAt, Attribute floatsAt, Attribute destroyWhenWalkedAt, Attribute destAt) {
 		object.addAttribute(xAt);
 		object.addAttribute(yAt);
 		object.addAttribute(zAt);
 		object.addAttribute(collAt);
 		object.addAttribute(floatsAt);
 		object.addAttribute(destroyWhenWalkedAt);
+		object.addAttribute(destAt);
 		
 	}
 	
@@ -138,28 +142,52 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		Attribute destroyWhenWalkedAt = new Attribute(domain, NameSpace.ATDESTWHENWALKED, Attribute.AttributeType.DISC);
 		destroyWhenWalkedAt.setDiscValuesForRange(0,1,1);
 		
+		//Amount of gold ore of agent attribute
+		Attribute amountOfGoldOre = new Attribute(domain, NameSpace.ATAMTGOLDORE, Attribute.AttributeType.DISC);
+		amountOfGoldOre.setDiscValuesForRange(0, 100, 1);
+		
+		//Amount of gold bars of agent attribute
+		Attribute amountOfGoldBar = new Attribute(domain, NameSpace.ATAMTGOLDBAR, Attribute.AttributeType.DISC);
+		amountOfGoldBar.setDiscValuesForRange(0, 100, 1);
+		
+		
 		
 		
 		//BURLAP OBJECT CLASSES
 		
 		//Burlap object for the agent
 		ObjectClass agentClass = new ObjectClass(domain, NameSpace.CLASSAGENT);
-		addSpatialAttributes(agentClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt);
+		addSpatialAttributes(agentClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
 		agentClass.addAttribute(rotDirAt);
 		agentClass.addAttribute(vertDirAt);
 		agentClass.addAttribute(blocksToPlaceAt);
+		agentClass.addAttribute(amountOfGoldOre);
+		agentClass.addAttribute(amountOfGoldBar);
 		//Burlap object for agent's feet
 		ObjectClass agentFeetClass = new ObjectClass(domain, NameSpace.CLASSAGENTFEET);
-		addSpatialAttributes(agentFeetClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt);
+		addSpatialAttributes(agentFeetClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
 		
 		//Burlap object for xyz goal
 		ObjectClass goalClass = new ObjectClass(domain, NameSpace.CLASSGOAL);
-		addSpatialAttributes(goalClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt);
+		addSpatialAttributes(goalClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
 
 		//Burlap object for dirt blocks
 		ObjectClass dirtBlockClass = new ObjectClass(domain, NameSpace.CLASSDIRTBLOCK);
-		addSpatialAttributes(dirtBlockClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt);
-		dirtBlockClass.addAttribute(destAt);
+		addSpatialAttributes(dirtBlockClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
+		
+		//Burlap object for gold blocks
+		ObjectClass goldBlockClass = new ObjectClass(domain, NameSpace.CLASSGOLDBLOCK);
+		addSpatialAttributes(goldBlockClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
+		
+		//Burlap object for indestructable walls
+		ObjectClass indWallClass = new ObjectClass(domain, NameSpace.CLASSINDWALL);
+		addSpatialAttributes(indWallClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
+		
+		//Burlap object for furnace
+		ObjectClass furnaceClass = new ObjectClass(domain, NameSpace.CLASSFURNACE);
+		addSpatialAttributes(furnaceClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
+		
+		
 		
 		//Set up actions
 		new MovementAction(NameSpace.ACTIONMOVE, domain, 1, rows, cols, height);
@@ -170,8 +198,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new PlaceBlockAction(NameSpace.ACTIONPLACEBLOCK, domain, rows, cols, height);
 		new RotateVertAction(NameSpace.ACTIONLOOKDOWN, domain, rows, cols, height, -1);
 		new RotateVertAction(NameSpace.ACTIONLOOKUP, domain, rows, cols, height, 1);
-		
-		
+		new UseBlockAction(NameSpace.ACTIONUSEBLOCK, domain, rows, cols, height);
 		
 		//Set up indeterminism in actions
 		
@@ -179,6 +206,8 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new AtGoalPF(NameSpace.PFATGOAL, domain, new String[]{NameSpace.CLASSAGENT, NameSpace.CLASSGOAL});
 		new EmptySpacePF(NameSpace.PFEMPSPACE, domain, new String[]{}, 0, 0, 0);
 		new BlockAtPF(NameSpace.PFBLOCKAT, domain, new String[]{}, 0, 0, 0);
+		new AgentHasAtLeastXGoldOrePF(NameSpace.PFATLEASTXGOLDORE, domain, new String[]{NameSpace.CLASSAGENT}, 2);
+		new AgentHasAtLeastXGoldBarPF(NameSpace.PFATLEASTXGOLDBAR, domain, new String[]{NameSpace.CLASSAGENT}, 2);
 		
 		return domain;
 	}
@@ -197,6 +226,10 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		TerminalExplorer exp = new TerminalExplorer(d);
 		exp.addActionShortHand("j", NameSpace.ACTIONJUMP);
 		exp.addActionShortHand("w", NameSpace.ACTIONMOVE);
+		exp.addActionShortHand("rc", NameSpace.ACTIONROTATEC);
+		exp.addActionShortHand("ld", NameSpace.ACTIONLOOKDOWN);
+		exp.addActionShortHand("d", NameSpace.ACTIONDESTBLOCK);
+		exp.addActionShortHand("u", NameSpace.ACTIONUSEBLOCK);
 		
 		exp.exploreFromState(state);
 		

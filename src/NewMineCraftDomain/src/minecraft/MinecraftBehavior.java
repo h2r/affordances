@@ -8,6 +8,7 @@ import burlap.behavior.singleagent.planning.deterministic.DeterministicPlanner;
 import burlap.behavior.singleagent.planning.deterministic.SDPlannerPolicy;
 import burlap.behavior.singleagent.planning.deterministic.TFGoalCondition;
 import burlap.behavior.singleagent.planning.deterministic.uninformed.bfs.BFS;
+import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueIteration;
 import burlap.oomdp.auxiliary.StateParser;
 import burlap.oomdp.core.*;
 import burlap.oomdp.singleagent.*;
@@ -15,6 +16,7 @@ import burlap.oomdp.singleagent.common.*;
 import burlap.behavior.statehashing.DiscreteStateHashFactory;
 
 import java.util.HashMap;
+import java.util.List;
 
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
 
@@ -37,6 +39,9 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfAgentAtGoal;
 	public PropositionalFunction		pfEmptySpace;
 	public PropositionalFunction		pfBlockAt;
+	public PropositionalFunction		pfAgentHasAtLeastXGoldOre;
+	public PropositionalFunction		pfAgentHasAtLeastXGoldBar;
+	
 	//Params for Planners
 	private double						gamma = 0.99;
 	private double						minDelta = 0.01;
@@ -80,6 +85,8 @@ public class MinecraftBehavior {
 		this.pfAgentAtGoal = domain.getPropFunction(NameSpace.PFATGOAL);
 		this.pfEmptySpace = domain.getPropFunction(NameSpace.PFEMPSPACE);
 		this.pfBlockAt = domain.getPropFunction(NameSpace.PFBLOCKAT);
+		this.pfAgentHasAtLeastXGoldOre = domain.getPropFunction(NameSpace.PFATLEASTXGOLDORE);
+		this.pfAgentHasAtLeastXGoldBar = domain.getPropFunction(NameSpace.PFATLEASTXGOLDBAR);
 		
 		PropositionalFunction propFunToUse = this.pfAgentAtGoal;
 		
@@ -126,12 +133,47 @@ public class MinecraftBehavior {
 		ea.writeToFile(outputPath, MCStateParser);
 	}
 	
+	private double sumReward(List<Double> rewardSeq) {
+		double total = 0;
+		for (double d : rewardSeq) {
+			total += d;
+		}
+		return total;
+	}
+	
+	public void ValueIterationPlanner(){
+		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
+		OOMDPPlanner planner = new ValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, 0.01, Integer.MAX_VALUE);
+		
+		planner.planFromState(initialState);
+		
+		// Create a Q-greedy policy from the planner
+		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
+		
+		// Record the plan results to a file
+		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
+		
+		System.out.println(ea.getActionSequenceString());
+		double totalReward = sumReward(ea.rewardSequence);
+		
+		State finalState = ea.stateSequence.get(ea.stateSequence.size()-1);
+		
+		double completed = goalCondition.satisfies(finalState) ? 1.0 : 0.0;
+		if (completed == 1.0) {
+			System.out.println("VI completed with " + totalReward + " reward!");
+		}
+		else {
+			System.out.println("VI failed!");
+		}
+	}
+	
 	
 	public static void main(String[] args) {
 		String mapPath = "src/minecraft/maps/jumpworld.map";
 		String outputPath = "src/minecraft/planningOutput/";
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapPath);
-		mcBeh.BFSExample(outputPath);
+		//mcBeh.BFSExample(outputPath);
+		mcBeh.ValueIterationPlanner();
 		
 		
 	}

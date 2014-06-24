@@ -35,6 +35,7 @@ public abstract class AgentAction extends Action {
 		pickUpItems(state);
 	}
 	
+	@Override
 	protected State performActionHelper(State state, String[] params) {
 		AgentAction toPerform = getAction();
 		toPerform.doAction(state);
@@ -49,12 +50,6 @@ public abstract class AgentAction extends Action {
 			if (object.getObjectClass().hasAttribute(NameSpace.ATDESTWHENWALKED) && object.getDiscValForAttribute(NameSpace.ATDESTWHENWALKED) == 1 &&
 					objectAtAgentLocation(object, agent)) {
 				
-				int agentX = agent.getDiscValForAttribute(NameSpace.ATX);
-				int agentY = agent.getDiscValForAttribute(NameSpace.ATY);
-				int agentZ = agent.getDiscValForAttribute(NameSpace.ATZ);
-				int objX = object.getDiscValForAttribute(NameSpace.ATX);
-				int objY = object.getDiscValForAttribute(NameSpace.ATY);
-				int objZ = object.getDiscValForAttribute(NameSpace.ATZ);
 				ActionHelpers.removeObjectFromState(object, state, this.domain);
 			}
 		}

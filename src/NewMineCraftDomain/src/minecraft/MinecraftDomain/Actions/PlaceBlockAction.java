@@ -23,7 +23,7 @@ public class PlaceBlockAction extends AgentAction {
 		
 		boolean canPlace = false;
 		
-		//Can place against another block
+		//Can place against another block that collides
 		for (ObjectInstance object: objectsTwoInfrontAgent) {
 			if (object.getObjectClass().hasAttribute(NameSpace.ATCOLLIDES) && object.getDiscValForAttribute(NameSpace.ATCOLLIDES) == 1) {
 				canPlace = true;

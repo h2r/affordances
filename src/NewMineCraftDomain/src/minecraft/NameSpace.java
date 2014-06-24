@@ -12,21 +12,37 @@ public class NameSpace {
 	public static final String							ATPLACEBLOCKS = "placeableBlocks";
 	public static final String							ATVERTDIR = "verticalDirection";
 	public static final String							ATDESTWHENWALKED = "destroyedByAgentWhenWalkedOn";
+	public static final String							ATAMTGOLDORE = "amountOfGoldOre";
+	public static final String							ATAMTGOLDBAR = "amountOfGoldBar";
 	
 	//-------------BURLAP OBJECTCLASS STRINGS-------------
 	public static final String							CLASSAGENT = "agent";
 	public static final String							CLASSAGENTFEET = "agentsFeet";
 	public static final String							CLASSGOAL = "goal";
-	public static final String							CLASSDIRTBLOCK = "dirtblock";
+	public static final String							CLASSDIRTBLOCK = "dirtBlock";
+	public static final String							CLASSGOLDBLOCK = "goldBlock";
+	public static final String							CLASSINDWALL = "indestrucibleWall";
+	public static final String							CLASSFURNACE = "furnace";
 
 	
 	//-------------CHARS FOR ASCII MAPS-------------
-	public static final char GOAL = 'g';
-	public static final char AGENT = 'a';
+	public static final char GOAL = 'G';
+	public static final char AGENT = 'A';
 	public static final char DIRTBLOCK = '.';
 	public static final char BLOCKEMPTY = 'e';
-	public static final char AGENTFEET = 'f';
+	public static final char AGENTFEET = 'F';
+	public static final char INDWALL = 'w';
+	public static final char GOLDBLOCK = 'g';
+	public static final char FURNACE = 'f';
+	
 	public static final char PLACEABLEBLOCKS = 'B';
+	public static final char STARTINGGOLDORE = 'g';
+	public static final char STARTINGGOLDBAR = 'b';
+	
+	
+	//Map separators
+	public static String 							planeSeparator = "\n~\n";
+	public static String 							rowSeparator = "\n";	
 	
 	//-------------ACTIONS STRINGS-------------
 	public static final String							ACTIONMOVE = "moveAction";
@@ -37,11 +53,14 @@ public class NameSpace {
 	public static final String							ACTIONPLACEBLOCK = "placeBlock";
 	public static final String							ACTIONLOOKUP = "lookup";
 	public static final String							ACTIONLOOKDOWN = "lookdown";
+	public static final String							ACTIONUSEBLOCK = "useBlock";
 	
 	//-------------PROPOSITIONAL FUNCTION STRINGS-------------
 	public static final String					PFATGOAL = "AtGoal";
 	public static final String					PFEMPSPACE = "Empty space";
 	public static final String					PFBLOCKAT = "block at";
+	public static final String					PFATLEASTXGOLDORE = "agent has at least x gold ore";
+	public static final String					PFATLEASTXGOLDBAR = "agent has at least x gold bar";
 	
 	//ENUMS
 	public enum RotDirection {
