@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 
 /**
@@ -54,6 +55,11 @@ public class MapIO {
 				
 		this.headerMap = processHeader(stateInfoAsString);
 		this.mapAsCharArray = processMapString(mapAsString);	
+	}
+	
+	public MapIO(HashMap<String, Integer> headerInfo, char[][][] mapAsCharArray) {
+		this.headerMap = headerInfo;
+		this.mapAsCharArray = mapAsCharArray;
 	}
 	
 	/**
@@ -115,5 +121,61 @@ public class MapIO {
 		}
 		return arrayToReturn;
 	}
+	
+	public String getCharArrayAsString() {
+		StringBuilder sb = new StringBuilder();
+		int rows = this.mapAsCharArray.length;
+		int cols = this.mapAsCharArray[0].length;
+		int height = this.mapAsCharArray[0][0].length;
+		
+		for (int currHeight = height-1; currHeight >= 0; currHeight--) {
+			for(int row = 0; row < rows; row++) {
+				for(int col = 0; col < cols; col++) {
+					char currChar = this.mapAsCharArray[row][col][currHeight];
+					sb.append(currChar);
+				}
+				if (!(row == rows-1)) {
+					sb.append(NameSpace.rowSeparator);
+				}
+				else {
+					if (!(currHeight == 0))
+						sb.append(NameSpace.planeSeparator);
+				}
+			}
+		}
+		return sb.toString();
+	}
+	
+	public String getHeaderAsString() {
+		StringBuilder sb = new StringBuilder();
+		for (String key : this.headerMap.keySet()) {
+			Integer value = this.headerMap.get(key);
+			sb.append(key + "=" + value + ",");
+		}
+		sb.deleteCharAt(sb.length()-1);
+		
+		sb.append("\n");
+		
+		return sb.toString();
+	}
+	
+	public void printHeaderAndMapToFile(String filePath) {
+		String toPrint = getHeaderAsString() + getCharArrayAsString();
+		PrintWriter outPrinter = null;
+		try {
+			outPrinter = new PrintWriter(filePath);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		outPrinter.print(toPrint);
+		outPrinter.close();
+	}
 
+
+
+	public static void main(String[] args) {
+		String filePath = "src/minecraft/maps/";
+		MapIO myIO = new MapIO(filePath + "jumpworld.map");
+		myIO.printHeaderAndMapToFile(filePath + "TESTING.map");
+	}
 }

@@ -248,7 +248,7 @@ public class WorldGenerator {
 	
 	public static void main(String[] args) {
 		String fileName = "src/minecraft/maps/testingWorld.map";
-		WorldGenerator generator = new WorldGenerator(4, 4, 4);
+		WorldGenerator generator = new WorldGenerator(2, 2, 3);
 		generator.randomizeMap(1, 1);
 		String map = generator.getCurrMapAsString();
 		System.out.println(map);
