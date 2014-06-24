@@ -204,4 +204,8 @@ public class MinecraftBehavior {
 		return this.minDelta;
 	}
 	
+	public State getInitialState() {
+		return this.initialState;
+	}
+	
 }

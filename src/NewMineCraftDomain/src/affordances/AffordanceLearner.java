@@ -8,8 +8,14 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import minecraft.MapIO;
 import minecraft.MinecraftBehavior;
 import minecraft.MinecraftInitialStateGenerator;
+import minecraft.NameSpace;
+import minecraft.WorldGenerator.LearningWorldGenerator;
+import burlap.behavior.affordances.Affordance;
+import burlap.behavior.affordances.AffordanceDelegate;
+import burlap.behavior.affordances.SoftAffordance;
 import burlap.behavior.singleagent.EpisodeAnalysis;
 import burlap.behavior.singleagent.Policy;
 import burlap.behavior.singleagent.QValue;
@@ -18,30 +24,35 @@ import burlap.behavior.singleagent.planning.ValueFunctionPlanner;
 import burlap.behavior.singleagent.planning.deterministic.TFGoalCondition;
 import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueIteration;
 import burlap.behavior.statehashing.StateHashTuple;
+import burlap.oomdp.core.AbstractGroundedAction;
+import burlap.oomdp.core.GroundedProp;
 import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.PropositionalFunction;
 import burlap.oomdp.core.State;
+import burlap.oomdp.logicalexpressions.LogicalExpression;
+import burlap.oomdp.logicalexpressions.PFAtom;
 import burlap.oomdp.singleagent.Action;
 import burlap.oomdp.singleagent.GroundedAction;
 import burlap.oomdp.singleagent.common.SinglePFTF;
 
 public class AffordanceLearner {
 	
-//	private KnowledgeBase<Affordance> affordanceKB;
-	private List<PropositionalFunction> lgds;
-	private int numWorldsPerLGD = 900;
+	private KnowledgeBase affordanceKB;
+	private List<LogicalExpression> lgds;
+	private int numWorldsPerLGD = 100;
 	private MinecraftBehavior mcb;
 	private MinecraftInitialStateGenerator mcsg;
 	private int numTrajectoriesPerWorld = 1;
 	private Random				PRG = new Random();
 
-	public AffordanceLearner(MinecraftBehavior mcb, MinecraftInitialStateGenerator mcsg, List<PropositionalFunction> lgds) {
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, List<LogicalExpression> lgds) {
 		double[] numUpdates = {0.0};
 		int numRollouts = 1000;
 		int maxDepth = 250;
 		this.lgds = lgds;
 		this.mcb = mcb;
-		this.mcsg = mcsg;
+//		this.mcsg = mcsg;
+		this.affordanceKB = kb;
 		
 	}
 	
@@ -50,39 +61,36 @@ public class AffordanceLearner {
 		
 		List<String> maps = new ArrayList<String>();
 		
-		for(PropositionalFunction goal : this.lgds){
+		LearningWorldGenerator worldGenerator = new LearningWorldGenerator(3,3,4);
+		
+		for(LogicalExpression goal : this.lgds){
 			for (int i = 0; i < this.numWorldsPerLGD; i++) {
 				// Make a new map w/ that goal, save it to a file in maps/learning/goal/<name>
-				String mapfile = this.mcsg.makeLearningMap(goal,i);
-				maps.add(mapfile);
+				
+				// Mapfile name information
+				String mapname = "src/minecraft/maps/learning/" + goal.toString() + i + ".map";
+				maps.add(mapname);
+				
+				System.out.println(goal.toString());
+				
+				// Build the map
+				char[][][] charMap = worldGenerator.generateMap(goal);
+
+				// Write header info (depends on goal specific information)
+				// TODO: incorporate goal specific information
+				HashMap<String,Integer> headerInfo = new HashMap<String,Integer>();
+				headerInfo.put("B", 1);
+				headerInfo.put("g", 0);
+				headerInfo.put("b", 0);
+				
+				MapIO map = new MapIO(headerInfo, charMap);
+				map.printHeaderAndMapToFile(mapname);
 			}
 		}
 		
 		for(String map : maps) {
 			learnMap(map);
 		}
-	}
-	
-	private State getRandInitialState(OOMDPPlanner p) {
-		
-		List<State> states = ((ValueFunctionPlanner)p).getAllStates();
-		int i = PRG.nextInt(states.size());
-		
-		State st = states.get(i);
-		
-		// Being on the floor is equivalent to being in an unsolvable state
-		while (agentOnFloor(st)) {
-			i = PRG.nextInt(states.size());
-			st = states.get(i);
-		}
-		
-		return st;
-	}
-	
-	private boolean agentOnFloor(State st) {
-		ObjectInstance agent = st.getObject("agent0");
-		int az = agent.getDiscValForAttribute("z");
-		return az <= 1;
 	}
 	
 	private void learnMap(String map) {
@@ -103,128 +111,155 @@ public class AffordanceLearner {
 		
 		// Form a policy on the given map
 		Policy p = mcb.solve(planner);
-		Map<Affordance,List<Action>> seen = new HashMap<Affordance,List<Action>>();  // Makes sure we don't count an action more than once per affordance (per map)
+		Map<AffordanceDelegate,List<AbstractGroundedAction>> seen = new HashMap<AffordanceDelegate,List<AbstractGroundedAction>>();  // Makes sure we don't count an action more than once per affordance (per map)
+		List<State> allStates = ((ValueFunctionPlanner)planner).getAllStates();
 		
-		// Get a new initial state for each given map
+		// Generate several trajectories from the world
 		for (int i = 0; i < numTrajectoriesPerWorld ; i++) {
 
-//			State initialState = getRandInitialState(planner);
-			State initialState = mcb.initialState;
+			State initialState = mcb.getInitialState();
 			double initVal = ((ValueFunctionPlanner)planner).value(initialState);
 			 
-//			EpisodeAnalysis ea = p.evaluateBehavior(initialState, mcb.rf, mcb.tf, 100);
-//			System.out.println("Initial State:\n" + initialState.getObject("agent0").getObjectDescription());
-//			System.out.println("Trajectory: " + ea.getActionSequenceString());
-//			for (State st: ea.stateSequence) {
-			for (State st: ((ValueFunctionPlanner)planner).getAllStates()) {
+			for (State st: allStates) {
 				
-				double stVal = ((ValueFunctionPlanner)planner).value(st); 
-				if ( stVal < 10 * initVal) {  // NOTE: 10 is kind of randomly picked
+				// Check if we picked a bad state ("bad" = extremely low value)
+				double stateVal = ((ValueFunctionPlanner)planner).value(st); 
+				if (stateVal < 10 * initVal) {  // TODO: 10 is kind of randomly picked - make this better
 					continue;
 				}
 				
-				if (mcb.tf.isTerminal(st)) {
+				// Check for terminal function
+				if (mcb.getTerminalFunction().isTerminal(st)) {
 					continue;
 				}
-				GroundedAction ga = p.getAction(st);
+				
+				// Get the optimal action for that state and update affordance counts
+				GroundedAction ga = (GroundedAction) p.getAction(st);
 				QValue qv = ((ValueFunctionPlanner)planner).getQ(st, ga);
 				System.out.println("Action: " + ga.actionName() + " QValue: " + qv.q);
-				for (Affordance aff: affordanceKB.getAll()) {
+				for (AffordanceDelegate affDelegate: affordanceKB.getAll()) {
 					// Initialize key-value pair for this aff
-					if (seen.get(aff) == null) {
-						seen.put(aff, new ArrayList<Action>());
+					if (seen.get(affDelegate) == null) {
+						seen.put(affDelegate, new ArrayList<AbstractGroundedAction>());
 					}
 					
 					// If affordance is lit up
-					if (aff.isApplicable(st, ((MultiplePFTF)mcb.tf).getGoalPF())) {
+					affDelegate.primeAndCheckIfActiveInState(st);
+					if (affDelegate.actionIsRelevant(ga)){
+						
 						// If we haven't counted this action for this affordance yet
-						if (!seen.get(aff).contains(ga.action)) {
-							System.out.println("Learned " + ga.actionName() + " for " + aff.getPreCondition().getName() + "\n" + st.getObject("agent0").getObjectDescription());
-							aff.updateActionCount(ga.action);
-							List<Action> acts = seen.get(aff);
-							acts.add(ga.action);
-							seen.put(aff, acts);
+						if (!seen.get(affDelegate).contains(ga)) {
+							// Update counts, seen hashmap (indicate we've seen this affordance)
+							((SoftAffordance)affDelegate.getAffordance()).updateActionCount(ga);
+							List<AbstractGroundedAction> acts = seen.get(affDelegate);
+							acts.add(ga);
+							seen.put(affDelegate, acts);
 						}
 					}
 				}
 			}
 		}
-		for (Affordance aff: affordanceKB.getAll()) {
-			if (seen == null || seen.get(aff) == null) {
-				int x  =1 ;
+		
+		for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
+			if (seen == null || seen.get(affDelegate) == null) {
+				int x = 1 ;
 			}
-			if (seen.get(aff).size() > 0) {
-				aff.updateActionSetSizeCount(seen.get(aff).size());
+			if (seen.get(affDelegate).size() > 0) {
+				((SoftAffordance)affDelegate.getAffordance()).updateActionSetSizeCount(seen.get(affDelegate).size());
 			}
 		}
 	}
 	
-	public static KnowledgeBase<Affordance> generateAffordanceKB(List<PropositionalFunction> predicates, List<PropositionalFunction> lgds, List<Action> allActions) {
-		List<Affordance> affordances = new ArrayList<Affordance>();
+	public static KnowledgeBase generateAffordanceKB(List<LogicalExpression> predicates, List<LogicalExpression> lgds, List<AbstractGroundedAction> allActions) {
+		KnowledgeBase affordanceKB = new KnowledgeBase();
 		
-		for (PropositionalFunction pf : predicates) {
-			for (PropositionalFunction lgd : lgds) {
-				Affordance aff = new Affordance (pf, lgd, allActions);
-				affordances.add(aff);
+		for (LogicalExpression pf : predicates) {
+			for (LogicalExpression lgd : lgds) {
+				Affordance aff = new SoftAffordance(pf, lgd, allActions);
+				AffordanceDelegate affDelegate = new AffordanceDelegate(aff);	
+				affordanceKB.add(affDelegate);
 			}
 		}
 		
-		return new KnowledgeBase<Affordance>(Affordance.class, affordances);
+		return affordanceKB;
 		
+	}
+	
+	/**
+	 * Gets a list of free variables given an OOMDP object's parameter object classes and order groups
+	 * @param orderGroups
+	 * @param objectClasses
+	 * @return: String[] - a list of free variables
+	 */
+	public static String[] makeFreeVarListFromOrderGroups(String[] orderGroups, String[] objectClasses){
+		List<String> groundedPropFreeVariablesList = new ArrayList<String>();
+		
+		// TODO: improve variable binding stuff
+		// Make variables free
+		for(String orderGroup : orderGroups){
+			String freeVar = "?" + orderGroup;
+			groundedPropFreeVariablesList.add(freeVar);
+		}
+		String[] groundedPropFreeVars = new String[groundedPropFreeVariablesList.size()];
+		groundedPropFreeVars = groundedPropFreeVariablesList.toArray(groundedPropFreeVars);
+		
+		return groundedPropFreeVars;
 	}
 	
 	public void printCounts() {
-		for (Affordance aff: this.affordanceKB.getAll()) {
-			aff.printCounts();
+		for (AffordanceDelegate affDelegate: this.affordanceKB.getAll()) {
+			((SoftAffordance)affDelegate.getAffordance()).printCounts();
 			System.out.println("");
 		}
 	}
 	
 	public static void main(String[] args) {
-		MinecraftBehavior mb = new MinecraftBehavior("");
-		MinecraftInitialStateGenerator mcsg = new MinecraftInitialStateGenerator();
+		MinecraftBehavior mb = new MinecraftBehavior("src/minecraft/maps/learning/template.map");
 		
-		List<Action> allActions = mb.mcdg.getActions();
+		List<Action> allActions = mb.getDomain().getActions();
+		List<AbstractGroundedAction> allGroundedActions = new ArrayList<AbstractGroundedAction>();
+
+		// Create Grounded Action instances for each action
+		for(Action a : allActions) {
+			String[] freeParams = makeFreeVarListFromOrderGroups(a.getParameterOrderGroups(), a.getParameterClasses());
+			GroundedAction ga = new GroundedAction(a, freeParams);
+			allGroundedActions.add(ga);
+		}
+		
 		
 		// Set up goal description list
-		List<PropositionalFunction> lgds = new ArrayList<PropositionalFunction>();
+		List<LogicalExpression> lgds = new ArrayList<LogicalExpression>();
 		PropositionalFunction atGoal = mb.pfAgentAtGoal;
-		lgds.add(atGoal);
+		LogicalExpression goalLE = pfAtomFromPropFunc(atGoal);
+		goalLE.setName("crosstrench");
+		lgds.add(goalLE);
 		
-		// Set up predicate list
-		List<PropositionalFunction> predicates = new ArrayList<PropositionalFunction>();
+		// Set up precondition list
+		List<LogicalExpression> predicates = new ArrayList<LogicalExpression>();
 		
-		PropositionalFunction isPlaneF = mb.pfIsPlaneF;
-		PropositionalFunction isPlaneB = mb.pfIsPlaneB;
-		PropositionalFunction isPlaneR = mb.pfIsPlaneR;
-		PropositionalFunction isPlaneL = mb.pfIsPlaneL;
+		// Block PFAtom
+		PropositionalFunction blockAt = mb.pfBlockAt;
+		LogicalExpression blockLE = pfAtomFromPropFunc(blockAt);
 		
-		PropositionalFunction isTrenchF = mb.pfIsTrenchF;
-		PropositionalFunction isTrenchB = mb.pfIsTrenchB;
-		PropositionalFunction isTrenchR = mb.pfIsTrenchR;
-		PropositionalFunction isTrenchL = mb.pfIsTrenchL;
+		// EmptySpace PFAtom
+		PropositionalFunction emptyAt = mb.pfEmptySpace;
+		LogicalExpression emptyLE = pfAtomFromPropFunc(emptyAt);
 		
-		predicates.add(isPlaneF);
-		predicates.add(isPlaneB);
-		predicates.add(isPlaneR);
-		predicates.add(isPlaneL);
-		
-		predicates.add(isTrenchF);
-		predicates.add(isTrenchB);
-		predicates.add(isTrenchR);
-		predicates.add(isTrenchL);
-		
-		
-		KnowledgeBase<Affordance> affKnowlBase = generateAffordanceKB(predicates, lgds, allActions);
+		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions);
 		
 		// Initialize Learner
-		AffordanceLearner affLearn = new AffordanceLearner(mb, mcsg, affKnowlBase, lgds);
+		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds);
 		
 		affLearn.learn();
 		affLearn.printCounts();
 		
-
-		affKnowlBase.save("trenches" + affLearn.numWorldsPerLGD + ".kb");
+		affKnowledgeBase.save("trenches" + affLearn.numWorldsPerLGD + ".kb");
+	}
+	
+	private static LogicalExpression pfAtomFromPropFunc(PropositionalFunction pf) {
+		String[] pfFreeParams = makeFreeVarListFromOrderGroups(pf.getParameterOrderGroups(), pf.getParameterClasses());
+		GroundedProp blockGP = new GroundedProp(pf, pfFreeParams);
+		return new PFAtom(blockGP);
 	}
 
 }

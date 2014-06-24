@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 import burlap.behavior.affordances.AffordanceDelegate;
 import burlap.behavior.affordances.AffordancesController;
+import burlap.behavior.affordances.SoftAffordance;
 import burlap.oomdp.core.Domain;
 
 /**
@@ -21,27 +22,26 @@ import burlap.oomdp.core.Domain;
  * @param <T> The type of knowledge (affordance, subgoal, etc...)
  */
 public class KnowledgeBase {
-	private List<AffordanceDelegate>	kb;
+	private List<AffordanceDelegate>	affDelegateList;
 	private AffordancesController		affController;
 	private String						kbName;
 	private String						basePath = System.getProperty("user.dir") + "minecraft.kb";
 	
 	
-	
 	public KnowledgeBase() {
-		this.kb = new ArrayList<AffordanceDelegate>();
+		this.affDelegateList = new ArrayList<AffordanceDelegate>();
 	}
 
 	public KnowledgeBase(List<AffordanceDelegate> kb) {
-		this.kb = new ArrayList<AffordanceDelegate>(kb);
+		this.affDelegateList = new ArrayList<AffordanceDelegate>(kb);
 	}
 	
 	public void add(AffordanceDelegate aff) {
-		this.kb.add(aff);
+		this.affDelegateList.add(aff);
 	}
 	
 	public List<AffordanceDelegate> getAll() {
-		return this.kb;
+		return this.affDelegateList;
 	}
 	
 	public void save(String filename) {
@@ -50,7 +50,7 @@ public class KnowledgeBase {
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(fpath)));
 			
-			for (AffordanceDelegate aff: this.kb) {
+			for (AffordanceDelegate aff: this.affDelegateList) {
 				bw.write(aff.toString());
 			}
 			
@@ -70,7 +70,7 @@ public class KnowledgeBase {
 			while (scnr.hasNextLine()) {
 				aff = AffordanceDelegate.loadSoft(d, scnr);
 				
-				this.kb.add(aff);
+				this.affDelegateList.add(aff);
 			}
 
 			scnr.close();
@@ -79,14 +79,23 @@ public class KnowledgeBase {
 			e.printStackTrace();
 		}
 		
-//		this.affController = new AffordancesController();
-		
+		this.affController = new AffordancesController(this.affDelegateList);
 	}
 	
-	public void process() {
-		for(AffordanceDelegate aff : kb) {
-			aff.postProcess();
+	public void processSoft() {
+		for(AffordanceDelegate affDelegate : affDelegateList) {
+			((SoftAffordance)affDelegate.getAffordance()).postProcess();
 		}
+	}
+	
+	// --- ACCESSORS ---
+	
+	public AffordancesController getAffordancesController() {
+		return this.affController;
+	}
+	
+	public List<AffordanceDelegate> getAffordances() {
+		return this.affDelegateList;
 	}
 
 }

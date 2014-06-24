@@ -24,9 +24,6 @@ public class MapIO {
 	 */
 	private char[][][] mapAsCharArray;
 	
-
-
-	
 	//-----CLASS METHODS-----
 	public MapIO(String filePath) {
 		//Open file
