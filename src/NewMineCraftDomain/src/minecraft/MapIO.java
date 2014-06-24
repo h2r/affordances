@@ -26,7 +26,7 @@ public class MapIO {
 	/**
 	 * Stores what separates horizontal planes in the ascii files
 	 */
-	private static String 							planeSeparator = "\n~~~\n";
+	private static String 							planeSeparator = "\n~\n";
 	
 	/**
 	 * Stores what separates rows within a plane in the ascii files
@@ -110,14 +110,14 @@ public class MapIO {
 				
 		char[][][] arrayToReturn = new char[rows][cols][height];
 		
-		for(int currHeight = 0; currHeight < height; currHeight++) {
+		for(int currHeight = height-1; currHeight >= 0; currHeight--) {
 			String currPlane = splitByHorPlanes[currHeight];
 			String[] planeIntoRows = currPlane.split(rowSeparator);
 			for(int row = 0; row < rows; row++) {
 				String currRow = planeIntoRows[row];
 				for(int col = 0; col < cols; col++) {
 					char currCharacter = currRow.charAt(col);
-					arrayToReturn[row][col][currHeight] = currCharacter;
+					arrayToReturn[row][col][height-currHeight-1] = currCharacter;
 				}
 			}
 		}

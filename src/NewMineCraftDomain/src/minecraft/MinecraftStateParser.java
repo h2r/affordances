@@ -20,15 +20,16 @@ public class MinecraftStateParser implements StateParser {
 		
 		StringBuffer sbuf = new StringBuffer(256);
 		
-		ObjectInstance a = s.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
-		ObjectInstance goal = s.getObjectsOfTrueClass(NameSpace.CLASSGOAL).get(0);
+		ObjectInstance agent = s.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
+//		ObjectInstance goal = s.getObjectsOfTrueClass(NameSpace.CLASSGOAL).get(0);
 		
-		String xa = NameSpace.ATTX;
-		String ya = NameSpace.ATTY;
-		String za = NameSpace.ATTZ;
-		
-		sbuf.append(a.getDiscValForAttribute(xa)).append(",").append(a.getDiscValForAttribute(ya)).append(",").append(a.getDiscValForAttribute(za)).append(" ");
-		sbuf.append(goal.getDiscValForAttribute(xa)).append(",").append(goal.getDiscValForAttribute(ya)).append(",").append(goal.getDiscValForAttribute(za)).append(" ");
+		String xa = NameSpace.ATX;
+		String ya = NameSpace.ATY;
+		String za = NameSpace.ATZ;
+		int numberOfBlocks = agent.getDiscValForAttribute(NameSpace.ATPLACEBLOCKS);
+		sbuf.append(agent.getDiscValForAttribute(xa)).append(",").append(agent.getDiscValForAttribute(ya)).append(",").append(agent.getDiscValForAttribute(za)).append(" ");
+		sbuf.append(numberOfBlocks);
+//		sbuf.append(goal.getDiscValForAttribute(xa)).append(",").append(goal.getDiscValForAttribute(ya)).append(",").append(goal.getDiscValForAttribute(za)).append(" ");
 		
 		return sbuf.toString();
 	}

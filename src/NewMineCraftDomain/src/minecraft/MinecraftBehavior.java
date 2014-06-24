@@ -35,7 +35,8 @@ public class MinecraftBehavior {
 	
 	//Propositional Functions
 	public PropositionalFunction		pfAgentAtGoal;
-	
+	public PropositionalFunction		pfEmptySpace;
+	public PropositionalFunction		pfBlockAt;
 	//Params for Planners
 	private double						gamma = 0.99;
 	private double						minDelta = 0.01;
@@ -77,13 +78,16 @@ public class MinecraftBehavior {
 		
 		//Get propositional functions
 		this.pfAgentAtGoal = domain.getPropFunction(NameSpace.PFATGOAL);
+		this.pfEmptySpace = domain.getPropFunction(NameSpace.PFEMPSPACE);
+		this.pfBlockAt = domain.getPropFunction(NameSpace.PFBLOCKAT);
 		
+		PropositionalFunction propFunToUse = this.pfAgentAtGoal;
 		
 		//Set up reward function
-		this.rewardFunction = new SingleGoalPFRF(pfAgentAtGoal, 10, -1); 
+		this.rewardFunction = new SingleGoalPFRF(propFunToUse, 10, -1); 
 		
 		//Set up terminal function
-		this.terminalFunction = new SinglePFTF(pfAgentAtGoal);
+		this.terminalFunction = new SinglePFTF(propFunToUse);
 	}
 	
 	// ---------- PLANNERS ---------- 
@@ -116,9 +120,9 @@ public class MinecraftBehavior {
 		
 		Policy p = new SDPlannerPolicy(planner);
 		
-		p.evaluateBehavior(initialState, rewardFunction, terminalFunction).writeToFile(outputPath + "bfsPlanResult", MCStateParser);
+		p.evaluateBehavior(initialState, this.rewardFunction, this.terminalFunction).writeToFile(outputPath + "bfsPlanResult", MCStateParser);
 		
-		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction);
+		EpisodeAnalysis ea = p.evaluateBehavior(initialState, this.rewardFunction, this.terminalFunction);
 		ea.writeToFile(outputPath, MCStateParser);
 	}
 	
