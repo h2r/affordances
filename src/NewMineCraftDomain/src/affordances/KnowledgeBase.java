@@ -40,10 +40,6 @@ public class KnowledgeBase {
 		this.affDelegateList.add(aff);
 	}
 	
-	public List<AffordanceDelegate> getAll() {
-		return this.affDelegateList;
-	}
-	
 	public void save(String filename) {
 		String fpath = basePath + "/" + filename;
 		
@@ -66,7 +62,7 @@ public class KnowledgeBase {
 
 		AffordanceDelegate aff = null;
 		try {
-			Scanner scnr = new Scanner(new File(basePath + "/" + kbName + "/" + filename));
+			Scanner scnr = new Scanner(new File(basePath + "/" + filename));
 			while (scnr.hasNextLine()) {
 				aff = AffordanceDelegate.loadSoft(d, scnr);
 				

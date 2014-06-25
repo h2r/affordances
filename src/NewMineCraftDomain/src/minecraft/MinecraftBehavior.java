@@ -1,13 +1,18 @@
 package minecraft;
 
+import affordances.KnowledgeBase;
+import burlap.behavior.affordances.AffordancesController;
 import burlap.behavior.singleagent.*;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
 import burlap.behavior.singleagent.planning.QComputablePlanner;
+import burlap.behavior.singleagent.planning.ValueFunctionPlanner;
+import burlap.behavior.singleagent.planning.commonpolicies.AffordanceGreedyQPolicy;
 import burlap.behavior.singleagent.planning.commonpolicies.GreedyQPolicy;
 import burlap.behavior.singleagent.planning.deterministic.DeterministicPlanner;
 import burlap.behavior.singleagent.planning.deterministic.SDPlannerPolicy;
 import burlap.behavior.singleagent.planning.deterministic.TFGoalCondition;
 import burlap.behavior.singleagent.planning.deterministic.uninformed.bfs.BFS;
+import burlap.behavior.singleagent.planning.stochastic.rtdp.AffordanceRTDP;
 import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueIteration;
 import burlap.oomdp.auxiliary.StateParser;
 import burlap.oomdp.core.*;
@@ -51,6 +56,9 @@ public class MinecraftBehavior {
 	private double						gamma = 0.99;
 	private double						minDelta = 0.01;
 	private int							maxSteps = 200;
+	private int 						numRollouts = 1000; // RTDP
+	private int							maxDepth = 10; // RTDP
+	private int 						vInit = -1; // RTDP
 
 	
 	// ----- CLASS METHODS -----
@@ -97,13 +105,16 @@ public class MinecraftBehavior {
 		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFTRENCHINFRONT);
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
 		
+<<<<<<< HEAD
 		PropositionalFunction propFunToUse = this.pfAgentInMidAir;
 		
+=======
+>>>>>>> FETCH_HEAD
 		//Set up reward function
-		this.rewardFunction = new SingleGoalPFRF(propFunToUse, 10, -1); 
+		this.rewardFunction = new SingleGoalPFRF(this.pfAgentAtGoal, 0, -1); 
 		
 		//Set up terminal function
-		this.terminalFunction = new SinglePFTF(propFunToUse);
+		this.terminalFunction = new SinglePFTF(this.pfAgentAtGoal);
 	}
 	
 	// ---------- PLANNERS ---------- 
@@ -176,15 +187,32 @@ public class MinecraftBehavior {
 		}
 	}
 	
+	public void AffordanceRTDP(KnowledgeBase affKB){
+		AffordancesController affController = affKB.getAffordancesController();
+
+		ValueFunctionPlanner planner = new AffordanceRTDP(domain, this.rewardFunction, this.terminalFunction, this.gamma, this.hashingFactory, this.vInit, this.numRollouts, this.minDelta, this.maxDepth, affController);
+		
+		planner.planFromState(initialState);
+		
+		// Create a Q-greedy policy from the planner
+		Policy p = new AffordanceGreedyQPolicy(affController, (QComputablePlanner)planner);
+		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
+		System.out.println(ea.getActionSequenceString());
+
+	}
 	
 	public static void main(String[] args) {
-		String mapPath = "src/minecraft/maps/jumpworld.map";
+		String mapPath = "src/minecraft/maps/learning/crosstrench0.map";
 		String outputPath = "src/minecraft/planningOutput/";
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapPath);
-		mcBeh.BFSExample(outputPath);
-		//mcBeh.ValueIterationPlanner();
 		
+//		mcBeh.BFSExample(outputPath);
+//		mcBeh.ValueIterationPlanner();
 		
+		KnowledgeBase affKB = new KnowledgeBase();
+		affKB.load(mcBeh.getDomain(), "trenches1000.kb");
+		
+		mcBeh.AffordanceRTDP(affKB);
 	}
 	
 	// --- ACCESSORS ---

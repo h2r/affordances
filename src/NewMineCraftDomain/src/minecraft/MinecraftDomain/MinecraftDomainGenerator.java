@@ -147,7 +147,6 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		Attribute amountOfGoldBar = new Attribute(domain, NameSpace.ATAMTGOLDBAR, Attribute.AttributeType.DISC);
 		amountOfGoldBar.setDiscValuesForRange(0, 100, 1);
 		
-		
 		//BURLAP OBJECT CLASSES
 		
 		//Burlap object for the agent
@@ -158,6 +157,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		agentClass.addAttribute(blocksToPlaceAt);
 		agentClass.addAttribute(amountOfGoldOre);
 		agentClass.addAttribute(amountOfGoldBar);
+		
 		//Burlap object for agent's feet
 		ObjectClass agentFeetClass = new ObjectClass(domain, NameSpace.CLASSAGENTFEET);
 		addSpatialAttributes(agentFeetClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
@@ -181,7 +181,6 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		//Burlap object for furnace
 		ObjectClass furnaceClass = new ObjectClass(domain, NameSpace.CLASSFURNACE);
 		addSpatialAttributes(furnaceClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
-		
 		
 		//ACTIONS
 		
