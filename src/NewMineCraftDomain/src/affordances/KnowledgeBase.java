@@ -25,7 +25,7 @@ public class KnowledgeBase {
 	private List<AffordanceDelegate>	affDelegateList;
 	private AffordancesController		affController;
 	private String						kbName;
-	private String						basePath = System.getProperty("user.dir") + "minecraft.kb";
+	private String						basePath = System.getProperty("user.dir") + "/src/minecraft/kb/";
 	
 	
 	public KnowledgeBase() {
@@ -45,13 +45,13 @@ public class KnowledgeBase {
 	}
 	
 	public void save(String filename) {
-		String fpath = basePath + "/" + kbName + "/" + filename;
+		String fpath = basePath + "/" + filename;
 		
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(fpath)));
 			
 			for (AffordanceDelegate aff: this.affDelegateList) {
-				bw.write(aff.toString());
+				bw.write(((SoftAffordance)aff.getAffordance()).toString());
 			}
 			
 			bw.close();

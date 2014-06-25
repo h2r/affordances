@@ -39,7 +39,7 @@ public class AffordanceLearner {
 	
 	private KnowledgeBase affordanceKB;
 	private List<LogicalExpression> lgds;
-	private int numWorldsPerLGD = 100;
+	private int numWorldsPerLGD = 10;
 	private MinecraftBehavior mcb;
 	private MinecraftInitialStateGenerator mcsg;
 	private int numTrajectoriesPerWorld = 1;
@@ -79,7 +79,7 @@ public class AffordanceLearner {
 				// Write header info (depends on goal specific information)
 				// TODO: incorporate goal specific information
 				HashMap<String,Integer> headerInfo = new HashMap<String,Integer>();
-				headerInfo.put("B", 1);
+				headerInfo.put("B", 0);
 				headerInfo.put("g", 0);
 				headerInfo.put("b", 0);
 				
