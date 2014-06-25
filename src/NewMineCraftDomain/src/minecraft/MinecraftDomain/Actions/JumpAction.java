@@ -1,6 +1,7 @@
 package minecraft.MinecraftDomain.Actions;
 
 import minecraft.NameSpace;
+import minecraft.MinecraftDomain.Helpers;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.State;
@@ -9,6 +10,15 @@ public class JumpAction extends AgentAction {
 
 	private int amountOfJump;
 	
+	/**
+	 * 
+	 * @param name
+	 * @param domain
+	 * @param rows
+	 * @param cols
+	 * @param height
+	 * @param amountOfJump
+	 */
 	public JumpAction(String name, Domain domain, int rows, int cols,int height, int amountOfJump) {
 		super(name, domain, rows, cols, height, false);
 		this.amountOfJump = amountOfJump;
@@ -27,8 +37,10 @@ public class JumpAction extends AgentAction {
 		
 		int newAgentZ = agentZ + amountOfJump;
 		
-		boolean canJump = !ActionHelpers.withinMapAt(agentX, agentY, zBelowAgentFeet, rows, cols, height) || !ActionHelpers.emptySpaceAt(agentX, agentY, zBelowAgentFeet, state);
-		boolean roomAbove = ActionHelpers.withinMapAt(agentX, agentY, newAgentZ, rows, cols, height) && ActionHelpers.emptySpaceAt(agentX, agentY, newAgentZ, state);
+		//Need a block below or the bottom of the map to jump
+		boolean canJump = !Helpers.withinMapAt(agentX, agentY, zBelowAgentFeet, rows, cols, height) || !Helpers.emptySpaceAt(agentX, agentY, zBelowAgentFeet, state);
+		//Also need empty space above the agent
+		boolean roomAbove = Helpers.withinMapAt(agentX, agentY, newAgentZ, rows, cols, height) && Helpers.emptySpaceAt(agentX, agentY, newAgentZ, state);
 		
 		if (canJump && roomAbove) {
 			agent.setValue(NameSpace.ATZ, newAgentZ);

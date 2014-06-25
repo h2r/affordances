@@ -1,16 +1,12 @@
 package minecraft.WorldGenerator;
 
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Random;
 
 import minecraft.NameSpace;
-import minecraft.MinecraftDomain.Actions.ActionHelpers;
+import minecraft.MinecraftDomain.Helpers;
 
 public class WorldGenerator {
+
   //Class variables
   final int rows;
   final int cols;
@@ -42,7 +38,7 @@ public class WorldGenerator {
     for(int row = 0; row < this.rows; row++) {
       for(int col = 0; col < this.cols; col++) {
         for(int currHeight = 0; currHeight < this.height; currHeight++) {
-          toChange[row][col][currHeight] = NameSpace.BLOCKEMPTY;
+          toChange[row][col][currHeight] = NameSpace.CHAREMPTY;
         }
       }
     }
@@ -53,7 +49,7 @@ public class WorldGenerator {
     for (int currHeight = 0; currHeight < depthOfDirtFloor; currHeight++) {
       for(int row = 0; row < this.rows; row++) {
         for(int col = 0; col < this.cols; col++) {
-          toChange[row][col][currHeight] = NameSpace.INDWALL;
+          toChange[row][col][currHeight] = NameSpace.CHARINDBLOCK;
         }
       }
     }
@@ -80,7 +76,7 @@ public class WorldGenerator {
   
   protected void addRandomSpatialGoal(char[][][] toChange) {
     assert(this.depthOfDirtFloor+1 < this.height);
-    addCharRandomly(NameSpace.GOAL, null, null, this.depthOfDirtFloor+1, toChange);
+    addCharRandomly(NameSpace.CHARGOAL, null, null, this.depthOfDirtFloor+1, toChange);
   }
   
   
@@ -109,7 +105,7 @@ public class WorldGenerator {
     int yChange = startYChange;
     
     //Random walk until off map or doubled back on self or other walk (a la snake)
-        while (ActionHelpers.withinMapAt(currX, currY, 0, this.cols, this.rows, this.height) && !allCharactersAtCol(charToAdd, currX, currY, toChange)) {
+        while (Helpers.withinMapAt(currX, currY, 0, this.cols, this.rows, this.height) && !allCharactersAtCol(charToAdd, currX, currY, toChange)) {
           //Add hole
           this.addCharColAt(currX, currY, toChange, charToAdd);
           
@@ -185,20 +181,20 @@ public class WorldGenerator {
   
   protected void addTrenches(int numTrenches, char[][][] toChange) {
     for (int trenchIndex = 0; trenchIndex < numTrenches; trenchIndex++) {
-      this.randomWalkInsertOfCharacterColumns(toChange, NameSpace.BLOCKEMPTY);
+      this.randomWalkInsertOfCharacterColumns(toChange, NameSpace.CHAREMPTY);
     }
   }
   
   private void addWalls(int numWalls, char[][][] toChange) {
     for (int trenchIndex = 0; trenchIndex < numWalls; trenchIndex++) {
-      this.randomWalkInsertOfCharacterColumns(toChange, NameSpace.DIRTBLOCK);
+      this.randomWalkInsertOfCharacterColumns(toChange, NameSpace.CHARDIRTBLOCK);
     }
   }
   
   protected void addAgent(char [][][] toChange) {
     assert(this.depthOfDirtFloor+1 < this.height);
-    int[] headLocation = addCharRandomly(NameSpace.AGENT, null, null, this.depthOfDirtFloor+1, toChange);
-    toChange[headLocation[1]][headLocation[0]][headLocation[2]-1] = NameSpace.AGENTFEET;
+    int[] headLocation = addCharRandomly(NameSpace.CHARAGENT, null, null, this.depthOfDirtFloor+1, toChange);
+    toChange[headLocation[1]][headLocation[0]][headLocation[2]-1] = NameSpace.CHARAGENTFEET;
   }
   
   private char[][][] generateNewCharArray(int numTrenches, int numWalls) {
@@ -266,5 +262,4 @@ public class WorldGenerator {
     String map = generator.getCurrMapAsString();
     System.out.println(map);
   }
-
 }

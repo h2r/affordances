@@ -24,7 +24,6 @@ public class AgentHasAtLeastXGoldBarPF extends PropositionalFunction{
 
 	@Override
 	public boolean isTrue(State state, String[] params) {
-		//get the agent coordinates
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 		int amountOfGoldBar = agent.getDiscValForAttribute(NameSpace.ATAMTGOLDBAR);
 		return amountOfGoldBar >= this.requisiteAmountOfGoldBars;

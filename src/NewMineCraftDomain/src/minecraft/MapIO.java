@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 
 /**
- * Used to turn .map minecraft ascii files into easily usable data structures
+ * Used to turn .map minecraft ascii files into easily usable data structures and vice versa
  * @author Dhershkowitz
  *
  */
@@ -156,6 +156,10 @@ public class MapIO {
 		return sb.toString();
 	}
 	
+	/**
+	 * Prints the header + charArray as a string to the filePath
+	 * @param filePath
+	 */
 	public void printHeaderAndMapToFile(String filePath) {
 		String toPrint = getHeaderAsString() + getCharArrayAsString();
 		PrintWriter outPrinter = null;

@@ -1,15 +1,21 @@
-package minecraft.MinecraftDomain.Actions;
+package minecraft.MinecraftDomain;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import minecraft.MinecraftInitialStateGenerator;
 import minecraft.NameSpace;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.State;
 
-public class ActionHelpers {
+public class Helpers {
+	/**
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param state
+	 * @return a boolean of whether there is no block with ATCOLLIDES == 1 at the input x,y,z
+	 */
 	public static Boolean emptySpaceAt(int x, int y, int z, State state) {
 		List<ObjectInstance> objects = objectsAt(x,y,z, state);
 		for(ObjectInstance object : objects) {
@@ -29,13 +35,21 @@ public class ActionHelpers {
 	 * @param cols
 	 * @param rows
 	 * @param height
-	 * @return
+	 * @return boolean of whether the input x,y,z is in bounds of the input cols,rows,height
 	 */
 	public static Boolean withinMapAt(int x, int y, int z, int cols, int rows, int height) {
 		boolean toReturn = x >= 0 && x < cols && y >=0 && y < rows && z >= 0 && z < height;
 		return toReturn;
 	}
 	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param state
+	 * @return a list of all burlap objects with the input x,y,z coordinates
+	 */
 	public static ArrayList<ObjectInstance> objectsAt(int x, int y, int z, State state) {
 		List<ObjectInstance> allObjects = state.getAllObjects();
 		ArrayList<ObjectInstance> toReturn = new ArrayList<ObjectInstance>();
@@ -51,6 +65,12 @@ public class ActionHelpers {
 		return toReturn;
 	}
 	
+	/**
+	 * 
+	 * @param distanceFromAgent how far away from the agents perspective you want
+	 * @param state
+	 * @return a 3 element array of ints of the position in front of the agents (x,y,z ordered)
+	 */
 	public static int[] positionInFrontOfAgent(int distanceFromAgent, State state) {
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 		
@@ -112,6 +132,12 @@ public class ActionHelpers {
 
 	}
 	
+	/**
+	 * 
+	 * @param distanceFromAgent
+	 * @param state
+	 * @return a list of the objects at the input distance from the agent which the agent has visual access to
+	 */
 	public static List<ObjectInstance> getBlocksInfrontOfAgent(int distanceFromAgent, State state) {
 		assert(distanceFromAgent <= 2);
 		
@@ -123,7 +149,7 @@ public class ActionHelpers {
 		
 		
 		//Get objects at this position
-		List<ObjectInstance> objectsHere = ActionHelpers.objectsAt(newX, newY, newZ, state);
+		List<ObjectInstance> objectsHere = objectsAt(newX, newY, newZ, state);
 		
 		//Filter out those that agent can't see
 		ArrayList<ObjectInstance> toReturn = new ArrayList<ObjectInstance>();
@@ -131,7 +157,6 @@ public class ActionHelpers {
 			if (agentHasVisualAccessToCloseFace(object, distanceFromAgent, state)) {
 				toReturn.add(object);
 			}
-			
 		}
 		
 		return toReturn;
@@ -145,7 +170,6 @@ public class ActionHelpers {
 		int blockZ = block.getDiscValForAttribute(NameSpace.ATZ);
 		
 		int agentX = agent.getDiscValForAttribute(NameSpace.ATX);
-		int agentY = agent.getDiscValForAttribute(NameSpace.ATY);
 		int agentZ = agent.getDiscValForAttribute(NameSpace.ATZ);
 		
 		int zDif = agentZ-blockZ;
@@ -173,8 +197,13 @@ public class ActionHelpers {
 		return true;
 	}
 	
+	/**
+	 * Used to remove an object from the state in such a way as to have the appropriate side effects
+	 * @param object the object to remove
+	 * @param state
+	 * @param domain
+	 */
 	public static void removeObjectFromState(ObjectInstance object, State state, Domain domain) {
-		
 		String objectName = object.getTrueClassName();
 		
 		//DIRTBLOCKS
@@ -216,6 +245,4 @@ public class ActionHelpers {
 		block.setValue(NameSpace.ATDESTWHENWALKED, 1);
 		block.setValue(NameSpace.ATCOLLIDES, 0);
 	}
-	
-
 }

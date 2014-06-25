@@ -9,7 +9,6 @@ import java.lang.Math;
 public class RotateVertAction extends StochasticAgentAction {
 	private int rotation;
 	/**
-	 * 
 	 * @param name
 	 * @param domain
 	 * @param rotation 1 for looking up and -1 for looking down

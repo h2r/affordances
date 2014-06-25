@@ -1,10 +1,6 @@
 package minecraft.MinecraftDomain;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-
 import minecraft.MapIO;
 import minecraft.MinecraftInitialStateGenerator;
 import minecraft.NameSpace;
@@ -20,15 +16,11 @@ import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldOreP
 import minecraft.MinecraftDomain.PropositionalFunctions.AtGoalPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockAtPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptySpacePF;
-import burlap.debugtools.RandomFactory;
 import burlap.oomdp.auxiliary.DomainGenerator;
 import burlap.oomdp.core.Attribute;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectClass;
-import burlap.oomdp.core.ObjectInstance;
-import burlap.oomdp.core.PropositionalFunction;
 import burlap.oomdp.core.State;
-import burlap.oomdp.singleagent.Action;
 import burlap.oomdp.singleagent.SADomain;
 import burlap.oomdp.singleagent.explorer.TerminalExplorer;
 
@@ -185,8 +177,10 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		ObjectClass furnaceClass = new ObjectClass(domain, NameSpace.CLASSFURNACE);
 		addSpatialAttributes(furnaceClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
 		
+		//ACTIONS
+		
 		//Set up actions
-		new MovementAction(NameSpace.ACTIONMOVE, domain, 1, rows, cols, height);
+		new MovementAction(NameSpace.ACTIONMOVE, domain, rows, cols, height);
 		new RotateAction(NameSpace.ACTIONROTATEC, domain, 1, rows, cols, height);
 		new RotateAction(NameSpace.ACTIONROTATECC, domain, NameSpace.RotDirection.size-1, rows, cols, height); 
 		new DestroyBlockAction(NameSpace.ACTIONDESTBLOCK, domain, rows, cols, height);
@@ -197,6 +191,8 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new UseBlockAction(NameSpace.ACTIONUSEBLOCK, domain, rows, cols, height);
 		
 		//Set up indeterminism in actions
+		
+		//PROPOSITIONAL FUNCTIONS
 		
 		//Set up propositional functions
 		new AtGoalPF(NameSpace.PFATGOAL, domain, new String[]{NameSpace.CLASSAGENT, NameSpace.CLASSGOAL});
@@ -228,8 +224,5 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		exp.addActionShortHand("u", NameSpace.ACTIONUSEBLOCK);
 		
 		exp.exploreFromState(state);
-		
 	}
-	
-
 }

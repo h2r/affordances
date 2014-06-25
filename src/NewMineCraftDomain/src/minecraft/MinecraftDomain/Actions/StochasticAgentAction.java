@@ -19,6 +19,15 @@ public abstract class StochasticAgentAction extends AgentAction {
 	 */
 	protected HashMap<StochasticAgentAction, Double> actionToProb;
 	
+	/**
+	 * 
+	 * @param name
+	 * @param domain
+	 * @param rows
+	 * @param cols
+	 * @param height
+	 * @param causesAgentToFall
+	 */
 	public StochasticAgentAction(String name, Domain domain, int rows, int cols, int height, boolean causesAgentToFall){
 		super(name, domain, rows, cols, height, causesAgentToFall);
 		this.rand = RandomFactory.getMapped(0);
@@ -26,9 +35,6 @@ public abstract class StochasticAgentAction extends AgentAction {
 		this.actionToProb = new HashMap<StochasticAgentAction, Double>();
 		this.actionToProb.put(this, 1.0);	
 	}
-	
-	
-	
 	
 	/**
 	 * 
@@ -88,11 +94,8 @@ public abstract class StochasticAgentAction extends AgentAction {
 			currActionCandidate = keys.get(rand.nextInt(keys.toArray().length));
 			randProb = rand.nextDouble();
 		}
-		
 		//currActionCandidate is now the action to perform
 		return currActionCandidate;
-
 	}
 	
-
 }
