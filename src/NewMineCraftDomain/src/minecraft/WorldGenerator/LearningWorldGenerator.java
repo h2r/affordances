@@ -1,7 +1,10 @@
 package minecraft.WorldGenerator;
 
 import burlap.oomdp.logicalexpressions.LogicalExpression;
+
 import java.util.Random;
+
+import minecraft.NameSpace;
 
 public class LearningWorldGenerator extends WorldGenerator {
 	private static Random r = new Random();

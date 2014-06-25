@@ -55,7 +55,7 @@ public class AffordanceLearner {
 		
 		List<String> maps = new ArrayList<String>();
 		
-		LearningWorldGenerator worldGenerator = new LearningWorldGenerator(3,3,4);
+		LearningWorldGenerator worldGenerator = new LearningWorldGenerator(2,2,4);
 		
 		for(LogicalExpression goal : this.lgds){
 			for (int i = 0; i < this.numWorldsPerLGD; i++) {
@@ -105,7 +105,6 @@ public class AffordanceLearner {
 		Policy p = mcb.solve(planner);
 		Map<AffordanceDelegate,List<AbstractGroundedAction>> seen = new HashMap<AffordanceDelegate,List<AbstractGroundedAction>>();  // Makes sure we don't count an action more than once per affordance (per map)
 		List<State> allStates = ((ValueFunctionPlanner)planner).getAllStates();
-		
 		// Generate several trajectories from the world
 		for (int i = 0; i < numTrajectoriesPerWorld ; i++) {
 
