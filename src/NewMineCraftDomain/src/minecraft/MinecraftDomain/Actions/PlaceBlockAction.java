@@ -65,7 +65,7 @@ public class PlaceBlockAction extends AgentAction {
 		if (canPlace) {
 			int numberOfObjects = state.getAllObjects().toArray().length;
 			//Update state
-			ObjectInstance toAdd = MinecraftInitialStateGenerator.createDirtBlock(this.domain, toPlaceX, toPlaceY, toPlaceZ, numberOfObjects);
+			ObjectInstance toAdd = MinecraftInitialStateGenerator.createIndWall(this.domain, toPlaceX, toPlaceY, toPlaceZ, numberOfObjects);
 			state.addObject(toAdd);
 			
 			//Update agent's number of blocks
