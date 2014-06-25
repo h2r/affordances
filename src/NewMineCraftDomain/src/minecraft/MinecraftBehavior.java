@@ -172,8 +172,8 @@ public class MinecraftBehavior {
 		String mapPath = "src/minecraft/maps/jumpworld.map";
 		String outputPath = "src/minecraft/planningOutput/";
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapPath);
-		//mcBeh.BFSExample(outputPath);
-		mcBeh.ValueIterationPlanner();
+		mcBeh.BFSExample(outputPath);
+		//mcBeh.ValueIterationPlanner();
 		
 		
 	}

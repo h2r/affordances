@@ -1,6 +1,6 @@
 package minecraft.MinecraftDomain.PropositionalFunctions;
 
-import minecraft.MinecraftDomain.Actions.ActionHelpers;
+import minecraft.MinecraftDomain.Helpers;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.PropositionalFunction;
 import burlap.oomdp.core.State;
@@ -28,6 +28,6 @@ public class EmptySpacePF extends PropositionalFunction{
 	
 	@Override
 	public boolean isTrue(State state, String[] params) {
-		return ActionHelpers.emptySpaceAt(this.x, this.y, this.z, state);
+		return Helpers.emptySpaceAt(this.x, this.y, this.z, state);
 	}
 }

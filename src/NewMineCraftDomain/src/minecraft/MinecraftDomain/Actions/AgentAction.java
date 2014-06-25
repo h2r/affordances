@@ -3,6 +3,7 @@ package minecraft.MinecraftDomain.Actions;
 import java.util.List;
 
 import minecraft.NameSpace;
+import minecraft.MinecraftDomain.Helpers;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.State;
@@ -66,7 +67,7 @@ public abstract class AgentAction extends Action {
 		for (ObjectInstance object: state.getAllObjects()) {
 			if (object.getObjectClass().hasAttribute(NameSpace.ATDESTWHENWALKED) && object.getDiscValForAttribute(NameSpace.ATDESTWHENWALKED) == 1 &&
 					objectAtAgentLocation(object, agent)) {
-				ActionHelpers.removeObjectFromState(object, state, this.domain);
+				Helpers.removeObjectFromState(object, state, this.domain);
 			}
 		}
 	}
@@ -117,13 +118,13 @@ public abstract class AgentAction extends Action {
 				return false;
 			}
 			
-			if (ActionHelpers.withinMapAt(x, y, newZ, cols, rows, height) && ActionHelpers.emptySpaceAt(x, y, newZ, state)) {
+			if (Helpers.withinMapAt(x, y, newZ, cols, rows, height) && Helpers.emptySpaceAt(x, y, newZ, state)) {
 				object.setValue(NameSpace.ATZ, newZ);
 			}
 			
 		}
 		//Other falling
-		if (ActionHelpers.withinMapAt(x, y, newZ, cols, rows, height) && ActionHelpers.emptySpaceAt(x, y, newZ, state)) {
+		if (Helpers.withinMapAt(x, y, newZ, cols, rows, height) && Helpers.emptySpaceAt(x, y, newZ, state)) {
 			object.setValue(NameSpace.ATZ, newZ);
 			return true;
 		}

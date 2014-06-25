@@ -4,6 +4,7 @@ import java.util.List;
 
 import minecraft.MinecraftInitialStateGenerator;
 import minecraft.NameSpace;
+import minecraft.MinecraftDomain.Helpers;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.State;
@@ -28,7 +29,7 @@ public class PlaceBlockAction extends AgentAction {
 	void doAction(State state) {
 		
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
-		List<ObjectInstance> objectsTwoInfrontAgent = ActionHelpers.getBlocksInfrontOfAgent(2, state);
+		List<ObjectInstance> objectsTwoInfrontAgent = Helpers.getBlocksInfrontOfAgent(2, state);
 		
 		boolean canPlace = false;
 		
@@ -39,23 +40,23 @@ public class PlaceBlockAction extends AgentAction {
 			}
 		}
 		
-		int[] positionTwoAway = ActionHelpers.positionInFrontOfAgent(2, state);
+		int[] positionTwoAway = Helpers.positionInFrontOfAgent(2, state);
 		//Or can place against edge of map
-		if (!ActionHelpers.withinMapAt(positionTwoAway[0], positionTwoAway[1], positionTwoAway[2], cols, rows, height)) {
+		if (!Helpers.withinMapAt(positionTwoAway[0], positionTwoAway[1], positionTwoAway[2], cols, rows, height)) {
 			canPlace = true;
 		}
 		
 		
-		int[] whereWantToPlace = ActionHelpers.positionInFrontOfAgent(1, state);
+		int[] whereWantToPlace = Helpers.positionInFrontOfAgent(1, state);
 		int toPlaceX = whereWantToPlace[0];
 		int toPlaceY = whereWantToPlace[1];
 		int toPlaceZ = whereWantToPlace[2];
 		
 		//Need empty space to place
-		canPlace = canPlace && ActionHelpers.emptySpaceAt(toPlaceX, toPlaceY, toPlaceZ, state);
+		canPlace = canPlace && Helpers.emptySpaceAt(toPlaceX, toPlaceY, toPlaceZ, state);
 		
 		//Need to place in bounds
-		canPlace = canPlace && ActionHelpers.withinMapAt(toPlaceX, toPlaceY, toPlaceZ, cols, rows, height);
+		canPlace = canPlace && Helpers.withinMapAt(toPlaceX, toPlaceY, toPlaceZ, cols, rows, height);
 		
 		
 		//Need remaining blocks to place

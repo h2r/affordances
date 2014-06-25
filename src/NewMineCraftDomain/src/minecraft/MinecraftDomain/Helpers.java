@@ -1,4 +1,4 @@
-package minecraft.MinecraftDomain.Actions;
+package minecraft.MinecraftDomain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.State;
 
-public class ActionHelpers {
+public class Helpers {
 	/**
 	 * @param x
 	 * @param y
@@ -149,7 +149,7 @@ public class ActionHelpers {
 		
 		
 		//Get objects at this position
-		List<ObjectInstance> objectsHere = ActionHelpers.objectsAt(newX, newY, newZ, state);
+		List<ObjectInstance> objectsHere = objectsAt(newX, newY, newZ, state);
 		
 		//Filter out those that agent can't see
 		ArrayList<ObjectInstance> toReturn = new ArrayList<ObjectInstance>();

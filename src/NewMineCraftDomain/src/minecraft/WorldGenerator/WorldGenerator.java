@@ -1,14 +1,9 @@
 package minecraft.WorldGenerator;
 
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Random;
 
 import minecraft.NameSpace;
-import minecraft.MinecraftDomain.Actions.ActionHelpers;
+import minecraft.MinecraftDomain.Helpers;
 
 public class WorldGenerator {
 
@@ -110,7 +105,7 @@ public class WorldGenerator {
     int yChange = startYChange;
     
     //Random walk until off map or doubled back on self or other walk (a la snake)
-        while (ActionHelpers.withinMapAt(currX, currY, 0, this.cols, this.rows, this.height) && !allCharactersAtCol(charToAdd, currX, currY, toChange)) {
+        while (Helpers.withinMapAt(currX, currY, 0, this.cols, this.rows, this.height) && !allCharactersAtCol(charToAdd, currX, currY, toChange)) {
           //Add hole
           this.addCharColAt(currX, currY, toChange, charToAdd);
           

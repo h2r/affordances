@@ -3,6 +3,7 @@ package minecraft.MinecraftDomain.Actions;
 import java.util.List;
 
 import minecraft.NameSpace;
+import minecraft.MinecraftDomain.Helpers;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.State;
@@ -23,7 +24,7 @@ public class UseBlockAction extends AgentAction {
 
 	@Override
 	void doAction(State state) {
-		List<ObjectInstance> objectsInfrontAgent = ActionHelpers.getBlocksInfrontOfAgent(1, state);
+		List<ObjectInstance> objectsInfrontAgent = Helpers.getBlocksInfrontOfAgent(1, state);
 		for (ObjectInstance object: objectsInfrontAgent) {
 					UseBlockAction.objectUsed(object, state, this.domain);
 		}
