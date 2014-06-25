@@ -41,8 +41,8 @@ public class AffordanceLearner {
 	private List<LogicalExpression> lgds;
 	private MinecraftBehavior mcb;
 	private MinecraftInitialStateGenerator mcsg;
-	private int 	numWorldsPerLGD 		= 1000;
-	private int 	numTrajectoriesPerWorld = 2;
+	private int 	numWorldsPerLGD 		= 10;
+	private int 	numTrajectoriesPerWorld = 1;
 	private Random	PRG 					= new Random();
 
 	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, List<LogicalExpression> lgds) {
@@ -50,7 +50,6 @@ public class AffordanceLearner {
 		this.mcb = mcb;
 		this.affordanceKB = kb;
 	}
-	
 	
 	public void learn() {
 		
@@ -72,7 +71,7 @@ public class AffordanceLearner {
 				// Write header info (depends on goal specific information)
 				// TODO: incorporate goal specific information
 				HashMap<String,Integer> headerInfo = new HashMap<String,Integer>();
-				headerInfo.put("B", 0);
+				headerInfo.put("B", 1);
 				headerInfo.put("g", 0);
 				headerInfo.put("b", 0);
 				
@@ -137,13 +136,13 @@ public class AffordanceLearner {
 					}
 					
 					// If affordance is lit up
-					affDelegate.primeAndCheckIfActiveInState(st);
-					if (affDelegate.actionIsRelevant(ga)){
+					if(affDelegate.primeAndCheckIfActiveInState(st)) {
 						
 						// If we haven't counted this action for this affordance yet
 						if (!seen.get(affDelegate).contains(ga)) {
-							// Update counts, seen hashmap (indicate we've seen this affordance)
+							// Update counts, and indicate we've seen this affordance/action pair
 							((SoftAffordance)affDelegate.getAffordance()).updateActionCount(ga);
+							
 							List<AbstractGroundedAction> acts = seen.get(affDelegate);
 							acts.add(ga);
 							seen.put(affDelegate, acts);
@@ -154,9 +153,6 @@ public class AffordanceLearner {
 		}
 		
 		for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
-			if (seen == null || seen.get(affDelegate) == null) {
-				int x = 1 ;
-			}
 			if (seen.get(affDelegate).size() > 0) {
 				((SoftAffordance)affDelegate.getAffordance()).updateActionSetSizeCount(seen.get(affDelegate).size());
 			}
@@ -184,13 +180,13 @@ public class AffordanceLearner {
 	 * @param objectClasses
 	 * @return: String[] - a list of free variables
 	 */
-	public static String[] makeFreeVarListFromOrderGroups(String[] orderGroups, String[] objectClasses){
+	public static String[] makeFreeVarListFromObjectClasses(String[] objectClasses){
 		List<String> groundedPropFreeVariablesList = new ArrayList<String>();
 		
 		// TODO: improve variable binding stuff
 		// Make variables free
-		for(String orderGroup : orderGroups){
-			String freeVar = "?" + orderGroup;
+		for(String objectClass : objectClasses){
+			String freeVar = "?" + objectClass.charAt(0);
 			groundedPropFreeVariablesList.add(freeVar);
 		}
 		String[] groundedPropFreeVars = new String[groundedPropFreeVariablesList.size()];
@@ -214,7 +210,7 @@ public class AffordanceLearner {
 
 		// Create Grounded Action instances for each action
 		for(Action a : allActions) {
-			String[] freeParams = makeFreeVarListFromOrderGroups(a.getParameterOrderGroups(), a.getParameterClasses());
+			String[] freeParams = makeFreeVarListFromObjectClasses(a.getParameterClasses());
 			GroundedAction ga = new GroundedAction(a, freeParams);
 			allGroundedActions.add(ga);
 		}
@@ -230,17 +226,22 @@ public class AffordanceLearner {
 		// Set up precondition list
 		List<LogicalExpression> predicates = new ArrayList<LogicalExpression>();
 		
-		// Block PFAtom
-		PropositionalFunction blockAt = mb.pfBlockAt;
-		LogicalExpression blockLE = pfAtomFromPropFunc(blockAt);
+		// AgentInAir PFAtom
+		PropositionalFunction agentInAir = mb.pfAgentInMidAir;
+		LogicalExpression agentInAirLE = pfAtomFromPropFunc(agentInAir);
 		
-		// EmptySpace PFAtom
-		PropositionalFunction emptyAt = mb.pfEmptySpace;
-		LogicalExpression emptyLE = pfAtomFromPropFunc(emptyAt);
+		// EndOfMapInFrontOfAgent PFAtom
+		PropositionalFunction endOfMapInFrontOfAgent = mb.pfEndOfMapInFrontOfAgent;
+		LogicalExpression endOfMapLE = pfAtomFromPropFunc(endOfMapInFrontOfAgent);
+		
+		// TrenchInFrontOfAgent PFAtom
+		PropositionalFunction trenchInFrontOf = mb.pfTrenchInFrontOfAgent;
+		LogicalExpression trenchLE = pfAtomFromPropFunc(trenchInFrontOf);
 		
 		// Add LEs to list
-		predicates.add(blockLE);
-		predicates.add(emptyLE);
+		predicates.add(agentInAirLE);
+		predicates.add(endOfMapLE);
+		predicates.add(trenchLE);
 		
 		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions);
 
@@ -255,7 +256,7 @@ public class AffordanceLearner {
 	}
 	
 	private static LogicalExpression pfAtomFromPropFunc(PropositionalFunction pf) {
-		String[] pfFreeParams = makeFreeVarListFromOrderGroups(pf.getParameterOrderGroups(), pf.getParameterClasses());
+		String[] pfFreeParams = makeFreeVarListFromObjectClasses(pf.getParameterClasses());
 		GroundedProp blockGP = new GroundedProp(pf, pfFreeParams);
 		return new PFAtom(blockGP);
 	}

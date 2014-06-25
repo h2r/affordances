@@ -47,7 +47,7 @@ public class KnowledgeBase {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(fpath)));
 			
 			for (AffordanceDelegate aff: this.affDelegateList) {
-				bw.write(((SoftAffordance)aff.getAffordance()).toString());
+				bw.write(((SoftAffordance)aff.getAffordance()).toFile());
 			}
 			
 			bw.close();

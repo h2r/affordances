@@ -24,7 +24,7 @@ public class LearningWorldGenerator extends WorldGenerator {
 		
 		// Add trench
 		if(goalDescription.toString().contains("trench")) {
-//			this.addTrenches(this.numTrenches, toReturn);
+			this.addTrenches(this.numTrenches, toReturn);
 		}
 		
 		//Add goal

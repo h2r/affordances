@@ -194,6 +194,11 @@ public class WorldGenerator {
   protected void addAgent(char [][][] toChange) {
     assert(this.depthOfDirtFloor+1 < this.height);
     int[] headLocation = addCharRandomly(NameSpace.CHARAGENT, null, null, this.depthOfDirtFloor+1, toChange);
+    
+    while(toChange[headLocation[1]][headLocation[0]][headLocation[2]-1] == NameSpace.CHARGOAL) {
+        headLocation = addCharRandomly(NameSpace.CHARAGENT, null, null, this.depthOfDirtFloor+1, toChange);
+    }
+    
     toChange[headLocation[1]][headLocation[0]][headLocation[2]-1] = NameSpace.CHARAGENTFEET;
   }
   

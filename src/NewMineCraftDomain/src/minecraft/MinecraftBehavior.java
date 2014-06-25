@@ -105,11 +105,6 @@ public class MinecraftBehavior {
 		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFTRENCHINFRONT);
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
 		
-<<<<<<< HEAD
-		PropositionalFunction propFunToUse = this.pfAgentInMidAir;
-		
-=======
->>>>>>> FETCH_HEAD
 		//Set up reward function
 		this.rewardFunction = new SingleGoalPFRF(this.pfAgentAtGoal, 0, -1); 
 		
