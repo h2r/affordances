@@ -1,6 +1,7 @@
 package minecraft.MinecraftDomain;
 
 import java.util.HashMap;
+
 import minecraft.MapIO;
 import minecraft.MinecraftInitialStateGenerator;
 import minecraft.NameSpace;
@@ -13,9 +14,13 @@ import minecraft.MinecraftDomain.Actions.RotateVertAction;
 import minecraft.MinecraftDomain.Actions.UseBlockAction;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldBarPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldOrePF;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentInMidAirPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AtGoalPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockAtPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.BlockInFrontOfAgentPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptySpacePF;
+import minecraft.MinecraftDomain.PropositionalFunctions.EndOfMapInFrontOfAgentPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.TrenchInFrontOfAgentPF;
 import burlap.oomdp.auxiliary.DomainGenerator;
 import burlap.oomdp.core.Attribute;
 import burlap.oomdp.core.Domain;
@@ -201,6 +206,10 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new BlockAtPF(NameSpace.PFBLOCKAT, domain, new String[]{}, 0, 0, 0);
 		new AgentHasAtLeastXGoldOrePF(NameSpace.PFATLEASTXGOLDORE, domain, new String[]{NameSpace.CLASSAGENT}, 2);
 		new AgentHasAtLeastXGoldBarPF(NameSpace.PFATLEASTXGOLDBAR, domain, new String[]{NameSpace.CLASSAGENT}, 2);
+		new BlockInFrontOfAgentPF(NameSpace.PFBLOCKINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOAL);
+		new EndOfMapInFrontOfAgentPF(NameSpace.PFENDOFMAPINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
+		new TrenchInFrontOfAgentPF(NameSpace.PFTRENCHINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
+		new AgentInMidAirPF(NameSpace.PFAGENTINMIDAIR, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		
 		return domain;
 	}

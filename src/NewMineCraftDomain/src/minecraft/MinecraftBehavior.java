@@ -41,6 +41,11 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfBlockAt;
 	public PropositionalFunction		pfAgentHasAtLeastXGoldOre;
 	public PropositionalFunction		pfAgentHasAtLeastXGoldBar;
+	public PropositionalFunction		pfBlockInFrontOfAgent;
+	public PropositionalFunction		pfEndOfMapInFrontOfAgent;
+	public PropositionalFunction		pfTrenchInFrontOfAgent;
+	public PropositionalFunction		pfAgentInMidAir;
+	
 	
 	//Params for Planners
 	private double						gamma = 0.99;
@@ -87,8 +92,12 @@ public class MinecraftBehavior {
 		this.pfBlockAt = domain.getPropFunction(NameSpace.PFBLOCKAT);
 		this.pfAgentHasAtLeastXGoldOre = domain.getPropFunction(NameSpace.PFATLEASTXGOLDORE);
 		this.pfAgentHasAtLeastXGoldBar = domain.getPropFunction(NameSpace.PFATLEASTXGOLDBAR);
+		this.pfBlockInFrontOfAgent = domain.getPropFunction(NameSpace.PFBLOCKINFRONT);
+		this.pfEndOfMapInFrontOfAgent = domain.getPropFunction(NameSpace.PFENDOFMAPINFRONT);
+		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFTRENCHINFRONT);
+		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
 		
-		PropositionalFunction propFunToUse = this.pfAgentAtGoal;
+		PropositionalFunction propFunToUse = this.pfAgentInMidAir;
 		
 		//Set up reward function
 		this.rewardFunction = new SingleGoalPFRF(propFunToUse, 10, -1); 

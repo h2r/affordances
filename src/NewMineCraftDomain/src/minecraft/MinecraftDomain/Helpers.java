@@ -245,4 +245,19 @@ public class Helpers {
 		block.setValue(NameSpace.ATDESTWHENWALKED, 1);
 		block.setValue(NameSpace.ATCOLLIDES, 0);
 	}
+	/**
+	 * 
+	 * @param state
+	 * @return true if there is a block which collides below the agent
+	 */
+	public static boolean blockBelowAgent(State state) {
+		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
+		
+		int agentX = agent.getDiscValForAttribute(NameSpace.ATX);
+		int agentY = agent.getDiscValForAttribute(NameSpace.ATY);
+		int agentZ = agent.getDiscValForAttribute(NameSpace.ATZ);
+		
+		return !emptySpaceAt(agentX, agentY, agentZ-2, state);
+		
+	}
 }

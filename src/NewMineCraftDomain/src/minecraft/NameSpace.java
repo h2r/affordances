@@ -63,6 +63,10 @@ public class NameSpace {
 	public static final String				PFBLOCKAT = "block at";
 	public static final String				PFATLEASTXGOLDORE = "agent has at least x gold ore";
 	public static final String				PFATLEASTXGOLDBAR = "agent has at least x gold bar";
+	public static final String				PFBLOCKINFRONT = "block in front of agent";
+	public static final String				PFENDOFMAPINFRONT = "end of map in front of agent";
+	public static final String				PFTRENCHINFRONT = "trench in front of agent";
+	public static final String				PFAGENTINMIDAIR = "agent in mid-air";
 	
 	//-------------ENUMS-------------
 	public enum RotDirection {
