@@ -39,21 +39,16 @@ public class AffordanceLearner {
 	
 	private KnowledgeBase affordanceKB;
 	private List<LogicalExpression> lgds;
-	private int numWorldsPerLGD = 10;
 	private MinecraftBehavior mcb;
 	private MinecraftInitialStateGenerator mcsg;
-	private int numTrajectoriesPerWorld = 1;
-	private Random				PRG = new Random();
+	private int 	numWorldsPerLGD 		= 1000;
+	private int 	numTrajectoriesPerWorld = 2;
+	private Random	PRG 					= new Random();
 
 	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, List<LogicalExpression> lgds) {
-		double[] numUpdates = {0.0};
-		int numRollouts = 1000;
-		int maxDepth = 250;
 		this.lgds = lgds;
 		this.mcb = mcb;
-//		this.mcsg = mcsg;
 		this.affordanceKB = kb;
-		
 	}
 	
 	
@@ -68,10 +63,8 @@ public class AffordanceLearner {
 				// Make a new map w/ that goal, save it to a file in maps/learning/goal/<name>
 				
 				// Mapfile name information
-				String mapname = "src/minecraft/maps/learning/" + goal.toString() + i + ".map";
+				String mapname = "src/minecraft/maps/learning/" + goal.toString() + "/" + i + ".map";
 				maps.add(mapname);
-				
-				System.out.println(goal.toString());
 				
 				// Build the map
 				char[][][] charMap = worldGenerator.generateMap(goal);
@@ -132,12 +125,12 @@ public class AffordanceLearner {
 				if (mcb.getTerminalFunction().isTerminal(st)) {
 					continue;
 				}
-				
+
 				// Get the optimal action for that state and update affordance counts
 				GroundedAction ga = (GroundedAction) p.getAction(st);
 				QValue qv = ((ValueFunctionPlanner)planner).getQ(st, ga);
-				System.out.println("Action: " + ga.actionName() + " QValue: " + qv.q);
-				for (AffordanceDelegate affDelegate: affordanceKB.getAll()) {
+
+				for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
 					// Initialize key-value pair for this aff
 					if (seen.get(affDelegate) == null) {
 						seen.put(affDelegate, new ArrayList<AbstractGroundedAction>());
@@ -207,7 +200,7 @@ public class AffordanceLearner {
 	}
 	
 	public void printCounts() {
-		for (AffordanceDelegate affDelegate: this.affordanceKB.getAll()) {
+		for (AffordanceDelegate affDelegate: this.affordanceKB.getAffordances()) {
 			((SoftAffordance)affDelegate.getAffordance()).printCounts();
 			System.out.println("");
 		}
@@ -245,8 +238,12 @@ public class AffordanceLearner {
 		PropositionalFunction emptyAt = mb.pfEmptySpace;
 		LogicalExpression emptyLE = pfAtomFromPropFunc(emptyAt);
 		
-		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions);
+		// Add LEs to list
+		predicates.add(blockLE);
+		predicates.add(emptyLE);
 		
+		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions);
+
 		// Initialize Learner
 		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds);
 		
@@ -254,6 +251,7 @@ public class AffordanceLearner {
 		affLearn.printCounts();
 		
 		affKnowledgeBase.save("trenches" + affLearn.numWorldsPerLGD + ".kb");
+		
 	}
 	
 	private static LogicalExpression pfAtomFromPropFunc(PropositionalFunction pf) {
