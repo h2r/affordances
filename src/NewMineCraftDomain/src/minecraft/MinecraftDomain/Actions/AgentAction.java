@@ -8,6 +8,14 @@ import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.State;
 import burlap.oomdp.singleagent.Action;
 
+/**
+ * Abstract class extended by all the agent's actions in order to properly account
+ * for time-step related things that should happen after an agent's actions like
+ * objects falling etc. Requires overriding the doAction method which changes state as
+ * appropriate when an action is performed.
+ * @author Dhershkowitz
+ *
+ */
 public abstract class AgentAction extends Action {
 	
 	protected int rows;
@@ -15,9 +23,17 @@ public abstract class AgentAction extends Action {
 	protected int height;
 	protected boolean causesAgentToFall;
 	
-	
 	abstract void doAction(State state);
 	
+	/**
+	 * 
+	 * @param name
+	 * @param domain
+	 * @param rows
+	 * @param cols
+	 * @param height
+	 * @param causesAgentToFall 
+	 */
 	public AgentAction(String name, Domain domain, int rows, int cols, int height, boolean causesAgentToFall){
 		super(name, domain, "");
 		this.rows = rows;
@@ -26,13 +42,9 @@ public abstract class AgentAction extends Action {
 		this.causesAgentToFall = causesAgentToFall;
 	}
 	
+	//By default just returns the action but for StochasicAgentActions it does so stochastically
 	protected AgentAction getAction() {
 		return this;
-	}
-	
-	private void performPostActionUpdates(State state) {
-		fallAllObjects(state, rows, cols, height);
-		pickUpItems(state);
 	}
 	
 	@Override
@@ -43,18 +55,28 @@ public abstract class AgentAction extends Action {
 		return state;
 	}
 	
+	private void performPostActionUpdates(State state) {
+		fallAllObjects(state, rows, cols, height);
+		pickUpItems(state);
+	}
+	
 	private void pickUpItems(State state) {
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 		
 		for (ObjectInstance object: state.getAllObjects()) {
 			if (object.getObjectClass().hasAttribute(NameSpace.ATDESTWHENWALKED) && object.getDiscValForAttribute(NameSpace.ATDESTWHENWALKED) == 1 &&
 					objectAtAgentLocation(object, agent)) {
-				
 				ActionHelpers.removeObjectFromState(object, state, this.domain);
 			}
 		}
 	}
 	
+	/**
+	 * 
+	 * @param object
+	 * @param agent
+	 * @return true if the object is either at the agent's location or the agent's feet's location
+	 */
 	private boolean objectAtAgentLocation(ObjectInstance object, ObjectInstance agent) {
 		if (!object.getObjectClass().hasAttribute(NameSpace.ATX)) {
 			return false;
@@ -71,7 +93,15 @@ public abstract class AgentAction extends Action {
 	}
 	
 	
-	
+	/**
+	 * 
+	 * @param object
+	 * @param state
+	 * @param rows
+	 * @param cols
+	 * @param height
+	 * @return true if the object fell and false otherwise
+	 */
 	private boolean fall(ObjectInstance object, State state, int rows,  int cols, int height) {
 		int x = object.getDiscValForAttribute(NameSpace.ATX);
 		int y = object.getDiscValForAttribute(NameSpace.ATY);
@@ -81,7 +111,6 @@ public abstract class AgentAction extends Action {
 		
 		//Agent feet falling
 		if (objectName.equals(NameSpace.CLASSAGENTFEET)) {
-			
 			
 			//Break if action doesn't cause falling
 			if (!this.causesAgentToFall) {
@@ -125,5 +154,4 @@ public abstract class AgentAction extends Action {
 			
 		}
 	}
-	
 }

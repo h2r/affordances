@@ -52,13 +52,13 @@ public class MinecraftInitialStateGenerator {
 			Integer value = stateInfo.get(key);
 			char keyAsChar = key.charAt(0);
 			switch(keyAsChar) {
-			case NameSpace.PLACEABLEBLOCKS:
+			case NameSpace.CHARPLACEABLEBLOCKS:
 				agent.setValue(NameSpace.ATPLACEBLOCKS, value);
 				break;
-			case NameSpace.STARTINGGOLDORE:
+			case NameSpace.CHARSTARTINGGOLDORE:
 				agent.setValue(NameSpace.ATAMTGOLDORE, value);
 				break;
-			case NameSpace.STARTINGGOLDBAR:
+			case NameSpace.CHARSTARTINGGOLDBAR:
 				agent.setValue(NameSpace.ATAMTGOLDBAR, value);
 			default:
 				break;
@@ -98,25 +98,25 @@ public class MinecraftInitialStateGenerator {
 		
 		//Determine what ObjectInstance needs to be added
 		switch (inputChar) {
-		case NameSpace.DIRTBLOCK:
+		case NameSpace.CHARDIRTBLOCK:
 			toAdd = createDirtBlock(domain, col, row, height, objectIndex);
 			break;
-		case NameSpace.GOAL:
+		case NameSpace.CHARGOAL:
 			toAdd = createGoal(domain, col, row, height, objectIndex);
 			break;
-		case NameSpace.AGENT:
+		case NameSpace.CHARAGENT:
 			toAdd = createAgent(domain, col, row, height, objectIndex);
 			break;
-		case NameSpace.AGENTFEET:
+		case NameSpace.CHARAGENTFEET:
 			toAdd = createAgentFeet(domain, col, row, height, objectIndex);
 			break;
-		case NameSpace.GOLDBLOCK:
+		case NameSpace.CHARGOLDBLOCK:
 			toAdd = createGoldBlock(domain, col, row, height, objectIndex);
 			break;
-		case NameSpace.FURNACE:
+		case NameSpace.CHARFURNACE:
 			toAdd = createFurnace(domain, col, row, height, objectIndex);
 			break;
-		case NameSpace.INDWALL:
+		case NameSpace.CHARINDBLOCK:
 			toAdd = createIndWall(domain, col, row, height, objectIndex);
 			break;
 		default:

@@ -1,7 +1,5 @@
 package minecraft.MinecraftDomain.PropositionalFunctions;
 
-import java.util.List;
-
 import minecraft.NameSpace;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectInstance;
@@ -26,7 +24,6 @@ public class AgentHasAtLeastXGoldOrePF extends PropositionalFunction {
 
 	@Override
 	public boolean isTrue(State state, String[] params) {
-		//get the agent coordinates
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 		int amountOfGold = agent.getDiscValForAttribute(NameSpace.ATAMTGOLDORE);
 		return amountOfGold >= this.requisiteAmountOfGoldOre;

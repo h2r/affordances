@@ -9,7 +9,14 @@ import burlap.oomdp.core.State;
 
 public class UseBlockAction extends AgentAction {
 
-	
+	/**
+	 * 
+	 * @param name
+	 * @param domain
+	 * @param rows
+	 * @param cols
+	 * @param height
+	 */
 	public UseBlockAction(String name, Domain domain, int rows, int cols,int height) {
 		super(name, domain, rows, cols, height, false);
 	}
@@ -19,10 +26,10 @@ public class UseBlockAction extends AgentAction {
 		List<ObjectInstance> objectsInfrontAgent = ActionHelpers.getBlocksInfrontOfAgent(1, state);
 		for (ObjectInstance object: objectsInfrontAgent) {
 					UseBlockAction.objectUsed(object, state, this.domain);
-			}
-		
+		}
 	}
 	
+	//Used to change state when an object is used
 	private static void objectUsed(ObjectInstance object, State state, Domain domain) {
 		String objectName = object.getTrueClassName();
 		//FURNACE
@@ -37,5 +44,4 @@ public class UseBlockAction extends AgentAction {
 		}
 		//OTHER STUFF
 	}
-	
 }

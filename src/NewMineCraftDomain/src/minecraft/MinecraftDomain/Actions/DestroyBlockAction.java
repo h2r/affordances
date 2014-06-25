@@ -9,6 +9,14 @@ import burlap.oomdp.core.State;
 
 public class DestroyBlockAction extends AgentAction {
 	
+	/**
+	 * 
+	 * @param name
+	 * @param domain
+	 * @param rows
+	 * @param cols
+	 * @param height
+	 */
 	public DestroyBlockAction(String name, Domain domain, int rows, int cols, int height) {
 		super(name, domain, rows, cols, height, true);
 
@@ -18,12 +26,10 @@ public class DestroyBlockAction extends AgentAction {
 	@Override
 	protected void doAction(State state) {
 		List<ObjectInstance> objectsInfrontAgent = ActionHelpers.getBlocksInfrontOfAgent(1, state);
-		
 		for (ObjectInstance object: objectsInfrontAgent) {
 			if (object.getObjectClass().hasAttribute(NameSpace.ATDEST) && object.getDiscValForAttribute(NameSpace.ATDEST) == 1) {
 					ActionHelpers.removeObjectFromState(object, state, this.domain);
 			}
 		}
-		
 	}
 }

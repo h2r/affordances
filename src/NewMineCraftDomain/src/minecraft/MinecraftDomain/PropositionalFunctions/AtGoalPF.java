@@ -12,6 +12,12 @@ import burlap.oomdp.core.State;
  * Propositional function to determine if the agent is at the goal
  */
 public class AtGoalPF extends PropositionalFunction{
+	/**
+	 * 
+	 * @param name
+	 * @param domain
+	 * @param parameterClasses
+	 */
 	public AtGoalPF(String name, Domain domain, String[] parameterClasses) {
 		super(name, domain, parameterClasses);
 	}
@@ -36,9 +42,7 @@ public class AtGoalPF extends PropositionalFunction{
 			if(agentX == goalX && agentY == goalY && agentZ == goalZ){
 				return true;
 			}
-			
 		}
-
 		return false;
 	}
 }

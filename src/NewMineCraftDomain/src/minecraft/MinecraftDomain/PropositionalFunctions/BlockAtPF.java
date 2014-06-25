@@ -10,7 +10,15 @@ public class BlockAtPF extends PropositionalFunction{
 	private int y;
 	private int z;
 	
-	
+	/**
+	 * 
+	 * @param name
+	 * @param domain
+	 * @param parameterClasses
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
 	public BlockAtPF(String name, Domain domain, String[] parameterClasses, int x, int y, int z) {
 		super(name, domain, parameterClasses);
 		this.x = x;

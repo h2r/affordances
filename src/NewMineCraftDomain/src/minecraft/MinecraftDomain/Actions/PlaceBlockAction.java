@@ -10,6 +10,15 @@ import burlap.oomdp.core.State;
 
 public class PlaceBlockAction extends AgentAction {
 
+	
+	/**
+	 * 
+	 * @param name
+	 * @param domain
+	 * @param rows
+	 * @param cols
+	 * @param height
+	 */
 	public PlaceBlockAction(String name, Domain domain, int rows, int cols,int height) {
 		super(name, domain, rows, cols, height, true);
 		
@@ -17,7 +26,7 @@ public class PlaceBlockAction extends AgentAction {
 
 	@Override
 	void doAction(State state) {
-		int numberOfObjects = state.getAllObjects().toArray().length;
+		
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 		List<ObjectInstance> objectsTwoInfrontAgent = ActionHelpers.getBlocksInfrontOfAgent(2, state);
 		
@@ -53,9 +62,8 @@ public class PlaceBlockAction extends AgentAction {
 		int blocksLeft = agent.getDiscValForAttribute(NameSpace.ATPLACEBLOCKS);
 		canPlace = canPlace && blocksLeft > 0;
 		
-
-		
 		if (canPlace) {
+			int numberOfObjects = state.getAllObjects().toArray().length;
 			//Update state
 			ObjectInstance toAdd = MinecraftInitialStateGenerator.createDirtBlock(this.domain, toPlaceX, toPlaceY, toPlaceZ, numberOfObjects);
 			state.addObject(toAdd);

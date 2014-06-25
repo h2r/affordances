@@ -26,21 +26,23 @@ public class NameSpace {
 
 	
 	//-------------CHARS FOR ASCII MAPS-------------
-	public static final char GOAL = 'G';
-	public static final char AGENT = 'A';
-	public static final char DIRTBLOCK = '.';
-	public static final char BLOCKEMPTY = 'e';
-	public static final char AGENTFEET = 'F';
-	public static final char INDWALL = 'w';
-	public static final char GOLDBLOCK = 'g';
-	public static final char FURNACE = 'f';
+	//Map chars
+	public static final char CHARGOAL = 'G';
+	public static final char CHARAGENT = 'A';
+	public static final char CHARDIRTBLOCK = '.';
+	public static final char CHAREMPTY = 'e';
+	public static final char CHARAGENTFEET = 'F';
+	public static final char CHARINDBLOCK = 'w';
+	public static final char CHARGOLDBLOCK = 'g';
+	public static final char CHARFURNACE = 'f';
 	
-	public static final char PLACEABLEBLOCKS = 'B';
-	public static final char STARTINGGOLDORE = 'g';
-	public static final char STARTINGGOLDBAR = 'b';
+	//Header chars
+	public static final char CHARPLACEABLEBLOCKS = 'B';
+	public static final char CHARSTARTINGGOLDORE = 'g';
+	public static final char CHARSTARTINGGOLDBAR = 'b';
 	
 	
-	//Map separators
+	//-------------MAP SEPARATORS-------------
 	public static String 							planeSeparator = "\n~\n";
 	public static String 							rowSeparator = "\n";	
 	
@@ -56,13 +58,13 @@ public class NameSpace {
 	public static final String							ACTIONUSEBLOCK = "useBlock";
 	
 	//-------------PROPOSITIONAL FUNCTION STRINGS-------------
-	public static final String					PFATGOAL = "AtGoal";
-	public static final String					PFEMPSPACE = "Empty space";
-	public static final String					PFBLOCKAT = "block at";
-	public static final String					PFATLEASTXGOLDORE = "agent has at least x gold ore";
-	public static final String					PFATLEASTXGOLDBAR = "agent has at least x gold bar";
+	public static final String				PFATGOAL = "AtGoal";
+	public static final String				PFEMPSPACE = "Empty space";
+	public static final String				PFBLOCKAT = "block at";
+	public static final String				PFATLEASTXGOLDORE = "agent has at least x gold ore";
+	public static final String				PFATLEASTXGOLDBAR = "agent has at least x gold bar";
 	
-	//ENUMS
+	//-------------ENUMS-------------
 	public enum RotDirection {
 		NORTH(0), EAST(1), SOUTH(2), WEST(3);
 		public static final int size = RotDirection.values().length;
@@ -120,7 +122,5 @@ public class NameSpace {
 			}
 			return null;
 		}
-		
 	}
-
 }

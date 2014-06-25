@@ -33,7 +33,7 @@ public class WorldGenerator {
 		for(int row = 0; row < this.rows; row++) {
 			for(int col = 0; col < this.cols; col++) {
 				for(int currHeight = 0; currHeight < this.height; currHeight++) {
-					toChange[row][col][currHeight] = NameSpace.BLOCKEMPTY;
+					toChange[row][col][currHeight] = NameSpace.CHAREMPTY;
 				}
 			}
 		}
@@ -44,7 +44,7 @@ public class WorldGenerator {
 		for (int currHeight = 0; currHeight < WorldGenerator.depthOfDirtFloor; currHeight++) {
 			for(int row = 0; row < this.rows; row++) {
 				for(int col = 0; col < this.cols; col++) {
-					toChange[row][col][currHeight] = NameSpace.DIRTBLOCK;
+					toChange[row][col][currHeight] = NameSpace.CHARDIRTBLOCK;
 				}
 			}
 		}
@@ -71,7 +71,7 @@ public class WorldGenerator {
 	
 	private void addRandomSpatialGoal(char[][][] toChange) {
 		assert(WorldGenerator.depthOfDirtFloor+1 < this.height);
-		addCharRandomly(NameSpace.GOAL, null, null, WorldGenerator.depthOfDirtFloor+1, toChange);
+		addCharRandomly(NameSpace.CHARGOAL, null, null, WorldGenerator.depthOfDirtFloor+1, toChange);
 	}
 	
 	
@@ -176,20 +176,20 @@ public class WorldGenerator {
 	
 	private void addTrenches(int numTrenches, char[][][] toChange) {
 		for (int trenchIndex = 0; trenchIndex < numTrenches; trenchIndex++) {
-			this.randomWalkInsertOfCharacterColumns(toChange, NameSpace.BLOCKEMPTY);
+			this.randomWalkInsertOfCharacterColumns(toChange, NameSpace.CHAREMPTY);
 		}
 	}
 	
 	private void addWalls(int numWalls, char[][][] toChange) {
 		for (int trenchIndex = 0; trenchIndex < numWalls; trenchIndex++) {
-			this.randomWalkInsertOfCharacterColumns(toChange, NameSpace.DIRTBLOCK);
+			this.randomWalkInsertOfCharacterColumns(toChange, NameSpace.CHARDIRTBLOCK);
 		}
 	}
 	
 	private void addAgent(char [][][] toChange) {
 		assert(WorldGenerator.depthOfDirtFloor+1 < this.height);
-		int[] headLocation = addCharRandomly(NameSpace.AGENT, null, null, WorldGenerator.depthOfDirtFloor+1, toChange);
-		toChange[headLocation[1]][headLocation[0]][headLocation[2]-1] = NameSpace.AGENTFEET;
+		int[] headLocation = addCharRandomly(NameSpace.CHARAGENT, null, null, WorldGenerator.depthOfDirtFloor+1, toChange);
+		toChange[headLocation[1]][headLocation[0]][headLocation[2]-1] = NameSpace.CHARAGENTFEET;
 	}
 	
 	private char[][][] generateNewCharArray(int numTrenches, int numWalls) {
