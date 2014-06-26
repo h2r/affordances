@@ -1,54 +1,43 @@
 package affordances;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 
 import minecraft.MapIO;
 import minecraft.MinecraftBehavior;
-import minecraft.MinecraftInitialStateGenerator;
-import minecraft.NameSpace;
 import minecraft.WorldGenerator.LearningWorldGenerator;
 import burlap.behavior.affordances.Affordance;
 import burlap.behavior.affordances.AffordanceDelegate;
 import burlap.behavior.affordances.SoftAffordance;
-import burlap.behavior.singleagent.EpisodeAnalysis;
 import burlap.behavior.singleagent.Policy;
 import burlap.behavior.singleagent.QValue;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
 import burlap.behavior.singleagent.planning.ValueFunctionPlanner;
-import burlap.behavior.singleagent.planning.deterministic.TFGoalCondition;
 import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueIteration;
-import burlap.behavior.statehashing.StateHashTuple;
 import burlap.oomdp.core.AbstractGroundedAction;
 import burlap.oomdp.core.GroundedProp;
-import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.PropositionalFunction;
 import burlap.oomdp.core.State;
 import burlap.oomdp.logicalexpressions.LogicalExpression;
 import burlap.oomdp.logicalexpressions.PFAtom;
 import burlap.oomdp.singleagent.Action;
 import burlap.oomdp.singleagent.GroundedAction;
-import burlap.oomdp.singleagent.common.SinglePFTF;
 
 public class AffordanceLearner {
 	
-	private KnowledgeBase affordanceKB;
+	private KnowledgeBase 			affordanceKB;
 	private List<LogicalExpression> lgds;
-	private MinecraftBehavior mcb;
-	private MinecraftInitialStateGenerator mcsg;
-	private int 	numWorldsPerLGD 		= 10;
-	private int 	numTrajectoriesPerWorld = 1;
-	private Random	PRG 					= new Random();
+	private MinecraftBehavior 		mcb;
+	private int 					numWorldsPerLGD = 50;
+	private boolean					countTotalActions = true;
 
-	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, List<LogicalExpression> lgds) {
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, List<LogicalExpression> lgds, boolean countTotalActions) {
 		this.lgds = lgds;
 		this.mcb = mcb;
 		this.affordanceKB = kb;
+		this.countTotalActions = countTotalActions;
 	}
 	
 	public void learn() {
@@ -104,44 +93,56 @@ public class AffordanceLearner {
 		// Form a policy on the given map
 		Policy p = mcb.solve(planner);
 		Map<AffordanceDelegate,List<AbstractGroundedAction>> seen = new HashMap<AffordanceDelegate,List<AbstractGroundedAction>>();  // Makes sure we don't count an action more than once per affordance (per map)
+		
+		// Updates the action counts (alpha)
+		updateActionCounts(planner, p, seen, true);
+		
+		// Updates the action set size counts (Beta)
+		updateActionSetSizeCounts(seen);
+	}
+	
+	public void updateActionCounts(OOMDPPlanner planner, Policy p, Map<AffordanceDelegate,List<AbstractGroundedAction>> seen, boolean countTotalActions) {
+		
+		// Get all states from the policy
 		List<State> allStates = ((ValueFunctionPlanner)planner).getAllStates();
+		
 		// Generate several trajectories from the world
-		for (int i = 0; i < numTrajectoriesPerWorld ; i++) {
+		State initialState = mcb.getInitialState();
+		double initVal = ((ValueFunctionPlanner)planner).value(initialState);
+		 
+		// Loop over each state and count actions
+		for (State st: allStates) {
+			
+			// Check if we picked a bad state ("bad" = extremely low value)
+			double stateVal = ((ValueFunctionPlanner)planner).value(st); 
+			if (stateVal < 10 * initVal) {  // TODO: 10 is kind of randomly picked - make this better
+				continue;
+			}
+			
+			// Check for terminal function
+			if (mcb.getTerminalFunction().isTerminal(st)) {
+				continue;
+			}
 
-			State initialState = mcb.getInitialState();
-			double initVal = ((ValueFunctionPlanner)planner).value(initialState);
-			 
-			for (State st: allStates) {
-				
-				// Check if we picked a bad state ("bad" = extremely low value)
-				double stateVal = ((ValueFunctionPlanner)planner).value(st); 
-				if (stateVal < 10 * initVal) {  // TODO: 10 is kind of randomly picked - make this better
-					continue;
+			// Get the optimal action for that state and update affordance counts
+			GroundedAction ga = (GroundedAction) p.getAction(st);
+			QValue qv = ((ValueFunctionPlanner)planner).getQ(st, ga);
+
+			for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
+				// Initialize key-value pair for this aff
+				if (seen.get(affDelegate) == null) {
+					seen.put(affDelegate, new ArrayList<AbstractGroundedAction>());
 				}
 				
-				// Check for terminal function
-				if (mcb.getTerminalFunction().isTerminal(st)) {
-					continue;
-				}
-
-				// Get the optimal action for that state and update affordance counts
-				GroundedAction ga = (GroundedAction) p.getAction(st);
-				QValue qv = ((ValueFunctionPlanner)planner).getQ(st, ga);
-
-				for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
-					// Initialize key-value pair for this aff
-					if (seen.get(affDelegate) == null) {
-						seen.put(affDelegate, new ArrayList<AbstractGroundedAction>());
-					}
+				// If affordance is lit up
+				if(affDelegate.primeAndCheckIfActiveInState(st)) {
 					
-					// If affordance is lit up
-					if(affDelegate.primeAndCheckIfActiveInState(st)) {
+					// If we're counting total number of actions OR we haven't counted this action for this affordance yet
+					if (this.countTotalActions || !seen.get(affDelegate).contains(ga)) {
+						// Update counts, and indicate we've seen this affordance/action pair
+						((SoftAffordance)affDelegate.getAffordance()).updateActionCount(ga);
 						
-						// If we haven't counted this action for this affordance yet
 						if (!seen.get(affDelegate).contains(ga)) {
-							// Update counts, and indicate we've seen this affordance/action pair
-							((SoftAffordance)affDelegate.getAffordance()).updateActionCount(ga);
-							
 							List<AbstractGroundedAction> acts = seen.get(affDelegate);
 							acts.add(ga);
 							seen.put(affDelegate, acts);
@@ -150,10 +151,16 @@ public class AffordanceLearner {
 				}
 			}
 		}
-		
+	}
+	
+	public void updateActionSetSizeCounts(Map<AffordanceDelegate,List<AbstractGroundedAction>> seen) {
+		// Count the action set size for each affordance for this world
 		for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
 			if (seen.get(affDelegate).size() > 0) {
 				((SoftAffordance)affDelegate.getAffordance()).updateActionSetSizeCount(seen.get(affDelegate).size());
+			}
+			else{
+				System.out.println("DID NOT COUNT ACTION SET SIZE");
 			}
 		}
 	}
@@ -245,7 +252,8 @@ public class AffordanceLearner {
 		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions);
 
 		// Initialize Learner
-		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds);
+		boolean countTotalActions = true;
+		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions);
 		
 		affLearn.learn();
 		affLearn.printCounts();

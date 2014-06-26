@@ -7,11 +7,11 @@ import java.util.Random;
 import minecraft.NameSpace;
 
 public class LearningWorldGenerator extends WorldGenerator {
-	private static Random r = new Random();
-	private static int maxTrenches = 2;
-	private static int depthOfDirtFloor = 2;
-	private static double probOfTrenchChangeDir = 0; // Straight trenches for now
-	private int numTrenches = 1;
+	private static Random 	r = new Random();
+	private static int 		maxTrenches = 2;
+	private static int 		depthOfDirtFloor = 2;
+	private static double 	probOfTrenchChangeDir = 0; // Straight trenches for now
+	private 	   int	 	numTrenches = 1;
 	
 	public LearningWorldGenerator(int rows, int cols, int height) {
 		super(rows, cols, height, depthOfDirtFloor, probOfTrenchChangeDir);

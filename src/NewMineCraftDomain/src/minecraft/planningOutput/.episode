@@ -1,18 +1,38 @@
 #EL#
-0,0,1 0
+1,0,2 1
 #ES#
 rotateClockwise
 -1.0
 #EL#
-0,0,1 0
+1,0,2 1
 #ES#
 moveAction
 -1.0
 #EL#
-1,0,1 0
+2,0,1 1
 #ES#
 jump
-10.0
+-1.0
 #EL#
-1,0,2 0
+2,0,2 1
+#ES#
+moveAction
+-1.0
+#EL#
+3,0,2 1
+#ES#
+rotateClockwise
+-1.0
+#EL#
+3,0,2 1
+#ES#
+moveAction
+-1.0
+#EL#
+3,1,2 1
+#ES#
+moveAction
+0.0
+#EL#
+3,2,2 1
 #ES#

@@ -1,4 +1,4 @@
-package affordances;
+package subgoals;
 
 import burlap.oomdp.core.PropositionalFunction;
 import burlap.oomdp.logicalexpressions.LogicalExpression;
