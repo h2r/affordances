@@ -5,7 +5,6 @@ import java.util.List;
 
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
 import affordances.KnowledgeBase;
-import burlap.behavior.affordances.AffordanceDelegate;
 import burlap.behavior.affordances.AffordancesController;
 import burlap.behavior.singleagent.*;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
@@ -23,26 +22,14 @@ import burlap.behavior.singleagent.planning.stochastic.rtdp.RTDP;
 import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueIteration;
 import burlap.oomdp.auxiliary.StateParser;
 import burlap.oomdp.core.*;
-import burlap.oomdp.logicalexpressions.LogicalExpression;
-<<<<<<< HEAD
-=======
-import burlap.oomdp.logicalexpressions.LogicalExpressionParser;
-import burlap.oomdp.logicalexpressions.PFAtom;
->>>>>>> FETCH_HEAD
 import burlap.oomdp.singleagent.*;
 import burlap.oomdp.singleagent.common.*;
 import burlap.behavior.statehashing.DiscreteStateHashFactory;
 
-<<<<<<< HEAD
-import java.util.HashMap;
-import java.util.List;
-
-import minecraft.MinecraftDomain.MinecraftDomainGenerator;
 import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
 import minecraft.MinecraftStateGenerator.Exceptions.StateCreationException;
 
-=======
->>>>>>> FETCH_HEAD
+
 /**
  * The main behavior class for the minecraft domain
  * @author Dhershkowitz
@@ -127,7 +114,6 @@ public class MinecraftBehavior {
 		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFTRENCHINFRONT);
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
 		
-<<<<<<< HEAD
 		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
 		
 		//Set up reward function
@@ -135,6 +121,26 @@ public class MinecraftBehavior {
 		
 		//Set up terminal function
 		this.terminalFunction = new SinglePFTF(pfToUse);
+		
+//		List<GroundedProp> groundedGoals = this.pfAgentAtGoal.getAllGroundedPropsForState(this.initialState);
+//		
+//		for(GroundedProp gp : groundedGoals) {
+//			System.out.println("grounding: " + gp.pf.toString());
+//		}
+//		
+//		GroundedProp groundedGoal = groundedGoals.get(0);
+//		
+//		LogicalExpression relevantGoalExpression = new PFAtom(groundedGoal);
+//		
+//		if(filePathOfMap.contains("gold")) {
+//			relevantGoalExpression = new PFAtom(new GroundedProp(this.pfAgentHasAtLeastXGoldOre, AffordanceDelegate.makeFreeVarListFromObjectClasses(this.pfAgentHasAtLeastXGoldOre.getParameterClasses())));
+//		}
+//	
+//		//Set up reward function
+//		this.rewardFunction = new SingleGoalLERF(relevantGoalExpression, 0, -1); 
+//		
+//		//Set up terminal function
+//		this.terminalFunction = new SingleLETF(relevantGoalExpression);
 	}
 	
 	private PropositionalFunction getPFFromHeader(HashMap<String, Integer> headerInfo) {
@@ -151,27 +157,6 @@ public class MinecraftBehavior {
 		return null;
 		
 		
-=======
-		List<GroundedProp> groundedGoals = this.pfAgentAtGoal.getAllGroundedPropsForState(this.initialState);
-		
-		for(GroundedProp gp : groundedGoals) {
-			System.out.println("grounding: " + gp.pf.toString());
-		}
-		
-		GroundedProp groundedGoal = groundedGoals.get(0);
-		
-		LogicalExpression relevantGoalExpression = new PFAtom(groundedGoal);
-		
-		if(filePathOfMap.contains("gold")) {
-			relevantGoalExpression = new PFAtom(new GroundedProp(this.pfAgentHasAtLeastXGoldOre, AffordanceDelegate.makeFreeVarListFromObjectClasses(this.pfAgentHasAtLeastXGoldOre.getParameterClasses())));
-		}
-	
-		//Set up reward function
-		this.rewardFunction = new SingleGoalLERF(relevantGoalExpression, 0, -1); 
-		
-		//Set up terminal function
-		this.terminalFunction = new SingleLETF(relevantGoalExpression);
->>>>>>> FETCH_HEAD
 	}
 	
 	// ---------- PLANNERS ---------- 
@@ -272,24 +257,19 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-<<<<<<< HEAD
 		String mapFileName = "goldDigger1.map";
 		String mapsPath = "src/minecraft/maps/toCluster/";
 		String outputPath = "src/minecraft/planningOutput/";
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapFileName);
 		
-		mcBeh.BFSExample(outputPath);
+//		mcBeh.BFSExample(outputPath);
 		//mcBeh.ValueIterationPlanner();
 	
 
-=======
 
 		String mapName = "TESTING.map";
 		String mapPath = "src/minecraft/maps/" + mapName;
 
-		String outputPath = "src/minecraft/planningOutput/";
-		MinecraftBehavior mcBeh = new MinecraftBehavior(mapPath);
-		
 		// BFS
 //		mcBeh.BFSExample(outputPath);
 		
@@ -310,7 +290,6 @@ public class MinecraftBehavior {
 		
 		// RTDP
 //		mcBeh.RTDP();
->>>>>>> FETCH_HEAD
 	}
 	
 	// --- ACCESSORS ---
