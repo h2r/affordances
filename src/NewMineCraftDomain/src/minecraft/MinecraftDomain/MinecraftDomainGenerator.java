@@ -215,7 +215,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 	}
 	
 	public static void main(String[] args) {
-		String filePath = "src/minecraft/maps/shallowTrench1Flipped.map";
+		String filePath = "src/minecraft/maps/learning/AgentHasXGoldOre/0.map";
 		MapIO io = new MapIO(filePath);
 		
 		char[][][] charMap = io.getMapAs3DCharArray();

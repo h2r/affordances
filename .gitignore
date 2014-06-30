@@ -13,3 +13,4 @@ minecraft_api/world_the_end/
 *.key
 *.out
 *.map
+*.classpath

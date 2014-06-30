@@ -133,6 +133,9 @@ public class MinecraftBehavior {
 		case NameSpace.INTXYZGOAL:
 			return this.pfAgentAtGoal;
 		
+		case NameSpace.INTGOLDOREGOAL:
+			return this.pfAgentHasAtLeastXGoldOre;
+			
 		case NameSpace.INTGOLDBARGOAL:
 			return this.pfAgentHasAtLeastXGoldBar;
 		default:
@@ -272,10 +275,11 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-		String mapsPath = "src/minecraft/maps/";
+		String mapsPath = "src/minecraft/maps/learning/AgentHasXGoldOre/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-		String mapName = "goldTest.map";
+
+		String mapName = "0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
