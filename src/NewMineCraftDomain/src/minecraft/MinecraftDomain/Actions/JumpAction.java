@@ -38,9 +38,11 @@ public class JumpAction extends AgentAction {
 		int newAgentZ = agentZ + amountOfJump;
 		
 		//Need a block below or the bottom of the map to jump
-		boolean canJump = !Helpers.withinMapAt(agentX, agentY, zBelowAgentFeet, rows, cols, height) || Helpers.blockBelowAgent(state);
+		boolean canJump = !Helpers.withinMapAt(agentX, agentY, zBelowAgentFeet, cols, rows, height) || Helpers.blockBelowAgent(state);
 		//Also need empty space above the agent
-		boolean roomAbove = Helpers.withinMapAt(agentX, agentY, newAgentZ, rows, cols, height) && Helpers.emptySpaceAt(agentX, agentY, newAgentZ, state);
+		boolean emptySpace = Helpers.emptySpaceAt(agentX, agentY, newAgentZ, state);
+		boolean newSpotInMap = Helpers.withinMapAt(agentX, agentY, newAgentZ, cols, rows, height);
+		boolean roomAbove = emptySpace && newSpotInMap;
 		
 		if (canJump && roomAbove) {
 			agent.setValue(NameSpace.ATZ, newAgentZ);

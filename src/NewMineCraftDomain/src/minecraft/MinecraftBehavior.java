@@ -8,6 +8,7 @@ import burlap.behavior.singleagent.planning.OOMDPPlanner;
 import burlap.behavior.singleagent.planning.QComputablePlanner;
 import burlap.behavior.singleagent.planning.ValueFunctionPlanner;
 import burlap.behavior.singleagent.planning.commonpolicies.AffordanceGreedyQPolicy;
+import burlap.behavior.singleagent.planning.commonpolicies.GreedyDeterministicQPolicy;
 import burlap.behavior.singleagent.planning.commonpolicies.GreedyQPolicy;
 import burlap.behavior.singleagent.planning.deterministic.DeterministicPlanner;
 import burlap.behavior.singleagent.planning.deterministic.SDPlannerPolicy;
@@ -126,7 +127,7 @@ public class MinecraftBehavior {
 		if(filePathOfMap.contains("gold")) {
 			relevantGoalExpression = new PFAtom(new GroundedProp(this.pfAgentHasAtLeastXGoldOre, AffordanceDelegate.makeFreeVarListFromObjectClasses(this.pfAgentHasAtLeastXGoldOre.getParameterClasses())));
 		}
-		
+	
 		//Set up reward function
 		this.rewardFunction = new SingleGoalLERF(relevantGoalExpression, 0, -1); 
 		
@@ -146,7 +147,7 @@ public class MinecraftBehavior {
 		planner.planFromState(initialState);
 
 		// Create a Q-greedy policy from the planner
-		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
+		GreedyDeterministicQPolicy p = new GreedyDeterministicQPolicy((QComputablePlanner)planner);
 		
 		// Print out some infos
 		EpisodeAnalysis ea = p.evaluateBehavior(initialState, this.rewardFunction, this.terminalFunction, maxSteps);
@@ -232,8 +233,11 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
+
 		String mapName = "TESTING.map";
 		String mapPath = "src/minecraft/maps/" + mapName;
+		String mapPath = "src/minecraft/maps/TESTING.map";
+
 		String outputPath = "src/minecraft/planningOutput/";
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapPath);
 		
@@ -257,6 +261,7 @@ public class MinecraftBehavior {
 		
 		// RTDP
 //		mcBeh.RTDP();
+>>>>>>> FETCH_HEAD
 	}
 	
 	// --- ACCESSORS ---

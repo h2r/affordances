@@ -214,7 +214,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 	}
 	
 	public static void main(String[] args) {
-		String filePath = "src/minecraft/maps/jumpworld.map";
+		String filePath = "src/minecraft/maps/shallowTrench1Flipped.map";
 		MapIO io = new MapIO(filePath);
 		
 		char[][][] charMap = io.getMapAs3DCharArray();
@@ -229,6 +229,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		exp.addActionShortHand("w", NameSpace.ACTIONMOVE);
 		exp.addActionShortHand("rc", NameSpace.ACTIONROTATEC);
 		exp.addActionShortHand("ld", NameSpace.ACTIONLOOKDOWN);
+		exp.addActionShortHand("lu", NameSpace.ACTIONLOOKUP);
 		exp.addActionShortHand("d", NameSpace.ACTIONDESTBLOCK);
 		exp.addActionShortHand("u", NameSpace.ACTIONUSEBLOCK);
 		
