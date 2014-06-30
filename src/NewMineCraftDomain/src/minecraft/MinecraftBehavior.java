@@ -3,6 +3,9 @@ package minecraft;
 import java.util.HashMap;
 import java.util.List;
 
+import minecraft.MapIO;
+import minecraft.MinecraftStateParser;
+import minecraft.NameSpace;
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
 import affordances.KnowledgeBase;
 import burlap.behavior.affordances.AffordancesController;
@@ -30,6 +33,7 @@ import burlap.behavior.statehashing.DiscreteStateHashFactory;
 import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
 import minecraft.MinecraftStateGenerator.Exceptions.StateCreationException;
 
+
 /**
  * The main behavior class for the minecraft domain
  * @author Dhershkowitz
@@ -56,6 +60,7 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfTrenchInFrontOfAgent;
 	public PropositionalFunction		pfAgentInMidAir;
 	
+	
 	//Params for Planners
 	private double						gamma = 0.99;
 	private double						minDelta = .01;
@@ -64,6 +69,7 @@ public class MinecraftBehavior {
 	private int							maxDepth = 50; // RTDP
 	private int 						vInit = -1; // RTDP
 
+	
 	// ----- CLASS METHODS -----
 	/**
 	 * Constructor to instantiate behavior
@@ -101,7 +107,7 @@ public class MinecraftBehavior {
 			e.printStackTrace();
 		}
 		
-		// Get propositional functions
+		//Get propositional functions
 		this.pfAgentAtGoal = domain.getPropFunction(NameSpace.PFATGOAL);
 		this.pfEmptySpace = domain.getPropFunction(NameSpace.PFEMPSPACE);
 		this.pfBlockAt = domain.getPropFunction(NameSpace.PFBLOCKAT);
@@ -111,7 +117,7 @@ public class MinecraftBehavior {
 		this.pfEndOfMapInFrontOfAgent = domain.getPropFunction(NameSpace.PFENDOFMAPINFRONT);
 		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFTRENCHINFRONT);
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
-		
+
 		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
 		
 		//Set up reward function
@@ -119,6 +125,7 @@ public class MinecraftBehavior {
 		
 		//Set up terminal function
 		this.terminalFunction = new SinglePFTF(pfToUse);
+
 	}
 	
 	private PropositionalFunction getPFFromHeader(HashMap<String, Integer> headerInfo) {
@@ -126,9 +133,6 @@ public class MinecraftBehavior {
 		case NameSpace.INTXYZGOAL:
 			return this.pfAgentAtGoal;
 		
-		case NameSpace.INTGOLDOREGOAL:
-			return this.pfAgentHasAtLeastXGoldOre;
-			
 		case NameSpace.INTGOLDBARGOAL:
 			return this.pfAgentHasAtLeastXGoldBar;
 		default:
@@ -136,6 +140,7 @@ public class MinecraftBehavior {
 		}
 		
 		return null;
+
 	}
 	
 	// --- ACCESSORS ---
@@ -267,13 +272,13 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-
-		String mapName = "testingGoldBar.map";
-		String mapPath = "src/minecraft/maps/" + mapName;
-
+		String mapsPath = "src/minecraft/maps/";
 		String outputPath = "src/minecraft/planningOutput/";
-		MinecraftBehavior mcBeh = new MinecraftBehavior(mapPath);
 		
+		String mapName = "TESTING.map";
+		
+		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
+
 		// BFS
 //		mcBeh.BFSExample(outputPath);
 		
@@ -294,6 +299,7 @@ public class MinecraftBehavior {
 		
 		// RTDP
 //		mcBeh.RTDP();
+
 	}
 	
 	

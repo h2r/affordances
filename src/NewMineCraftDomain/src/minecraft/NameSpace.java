@@ -44,7 +44,8 @@ public class NameSpace {
 	
 	//Ints for goals
 	public static final int INTXYZGOAL = 0;
-	public static final int INTGOLDBARGOAL = 1;
+	public static final int INTGOLDOREGOAL = 1;
+	public static final int INTGOLDBARGOAL = 2;
 	
 	
 	//-------------MAP SEPARATORS-------------
