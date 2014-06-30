@@ -3,5 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="/Users/Dhershkowitz/Documents/AI Lab/affordances/dependencies/mallet.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Users/Dhershkowitz/Documents/AI Lab/affordances/dependencies/burlapCentralAffordances.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
