@@ -6,9 +6,9 @@ import burlap.oomdp.core.PropositionalFunction;
 import burlap.oomdp.core.State;
 
 public class EmptySpacePF extends PropositionalFunction{
-	private int x;
-	private int y;
-	private int z;
+	private final int x;
+	private final int y;
+	private final int z;
 	
 	/**
 	 * 

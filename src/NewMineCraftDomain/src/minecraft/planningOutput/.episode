@@ -7,12 +7,7 @@ rotateClockwise
 0,0,1 0
 #ES#
 moveAction
--1.0
+0.0
 #EL#
 1,0,1 0
-#ES#
-jump
-10.0
-#EL#
-1,0,2 0
 #ES#

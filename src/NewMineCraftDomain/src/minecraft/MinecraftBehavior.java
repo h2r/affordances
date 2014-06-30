@@ -7,6 +7,7 @@ import burlap.behavior.singleagent.planning.OOMDPPlanner;
 import burlap.behavior.singleagent.planning.QComputablePlanner;
 import burlap.behavior.singleagent.planning.ValueFunctionPlanner;
 import burlap.behavior.singleagent.planning.commonpolicies.AffordanceGreedyQPolicy;
+import burlap.behavior.singleagent.planning.commonpolicies.GreedyDeterministicQPolicy;
 import burlap.behavior.singleagent.planning.commonpolicies.GreedyQPolicy;
 import burlap.behavior.singleagent.planning.deterministic.DeterministicPlanner;
 import burlap.behavior.singleagent.planning.deterministic.SDPlannerPolicy;
@@ -105,11 +106,8 @@ public class MinecraftBehavior {
 		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFTRENCHINFRONT);
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
 		
-<<<<<<< HEAD
 		PropositionalFunction propFunToUse = this.pfAgentInMidAir;
-		
-=======
->>>>>>> FETCH_HEAD
+
 		//Set up reward function
 		this.rewardFunction = new SingleGoalPFRF(this.pfAgentAtGoal, 0, -1); 
 		
@@ -129,7 +127,7 @@ public class MinecraftBehavior {
 		planner.planFromState(initialState);
 
 		// Create a Q-greedy policy from the planner
-		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
+		GreedyDeterministicQPolicy p = new GreedyDeterministicQPolicy((QComputablePlanner)planner);
 		
 		// Print out some infos
 		EpisodeAnalysis ea = p.evaluateBehavior(initialState, this.rewardFunction, this.terminalFunction, maxSteps);
@@ -202,17 +200,13 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-		String mapPath = "src/minecraft/maps/learning/crosstrench0.map";
+		String mapPath = "src/minecraft/maps/shallowTrench1Flipped.map";
 		String outputPath = "src/minecraft/planningOutput/";
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapPath);
 		
-//		mcBeh.BFSExample(outputPath);
-//		mcBeh.ValueIterationPlanner();
-		
-		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.load(mcBeh.getDomain(), "trenches1000.kb");
-		
-		mcBeh.AffordanceRTDP(affKB);
+		mcBeh.BFSExample(outputPath);
+		//mcBeh.ValueIterationPlanner();
+	
 	}
 	
 	// --- ACCESSORS ---

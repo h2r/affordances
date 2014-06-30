@@ -29,22 +29,20 @@ public class MovementAction extends StochasticAgentAction{
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 		ObjectInstance agentFeet = state.getObjectsOfTrueClass(NameSpace.CLASSAGENTFEET).get(0);
 
+		int agentZ = agent.getDiscValForAttribute(NameSpace.ATZ);
 		int[] inFrontAgent = Helpers.positionInFrontOfAgent(1, state);
 		
 		int newX = inFrontAgent[0];
 		int newY = inFrontAgent[1];
-		int newZ = inFrontAgent[2];
 		
 		//Update position if nothing in agent's way and new position is within map
-		if (Helpers.withinMapAt(newX, newY, newZ, cols, rows, height) && Helpers.withinMapAt(newX, newY, newZ-1, cols, rows, height) &&
-				emptySpaceForAgentAt(newX, newY, newZ, state)) {
+		if (Helpers.withinMapAt(newX, newY, agentZ, cols, rows, height) && Helpers.withinMapAt(newX, newY, agentZ-1, cols, rows, height) &&
+				emptySpaceForAgentAt(newX, newY, agentZ, state)) {
 			agent.setValue(NameSpace.ATX, newX);
 			agent.setValue(NameSpace.ATY, newY);
-			agent.setValue(NameSpace.ATZ, newZ);
 			
 			agentFeet.setValue(NameSpace.ATX, newX);
 			agentFeet.setValue(NameSpace.ATY, newY);
-			agentFeet.setValue(NameSpace.ATZ, newZ-1);
 		}
 	}
 	
