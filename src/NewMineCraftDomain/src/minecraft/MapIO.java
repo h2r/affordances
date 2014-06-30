@@ -1,6 +1,7 @@
 package minecraft;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -163,8 +164,13 @@ public class MapIO {
 	public void printHeaderAndMapToFile(String filePath) {
 		String toPrint = getHeaderAsString() + getCharArrayAsString();
 		PrintWriter outPrinter = null;
-		try {
-			outPrinter = new PrintWriter(filePath);
+		try { 
+			File f = new File(filePath);
+			
+			// Creates any intermediary directories that are missing
+			f.getParentFile().mkdirs();
+			
+			outPrinter = new PrintWriter(f);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

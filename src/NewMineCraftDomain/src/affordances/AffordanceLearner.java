@@ -60,7 +60,7 @@ public class AffordanceLearner {
 				// Write header info (depends on goal specific information)
 				// TODO: incorporate goal specific information
 				HashMap<String,Integer> headerInfo = new HashMap<String,Integer>();
-				headerInfo.put("B", 1);
+				headerInfo.put("B", 0);
 				headerInfo.put("g", 0);
 				headerInfo.put("b", 0);
 				
@@ -224,9 +224,9 @@ public class AffordanceLearner {
 		
 		// Set up goal description list
 		List<LogicalExpression> lgds = new ArrayList<LogicalExpression>();
-		PropositionalFunction atGoal = mb.pfAgentAtGoal;
+		PropositionalFunction atGoal = mb.pfAgentHasAtLeastXGoldOre;
 		LogicalExpression goalLE = pfAtomFromPropFunc(atGoal);
-		goalLE.setName("crosstrench");
+		goalLE.setName("goldsmelting");
 		lgds.add(goalLE);
 		
 		// Set up precondition list
