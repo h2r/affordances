@@ -1,8 +1,15 @@
-package minecraft;
+package minecraft.MinecraftStateGenerator;
 
 import java.util.HashMap;
 import java.util.List;
 
+import minecraft.NameSpace;
+import minecraft.NameSpace.RotDirection;
+import minecraft.NameSpace.VertDirection;
+import minecraft.MinecraftStateGenerator.Exceptions.NoSpecifiedGoalException;
+import minecraft.MinecraftStateGenerator.Exceptions.NotOneAgentException;
+import minecraft.MinecraftStateGenerator.Exceptions.NotOneAgentFeetException;
+import minecraft.MinecraftStateGenerator.Exceptions.StateCreationException;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.State;
@@ -12,9 +19,9 @@ import burlap.oomdp.core.State;
  * @author dhershko
  *
  */
-public class MinecraftInitialStateGenerator {
+public class MinecraftStateGenerator {
 	
-	public static State createInitialState(char[][][] mapAsCharArray, HashMap<String, Integer> stateInfo, Domain domain) {
+	public static State createInitialState(char[][][] mapAsCharArray, HashMap<String, Integer> stateInfo, Domain domain) throws StateCreationException {
 		State toReturn = new State();
 		//Process map
 		processMapCharArray(mapAsCharArray, domain, toReturn);
@@ -23,18 +30,29 @@ public class MinecraftInitialStateGenerator {
 		processStateInfoHM(stateInfo, domain,  toReturn);
 		
 		//Assert relevant info
-		assertInfo(toReturn);
+		assertInfo(toReturn, stateInfo);
 		
 		return toReturn;
 	}
 	
-	private static void assertInfo (State state) {
+	private static void assertInfo (State state, HashMap<String, Integer> stateInfo) throws StateCreationException {
 		//Assert 1 agent
 		List<ObjectInstance> agents = state.getObjectsOfTrueClass(NameSpace.CLASSAGENTFEET);
-		assert(agents.size() == 1);
+		if (agents.size() != 1) {
+			throw new NotOneAgentException();
+		}
 		//Assert 1 agent feet
 		List<ObjectInstance> feets =state.getObjectsOfTrueClass(NameSpace.CLASSAGENTFEET);
-		assert(feets.size() == 1);
+		if (feets.size() != 1) {
+			throw new NotOneAgentFeetException();
+		}
+		
+		//Assert a specified goal
+		if (!stateInfo.containsKey(Character.toString(NameSpace.CHARGOALDESCRIPTOR))) {
+			throw new NoSpecifiedGoalException();
+		}
+		
+		
 	}
 	
 	

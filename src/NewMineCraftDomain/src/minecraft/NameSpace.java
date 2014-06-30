@@ -40,6 +40,11 @@ public class NameSpace {
 	public static final char CHARPLACEABLEBLOCKS = 'B';
 	public static final char CHARSTARTINGGOLDORE = 'g';
 	public static final char CHARSTARTINGGOLDBAR = 'b';
+	public static final char CHARGOALDESCRIPTOR = 'G';
+	
+	//Ints for goals
+	public static final int INTXYZGOAL = 0;
+	public static final int INTGOLDBARGOAL = 1;
 	
 	
 	//-------------MAP SEPARATORS-------------

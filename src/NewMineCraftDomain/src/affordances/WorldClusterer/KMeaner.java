@@ -126,6 +126,23 @@ public class KMeaner {
 		boolean converged = true;
 
 		
+		//Update data points based on centroids
+		HashMap<MapIO, Integer> newClusterMembership = new HashMap<MapIO, Integer>();
+		for(MapIO currMap : this.mapPositionInData.keySet()) {
+			double[] mapData = this.mapPositionInData.get(currMap);
+			Integer bestCluster = getBestFittingCentroidFromData(mapData);
+			newClusterMembership.put(currMap, bestCluster);
+			Integer oldClusterMembership = this.clusterMembership.get(currMap);
+			if (oldClusterMembership == null) {
+				oldClusterMembership = -1;
+			}
+			//Check to see if switched and update converged
+			if(oldClusterMembership != bestCluster) {
+				converged = false;
+			}
+			
+		}
+		
 		//Update centroid
 		HashMap<Integer, double[]> newClusterCentroids = new HashMap<Integer, double[]> ();
 		HashMap<Integer, Integer> membersOfCluster = new HashMap<Integer, Integer>();//From cluster index to number of members of that cluster
@@ -166,22 +183,7 @@ public class KMeaner {
 		
 		this.clusterCentroids = newClusterCentroids;
 		
-		//Update data points based on centroids
-		HashMap<MapIO, Integer> newClusterMembership = new HashMap<MapIO, Integer>();
-		for(MapIO currMap : this.mapPositionInData.keySet()) {
-			double[] mapData = this.mapPositionInData.get(currMap);
-			Integer bestCluster = getBestFittingCentroidFromData(mapData);
-			newClusterMembership.put(currMap, bestCluster);
-			Integer oldClusterMembership = this.clusterMembership.get(currMap);
-			if (oldClusterMembership == null) {
-				oldClusterMembership = -1;
-			}
-			//Check to see if switched and update converged
-			if(oldClusterMembership != bestCluster) {
-				converged = false;
-			}
-			
-		}
+
 		this.clusterMembership = newClusterMembership;
 		
 		return converged;

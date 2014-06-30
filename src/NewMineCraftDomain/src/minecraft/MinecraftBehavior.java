@@ -5,7 +5,6 @@ import java.util.List;
 
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
 import affordances.KnowledgeBase;
-import burlap.behavior.affordances.AffordanceDelegate;
 import burlap.behavior.affordances.AffordancesController;
 import burlap.behavior.singleagent.*;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
@@ -24,11 +23,12 @@ import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueItera
 import burlap.oomdp.auxiliary.StateParser;
 import burlap.oomdp.core.*;
 import burlap.oomdp.logicalexpressions.LogicalExpression;
-import burlap.oomdp.logicalexpressions.LogicalExpressionParser;
-import burlap.oomdp.logicalexpressions.PFAtom;
 import burlap.oomdp.singleagent.*;
-import burlap.oomdp.singleagent.common.*;
+import burlap.oomdp.singleagent.common.SingleGoalPFRF;
+import burlap.oomdp.singleagent.common.SinglePFTF;
 import burlap.behavior.statehashing.DiscreteStateHashFactory;
+import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
+import minecraft.MinecraftStateGenerator.Exceptions.StateCreationException;
 
 /**
  * The main behavior class for the minecraft domain
@@ -97,7 +97,11 @@ public class MinecraftBehavior {
 		this.hashingFactory.setAttributesForClass(NameSpace.CLASSAGENT, domain.getObjectClass(NameSpace.CLASSAGENT).attributeList); 
 		
 		//Set initial state
-		this.initialState = MinecraftInitialStateGenerator.createInitialState(mapAs3DArray, headerInfo, domain);
+		try {
+			this.initialState = MinecraftStateGenerator.createInitialState(mapAs3DArray, headerInfo, domain);
+		} catch (StateCreationException e) {
+			e.printStackTrace();
+		}
 		
 		//Get propositional functions
 		this.pfAgentAtGoal = domain.getPropFunction(NameSpace.PFATGOAL);
@@ -111,6 +115,7 @@ public class MinecraftBehavior {
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
 		
 
+
 		LogicalExpression relevantGoalExpression;
 		List<GroundedProp> groundedGoals;
 		
@@ -121,24 +126,50 @@ public class MinecraftBehavior {
 			// Otherwise, in an AtGoal world, updated regularly.
 			groundedGoals = this.pfAgentAtGoal.getAllGroundedPropsForState(this.initialState);
 		}
+
 		
-		// Not parameterized goals, so take first (and only) grounding.
-		for(GroundedProp gp : groundedGoals) {
-			System.out.println("grounding: " + gp.pf.toString());
+		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
+		
+		//Set up reward function
+		this.rewardFunction = new SingleGoalPFRF(pfToUse, 0, -1); 
+		
+		//Set up terminal function
+		this.terminalFunction = new SinglePFTF(pfToUse);
+//		
+//		List<GroundedProp> groundedGoals = this.pfAgentAtGoal.getAllGroundedPropsForState(this.initialState);
+//
+//		
+//		// Not parameterized goals, so take first (and only) grounding.
+//		for(GroundedProp gp : groundedGoals) {
+//			System.out.println("grounding: " + gp.pf.toString());
+//		}
+//		
+//		GroundedProp groundedGoal = groundedGoals.get(0);
+//		relevantGoalExpression = new PFAtom(groundedGoal);
+//		
+//	
+//		// Set up reward function with new goal
+////		this.rewardFunction = new SingleGoalLERF(relevantGoalExpression, 10, -1); 
+//		
+//		//Set up terminal function with new goal
+////		this.terminalFunction = new SingleLETF(relevantGoalExpression);
+//		
+//		this.rewardFunction = new SingleGoalPFRF(this.pfAgentHasAtLeastXGoldOre);
+//		this.terminalFunction = new SinglePFTF(this.pfAgentHasAtLeastXGoldOre);
+	}
+	
+	private PropositionalFunction getPFFromHeader(HashMap<String, Integer> headerInfo) {
+		switch(headerInfo.get(Character.toString(NameSpace.CHARGOALDESCRIPTOR))) {
+		case NameSpace.INTXYZGOAL:
+			return this.pfAgentAtGoal;
+		
+		case NameSpace.INTGOLDBARGOAL:
+			return this.pfAgentHasAtLeastXGoldBar;
+		default:
+			break;
 		}
 		
-		GroundedProp groundedGoal = groundedGoals.get(0);
-		relevantGoalExpression = new PFAtom(groundedGoal);
-		
-	
-		// Set up reward function with new goal
-//		this.rewardFunction = new SingleGoalLERF(relevantGoalExpression, 10, -1); 
-		
-		//Set up terminal function with new goal
-//		this.terminalFunction = new SingleLETF(relevantGoalExpression);
-		
-		this.rewardFunction = new SingleGoalPFRF(this.pfAgentHasAtLeastXGoldOre);
-		this.terminalFunction = new SinglePFTF(this.pfAgentHasAtLeastXGoldOre);
+		return null;
 	}
 	
 	// --- ACCESSORS ---
@@ -169,6 +200,7 @@ public class MinecraftBehavior {
 	
 	public State getInitialState() {
 		return this.initialState;
+
 	}
 	
 	// ---------- PLANNERS ---------- 

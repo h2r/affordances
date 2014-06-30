@@ -1,6 +1,9 @@
 package minecraft;
 
 import java.util.HashMap;
+
+import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
+import minecraft.MinecraftStateGenerator.Exceptions.StateCreationException;
 import burlap.oomdp.auxiliary.StateParser;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectInstance;
@@ -44,7 +47,12 @@ public class MinecraftStateParser implements StateParser {
 		HashMap<String, Integer> header = MapIO.processHeader(stateInfoString);
 		char[][][] mapAsCharArray = MapIO.processMapString(mapString);
 		
-		return MinecraftInitialStateGenerator.createInitialState(mapAsCharArray, header, domain);
+		try {
+			return MinecraftStateGenerator.createInitialState(mapAsCharArray, header, domain);
+		} catch (StateCreationException e) {
+			e.printStackTrace();
+		}
+		return null;
 				
 	}
 	
