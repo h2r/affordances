@@ -56,7 +56,6 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfTrenchInFrontOfAgent;
 	public PropositionalFunction		pfAgentInMidAir;
 	
-	
 	//Params for Planners
 	private double						gamma = 0.99;
 	private double						minDelta = .01;
@@ -65,7 +64,6 @@ public class MinecraftBehavior {
 	private int							maxDepth = 50; // RTDP
 	private int 						vInit = -1; // RTDP
 
-	
 	// ----- CLASS METHODS -----
 	/**
 	 * Constructor to instantiate behavior
@@ -103,7 +101,7 @@ public class MinecraftBehavior {
 			e.printStackTrace();
 		}
 		
-		//Get propositional functions
+		// Get propositional functions
 		this.pfAgentAtGoal = domain.getPropFunction(NameSpace.PFATGOAL);
 		this.pfEmptySpace = domain.getPropFunction(NameSpace.PFEMPSPACE);
 		this.pfBlockAt = domain.getPropFunction(NameSpace.PFBLOCKAT);
@@ -114,20 +112,6 @@ public class MinecraftBehavior {
 		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFTRENCHINFRONT);
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
 		
-
-
-		LogicalExpression relevantGoalExpression;
-		List<GroundedProp> groundedGoals;
-		
-		if(filePathOfMap.contains("Gold")) {
-			// If we're in a gold map, reset tf/rf for agent having gold
-			groundedGoals = this.pfAgentHasAtLeastXGoldOre.getAllGroundedPropsForState(this.initialState);			
-		} else{
-			// Otherwise, in an AtGoal world, updated regularly.
-			groundedGoals = this.pfAgentAtGoal.getAllGroundedPropsForState(this.initialState);
-		}
-
-		
 		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
 		
 		//Set up reward function
@@ -135,27 +119,6 @@ public class MinecraftBehavior {
 		
 		//Set up terminal function
 		this.terminalFunction = new SinglePFTF(pfToUse);
-//		
-//		List<GroundedProp> groundedGoals = this.pfAgentAtGoal.getAllGroundedPropsForState(this.initialState);
-//
-//		
-//		// Not parameterized goals, so take first (and only) grounding.
-//		for(GroundedProp gp : groundedGoals) {
-//			System.out.println("grounding: " + gp.pf.toString());
-//		}
-//		
-//		GroundedProp groundedGoal = groundedGoals.get(0);
-//		relevantGoalExpression = new PFAtom(groundedGoal);
-//		
-//	
-//		// Set up reward function with new goal
-////		this.rewardFunction = new SingleGoalLERF(relevantGoalExpression, 10, -1); 
-//		
-//		//Set up terminal function with new goal
-////		this.terminalFunction = new SingleLETF(relevantGoalExpression);
-//		
-//		this.rewardFunction = new SingleGoalPFRF(this.pfAgentHasAtLeastXGoldOre);
-//		this.terminalFunction = new SinglePFTF(this.pfAgentHasAtLeastXGoldOre);
 	}
 	
 	private PropositionalFunction getPFFromHeader(HashMap<String, Integer> headerInfo) {
@@ -163,6 +126,9 @@ public class MinecraftBehavior {
 		case NameSpace.INTXYZGOAL:
 			return this.pfAgentAtGoal;
 		
+		case NameSpace.INTGOLDOREGOAL:
+			return this.pfAgentHasAtLeastXGoldOre;
+			
 		case NameSpace.INTGOLDBARGOAL:
 			return this.pfAgentHasAtLeastXGoldBar;
 		default:
@@ -302,10 +268,7 @@ public class MinecraftBehavior {
 	
 	public static void main(String[] args) {
 
-//		String mapName = "0.map";
-//		String mapPath = "src/minecraft/maps/learning/AgentHasXGoldOre/" + mapName;
-		
-		String mapName = "testingGoldOre.map";
+		String mapName = "testingGoldBar.map";
 		String mapPath = "src/minecraft/maps/" + mapName;
 
 		String outputPath = "src/minecraft/planningOutput/";
