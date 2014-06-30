@@ -1,5 +1,9 @@
 package minecraft;
 
+import java.util.HashMap;
+import java.util.List;
+
+import minecraft.MinecraftDomain.MinecraftDomainGenerator;
 import affordances.KnowledgeBase;
 import burlap.behavior.affordances.AffordanceDelegate;
 import burlap.behavior.affordances.AffordancesController;
@@ -25,14 +29,6 @@ import burlap.oomdp.logicalexpressions.PFAtom;
 import burlap.oomdp.singleagent.*;
 import burlap.oomdp.singleagent.common.*;
 import burlap.behavior.statehashing.DiscreteStateHashFactory;
-
-import java.util.HashMap;
-import java.util.List;
-
-import subgoals.Subgoal;
-import subgoals.SubgoalKnowledgeBase;
-import subgoals.SubgoalPlanner;
-import minecraft.MinecraftDomain.MinecraftDomainGenerator;
 
 /**
  * The main behavior class for the minecraft domain
@@ -236,7 +232,6 @@ public class MinecraftBehavior {
 
 		String mapName = "TESTING.map";
 		String mapPath = "src/minecraft/maps/" + mapName;
-		String mapPath = "src/minecraft/maps/TESTING.map";
 
 		String outputPath = "src/minecraft/planningOutput/";
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapPath);
@@ -261,7 +256,6 @@ public class MinecraftBehavior {
 		
 		// RTDP
 //		mcBeh.RTDP();
->>>>>>> FETCH_HEAD
 	}
 	
 	// --- ACCESSORS ---
