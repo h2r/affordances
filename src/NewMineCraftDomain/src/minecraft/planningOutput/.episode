@@ -1,0 +1,53 @@
+#EL#
+2,0,1 0
+#ES#
+rotateClockwise
+-1.0
+#EL#
+2,0,1 0
+#ES#
+rotateClockwise
+-1.0
+#EL#
+2,0,1 0
+#ES#
+destroyBlock
+-1.0
+#EL#
+2,0,1 0
+#ES#
+moveAction
+-1.0
+#EL#
+2,1,1 0
+#ES#
+rotateClockwise
+-1.0
+#EL#
+2,1,1 0
+#ES#
+moveAction
+-1.0
+#EL#
+1,1,1 0
+#ES#
+moveAction
+-1.0
+#EL#
+0,1,1 0
+#ES#
+rotateClockwise
+-1.0
+#EL#
+0,1,1 0
+#ES#
+lookdown
+-1.0
+#EL#
+0,1,1 0
+#ES#
+useBlock
+0.0
+#EL#
+0,1,1 0
+#ES#
