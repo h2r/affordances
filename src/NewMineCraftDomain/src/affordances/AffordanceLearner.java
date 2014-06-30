@@ -101,7 +101,7 @@ public class AffordanceLearner {
 		updateActionSetSizeCounts(seen);
 	}
 	
-	public void updateActionCounts(OOMDPPlanner planner, Policy p, Map<AffordanceDelegate,List<AbstractGroundedAction>> seen, boolean countTotalActions) {
+	public void updateActionCounts(OOMDPPlanner planner, Policy policy, Map<AffordanceDelegate,List<AbstractGroundedAction>> seen, boolean countTotalActions) {
 		
 		// Get all states from the policy
 		List<State> allStates = ((ValueFunctionPlanner)planner).getAllStates();
@@ -125,7 +125,7 @@ public class AffordanceLearner {
 			}
 
 			// Get the optimal action for that state and update affordance counts
-			GroundedAction ga = (GroundedAction) p.getAction(st);
+			GroundedAction ga = (GroundedAction) policy.getAction(st);
 			QValue qv = ((ValueFunctionPlanner)planner).getQ(st, ga);
 
 			for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
