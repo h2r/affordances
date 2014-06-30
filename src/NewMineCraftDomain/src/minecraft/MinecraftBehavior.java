@@ -290,6 +290,7 @@ public class MinecraftBehavior {
 		String mapsPath = "src/minecraft/maps/learning/AgentHasXGoldOre/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
+
 		String mapName = "0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
