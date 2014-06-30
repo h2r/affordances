@@ -53,16 +53,11 @@ public class AffordanceLearner {
 				// Mapfile name information
 				String mapname = "src/minecraft/maps/learning/" + goal.toString() + "/" + i + ".map";
 				maps.add(mapname);
-				
+			
 				// Build the map
 				char[][][] charMap = worldGenerator.generateMap(goal);
 
-				// Write header info (depends on goal specific information)
-				// TODO: incorporate goal specific information
-				HashMap<String,Integer> headerInfo = new HashMap<String,Integer>();
-				headerInfo.put("B", 0);
-				headerInfo.put("g", 0);
-				headerInfo.put("b", 0);
+				HashMap<String,Integer> headerInfo = makeHeader();
 				
 				MapIO map = new MapIO(headerInfo, charMap);
 				map.printHeaderAndMapToFile(mapname);
@@ -72,6 +67,18 @@ public class AffordanceLearner {
 		for(String map : maps) {
 			learnMap(map);
 		}
+	}
+	
+	private HashMap<String,Integer> makeHeader() {
+		// Write header info (depends on goal specific information)
+
+		HashMap<String,Integer> headerInfo = new HashMap<String,Integer>();
+		headerInfo.put("B", 0);
+		headerInfo.put("g", 0);
+		headerInfo.put("b", 0);
+		headerInfo.put("G", 1);
+		
+		return headerInfo;
 	}
 	
 	private void learnMap(String map) {
@@ -180,6 +187,13 @@ public class AffordanceLearner {
 		
 	}
 	
+	public void printCounts() {
+		for (AffordanceDelegate affDelegate: this.affordanceKB.getAffordances()) {
+			((SoftAffordance)affDelegate.getAffordance()).printCounts();
+			System.out.println("");
+		}
+	}
+	
 	/**
 	 * Gets a list of free variables given an OOMDP object's parameter object classes and order groups
 	 * @param orderGroups
@@ -200,13 +214,14 @@ public class AffordanceLearner {
 		
 		return groundedPropFreeVars;
 	}
+
 	
-	public void printCounts() {
-		for (AffordanceDelegate affDelegate: this.affordanceKB.getAffordances()) {
-			((SoftAffordance)affDelegate.getAffordance()).printCounts();
-			System.out.println("");
-		}
+	private static LogicalExpression pfAtomFromPropFunc(PropositionalFunction pf) {
+		String[] pfFreeParams = makeFreeVarListFromObjectClasses(pf.getParameterClasses());
+		GroundedProp blockGP = new GroundedProp(pf, pfFreeParams);
+		return new PFAtom(blockGP);
 	}
+
 	
 	public static void main(String[] args) {
 		MinecraftBehavior mb = new MinecraftBehavior("src/minecraft/maps/learning/template.map");
@@ -226,7 +241,6 @@ public class AffordanceLearner {
 		List<LogicalExpression> lgds = new ArrayList<LogicalExpression>();
 		PropositionalFunction atGoal = mb.pfAgentHasAtLeastXGoldOre;
 		LogicalExpression goalLE = pfAtomFromPropFunc(atGoal);
-		goalLE.setName("goldsmelting");
 		lgds.add(goalLE);
 		
 		// Set up precondition list
@@ -262,10 +276,4 @@ public class AffordanceLearner {
 		
 	}
 	
-	private static LogicalExpression pfAtomFromPropFunc(PropositionalFunction pf) {
-		String[] pfFreeParams = makeFreeVarListFromObjectClasses(pf.getParameterClasses());
-		GroundedProp blockGP = new GroundedProp(pf, pfFreeParams);
-		return new PFAtom(blockGP);
-	}
-
 }

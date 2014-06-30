@@ -290,7 +290,6 @@ public class WorldGenerator {
     return sb.toString();
   }
   
-  
   public static void main(String[] args) {
     String fileName = "src/minecraft/maps/testingWorld.map";
     WorldGenerator generator = new WorldGenerator(4, 4, 4);
