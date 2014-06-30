@@ -19,7 +19,6 @@ import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueItera
 import burlap.oomdp.auxiliary.StateParser;
 import burlap.oomdp.core.*;
 import burlap.oomdp.logicalexpressions.LogicalExpression;
-import burlap.oomdp.logicalexpressions.LogicalExpressionParser;
 import burlap.oomdp.singleagent.*;
 import burlap.oomdp.singleagent.common.*;
 import burlap.behavior.statehashing.DiscreteStateHashFactory;
@@ -28,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
+import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
+import minecraft.MinecraftStateGenerator.Exceptions.StateCreationException;
 
 /**
  * The main behavior class for the minecraft domain
@@ -96,7 +97,11 @@ public class MinecraftBehavior {
 		this.hashingFactory.setAttributesForClass(NameSpace.CLASSAGENT, domain.getObjectClass(NameSpace.CLASSAGENT).attributeList); 
 		
 		//Set initial state
-		this.initialState = MinecraftInitialStateGenerator.createInitialState(mapAs3DArray, headerInfo, domain);
+		try {
+			this.initialState = MinecraftStateGenerator.createInitialState(mapAs3DArray, headerInfo, domain);
+		} catch (StateCreationException e) {
+			e.printStackTrace();
+		}
 		
 		//Get propositional functions
 		this.pfAgentAtGoal = domain.getPropFunction(NameSpace.PFATGOAL);
@@ -109,16 +114,29 @@ public class MinecraftBehavior {
 		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFTRENCHINFRONT);
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
 		
-<<<<<<< HEAD
-		PropositionalFunction propFunToUse = this.pfAgentInMidAir;
-
-=======
->>>>>>> FETCH_HEAD
+		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
+		
 		//Set up reward function
-		this.rewardFunction = new SingleGoalPFRF(this.pfAgentAtGoal, 0, -1); 
+		this.rewardFunction = new SingleGoalPFRF(pfToUse, 0, -1); 
 		
 		//Set up terminal function
-		this.terminalFunction = new SinglePFTF(this.pfAgentAtGoal);
+		this.terminalFunction = new SinglePFTF(pfToUse);
+	}
+	
+	private PropositionalFunction getPFFromHeader(HashMap<String, Integer> headerInfo) {
+		switch(headerInfo.get(Character.toString(NameSpace.CHARGOALDESCRIPTOR))) {
+		case NameSpace.INTXYZGOAL:
+			return this.pfAgentAtGoal;
+		
+		case NameSpace.INTGOLDBARGOAL:
+			return this.pfAgentHasAtLeastXGoldBar;
+		default:
+			break;
+		}
+		
+		return null;
+		
+		
 	}
 	
 	// ---------- PLANNERS ---------- 
@@ -219,29 +237,15 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-<<<<<<< HEAD
-		String mapPath = "src/minecraft/maps/shallowTrench1Flipped.map";
+		String mapFileName = "goldDigger1.map";
+		String mapsPath = "src/minecraft/maps/toCluster/";
 		String outputPath = "src/minecraft/planningOutput/";
-		MinecraftBehavior mcBeh = new MinecraftBehavior(mapPath);
+		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapFileName);
 		
 		mcBeh.BFSExample(outputPath);
 		//mcBeh.ValueIterationPlanner();
 	
-=======
-		String mapPath = "src/minecraft/maps/TESTING.map";
-		String outputPath = "src/minecraft/planningOutput/";
-		MinecraftBehavior mcBeh = new MinecraftBehavior(mapPath);
-		
-//		mcBeh.BFSExample(outputPath);
-//		mcBeh.ValueIterationPlanner();
-		
-		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.load(mcBeh.getDomain(), "trenches50.kb");
-		
-		mcBeh.AffordanceRTDP(affKB);
-		
-//		mcBeh.RTDP();
->>>>>>> FETCH_HEAD
+
 	}
 	
 	// --- ACCESSORS ---

@@ -3,7 +3,6 @@ package minecraft.MinecraftDomain;
 import java.util.HashMap;
 
 import minecraft.MapIO;
-import minecraft.MinecraftInitialStateGenerator;
 import minecraft.NameSpace;
 import minecraft.MinecraftDomain.Actions.DestroyBlockAction;
 import minecraft.MinecraftDomain.Actions.JumpAction;
@@ -21,6 +20,8 @@ import minecraft.MinecraftDomain.PropositionalFunctions.BlockInFrontOfAgentPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptySpacePF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EndOfMapInFrontOfAgentPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.TrenchInFrontOfAgentPF;
+import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
+import minecraft.MinecraftStateGenerator.Exceptions.StateCreationException;
 import burlap.oomdp.auxiliary.DomainGenerator;
 import burlap.oomdp.core.Attribute;
 import burlap.oomdp.core.Domain;
@@ -203,8 +204,8 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new AtGoalPF(NameSpace.PFATGOAL, domain, new String[]{NameSpace.CLASSAGENT, NameSpace.CLASSGOAL});
 		new EmptySpacePF(NameSpace.PFEMPSPACE, domain, new String[]{}, 0, 0, 0);
 		new BlockAtPF(NameSpace.PFBLOCKAT, domain, new String[]{}, 0, 0, 0);
-		new AgentHasAtLeastXGoldOrePF(NameSpace.PFATLEASTXGOLDORE, domain, new String[]{NameSpace.CLASSAGENT}, 2);
-		new AgentHasAtLeastXGoldBarPF(NameSpace.PFATLEASTXGOLDBAR, domain, new String[]{NameSpace.CLASSAGENT}, 2);
+		new AgentHasAtLeastXGoldOrePF(NameSpace.PFATLEASTXGOLDORE, domain, new String[]{NameSpace.CLASSAGENT}, 1);
+		new AgentHasAtLeastXGoldBarPF(NameSpace.PFATLEASTXGOLDBAR, domain, new String[]{NameSpace.CLASSAGENT}, 1);
 		new BlockInFrontOfAgentPF(NameSpace.PFBLOCKINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOAL);
 		new EndOfMapInFrontOfAgentPF(NameSpace.PFENDOFMAPINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new TrenchInFrontOfAgentPF(NameSpace.PFTRENCHINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
@@ -222,7 +223,13 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		
 		DomainGenerator dg = new MinecraftDomainGenerator(charMap, headerInfo);
 		Domain d = dg.generateDomain();
-		State state = MinecraftInitialStateGenerator.createInitialState(charMap, headerInfo, d);
+		State state = null;
+		
+		try {
+			state = MinecraftStateGenerator.createInitialState(charMap, headerInfo, d);
+		} catch (StateCreationException e) {
+			e.printStackTrace();
+		}
 		
 		TerminalExplorer exp = new TerminalExplorer(d);
 		exp.addActionShortHand("j", NameSpace.ACTIONJUMP);

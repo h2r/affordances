@@ -2,9 +2,9 @@ package minecraft.MinecraftDomain.Actions;
 
 import java.util.List;
 
-import minecraft.MinecraftInitialStateGenerator;
 import minecraft.NameSpace;
 import minecraft.MinecraftDomain.Helpers;
+import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.State;
@@ -66,7 +66,7 @@ public class PlaceBlockAction extends AgentAction {
 		if (canPlace) {
 			int numberOfObjects = state.getAllObjects().toArray().length;
 			//Update state
-			ObjectInstance toAdd = MinecraftInitialStateGenerator.createIndWall(this.domain, toPlaceX, toPlaceY, toPlaceZ, numberOfObjects);
+			ObjectInstance toAdd = MinecraftStateGenerator.createIndWall(this.domain, toPlaceX, toPlaceY, toPlaceZ, numberOfObjects);
 			state.addObject(toAdd);
 			
 			//Update agent's number of blocks

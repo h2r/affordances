@@ -3,18 +3,14 @@ package affordances.WorldClusterer;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
-import cc.mallet.types.SparseVector;
 import burlap.behavior.singleagent.EpisodeAnalysis;
-import burlap.behavior.singleagent.Policy;
-import burlap.behavior.singleagent.planning.OOMDPPlanner;
-import burlap.behavior.singleagent.planning.QComputablePlanner;
 import burlap.behavior.singleagent.planning.ValueFunctionPlanner;
 import burlap.behavior.singleagent.planning.commonpolicies.GreedyDeterministicQPolicy;
 import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueIteration;
 import burlap.oomdp.core.State;
-import burlap.oomdp.singleagent.Action;
 import burlap.oomdp.singleagent.GroundedAction;
 import minecraft.MapIO;
 import minecraft.MinecraftBehavior;
@@ -79,19 +75,19 @@ public class WorldClusterer {
 	private void calculateCountsForAllMaps() {
 		for (String mapFileString: this.mapFileToIO.keySet()) {
 			System.out.println("Calculating action counts for " + mapFileString);
+			
+			//Get IO, behavior, planner and policy
 			MapIO currIO = this.mapFileToIO.get(mapFileString);
 			MinecraftBehavior mcBeh = new MinecraftBehavior(this.directory + mapFileString);
 			ValueFunctionPlanner planner = new ValueIteration(mcBeh.getDomain(), mcBeh.getRewardFunction(), mcBeh.getTerminalFunction(), mcBeh.getGamma(), mcBeh.getHashFactory(), mcBeh.getMinDelta(), Integer.MAX_VALUE);
-			
 			GreedyDeterministicQPolicy p = (GreedyDeterministicQPolicy)mcBeh.solve(planner);
 			
-			EpisodeAnalysis ea = p.evaluateBehavior(mcBeh.getInitialState(), mcBeh.getRewardFunction(), mcBeh.getTerminalFunction());
-			List<State> allStates = ea.stateSequence;//((ValueFunctionPlanner)planner).getAllStates();
-			HashMap<GroundedAction, Integer> countsHashMapForMap = new HashMap<GroundedAction, Integer>();
-
-			//Prune the terminal state
-			allStates.remove(allStates.size()-1);
+			//Get all states
+			List<State> allStates = getAllStates(p, mcBeh, planner);
 			
+			HashMap<GroundedAction, Integer> countsHashMapForMap = new HashMap<GroundedAction, Integer>();
+			
+			//Count action in each state
 			for(State currState: allStates) {
 				GroundedAction currGroundedAction = (GroundedAction) p.getAction(currState);
 				Integer oldCount = countsHashMapForMap.get(currGroundedAction);
@@ -107,6 +103,41 @@ public class WorldClusterer {
 			this.actionCountsForWorlds.put(currIO, countsHashMapForMap);
 			
 		}
+	}
+	
+	private List<State> getAllStates(GreedyDeterministicQPolicy p, MinecraftBehavior mcBeh, ValueFunctionPlanner planner) {
+		//Use full state space
+//		List<State> allStates = ((ValueFunctionPlanner) planner).getAllStates();
+		
+		//Use plan
+		EpisodeAnalysis ea = p.evaluateBehavior(mcBeh.getInitialState(), mcBeh.getRewardFunction(), mcBeh.getTerminalFunction());
+		List<State> allStates = ea.stateSequence;
+
+		//Roll out policy-reachable states
+//		List<State> allStates = new ArrayList<State>();
+//		List<State> frontier = new ArrayList<State>();
+//		frontier.add(mcBeh.getInitialState());
+//		HashSet<State> visitedStates = new HashSet<State>();
+//		
+//		while(!frontier.isEmpty()) {
+//			State currState = frontier.remove(0);
+//			if (!allStates.contains(currState)) {
+//				GroundedAction currGroundedAction = (GroundedAction) p.getAction(currState);
+//				State resultingState = currGroundedAction.executeIn(currState);//Get state linked by policy
+//				
+//				
+//				//Update DSs as necessary
+//				frontier.add(resultingState);
+//				visitedStates.add(currState);
+//				allStates.add(currState);
+//				System.out.println(allStates.size());
+//			}
+//		}
+		
+		//Prune the terminal state
+		allStates.remove(allStates.size()-1);
+		
+		return allStates;
 	}
 	
 	/**
@@ -198,9 +229,9 @@ public class WorldClusterer {
 
 
 	public static void main(String [] args) {
-		String filePath = "src/minecraft/maps/";
-		WorldClusterer test = new WorldClusterer(filePath, 3);
-		test.printActionCounts();
+		String filePath = "src/minecraft/maps/toCluster/";
+		WorldClusterer test = new WorldClusterer(filePath, 5);
+		//test.printActionCounts();
 		test.printNormActionCounts();
 		test.printClusters(true);
 	}
