@@ -1,6 +1,7 @@
 package minecraft;
 
 import affordances.KnowledgeBase;
+import burlap.behavior.affordances.AffordanceDelegate;
 import burlap.behavior.affordances.AffordancesController;
 import burlap.behavior.singleagent.*;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
@@ -19,6 +20,7 @@ import burlap.oomdp.auxiliary.StateParser;
 import burlap.oomdp.core.*;
 import burlap.oomdp.logicalexpressions.LogicalExpression;
 import burlap.oomdp.logicalexpressions.LogicalExpressionParser;
+import burlap.oomdp.logicalexpressions.PFAtom;
 import burlap.oomdp.singleagent.*;
 import burlap.oomdp.singleagent.common.*;
 import burlap.behavior.statehashing.DiscreteStateHashFactory;
@@ -26,6 +28,9 @@ import burlap.behavior.statehashing.DiscreteStateHashFactory;
 import java.util.HashMap;
 import java.util.List;
 
+import subgoals.Subgoal;
+import subgoals.SubgoalKnowledgeBase;
+import subgoals.SubgoalPlanner;
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
 
 /**
@@ -108,11 +113,25 @@ public class MinecraftBehavior {
 		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFTRENCHINFRONT);
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
 		
+		List<GroundedProp> groundedGoals = this.pfAgentAtGoal.getAllGroundedPropsForState(this.initialState);
+		
+		for(GroundedProp gp : groundedGoals) {
+			System.out.println("grounding: " + gp.pf.toString());
+		}
+		
+		GroundedProp groundedGoal = groundedGoals.get(0);
+		
+		LogicalExpression relevantGoalExpression = new PFAtom(groundedGoal);
+		
+		if(filePathOfMap.contains("gold")) {
+			relevantGoalExpression = new PFAtom(new GroundedProp(this.pfAgentHasAtLeastXGoldOre, AffordanceDelegate.makeFreeVarListFromObjectClasses(this.pfAgentHasAtLeastXGoldOre.getParameterClasses())));
+		}
+		
 		//Set up reward function
-		this.rewardFunction = new SingleGoalPFRF(this.pfAgentAtGoal, 0, -1); 
+		this.rewardFunction = new SingleGoalLERF(relevantGoalExpression, 0, -1); 
 		
 		//Set up terminal function
-		this.terminalFunction = new SinglePFTF(this.pfAgentAtGoal);
+		this.terminalFunction = new SingleLETF(relevantGoalExpression);
 	}
 	
 	// ---------- PLANNERS ---------- 
@@ -213,18 +232,30 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-		String mapPath = "src/minecraft/maps/TESTING.map";
+		String mapName = "TESTING.map";
+		String mapPath = "src/minecraft/maps/" + mapName;
 		String outputPath = "src/minecraft/planningOutput/";
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapPath);
 		
+		// BFS
 //		mcBeh.BFSExample(outputPath);
+		
+		// VI
 //		mcBeh.ValueIterationPlanner();
 		
+		// Affordance RTDP
 		KnowledgeBase affKB = new KnowledgeBase();
 		affKB.load(mcBeh.getDomain(), "trenches50.kb");
-		
 		mcBeh.AffordanceRTDP(affKB);
 		
+		// Subgoal Planner
+//		OOMDPPlanner lowLevelPlanner = new RTDP(mcBeh.domain, mcBeh.rewardFunction, mcBeh.terminalFunction, mcBeh.gamma, mcBeh.hashingFactory, mcBeh.vInit, mcBeh.numRollouts, mcBeh.minDelta, mcBeh.maxDepth);
+//		SubgoalKnowledgeBase subgoalKB = new SubgoalKnowledgeBase(mapName, mcBeh.domain);
+//		List<Subgoal> highLevelPlan = subgoalKB.generateSubgoalKB(mapName);
+//		SubgoalPlanner sgp = new SubgoalPlanner(mcBeh.domain, mcBeh.getInitialState(), mcBeh.rewardFunction, mcBeh.terminalFunction, lowLevelPlanner, highLevelPlan);
+//		sgp.solve();
+		
+		// RTDP
 //		mcBeh.RTDP();
 	}
 	
