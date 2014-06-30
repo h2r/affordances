@@ -25,6 +25,10 @@ public class LearningWorldGenerator extends WorldGenerator {
 		// Add dirt floor
 		this.addIndestFloor(toReturn);
 		
+		
+		//Add agent
+		this.addAgent(toReturn);
+		
 		// Add trench
 		if(goalDescription.toString().contains("trench")) {
 			this.addTrenches(this.numTrenches, toReturn);
@@ -39,11 +43,6 @@ public class LearningWorldGenerator extends WorldGenerator {
 			//Add goal
 			this.addRandomSpatialGoal(toReturn);			
 		}
-		
-
-		
-		//Add agent
-		this.addAgent(toReturn);
 				
 		return toReturn;
 	}

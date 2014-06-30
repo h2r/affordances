@@ -26,8 +26,11 @@ import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueItera
 import burlap.oomdp.auxiliary.StateParser;
 import burlap.oomdp.core.*;
 import burlap.oomdp.logicalexpressions.LogicalExpression;
+import burlap.oomdp.logicalexpressions.PFAtom;
 import burlap.oomdp.singleagent.*;
+import burlap.oomdp.singleagent.common.SingleGoalLERF;
 import burlap.oomdp.singleagent.common.SingleGoalPFRF;
+import burlap.oomdp.singleagent.common.SingleLETF;
 import burlap.oomdp.singleagent.common.SinglePFTF;
 import burlap.behavior.statehashing.DiscreteStateHashFactory;
 import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
@@ -120,11 +123,20 @@ public class MinecraftBehavior {
 
 		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
 		
+		LogicalExpression leToUse = new PFAtom(pfToUse.getAllGroundedPropsForState(this.initialState).get(0)); 
+		
 		//Set up reward function
-		this.rewardFunction = new SingleGoalPFRF(pfToUse, 0, -1); 
+		this.rewardFunction = new SingleGoalLERF(leToUse, 0, -1); 
 		
 		//Set up terminal function
-		this.terminalFunction = new SinglePFTF(pfToUse);
+		this.terminalFunction = new SingleLETF(leToUse);
+				
+				
+//		//Set up reward function
+//		this.rewardFunction = new SingleGoalPFRF(pfToUse, 0, -1); 
+//		
+//		//Set up terminal function
+//		this.terminalFunction = new SinglePFTF(pfToUse);
 
 	}
 	

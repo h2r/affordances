@@ -24,13 +24,13 @@ public class AtGoalPF extends PropositionalFunction{
 
 	@Override
 	public boolean isTrue(State state, String[] params) {
-		//get the agent coordinates
+		// Get the agent coordinates
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 		int agentX = agent.getDiscValForAttribute(NameSpace.ATX);
 		int agentY = agent.getDiscValForAttribute(NameSpace.ATY);
 		int agentZ = agent.getDiscValForAttribute(NameSpace.ATZ);
 		
-		//get the goal coordinates
+		// Get the goal coordinates
 		List<ObjectInstance> allGoals = state.getObjectsOfTrueClass(NameSpace.CLASSGOAL);
 		
 		for (ObjectInstance goal : allGoals) {
@@ -38,7 +38,7 @@ public class AtGoalPF extends PropositionalFunction{
 			int goalY = goal.getDiscValForAttribute(NameSpace.ATY);
 			int goalZ = goal.getDiscValForAttribute(NameSpace.ATZ);
 			
-			//Check if equal
+			// Check if equal
 			if(agentX == goalX && agentY == goalY && agentZ == goalZ){
 				return true;
 			}

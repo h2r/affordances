@@ -266,7 +266,7 @@ public class AffordanceLearner {
 		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions);
 
 		// Initialize Learner
-		boolean countTotalActions = true;
+		boolean countTotalActions = false;
 		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions);
 		
 		affLearn.learn();

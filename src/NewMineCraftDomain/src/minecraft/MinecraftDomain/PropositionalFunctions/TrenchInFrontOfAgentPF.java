@@ -40,8 +40,10 @@ public class TrenchInFrontOfAgentPF extends PropositionalFunction {
 		int trenchY = posinInFront[1];
 		int trenchZ = agentZ-2;
 		
-		//True if block below agent and nothing in same plane in front of agent
-		return Helpers.blockBelowAgent(state) && 
+		// True if block below agent and nothing in same plane in front of agent
+		boolean b = Helpers.blockBelowAgent(state) && 
 				Helpers.withinMapAt(trenchX, trenchY, trenchZ, this.cols, this.rows, this.height) && Helpers.emptySpaceAt(trenchX, trenchY, trenchZ, state);
+		
+		return b;
 	}
 }
