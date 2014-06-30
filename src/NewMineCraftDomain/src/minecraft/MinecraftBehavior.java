@@ -110,25 +110,65 @@ public class MinecraftBehavior {
 		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFTRENCHINFRONT);
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
 		
-		List<GroundedProp> groundedGoals = this.pfAgentAtGoal.getAllGroundedPropsForState(this.initialState);
+
+		LogicalExpression relevantGoalExpression;
+		List<GroundedProp> groundedGoals;
 		
+		if(filePathOfMap.contains("Gold")) {
+			// If we're in a gold map, reset tf/rf for agent having gold
+			groundedGoals = this.pfAgentHasAtLeastXGoldOre.getAllGroundedPropsForState(this.initialState);			
+		} else{
+			// Otherwise, in an AtGoal world, updated regularly.
+			groundedGoals = this.pfAgentAtGoal.getAllGroundedPropsForState(this.initialState);
+		}
+		
+		// Not parameterized goals, so take first (and only) grounding.
 		for(GroundedProp gp : groundedGoals) {
 			System.out.println("grounding: " + gp.pf.toString());
 		}
 		
 		GroundedProp groundedGoal = groundedGoals.get(0);
+		relevantGoalExpression = new PFAtom(groundedGoal);
 		
-		LogicalExpression relevantGoalExpression = new PFAtom(groundedGoal);
-		
-		if(filePathOfMap.contains("gold")) {
-			relevantGoalExpression = new PFAtom(new GroundedProp(this.pfAgentHasAtLeastXGoldOre, AffordanceDelegate.makeFreeVarListFromObjectClasses(this.pfAgentHasAtLeastXGoldOre.getParameterClasses())));
-		}
 	
-		//Set up reward function
-		this.rewardFunction = new SingleGoalLERF(relevantGoalExpression, 0, -1); 
+		// Set up reward function with new goal
+//		this.rewardFunction = new SingleGoalLERF(relevantGoalExpression, 10, -1); 
 		
-		//Set up terminal function
-		this.terminalFunction = new SingleLETF(relevantGoalExpression);
+		//Set up terminal function with new goal
+//		this.terminalFunction = new SingleLETF(relevantGoalExpression);
+		
+		this.rewardFunction = new SingleGoalPFRF(this.pfAgentHasAtLeastXGoldOre);
+		this.terminalFunction = new SinglePFTF(this.pfAgentHasAtLeastXGoldOre);
+	}
+	
+	// --- ACCESSORS ---
+	
+	public Domain getDomain() {
+		return this.domain;
+	}
+	
+	public RewardFunction getRewardFunction() {
+		return this.rewardFunction;
+	}
+	
+	public TerminalFunction getTerminalFunction() {
+		return this.terminalFunction;
+	}
+	
+	public double getGamma() {
+		return this.gamma;
+	}
+	
+	public DiscreteStateHashFactory getHashFactory() {
+		return this.hashingFactory;
+	}
+
+	public double getMinDelta() {
+		return this.minDelta;
+	}
+	
+	public State getInitialState() {
+		return this.initialState;
 	}
 	
 	// ---------- PLANNERS ---------- 
@@ -230,7 +270,10 @@ public class MinecraftBehavior {
 	
 	public static void main(String[] args) {
 
-		String mapName = "TESTING.map";
+//		String mapName = "0.map";
+//		String mapPath = "src/minecraft/maps/learning/AgentHasXGoldOre/" + mapName;
+		
+		String mapName = "testingGoldOre.map";
 		String mapPath = "src/minecraft/maps/" + mapName;
 
 		String outputPath = "src/minecraft/planningOutput/";
@@ -240,12 +283,12 @@ public class MinecraftBehavior {
 //		mcBeh.BFSExample(outputPath);
 		
 		// VI
-//		mcBeh.ValueIterationPlanner();
+		mcBeh.ValueIterationPlanner();
 		
-		// Affordance RTDP
-		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.load(mcBeh.getDomain(), "trenches50.kb");
-		mcBeh.AffordanceRTDP(affKB);
+//		// Affordance RTDP
+//		KnowledgeBase affKB = new KnowledgeBase();
+//		affKB.load(mcBeh.getDomain(), "trenches50.kb");
+//		mcBeh.AffordanceRTDP(affKB);
 		
 		// Subgoal Planner
 //		OOMDPPlanner lowLevelPlanner = new RTDP(mcBeh.domain, mcBeh.rewardFunction, mcBeh.terminalFunction, mcBeh.gamma, mcBeh.hashingFactory, mcBeh.vInit, mcBeh.numRollouts, mcBeh.minDelta, mcBeh.maxDepth);
@@ -258,34 +301,5 @@ public class MinecraftBehavior {
 //		mcBeh.RTDP();
 	}
 	
-	// --- ACCESSORS ---
-	
-	public Domain getDomain() {
-		return this.domain;
-	}
-	
-	public RewardFunction getRewardFunction() {
-		return this.rewardFunction;
-	}
-	
-	public TerminalFunction getTerminalFunction() {
-		return this.terminalFunction;
-	}
-	
-	public double getGamma() {
-		return this.gamma;
-	}
-	
-	public DiscreteStateHashFactory getHashFactory() {
-		return this.hashingFactory;
-	}
-
-	public double getMinDelta() {
-		return this.minDelta;
-	}
-	
-	public State getInitialState() {
-		return this.initialState;
-	}
 	
 }

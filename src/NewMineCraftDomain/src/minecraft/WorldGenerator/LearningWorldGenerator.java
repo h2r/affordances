@@ -30,8 +30,17 @@ public class LearningWorldGenerator extends WorldGenerator {
 			this.addTrenches(this.numTrenches, toReturn);
 		}
 		
-		//Add goal
-		this.addRandomSpatialGoal(toReturn);
+		// Add trench
+		if(goalDescription.toString().contains("Gold")) {
+			// Add gold stuff
+			this.addGoldOre(toReturn);
+			this.addFurnace(toReturn);
+		} else {
+			//Add goal
+			this.addRandomSpatialGoal(toReturn);			
+		}
+		
+
 		
 		//Add agent
 		this.addAgent(toReturn);

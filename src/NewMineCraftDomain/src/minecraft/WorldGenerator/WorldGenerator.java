@@ -56,7 +56,7 @@ public class WorldGenerator {
   }
   
   private int[] addCharRandomly(char toAdd, Integer x, Integer y, Integer z, char[][][] toChange) {
-    //Randomly add the given char toAdd to the map so that it does not conflict with already placed characters
+    // Randomly add the given char toAdd to the map so that it does not conflict with already placed characters
 	return addCharRandomlyHelper(toAdd,x,y,z,toChange,0);
   }
   
@@ -90,6 +90,7 @@ public class WorldGenerator {
 	}
 	
 	if(toChange[ny][nx][nz] != NameSpace.CHAREMPTY && toChange[ny][nx][nz] != toAdd) {
+		System.out.println("x,y,z " + x + "," + y + "," + z);
 		return addCharRandomlyHelper(toAdd, x, y, z, toChange, counter++);
 	}
 	else {
@@ -209,7 +210,15 @@ public class WorldGenerator {
     }
   }
   
-  private void addWalls(int numWalls, char[][][] toChange) {
+  protected void addGoldOre(char[][][] toChange) {
+	  this.addCharRandomly(NameSpace.CHARGOLDBLOCK, null, null, this.depthOfDirtFloor, toChange);
+  }
+  
+  protected void addFurnace(char[][][] toChange) {
+	  this.addCharRandomly(NameSpace.CHARFURNACE, null, null, this.depthOfDirtFloor, toChange);
+  }
+  
+  protected void addWalls(int numWalls, char[][][] toChange) {
     for (int trenchIndex = 0; trenchIndex < numWalls; trenchIndex++) {
       this.randomWalkInsertOfCharacterColumns(toChange, NameSpace.CHARDIRTBLOCK);
     }
@@ -217,7 +226,10 @@ public class WorldGenerator {
   
   protected void addAgent(char [][][] toChange) {
     assert(this.depthOfDirtFloor+1 < this.height);
+    // Add agent's head
     int[] headLocation = addCharRandomly(NameSpace.CHARAGENT, null, null, this.depthOfDirtFloor+1, toChange);
+    
+    // Add agent's feet
     toChange[headLocation[1]][headLocation[0]][headLocation[2]-1] = NameSpace.CHARAGENTFEET;
   }
   
