@@ -59,14 +59,14 @@ public class NameSpace {
 	
 	//-------------PROPOSITIONAL FUNCTION STRINGS-------------
 	public static final String				PFATGOAL = "AtGoal";
-	public static final String				PFEMPSPACE = "Empty space";
-	public static final String				PFBLOCKAT = "block at";
-	public static final String				PFATLEASTXGOLDORE = "agent has at least x gold ore";
-	public static final String				PFATLEASTXGOLDBAR = "agent has at least x gold bar";
-	public static final String				PFBLOCKINFRONT = "block in front of agent";
-	public static final String				PFENDOFMAPINFRONT = "end of map in front of agent";
-	public static final String				PFTRENCHINFRONT = "trench in front of agent";
-	public static final String				PFAGENTINMIDAIR = "agent in mid-air";
+	public static final String				PFEMPSPACE = "EmptySpace";
+	public static final String				PFBLOCKAT = "BlockAt";
+	public static final String				PFATLEASTXGOLDORE = "AgentHasXGoldOre";
+	public static final String				PFATLEASTXGOLDBAR = "AgentHasXGoldBlock";
+	public static final String				PFBLOCKINFRONT = "BlockFrontOfAgent";
+	public static final String				PFENDOFMAPINFRONT = "EndMapFrontOfAgent";
+	public static final String				PFTRENCHINFRONT = "TrenchFrontOfAgent";
+	public static final String				PFAGENTINMIDAIR = "AgentInAir";
 	
 	//-------------ENUMS-------------
 	public enum RotDirection {

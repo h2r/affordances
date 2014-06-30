@@ -56,22 +56,46 @@ public class WorldGenerator {
   }
   
   private int[] addCharRandomly(char toAdd, Integer x, Integer y, Integer z, char[][][] toChange) {
-    //Randomize any unspecifed coordinate
-    if (x == null) {
-      x = this.rand.nextInt(this.cols);
-    }
-    
-    if (y == null) {
-      y = this.rand.nextInt(this.rows);
-    }
-    
-    if (z == null) {
-      z = this.rand.nextInt(this.height);
-    }
-    
-    toChange[y][x][z] = toAdd;
-    
-    return new int[]{x,y,z};
+    //Randomly add the given char toAdd to the map so that it does not conflict with already placed characters
+	return addCharRandomlyHelper(toAdd,x,y,z,toChange,0);
+  }
+  
+  private int[] addCharRandomlyHelper(char toAdd, Integer x, Integer y, Integer z, char[][][] toChange, int counter) {
+  	// If we tried placing a reasonable number of times and failed, exit.
+	try {
+		if(counter > this.rows * this.cols) {
+			throw new Exception();
+	    }
+  	}
+  	catch (Exception e) {
+		e.printStackTrace();
+		System.exit(0);
+	}
+  	
+	//Randomize any unspecifed coordinate
+	Integer nx = x;
+	Integer ny = y;
+	Integer nz = z;
+	  
+	if (nx == null) {
+	  nx = this.rand.nextInt(this.cols);
+	}
+	
+	if (ny == null) {
+	  ny = this.rand.nextInt(this.rows);
+	}
+	
+	if (nz == null) {
+	  nz = this.rand.nextInt(this.height);
+	}
+	
+	if(toChange[ny][nx][nz] != NameSpace.CHAREMPTY && toChange[ny][nx][nz] != toAdd) {
+		return addCharRandomlyHelper(toAdd, x, y, z, toChange, counter++);
+	}
+	else {
+		toChange[ny][nx][nz] = toAdd;
+		return new int[]{nx,ny,nz};
+	}
   }
   
   protected void addRandomSpatialGoal(char[][][] toChange) {
@@ -209,7 +233,7 @@ public class WorldGenerator {
     this.addTrenches(numTrenches, toReturn);
     
     //Add walls
-    this.addWalls(numWalls, toReturn);
+//    this.addWalls(numWalls, toReturn);
     
     //Add goal
     this.addRandomSpatialGoal(toReturn);
@@ -257,7 +281,7 @@ public class WorldGenerator {
   
   public static void main(String[] args) {
     String fileName = "src/minecraft/maps/testingWorld.map";
-    WorldGenerator generator = new WorldGenerator(2, 2, 3);
+    WorldGenerator generator = new WorldGenerator(4, 4, 4);
     generator.randomizeMap(1, 1);
     String map = generator.getCurrMapAsString();
     System.out.println(map);

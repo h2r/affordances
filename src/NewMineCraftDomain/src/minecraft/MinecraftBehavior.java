@@ -14,9 +14,12 @@ import burlap.behavior.singleagent.planning.deterministic.SDPlannerPolicy;
 import burlap.behavior.singleagent.planning.deterministic.TFGoalCondition;
 import burlap.behavior.singleagent.planning.deterministic.uninformed.bfs.BFS;
 import burlap.behavior.singleagent.planning.stochastic.rtdp.AffordanceRTDP;
+import burlap.behavior.singleagent.planning.stochastic.rtdp.RTDP;
 import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueIteration;
 import burlap.oomdp.auxiliary.StateParser;
 import burlap.oomdp.core.*;
+import burlap.oomdp.logicalexpressions.LogicalExpression;
+import burlap.oomdp.logicalexpressions.LogicalExpressionParser;
 import burlap.oomdp.singleagent.*;
 import burlap.oomdp.singleagent.common.*;
 import burlap.behavior.statehashing.DiscreteStateHashFactory;
@@ -55,10 +58,10 @@ public class MinecraftBehavior {
 	
 	//Params for Planners
 	private double						gamma = 0.99;
-	private double						minDelta = 0.01;
+	private double						minDelta = .01;
 	private int							maxSteps = 200;
-	private int 						numRollouts = 1000; // RTDP
-	private int							maxDepth = 10; // RTDP
+	private int 						numRollouts = 20000; // RTDP
+	private int							maxDepth = 50; // RTDP
 	private int 						vInit = -1; // RTDP
 
 	
@@ -106,8 +109,11 @@ public class MinecraftBehavior {
 		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFTRENCHINFRONT);
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
 		
+<<<<<<< HEAD
 		PropositionalFunction propFunToUse = this.pfAgentInMidAir;
 
+=======
+>>>>>>> FETCH_HEAD
 		//Set up reward function
 		this.rewardFunction = new SingleGoalPFRF(this.pfAgentAtGoal, 0, -1); 
 		
@@ -199,7 +205,21 @@ public class MinecraftBehavior {
 
 	}
 	
+	public void RTDP() {
+
+		ValueFunctionPlanner planner = new RTDP(domain, this.rewardFunction, this.terminalFunction, this.gamma, this.hashingFactory, this.vInit, this.numRollouts, this.minDelta, this.maxDepth);
+		
+		planner.planFromState(initialState);
+		
+		// Create a Q-greedy policy from the planner
+		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
+		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
+		System.out.println(ea.getActionSequenceString());
+
+	}
+	
 	public static void main(String[] args) {
+<<<<<<< HEAD
 		String mapPath = "src/minecraft/maps/shallowTrench1Flipped.map";
 		String outputPath = "src/minecraft/planningOutput/";
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapPath);
@@ -207,6 +227,21 @@ public class MinecraftBehavior {
 		mcBeh.BFSExample(outputPath);
 		//mcBeh.ValueIterationPlanner();
 	
+=======
+		String mapPath = "src/minecraft/maps/TESTING.map";
+		String outputPath = "src/minecraft/planningOutput/";
+		MinecraftBehavior mcBeh = new MinecraftBehavior(mapPath);
+		
+//		mcBeh.BFSExample(outputPath);
+//		mcBeh.ValueIterationPlanner();
+		
+		KnowledgeBase affKB = new KnowledgeBase();
+		affKB.load(mcBeh.getDomain(), "trenches50.kb");
+		
+		mcBeh.AffordanceRTDP(affKB);
+		
+//		mcBeh.RTDP();
+>>>>>>> FETCH_HEAD
 	}
 	
 	// --- ACCESSORS ---
