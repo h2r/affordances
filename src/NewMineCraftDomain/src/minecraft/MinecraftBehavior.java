@@ -33,6 +33,7 @@ import burlap.oomdp.singleagent.common.SingleGoalPFRF;
 import burlap.oomdp.singleagent.common.SingleLETF;
 import burlap.oomdp.singleagent.common.SinglePFTF;
 import burlap.behavior.statehashing.DiscreteStateHashFactory;
+import burlap.behavior.statehashing.StateHashFactory;
 import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
 import minecraft.MinecraftStateGenerator.Exceptions.StateCreationException;
 
@@ -63,6 +64,11 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfTrenchInFrontOfAgent;
 	public PropositionalFunction		pfAgentInMidAir;
 	
+	// Dave's jenky hard coded prop funcs
+	public PropositionalFunction		pfAgentLookForwardAndWalkable;
+	public PropositionalFunction		pfTrenchBetweenAgentAndGoal;
+	public PropositionalFunction		pfEmptyCellFrontAgentWalk;
+	
 	
 	//Params for Planners
 	private double						gamma = 0.99;
@@ -71,6 +77,7 @@ public class MinecraftBehavior {
 	private int 						numRollouts = 20000; // RTDP
 	private int							maxDepth = 50; // RTDP
 	private int 						vInit = -1; // RTDP
+	private int 						numRolloutsWithSmallChangeToConverge = 30;
 
 	
 	// ----- CLASS METHODS -----
@@ -118,9 +125,11 @@ public class MinecraftBehavior {
 		this.pfAgentHasAtLeastXGoldBar = domain.getPropFunction(NameSpace.PFATLEASTXGOLDBAR);
 		this.pfBlockInFrontOfAgent = domain.getPropFunction(NameSpace.PFBLOCKINFRONT);
 		this.pfEndOfMapInFrontOfAgent = domain.getPropFunction(NameSpace.PFENDOFMAPINFRONT);
-		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFTRENCHINFRONT);
+		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFEMPTYCELLINFRONT);
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
-
+		this.pfAgentLookForwardAndWalkable = domain.getPropFunction(NameSpace.PFAGENTLOOKFORWARDWALK);
+		this.pfEmptyCellFrontAgentWalk = domain.getPropFunction(NameSpace.PFEMPTYCELLINWALK);
+		
 		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
 		
 		LogicalExpression leToUse = new PFAtom(pfToUse.getAllGroundedPropsForState(this.initialState).get(0)); 
@@ -130,7 +139,6 @@ public class MinecraftBehavior {
 		
 		//Set up terminal function
 		this.terminalFunction = new SingleLETF(leToUse);
-				
 				
 //		//Set up reward function
 //		this.rewardFunction = new SingleGoalPFRF(pfToUse, 0, -1); 
@@ -262,7 +270,7 @@ public class MinecraftBehavior {
 	public void AffordanceRTDP(KnowledgeBase affKB){
 		AffordancesController affController = affKB.getAffordancesController();
 
-		ValueFunctionPlanner planner = new AffordanceRTDP(domain, this.rewardFunction, this.terminalFunction, this.gamma, this.hashingFactory, this.vInit, this.numRollouts, this.minDelta, this.maxDepth, affController);
+		ValueFunctionPlanner planner = new AffordanceRTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth, affController, numRolloutsWithSmallChangeToConverge);
 		
 		planner.planFromState(initialState);
 		
@@ -275,8 +283,8 @@ public class MinecraftBehavior {
 	
 	public void RTDP() {
 
-		ValueFunctionPlanner planner = new RTDP(domain, this.rewardFunction, this.terminalFunction, this.gamma, this.hashingFactory, this.vInit, this.numRollouts, this.minDelta, this.maxDepth);
-		
+		ValueFunctionPlanner planner = new RTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth);
+		((RTDP) planner).setMinNumRolloutsWithSmallValueChange(numRolloutsWithSmallChangeToConverge);
 		planner.planFromState(initialState);
 		
 		// Create a Q-greedy policy from the planner
@@ -287,11 +295,11 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-		String mapsPath = "src/minecraft/maps/learning/AgentHasXGoldOre/";
+		String mapsPath = "src/minecraft/maps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
 
-		String mapName = "0.map";
+		String mapName = "TESTING.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
@@ -299,12 +307,12 @@ public class MinecraftBehavior {
 //		mcBeh.BFSExample(outputPath);
 		
 		// VI
-		mcBeh.ValueIterationPlanner();
+//		mcBeh.ValueIterationPlanner();
 		
-//		// Affordance RTDP
-//		KnowledgeBase affKB = new KnowledgeBase();
-//		affKB.load(mcBeh.getDomain(), "trenches50.kb");
-//		mcBeh.AffordanceRTDP(affKB);
+		// Affordance RTDP
+		KnowledgeBase affKB = new KnowledgeBase();
+		affKB.load(mcBeh.getDomain(), "trenches100.kb");
+		mcBeh.AffordanceRTDP(affKB);
 		
 		// Subgoal Planner
 //		OOMDPPlanner lowLevelPlanner = new RTDP(mcBeh.domain, mcBeh.rewardFunction, mcBeh.terminalFunction, mcBeh.gamma, mcBeh.hashingFactory, mcBeh.vInit, mcBeh.numRollouts, mcBeh.minDelta, mcBeh.maxDepth);
