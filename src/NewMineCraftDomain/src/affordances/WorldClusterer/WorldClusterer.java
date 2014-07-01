@@ -107,11 +107,11 @@ public class WorldClusterer {
 	
 	private List<State> getAllStates(GreedyDeterministicQPolicy p, MinecraftBehavior mcBeh, ValueFunctionPlanner planner) {
 		//Use full state space
-//		List<State> allStates = ((ValueFunctionPlanner) planner).getAllStates();
+		List<State> allStates = ((ValueFunctionPlanner) planner).getAllStates();
 		
 		//Use plan
-		EpisodeAnalysis ea = p.evaluateBehavior(mcBeh.getInitialState(), mcBeh.getRewardFunction(), mcBeh.getTerminalFunction());
-		List<State> allStates = ea.stateSequence;
+//		EpisodeAnalysis ea = p.evaluateBehavior(mcBeh.getInitialState(), mcBeh.getRewardFunction(), mcBeh.getTerminalFunction());
+//		List<State> allStates = ea.stateSequence;
 
 		//Roll out policy-reachable states
 //		List<State> allStates = new ArrayList<State>();
@@ -230,7 +230,7 @@ public class WorldClusterer {
 
 	public static void main(String [] args) {
 		String filePath = "src/minecraft/maps/toCluster/";
-		WorldClusterer test = new WorldClusterer(filePath, 5);
+		WorldClusterer test = new WorldClusterer(filePath, 4);
 		//test.printActionCounts();
 		test.printNormActionCounts();
 		test.printClusters(true);

@@ -162,7 +162,7 @@ public class MapIO {
 	 * @param filePath
 	 */
 	public void printHeaderAndMapToFile(String filePath) {
-		String toPrint = getHeaderAsString() + getCharArrayAsString();
+		String toPrint = this.toString();
 		PrintWriter outPrinter = null;
 		try { 
 			File f = new File(filePath);
@@ -176,6 +176,11 @@ public class MapIO {
 		}
 		outPrinter.print(toPrint);
 		outPrinter.close();
+	}
+	
+	@Override
+	public String toString() {
+		return getHeaderAsString() + getCharArrayAsString();
 	}
 
 

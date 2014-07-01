@@ -1,7 +1,9 @@
 package minecraft.WorldGenerator;
 
+import java.util.HashMap;
 import java.util.Random;
 
+import minecraft.MapIO;
 import minecraft.NameSpace;
 import minecraft.MinecraftDomain.Helpers;
 
@@ -16,8 +18,16 @@ public class WorldGenerator {
   double probTrenchChangeDirection = .2;
   
   char[][][] charArray;
+  HashMap<String, Integer> headerInfo;
+  
   Random rand;
   
+  /**
+   * 
+   * @param rows
+   * @param cols
+   * @param height
+   */
   public WorldGenerator(int rows, int cols, int height) {
     this.rows = rows;
     this.cols = cols;
@@ -25,6 +35,14 @@ public class WorldGenerator {
     this.rand = new Random();
   }
   
+  /**
+   * 
+   * @param rows
+   * @param cols
+   * @param height
+   * @param depthOfDirtFloor
+   * @param probTrenchChangeDir
+   */
   public WorldGenerator(int rows, int cols, int height, int depthOfDirtFloor, double probTrenchChangeDir) {
     this.rows = rows;
     this.cols = cols;
@@ -63,11 +81,11 @@ public class WorldGenerator {
   private int[] addCharRandomlyHelper(char toAdd, Integer x, Integer y, Integer z, char[][][] toChange, int counter) {
   	// If we tried placing a reasonable number of times and failed, exit.
 	try {
-		if(counter > this.rows * this.cols) {
-			throw new Exception();
+		if(counter > this.rows*this.cols*this.height) {
+			throw new WorldIsTooSmallException();
 	    }
   	}
-  	catch (Exception e) {
+  	catch (WorldIsTooSmallException e) {
 		e.printStackTrace();
 		System.exit(0);
 	}
@@ -90,8 +108,7 @@ public class WorldGenerator {
 	}
 	
 	if(toChange[ny][nx][nz] != NameSpace.CHAREMPTY && toChange[ny][nx][nz] != toAdd) {
-		System.out.println("x,y,z " + x + "," + y + "," + z);
-		return addCharRandomlyHelper(toAdd, x, y, z, toChange, counter++);
+		return addCharRandomlyHelper(toAdd, x, y, z, toChange, ++counter);
 	}
 	else {
 		toChange[ny][nx][nz] = toAdd;
@@ -230,10 +247,11 @@ public class WorldGenerator {
     int[] headLocation = addCharRandomly(NameSpace.CHARAGENT, null, null, this.depthOfDirtFloor+1, toChange);
     
     // Add agent's feet
-    toChange[headLocation[1]][headLocation[0]][headLocation[2]-1] = NameSpace.CHARAGENTFEET;
+    	toChange[headLocation[1]][headLocation[0]][headLocation[2]-1] = NameSpace.CHARAGENTFEET;
+    	
   }
   
-  private char[][][] generateNewCharArray(int numTrenches, int numWalls) {
+  private char[][][] generateNewCharArray(int goal, int numTrenches, int numWalls) {
     char[][][] toReturn = new char[this.rows][this.cols][this.height];
     //Initialize empty
     this.emptifyCharArray(toReturn);
@@ -244,20 +262,63 @@ public class WorldGenerator {
     //Add trench
     this.addTrenches(numTrenches, toReturn);
     
+    //Add agent
+    this.addAgent(toReturn);
+    
     //Add walls
 //    this.addWalls(numWalls, toReturn);
     
     //Add goal
-    this.addRandomSpatialGoal(toReturn);
+    if (goal == NameSpace.INTXYZGOAL) {
+    	this.addRandomSpatialGoal(toReturn);
+    }
     
-    //Add agent
-    this.addAgent(toReturn);
+    //Add gold blocks
+    if (goal == NameSpace.INTGOLDBARGOAL || goal == NameSpace.INTGOLDOREGOAL) {
+    	addGoldOre(toReturn);
+    }
+    
+    //Add furnace
+    if (goal == NameSpace.INTGOLDBARGOAL) {
+    	addFurnace(toReturn);
+    }
+    
+    
+
     
     return toReturn;
   }
   
-  private void randomizeMap(int numTrenches, int numWalls) {
-    this.charArray = generateNewCharArray(numTrenches, numWalls);
+  private HashMap<String, Integer> generateHeaderInfo(int goal, int numTrenches) {
+	  HashMap<String, Integer> toReturn = new HashMap<String, Integer>();
+	  
+	  //Goal
+	  toReturn.put(Character.toString(NameSpace.CHARGOALDESCRIPTOR), goal);
+	  //Starting ore
+	  toReturn.put(Character.toString(NameSpace.CHARSTARTINGGOLDORE), 0);
+	  //Starting gold bars
+	  toReturn.put(Character.toString(NameSpace.CHARSTARTINGGOLDBAR), 0);
+	  //Placeable blocks
+	  if (this.depthOfDirtFloor > 1) {
+		  toReturn.put(Character.toString(NameSpace.CHARPLACEABLEBLOCKS), numTrenches);
+	  }
+	  else {
+		  toReturn.put(Character.toString(NameSpace.CHARPLACEABLEBLOCKS), 0);
+	  }
+	  
+	  
+	  return toReturn;
+  }
+  
+  /**
+   * 
+   * @param goal
+   * @param numTrenches
+   * @param numWalls
+   */
+  public void randomizeMap(int goal, int numTrenches, int numWalls) {
+    this.charArray = generateNewCharArray(goal, numTrenches, numWalls);
+    this.headerInfo = generateHeaderInfo(goal, numTrenches);
   }
   
   public char[][][] getCurrCharArray() {
@@ -269,32 +330,20 @@ public class WorldGenerator {
   }
   
   
-  public String getCurrMapAsString() {
-    StringBuilder sb = new StringBuilder();
-    
-    for (int currHeight = this.height-1; currHeight >= 0; currHeight--) {
-      for(int row = 0; row < this.rows; row++) {
-        for(int col = 0; col < this.cols; col++) {
-          char currChar = this.charArray[row][col][currHeight];
-          sb.append(currChar);
-        }
-        if (!(row == this.rows-1)) {
-          sb.append(NameSpace.rowSeparator);
-        }
-        else {
-          if (!(currHeight == 0))
-            sb.append(NameSpace.planeSeparator);
-        }
-      }
-    }
-    return sb.toString();
+  public String getCurrMapIOAsString() {
+	  return getCurrMapIO().toString();
+  }
+  
+  public MapIO getCurrMapIO() {
+	  return new MapIO(this.headerInfo, this.charArray);
+	  
   }
   
   public static void main(String[] args) {
     String fileName = "src/minecraft/maps/testingWorld.map";
-    WorldGenerator generator = new WorldGenerator(4, 4, 4);
-    generator.randomizeMap(1, 1);
-    String map = generator.getCurrMapAsString();
+    WorldGenerator generator = new WorldGenerator(1, 1, 4);
+    generator.randomizeMap(NameSpace.INTGOLDOREGOAL,1, 1);
+    String map = generator.getCurrMapIOAsString();
     System.out.println(map);
   }
 }
