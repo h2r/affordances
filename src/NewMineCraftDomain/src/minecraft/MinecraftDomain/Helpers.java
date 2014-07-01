@@ -66,6 +66,36 @@ public class Helpers {
 	}
 	
 	/**
+	 * Determines if a given point (p) lies inside the bounds of the trench object specified by t and trenchVector
+	 * @param p [x,y,z]
+	 * @param t [x,y,z]
+	 * @param trenchVector : a vector, indicating the bounds of the trench (starting at t)
+	 * @return
+	 */
+	public static boolean isPointInTrench(int[] p, int[] t, int[] trenchVector) {
+		
+		int px = p[0];
+		int py = p[1];
+		int pz = p[2];
+		
+		int tx = t[0];
+		int ty = t[1];
+		int tz = t[2];	
+		
+		int tEndX = tx + trenchVector[0];
+		int tEndY = ty + trenchVector[1];
+		int tEndZ = tz + trenchVector[2];
+		
+		if (Math.min(tx, tEndX) <= px && px <= Math.max(tx, tEndX)
+		&& Math.min(ty, tEndY) <= py && py <= Math.max(ty, tEndY)) {
+			return true;
+		}
+		
+		return false;
+			
+	}
+	
+	/**
 	 * 
 	 * @param distanceFromAgent how far away from the agents perspective you want
 	 * @param state
@@ -130,6 +160,37 @@ public class Helpers {
 		
 		return new int[]{newX, newY, newZ};
 
+	}
+	
+	public static boolean isPlaneBetweenTwoPoints(int[] a, int[] b, int[] plane, int[] planeVector) {
+		
+		int ax = a[0];
+		int ay = a[1];
+		int az = a[2];
+		
+		int px = plane[0];
+		int py = plane[1];
+		int pz = plane[2];
+		
+		int bx = b[0];
+		int by = b[1];
+		int bz = b[2];
+		
+		// Get plane end points
+		int pxEnd = px + planeVector[0];
+		int pyEnd = py + planeVector[1];
+		int pzEnd = pz + planeVector[2];
+		
+		double avgX = (bx + ax) / 2;
+		double avgY = (by + ay) / 2;
+		
+		if((px < avgX && avgX < pxEnd) || (py < avgY && avgY < pyEnd)
+		|| (pxEnd < avgX && avgX < px) || (pyEnd < avgY && avgY < py)) {
+			return true;
+		}
+		
+		return false;
+		
 	}
 	
 	/**
@@ -259,5 +320,9 @@ public class Helpers {
 		
 		return !emptySpaceAt(agentX, agentY, agentZ-2, state);
 		
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(isPointInTrench(new int[] {2,1,0},new int[] {0,0,0},new int[]{1,4,0}));
 	}
 }

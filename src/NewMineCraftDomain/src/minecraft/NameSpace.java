@@ -14,6 +14,7 @@ public class NameSpace {
 	public static final String							ATDESTWHENWALKED = "destroyedByAgentWhenWalkedOn";
 	public static final String							ATAMTGOLDORE = "amountOfGoldOre";
 	public static final String							ATAMTGOLDBAR = "amountOfGoldBar";
+	public static final String							ATTRENCHVECTOR = "trenchVector";
 	
 	//-------------BURLAP OBJECTCLASS STRINGS-------------
 	public static final String							CLASSAGENT = "agent";
@@ -23,6 +24,7 @@ public class NameSpace {
 	public static final String							CLASSGOLDBLOCK = "goldBlock";
 	public static final String							CLASSINDWALL = "indestrucibleWall";
 	public static final String							CLASSFURNACE = "furnace";
+	public static final String							CLASSTRENCH = "trench";
 
 	
 	//-------------CHARS FOR ASCII MAPS-------------
@@ -53,15 +55,15 @@ public class NameSpace {
 	public static String 							rowSeparator = "\n";	
 	
 	//-------------ACTIONS STRINGS-------------
-	public static final String							ACTIONMOVE = "moveAction";
-	public static final String							ACTIONROTATEC = "rotateClockwise";
-	public static final String 							ACTIONROTATECC = "rotateCounterClockwise";
-	public static final String 							ACTIONDESTBLOCK = "destroyBlock";
-	public static final String							ACTIONJUMP = "jump";
-	public static final String							ACTIONPLACEBLOCK = "placeBlock";
-	public static final String							ACTIONLOOKUP = "lookup";
-	public static final String							ACTIONLOOKDOWN = "lookdown";
-	public static final String							ACTIONUSEBLOCK = "useBlock";
+	public static final String						ACTIONMOVE = "moveAction";
+	public static final String						ACTIONROTATEC = "rotateClockwise";
+	public static final String 						ACTIONROTATECC = "rotateCounterClockwise";
+	public static final String 						ACTIONDESTBLOCK = "destroyBlock";
+	public static final String						ACTIONJUMP = "jump";
+	public static final String						ACTIONPLACEBLOCK = "placeBlock";
+	public static final String						ACTIONLOOKUP = "lookup";
+	public static final String						ACTIONLOOKDOWN = "lookdown";
+	public static final String						ACTIONUSEBLOCK = "useBlock";
 	
 	//-------------PROPOSITIONAL FUNCTION STRINGS-------------
 	public static final String				PFATGOAL = "AtGoal";
@@ -71,8 +73,11 @@ public class NameSpace {
 	public static final String				PFATLEASTXGOLDBAR = "AgentHasXGoldBlock";
 	public static final String				PFBLOCKINFRONT = "BlockFrontOfAgent";
 	public static final String				PFENDOFMAPINFRONT = "EndMapFrontOfAgent";
-	public static final String				PFTRENCHINFRONT = "TrenchFrontOfAgent";
+	public static final String				PFEMPTYCELLINFRONT = "TrenchFrontOfAgent";
 	public static final String				PFAGENTINMIDAIR = "AgentInAir";
+	public static final String				PFAGENTADJTRENCH = "AgentAdjacentToTrench";
+	public static final String				PFAGENTLOOKFORWARDWALK = "AgentLookForwardWalk";
+	public static final String				PFEMPTYCELLINWALK = "EmptyCellInWalk";
 	
 	//-------------ENUMS-------------
 	public enum RotDirection {

@@ -30,7 +30,7 @@ public class AffordanceLearner {
 	private KnowledgeBase 			affordanceKB;
 	private List<LogicalExpression> lgds;
 	private MinecraftBehavior 		mcb;
-	private int 					numWorldsPerLGD = 50;
+	private int 					numWorldsPerLGD = 100;
 	private boolean					countTotalActions = true;
 
 	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, List<LogicalExpression> lgds, boolean countTotalActions) {
@@ -57,7 +57,7 @@ public class AffordanceLearner {
 				// Build the map
 				char[][][] charMap = worldGenerator.generateMap(goal);
 
-				HashMap<String,Integer> headerInfo = makeHeader();
+				HashMap<String,Integer> headerInfo = makeHeader(goal);
 				
 				MapIO map = new MapIO(headerInfo, charMap);
 				map.printHeaderAndMapToFile(mapname);
@@ -69,14 +69,21 @@ public class AffordanceLearner {
 		}
 	}
 	
-	private HashMap<String,Integer> makeHeader() {
+	private HashMap<String,Integer> makeHeader(LogicalExpression goal) {
 		// Write header info (depends on goal specific information)
 
 		HashMap<String,Integer> headerInfo = new HashMap<String,Integer>();
 		headerInfo.put("B", 0);
 		headerInfo.put("g", 0);
 		headerInfo.put("b", 0);
-		headerInfo.put("G", 1);
+		
+		if(goal.toString().contains("gold")) {
+			headerInfo.put("G", 1);
+		} else {
+			headerInfo.put("G", 0);
+		}
+		
+
 		
 		return headerInfo;
 	}
@@ -239,9 +246,14 @@ public class AffordanceLearner {
 		
 		// Set up goal description list
 		List<LogicalExpression> lgds = new ArrayList<LogicalExpression>();
-		PropositionalFunction atGoal = mb.pfAgentHasAtLeastXGoldOre;
+		PropositionalFunction hasGold = mb.pfAgentHasAtLeastXGoldOre;
+		LogicalExpression goldLE = pfAtomFromPropFunc(hasGold);
+		
+		PropositionalFunction atGoal = mb.pfAgentAtGoal;
 		LogicalExpression goalLE = pfAtomFromPropFunc(atGoal);
+		
 		lgds.add(goalLE);
+//		lgds.add(goldLE);
 		
 		// Set up precondition list
 		List<LogicalExpression> predicates = new ArrayList<LogicalExpression>();
@@ -258,22 +270,31 @@ public class AffordanceLearner {
 		PropositionalFunction trenchInFrontOf = mb.pfTrenchInFrontOfAgent;
 		LogicalExpression trenchLE = pfAtomFromPropFunc(trenchInFrontOf);
 		
+		// AgentLookForwardAndWalkable PFAtom
+		PropositionalFunction forwardWalkable = mb.pfAgentLookForwardAndWalkable;
+		LogicalExpression forwardWalkableLE = pfAtomFromPropFunc(forwardWalkable);
+		
+		// AgentLookForwardAndWalkable PFAtom
+		PropositionalFunction forwardWalkableTrench = mb.pfEmptyCellFrontAgentWalk;
+		LogicalExpression forwardWalkableTrenchLE = pfAtomFromPropFunc(forwardWalkableTrench);
+		
 		// Add LEs to list
-		predicates.add(agentInAirLE);
-		predicates.add(endOfMapLE);
-		predicates.add(trenchLE);
+//		predicates.add(agentInAirLE);
+//		predicates.add(endOfMapLE);
+//		predicates.add(trenchLE);
+//		predicates.add(forwardWalkableLE);
+		predicates.add(forwardWalkableTrenchLE);
 		
 		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions);
 
 		// Initialize Learner
-		boolean countTotalActions = false;
+		boolean countTotalActions = true;
 		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions);
 		
 		affLearn.learn();
 		affLearn.printCounts();
 		
 		affKnowledgeBase.save("trenches" + affLearn.numWorldsPerLGD + ".kb");
-		
 	}
 	
 }

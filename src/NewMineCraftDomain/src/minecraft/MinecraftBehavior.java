@@ -298,7 +298,6 @@ public class MinecraftBehavior {
 		String mapsPath = "src/minecraft/maps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-
 		String mapName = "TESTING.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);

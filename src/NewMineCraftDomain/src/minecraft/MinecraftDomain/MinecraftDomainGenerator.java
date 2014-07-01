@@ -11,15 +11,18 @@ import minecraft.MinecraftDomain.Actions.PlaceBlockAction;
 import minecraft.MinecraftDomain.Actions.RotateAction;
 import minecraft.MinecraftDomain.Actions.RotateVertAction;
 import minecraft.MinecraftDomain.Actions.UseBlockAction;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentAdjacentToTrenchPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldBarPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldOrePF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentInMidAirPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentLookForwardAndWalkablePF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AtGoalPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockAtPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockInFrontOfAgentPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.EmptyCellInAgentWalkDir;
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptySpacePF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EndOfMapInFrontOfAgentPF;
-import minecraft.MinecraftDomain.PropositionalFunctions.TrenchInFrontOfAgentPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.EmptyCellInFrontOfAgentPF;
 import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
 import minecraft.MinecraftStateGenerator.Exceptions.StateCreationException;
 import burlap.oomdp.auxiliary.DomainGenerator;
@@ -148,6 +151,11 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		Attribute amountOfGoldBar = new Attribute(domain, NameSpace.ATAMTGOLDBAR, Attribute.AttributeType.DISC);
 		amountOfGoldBar.setDiscValuesForRange(0, 100, 1);
 		
+		//Trench vector, indicating trench direction and length
+		Attribute trenchVector = new Attribute(domain, NameSpace.ATTRENCHVECTOR, Attribute.AttributeType.INTARRAY);
+		trenchVector.setLims(0, Math.max(this.cols, Math.max(this.rows, this.height)));
+		
+		
 		//BURLAP OBJECT CLASSES
 		
 		//Burlap object for the agent
@@ -183,6 +191,13 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		ObjectClass furnaceClass = new ObjectClass(domain, NameSpace.CLASSFURNACE);
 		addSpatialAttributes(furnaceClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
 		
+		//Burlap object for Trench (high level)
+		ObjectClass trenchClass = new ObjectClass(domain, NameSpace.CLASSTRENCH);
+		trenchClass.addAttribute(xAtt);
+		trenchClass.addAttribute(yAtt);
+		trenchClass.addAttribute(zAtt);
+		trenchClass.addAttribute(trenchVector);
+		
 		//ACTIONS
 		
 		//Set up actions
@@ -208,8 +223,13 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new AgentHasAtLeastXGoldBarPF(NameSpace.PFATLEASTXGOLDBAR, domain, new String[]{NameSpace.CLASSAGENT}, 1);
 		new BlockInFrontOfAgentPF(NameSpace.PFBLOCKINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOAL);
 		new EndOfMapInFrontOfAgentPF(NameSpace.PFENDOFMAPINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
-		new TrenchInFrontOfAgentPF(NameSpace.PFTRENCHINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
+		new EmptyCellInFrontOfAgentPF(NameSpace.PFEMPTYCELLINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new AgentInMidAirPF(NameSpace.PFAGENTINMIDAIR, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
+		
+		// Dave's jenky hard coded prop funcs
+		new AgentAdjacentToTrenchPF(NameSpace.PFAGENTADJTRENCH, domain, new String[]{NameSpace.CLASSAGENT, NameSpace.CLASSTRENCH});
+		new AgentLookForwardAndWalkablePF(NameSpace.PFAGENTLOOKFORWARDWALK, domain, new String[]{NameSpace.CLASSAGENT});
+		new EmptyCellInAgentWalkDir(NameSpace.PFEMPTYCELLINWALK, domain, new String[]{NameSpace.CLASSAGENT});
 		
 		return domain;
 	}

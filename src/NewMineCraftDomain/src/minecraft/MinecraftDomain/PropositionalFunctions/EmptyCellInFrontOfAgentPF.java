@@ -7,7 +7,7 @@ import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.PropositionalFunction;
 import burlap.oomdp.core.State;
 
-public class TrenchInFrontOfAgentPF extends PropositionalFunction {
+public class EmptyCellInFrontOfAgentPF extends PropositionalFunction {
 	int rows;
 	int cols;
 	int height;
@@ -21,7 +21,7 @@ public class TrenchInFrontOfAgentPF extends PropositionalFunction {
 	 * @param cols
 	 * @param height
 	 */
-	public TrenchInFrontOfAgentPF(String name, Domain domain, String[] parameterClasses, int rows, int cols, int height) {
+	public EmptyCellInFrontOfAgentPF(String name, Domain domain, String[] parameterClasses, int rows, int cols, int height) {
 		super(name, domain, parameterClasses);
 		this.rows = rows;
 		this.cols = cols;
