@@ -229,9 +229,8 @@ public class WorldClusterer {
 
 
 	public static void main(String [] args) {
-		String filePath = "src/minecraft/maps/toCluster/";
-		WorldClusterer test = new WorldClusterer(filePath, 4);
-		//test.printActionCounts();
+		String filePath = "src/minecraft/maps/randomMaps/";
+		WorldClusterer test = new WorldClusterer(filePath, 3);
 		test.printNormActionCounts();
 		test.printClusters(true);
 	}

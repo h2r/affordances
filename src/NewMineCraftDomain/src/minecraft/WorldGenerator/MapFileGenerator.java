@@ -30,7 +30,7 @@ public class MapFileGenerator {
 		
 		int i = 0;
 		for (MapIO currIO : toWriteToFile) {
-			currIO.printHeaderAndMapToFile(this.directoryPath + baseFileName + i++);
+			currIO.printHeaderAndMapToFile(this.directoryPath + baseFileName + i++ + ".map");
 		}
 			
 	}
