@@ -78,6 +78,26 @@ public class KnowledgeBase {
 		this.affController = new AffordancesController(this.affDelegateList);
 	}
 	
+	public void loadHard(Domain d, String filename) {
+
+		AffordanceDelegate aff = null;
+		try {
+			Scanner scnr = new Scanner(new File(basePath + "/" + filename));
+			while (scnr.hasNextLine()) {
+				aff = AffordanceDelegate.loadHard(d, scnr);
+				
+				this.affDelegateList.add(aff);
+			}
+
+			scnr.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		this.affController = new AffordancesController(this.affDelegateList);
+	}
+	
 	public void processSoft() {
 		for(AffordanceDelegate affDelegate : affDelegateList) {
 			((SoftAffordance)affDelegate.getAffordance()).postProcess();
