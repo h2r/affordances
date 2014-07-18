@@ -278,8 +278,8 @@ public class MinecraftBehavior {
 		planner.planFromState(initialState);
 		
 		// Create a BoltzmannQ Policy from the planner
-		Policy p = new AffordanceBoltzmannQPolicy((QComputablePlanner)planner, boltzmannTemperature, affController);
-//		Policy p = new AffordanceGreedyQPolicy(affController, (QComputablePlanner)planner);
+//		Policy p = new AffordanceBoltzmannQPolicy((QComputablePlanner)planner, boltzmannTemperature, affController);
+		Policy p = new AffordanceGreedyQPolicy(affController, (QComputablePlanner)planner);
 		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
 		System.out.println(ea.getActionSequenceString());
 
