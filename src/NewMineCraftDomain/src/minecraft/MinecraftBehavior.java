@@ -314,7 +314,7 @@ public class MinecraftBehavior {
 		
 		// Affordance RTDP with a BoltzmanQPolicy
 		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.loadHard(mcBeh.getDomain(), "trenches100.kb");
+		affKB.load(mcBeh.getDomain(), "trenches100.kb");
 		mcBeh.AffordanceRTDP(affKB);
 		
 		// Subgoal Planner

@@ -274,15 +274,15 @@ public class AffordanceLearner {
 		PropositionalFunction forwardWalkable = mb.pfAgentLookForwardAndWalkable;
 		LogicalExpression forwardWalkableLE = pfAtomFromPropFunc(forwardWalkable);
 		
-		// AgentLookForwardAndWalkable PFAtom
+		// Empty Cell front of agent PFAtom
 		PropositionalFunction forwardWalkableTrench = mb.pfEmptyCellFrontAgentWalk;
 		LogicalExpression forwardWalkableTrenchLE = pfAtomFromPropFunc(forwardWalkableTrench);
 		
 		// Add LEs to list
-//		predicates.add(agentInAirLE);
-//		predicates.add(endOfMapLE);
-//		predicates.add(trenchLE);
-//		predicates.add(forwardWalkableLE);
+		predicates.add(agentInAirLE);
+		predicates.add(endOfMapLE);
+		predicates.add(trenchLE);
+		predicates.add(forwardWalkableLE);
 		predicates.add(forwardWalkableTrenchLE);
 		
 		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions);
