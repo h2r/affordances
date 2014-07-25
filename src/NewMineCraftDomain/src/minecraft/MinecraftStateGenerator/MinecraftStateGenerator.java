@@ -2,6 +2,7 @@ package minecraft.MinecraftStateGenerator;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import minecraft.NameSpace;
 import minecraft.NameSpace.RotDirection;
@@ -99,7 +100,7 @@ public class MinecraftStateGenerator {
 			for (int col = 0; col < cols; col++) {
 				for (int currHeight = 0; currHeight < height; currHeight++) {
 					char currChar = mapAsCharArray[row][col][currHeight];
-					if (processChar(currChar, row, col, currHeight, domain, stateToAddTo, objectIndex)) {
+					if (processChar(currChar, row, col, currHeight, domain, stateToAddTo)) {
 						objectIndex += 1;
 					}
 				}
@@ -111,13 +112,17 @@ public class MinecraftStateGenerator {
 	 * Adds necessary object to the state for a given character.
 	 * @returns if the object was added to the input state
 	 */
-	private static boolean processChar(char inputChar, int row, int col, int height, Domain domain, State stateToAddto, int objectIndex) {
+	private static boolean processChar(char inputChar, int row, int col, int height, Domain domain, State stateToAddto) {
 		ObjectInstance toAdd = null;
-		
+		Random rand = new Random();
+		int objectIndex = rand.nextInt(999999);
 		//Determine what ObjectInstance needs to be added
 		switch (inputChar) {
-		case NameSpace.CHARDIRTBLOCK:
-			toAdd = createDirtBlock(domain, col, row, height, objectIndex);
+		case NameSpace.CHARDIRTBLOCKPICKUPABLE:
+			toAdd = createPickupableDirtBlock(domain, col, row, height, objectIndex);
+			break;
+		case NameSpace.CHARDIRTBLOCKNOTPICKUPABLE:
+			toAdd = createNotPickupableDirtBlock(domain, col, row, height, objectIndex);
 			break;
 		case NameSpace.CHARGOAL:
 			toAdd = createGoal(domain, col, row, height, objectIndex);
@@ -169,15 +174,22 @@ public class MinecraftStateGenerator {
 		return block;
 	}
 	
-	public static ObjectInstance createDirtBlock(Domain d, int x, int y, int z, int objectIndex) {
-		String objectName = NameSpace.CLASSDIRTBLOCK;
+	public static ObjectInstance createPickupableDirtBlock(Domain d, int x, int y, int z, int objectIndex) {
+		String objectName = NameSpace.CLASSDIRTBLOCKPICKUPABLE;
+		ObjectInstance block = new ObjectInstance(d.getObjectClass(objectName), objectName+objectIndex);
+		setObjectLocation(block, x, y, z, true, true, false, true);
+		return block;	
+	}
+	
+	public static ObjectInstance createNotPickupableDirtBlock(Domain d, int x, int y, int z, int objectIndex) {
+		String objectName = NameSpace.CLASSDIRTBLOCKNOTPICKUPABLE;
 		ObjectInstance block = new ObjectInstance(d.getObjectClass(objectName), objectName+objectIndex);
 		setObjectLocation(block, x, y, z, true, true, false, true);
 		return block;	
 	}
 	
 	public static ObjectInstance createDirtBlockItem(Domain d, int x, int y, int z, int objectIndex) {
-		String objectName = NameSpace.CLASSDIRTBLOCK;
+		String objectName = NameSpace.CLASSDIRTBLOCKPICKUPABLE;
 		ObjectInstance block = new ObjectInstance(d.getObjectClass(objectName), objectName+objectIndex);
 		setObjectLocation(block, x, y, z, false, false, true, false);
 		return block;

@@ -1,6 +1,7 @@
 package minecraft.MinecraftDomain.Actions;
 
 import java.util.List;
+import java.util.Random;
 
 import minecraft.NameSpace;
 import minecraft.MinecraftDomain.Helpers;
@@ -64,9 +65,11 @@ public class PlaceBlockAction extends AgentAction {
 		canPlace = canPlace && blocksLeft > 0;
 		
 		if (canPlace) {
-			int numberOfObjects = state.getAllObjects().toArray().length;
+			Random rand = new Random();
+			int index = rand.nextInt(999999);
+			//int numberOfObjects = state.getAllObjects().toArray().length + 1000000;
 			//Update state
-			ObjectInstance toAdd = MinecraftStateGenerator.createIndWall(this.domain, toPlaceX, toPlaceY, toPlaceZ, numberOfObjects);
+			ObjectInstance toAdd = MinecraftStateGenerator.createNotPickupableDirtBlock(this.domain, toPlaceX, toPlaceY, toPlaceZ, index);
 			state.addObject(toAdd);
 			
 			//Update agent's number of blocks

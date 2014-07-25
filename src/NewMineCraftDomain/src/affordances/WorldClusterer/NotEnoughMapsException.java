@@ -1,5 +1,4 @@
 package affordances.WorldClusterer;
 
-public class NotEnoughMapsException extends Exception {
-
-}
+@SuppressWarnings("serial")
+public class NotEnoughMapsException extends Exception {}

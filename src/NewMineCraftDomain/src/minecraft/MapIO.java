@@ -1,12 +1,29 @@
 package minecraft;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import affordances.WorldPerceptron.PerceptronHelpers;
+import affordances.WorldPerceptron.PerceptualData;
+import burlap.behavior.singleagent.EpisodeAnalysis;
+import burlap.behavior.singleagent.planning.ValueFunctionPlanner;
+import burlap.behavior.singleagent.planning.commonpolicies.GreedyDeterministicQPolicy;
+import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueIteration;
+import burlap.oomdp.core.AbstractGroundedAction;
+import burlap.oomdp.core.ObjectInstance;
+import burlap.oomdp.core.State;
+import burlap.oomdp.singleagent.GroundedAction;
 
 /**
  * Used to turn .map minecraft ascii files into easily usable data structures and vice versa
@@ -24,6 +41,14 @@ public class MapIO {
 	 * Stores the ascii map (header excluded) as a 3D map of chars
 	 */
 	private char[][][] mapAsCharArray;
+	private int rows;
+	private int cols;
+	private int height;
+	
+	private GreedyDeterministicQPolicy policy;
+	private Boolean planUsedForLastAllStates;
+	private List<State> allStates;
+	private HashMap<State, AbstractGroundedAction> stateToAction;
 	
 	//-----CLASS METHODS-----
 	public MapIO(String filePath) {
@@ -52,12 +77,18 @@ public class MapIO {
 		String mapAsString = sb.toString();
 				
 		this.headerMap = processHeader(stateInfoAsString);
-		this.mapAsCharArray = processMapString(mapAsString);	
+		this.mapAsCharArray = processMapString(mapAsString);
+		this.rows = this.mapAsCharArray.length;
+		this.cols = this.mapAsCharArray[0].length;
+		this.height = this.mapAsCharArray[0][0].length;
 	}
 	
 	public MapIO(HashMap<String, Integer> headerInfo, char[][][] mapAsCharArray) {
 		this.headerMap = headerInfo;
 		this.mapAsCharArray = mapAsCharArray;
+		this.rows = mapAsCharArray.length;
+		this.cols = mapAsCharArray[0].length;
+		this.height = mapAsCharArray[0][0].length;
 	}
 	
 	/**
@@ -182,9 +213,148 @@ public class MapIO {
 	public String toString() {
 		return getHeaderAsString() + getCharArrayAsString();
 	}
+	
+	private List<State> determineAllStatesHelper(GreedyDeterministicQPolicy p, MinecraftBehavior mcBeh, ValueFunctionPlanner planner, boolean usePlan) {
+		EpisodeAnalysis ea = p.evaluateBehavior(mcBeh.getInitialState(), mcBeh.getRewardFunction(), mcBeh.getTerminalFunction());
 
+		List<State> allStates;
+		//Use full state space
+		if (!usePlan) {
+			allStates = ((ValueFunctionPlanner) planner).getAllStates();
+		}
+		
+		else {
+			//Use plan
+			allStates = ea.stateSequence;
+			//Prune the terminal state
+			allStates.remove(allStates.size()-1);
+		}
+		this.stateToAction = new HashMap<State, AbstractGroundedAction>();
+		for (State state: allStates) {
+			AbstractGroundedAction currAction = p.getAction(state);
+			this.stateToAction.put(state, currAction);
+		}
+		
+		return allStates;
+	}
+	
+	/**
+	 * 
+	 * @param usePlan
+	 * @return a list of all the states that could result from the mapIO
+	 */
+	private void determineAllStates(boolean usePlan) {
+		//Suppress prints
+		ByteArrayOutputStream theVoid = new ByteArrayOutputStream();
+		System.setOut(new PrintStream(theVoid));
+		//Get IO, behavior, planner and policy
+		MinecraftBehavior mcBeh = new MinecraftBehavior(this);
+		ValueFunctionPlanner planner = new ValueIteration(mcBeh.getDomain(), mcBeh.getRewardFunction(), mcBeh.getTerminalFunction(), mcBeh.getGamma(), mcBeh.getHashFactory(), mcBeh.getMinDelta(), Integer.MAX_VALUE);
+		GreedyDeterministicQPolicy p = (GreedyDeterministicQPolicy)mcBeh.solve(planner);
+		//Reset system out
+		System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+		//Get all states
+		this.allStates = determineAllStatesHelper(p, mcBeh, planner, usePlan);
+		this.planUsedForLastAllStates = usePlan;
+	}
+	
+	private void determinePolicy() {
+		MinecraftBehavior mcBeh = new MinecraftBehavior(this);
+		ValueFunctionPlanner planner = new ValueIteration(mcBeh.getDomain(), mcBeh.getRewardFunction(), mcBeh.getTerminalFunction(), mcBeh.getGamma(), mcBeh.getHashFactory(), mcBeh.getMinDelta(), Integer.MAX_VALUE);
+		this.policy = (GreedyDeterministicQPolicy)mcBeh.solve(planner);
+	}
+	
+	private GreedyDeterministicQPolicy getPolicy() {
+		if (this.policy == null) {
+			determinePolicy();
+		}
+		
+		return this.policy;
+	}
+	
+	/**
+	 * 
+	 * @param usePlan
+	 * @return a list of all states
+	 */
+	public List<State> getAllStates(boolean usePlan) {
+		if (this.planUsedForLastAllStates == null || usePlan != this.planUsedForLastAllStates) {
+			determineAllStates(usePlan);
+		}
 
-
+		return this.allStates;
+	}
+	
+	
+	/**
+	 * 
+	 * @param usePlan
+	 * @return mapping from action to number of times it was ideal in VI
+	 */
+	public HashMap<GroundedAction, Integer> getActionCountsForAllStates(boolean usePlan) {
+		MinecraftBehavior mcBeh = new MinecraftBehavior(this);
+		ValueFunctionPlanner planner = new ValueIteration(mcBeh.getDomain(), mcBeh.getRewardFunction(), mcBeh.getTerminalFunction(), mcBeh.getGamma(), mcBeh.getHashFactory(), mcBeh.getMinDelta(), Integer.MAX_VALUE);
+		GreedyDeterministicQPolicy p = (GreedyDeterministicQPolicy)mcBeh.solve(planner);
+		
+		//Reset system out
+		System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+		
+		//Get all states
+		List<State> allStates = this.getAllStates(usePlan);
+		
+		HashMap<GroundedAction, Integer> countsHashMapForMap = new HashMap<GroundedAction, Integer>();
+		
+		//Count action in each state
+		for(State currState: allStates) {
+			GroundedAction currGroundedAction = (GroundedAction) p.getAction(currState);
+			Integer oldCount = countsHashMapForMap.get(currGroundedAction);
+			if (oldCount == null) {
+				oldCount = 0;
+			}
+			oldCount += 1;
+			
+			countsHashMapForMap.put(currGroundedAction, oldCount);	
+		}
+		return countsHashMapForMap;
+	}
+	
+	/**
+	 * 
+	 * @param xLookDistance
+	 * @param yLookDistance
+	 * @param zLookDistance
+	 * @param usePlan
+	 * @param sampleDownBy used to sample down perception data. Use 1 for highest resolution, 2 for pairwise blocks etc.
+	 * @return a list of int arrays -- the perception data
+	 */
+	public List<PerceptualData> getAllPercDataForMap(String percTag, int xLookDistance, int yLookDistance, int zLookDistance, boolean usePlan) {
+		List<PerceptualData> toReturn = new ArrayList<PerceptualData>();
+		//Get all states
+		List<State> allStates = this.getAllStates(usePlan);
+		//Get perceptions in each state from all states
+		for (State currState : allStates) {
+			char[][][] stateAsCharArray = MinecraftStateParser.stateToCharArray(currState, this.rows, this.cols, this.height);
+			ObjectInstance agent = currState.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
+			int rotDir = agent.getDiscValForAttribute(NameSpace.ATROTDIR);
+			int vertRotDir = agent.getDiscValForAttribute(NameSpace.ATVERTDIR);
+			int [] percDataForState = PerceptronHelpers.agentPerceptionToFactoredVector(stateAsCharArray, xLookDistance, yLookDistance, zLookDistance, rotDir, vertRotDir);			
+			toReturn.add(new PerceptualData(percDataForState, percTag + this.stateToAction.get(currState).toString()));
+		}
+		
+		return toReturn;
+	}
+	
+	//ACCESSORS
+	public int getRows() {
+		return this.rows;
+	}
+	public int getCols() {
+		return this.cols;
+	}
+	public int getHeight() {
+		return this.height;
+	}
+	
 	public static void main(String[] args) {
 		String filePath = "src/minecraft/maps/";
 		MapIO myIO = new MapIO(filePath + "jumpworld.map");

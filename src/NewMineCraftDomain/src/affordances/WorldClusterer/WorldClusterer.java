@@ -1,36 +1,38 @@
 package affordances.WorldClusterer;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.ArrayList;
+import java.io.PrintStream;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import burlap.behavior.singleagent.EpisodeAnalysis;
-import burlap.behavior.singleagent.planning.ValueFunctionPlanner;
-import burlap.behavior.singleagent.planning.commonpolicies.GreedyDeterministicQPolicy;
-import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueIteration;
 import burlap.oomdp.core.State;
 import burlap.oomdp.singleagent.GroundedAction;
 import minecraft.MapIO;
-import minecraft.MinecraftBehavior;
 
 public class WorldClusterer {
-	HashMap<String, MapIO> mapFileToIO;
-	HashMap<MapIO, String> fileIOToMapString;
+	private HashMap<String, MapIO> mapFileToIO;
+	private HashMap<MapIO, String> fileIOToMapString;
 	
-	HashMap<MapIO, HashMap<GroundedAction, Integer>> actionCountsForWorlds = new HashMap<MapIO, HashMap<GroundedAction, Integer>>();
-	HashMap<MapIO, HashMap<GroundedAction, Double>> normalizedActionCountsForWorlds = new HashMap<MapIO, HashMap<GroundedAction, Double>>();
-	HashMap<Integer, List<MapIO>> clusters;
-	String directory;
+	private HashMap<MapIO, HashMap<GroundedAction, Integer>> actionCountsForWorlds = new HashMap<MapIO, HashMap<GroundedAction, Integer>>();
+	private HashMap<MapIO, HashMap<GroundedAction, Double>> normalizedActionCountsForWorlds = new HashMap<MapIO, HashMap<GroundedAction, Double>>();
+	public HashMap<Integer, List<MapIO>> clusters;
+	public List<State> allStates;
 	private static String mapFileExtension = "map";
 	
-	public WorldClusterer(String filePath, int numClusters) {
+	/**
+	 * 
+	 * @param filePath
+	 * @param numClusters
+	 * @param usePlanToCluster
+	 */
+	public WorldClusterer(String filePath, int numClusters, boolean usePlanToCluster) {
 		//Read in IOs
 		readInMapIOs(filePath);
 		
 		//Solve maps and perform action counts
-		calculateCountsForAllMaps();
+		calculateCountsForAllMaps(usePlanToCluster);
 		normalizeActionCounts();
 		
 		//Perform clustering
@@ -47,7 +49,6 @@ public class WorldClusterer {
 	 */
 	private void readInMapIOs(String filePath) {
 		File folder = new File(filePath);
-		this.directory = filePath;
 		
 		HashMap<String, MapIO> mapFileToIO = new HashMap<String, MapIO>();
 		HashMap<MapIO, String> fileIOToMapString = new HashMap<MapIO, String>();
@@ -69,76 +70,33 @@ public class WorldClusterer {
 		this.fileIOToMapString = fileIOToMapString;
 	}
 	
+
 	/**
 	 * Solves all the MapIOs and then adds up their counts for each action
 	 */
-	private void calculateCountsForAllMaps() {
-		for (String mapFileString: this.mapFileToIO.keySet()) {
-			System.out.println("Calculating action counts for " + mapFileString);
-			
-			//Get IO, behavior, planner and policy
-			MapIO currIO = this.mapFileToIO.get(mapFileString);
-			MinecraftBehavior mcBeh = new MinecraftBehavior(this.directory + mapFileString);
-			ValueFunctionPlanner planner = new ValueIteration(mcBeh.getDomain(), mcBeh.getRewardFunction(), mcBeh.getTerminalFunction(), mcBeh.getGamma(), mcBeh.getHashFactory(), mcBeh.getMinDelta(), Integer.MAX_VALUE);
-			GreedyDeterministicQPolicy p = (GreedyDeterministicQPolicy)mcBeh.solve(planner);
-			
-			//Get all states
-			List<State> allStates = getAllStates(p, mcBeh, planner);
-			
-			HashMap<GroundedAction, Integer> countsHashMapForMap = new HashMap<GroundedAction, Integer>();
-			
-			//Count action in each state
-			for(State currState: allStates) {
-				GroundedAction currGroundedAction = (GroundedAction) p.getAction(currState);
-				Integer oldCount = countsHashMapForMap.get(currGroundedAction);
-				if (oldCount == null) {
-					oldCount = 0;
-				}
-				
-				oldCount += 1;
-				
-				countsHashMapForMap.put(currGroundedAction, oldCount);			
+	private void calculateCountsForAllMaps(boolean usePlan) {
+		System.out.println("Calculating action counts for all maps for clustering...");
+		Set<String> keys = this.mapFileToIO.keySet();
+		int index = -1;
+		for (String mapFileString: keys) {
+			//Print progress
+			index += 1;
+			if (index % (keys.size()/Math.min(4, keys.size())) == 0) {
+				System.out.println("\t" + index + "/" + keys.size());
 			}
 			
-			this.actionCountsForWorlds.put(currIO, countsHashMapForMap);
+			//Suppress prints
+			ByteArrayOutputStream theVoid = new ByteArrayOutputStream();
+			System.setOut(new PrintStream(theVoid));
+			//Get IO, behavior, planner and policy
+			MapIO currIO = this.mapFileToIO.get(mapFileString);
 			
+			HashMap<GroundedAction, Integer> allCurrMapActions = currIO.getActionCountsForAllStates(usePlan);
+			
+			this.actionCountsForWorlds.put(currIO, allCurrMapActions);
 		}
 	}
 	
-	private List<State> getAllStates(GreedyDeterministicQPolicy p, MinecraftBehavior mcBeh, ValueFunctionPlanner planner) {
-		//Use full state space
-		List<State> allStates = ((ValueFunctionPlanner) planner).getAllStates();
-		
-		//Use plan
-//		EpisodeAnalysis ea = p.evaluateBehavior(mcBeh.getInitialState(), mcBeh.getRewardFunction(), mcBeh.getTerminalFunction());
-//		List<State> allStates = ea.stateSequence;
-
-		//Roll out policy-reachable states
-//		List<State> allStates = new ArrayList<State>();
-//		List<State> frontier = new ArrayList<State>();
-//		frontier.add(mcBeh.getInitialState());
-//		HashSet<State> visitedStates = new HashSet<State>();
-//		
-//		while(!frontier.isEmpty()) {
-//			State currState = frontier.remove(0);
-//			if (!allStates.contains(currState)) {
-//				GroundedAction currGroundedAction = (GroundedAction) p.getAction(currState);
-//				State resultingState = currGroundedAction.executeIn(currState);//Get state linked by policy
-//				
-//				
-//				//Update DSs as necessary
-//				frontier.add(resultingState);
-//				visitedStates.add(currState);
-//				allStates.add(currState);
-//				System.out.println(allStates.size());
-//			}
-//		}
-		
-		//Prune the terminal state
-		allStates.remove(allStates.size()-1);
-		
-		return allStates;
-	}
 	
 	/**
 	 * Normalizes action counts so that the they all sum to 1
@@ -165,6 +123,7 @@ public class WorldClusterer {
 		}
 	}
 	
+	//ACCESSORS AND PRINTERS
 	public void printAllMaps() {
 		for (String fileName : this.mapFileToIO.keySet()) {
 			System.out.println(fileName);
@@ -218,19 +177,17 @@ public class WorldClusterer {
 					mapString = member.getCharArrayAsString() + "\n";
 				}
 				else {
-					
+					//Just the map name
 					mapString = this.fileIOToMapString.get(member);
 				}
 				System.out.println("\t"+mapString);
 			}
 		}
 	}
-
-
-
+	
 	public static void main(String [] args) {
 		String filePath = "src/minecraft/maps/randomMaps/";
-		WorldClusterer test = new WorldClusterer(filePath, 3);
+		WorldClusterer test = new WorldClusterer(filePath, 3, true);
 		test.printNormActionCounts();
 		test.printClusters(true);
 	}

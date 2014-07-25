@@ -23,6 +23,7 @@ import minecraft.MinecraftDomain.PropositionalFunctions.EmptyCellInAgentWalkDir;
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptySpacePF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EndOfMapInFrontOfAgentPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptyCellInFrontOfAgentPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.TowerInMapPF;
 import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
 import minecraft.MinecraftStateGenerator.Exceptions.StateCreationException;
 import burlap.oomdp.auxiliary.DomainGenerator;
@@ -43,17 +44,17 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 	/**
 	 * The rows of the minecraft world
 	 */
-	private int rows;
+	public int rows;
 	
 	/**
 	 * The cols of minecraft world
 	 */
-	protected int cols;
+	public int cols;
 	
 	/**
 	 * The height of the minecraft world
 	 */
-	protected int height;
+	public int height;
 	
 	/**
 	 * Mapping of string keys to int values for things like the number of blocks that the agent 
@@ -175,9 +176,13 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		ObjectClass goalClass = new ObjectClass(domain, NameSpace.CLASSGOAL);
 		addSpatialAttributes(goalClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
 
-		//Burlap object for dirt blocks
-		ObjectClass dirtBlockClass = new ObjectClass(domain, NameSpace.CLASSDIRTBLOCK);
-		addSpatialAttributes(dirtBlockClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
+		//Burlap object for pickupable dirt blocks
+		ObjectClass pickupableDirtBlock = new ObjectClass(domain, NameSpace.CLASSDIRTBLOCKPICKUPABLE);
+		addSpatialAttributes(pickupableDirtBlock, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
+		
+		//Burlap object for not pickupable dirt blocks
+		ObjectClass notPickupableDirtBloc = new ObjectClass(domain, NameSpace.CLASSDIRTBLOCKNOTPICKUPABLE);
+		addSpatialAttributes(notPickupableDirtBloc, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
 		
 		//Burlap object for gold blocks
 		ObjectClass goldBlockClass = new ObjectClass(domain, NameSpace.CLASSGOLDBLOCK);
@@ -225,6 +230,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new EndOfMapInFrontOfAgentPF(NameSpace.PFENDOFMAPINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new EmptyCellInFrontOfAgentPF(NameSpace.PFEMPTYCELLINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new AgentInMidAirPF(NameSpace.PFAGENTINMIDAIR, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
+		new TowerInMapPF(NameSpace.PFTOWER, domain, new String[]{}, 2, NameSpace.CHARDIRTBLOCKNOTPICKUPABLE, rows, cols, height);
 		
 		// Dave's jenky hard coded prop funcs
 		new AgentAdjacentToTrenchPF(NameSpace.PFAGENTADJTRENCH, domain, new String[]{NameSpace.CLASSAGENT, NameSpace.CLASSTRENCH});
@@ -235,7 +241,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 	}
 	
 	public static void main(String[] args) {
-		String filePath = "src/minecraft/maps/learning/AgentHasXGoldOre/0.map";
+		String filePath = "src/minecraft/maps/randomMaps/TowerPlaneWorld0.map";
 		MapIO io = new MapIO(filePath);
 		
 		char[][][] charMap = io.getMapAs3DCharArray();
@@ -259,6 +265,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		exp.addActionShortHand("lu", NameSpace.ACTIONLOOKUP);
 		exp.addActionShortHand("d", NameSpace.ACTIONDESTBLOCK);
 		exp.addActionShortHand("u", NameSpace.ACTIONUSEBLOCK);
+		exp.addActionShortHand("p", NameSpace.ACTIONPLACEBLOCK);
 		
 		exp.exploreFromState(state);
 	}

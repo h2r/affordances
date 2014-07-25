@@ -1,8 +1,11 @@
 package minecraft.MinecraftDomain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
+import minecraft.MapIO;
 import minecraft.NameSpace;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectInstance;
@@ -267,8 +270,8 @@ public class Helpers {
 	public static void removeObjectFromState(ObjectInstance object, State state, Domain domain) {
 		String objectName = object.getTrueClassName();
 		
-		//DIRTBLOCKS
-		if (objectName.equals(NameSpace.CLASSDIRTBLOCK)) {
+		//PICKUPABLEDIRTBLOCKS
+		if (objectName.equals(NameSpace.CLASSDIRTBLOCKPICKUPABLE)) {
 			//A dirt block item
 			if (object.getDiscValForAttribute(NameSpace.ATDESTWHENWALKED) == 1){
 				ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
@@ -281,6 +284,13 @@ public class Helpers {
 				blockToItem(object);
 			}
 		}
+		
+		//NOTPICKUPABLEDIRTBLOCKS
+		if (objectName.equals(NameSpace.CLASSDIRTBLOCKNOTPICKUPABLE)) {
+			state.removeObject(object);
+		}		
+		
+		
 		//GOLDBLOCKS
 		else if (objectName.equals(NameSpace.CLASSGOLDBLOCK)) {
 			//A gold block item
@@ -322,7 +332,7 @@ public class Helpers {
 		
 	}
 	
-	public static void main(String[] args) {
-		System.out.println(isPointInTrench(new int[] {2,1,0},new int[] {0,0,0},new int[]{1,4,0}));
-	}
+	
 }
+
+

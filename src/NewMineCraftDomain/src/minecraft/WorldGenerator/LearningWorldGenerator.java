@@ -23,21 +23,21 @@ public class LearningWorldGenerator extends WorldGenerator {
 		this.emptifyCharArray(toReturn);
 		
 		// Add dirt floor
-		this.addIndestFloor(toReturn);
+		this.addFloor(toReturn, NameSpace.CHARINDBLOCK);
 		
 		
 		//Add agent
-		this.addAgent(toReturn);
+//		this.addAgent(toReturn);
 		
 		// Add trench
 		if(goalDescription.toString().contains("trench")) {
-			this.addTrenches(this.numTrenches, toReturn);
+			//this.addTrenches(this.numTrenches, toReturn, false);
 		}
 		
 		// Add trench
 		if(goalDescription.toString().contains("Gold")) {
 			// Add gold stuff
-			this.addGoldOre(toReturn);
+			//this.addGoldOre(toReturn);
 			this.addFurnace(toReturn);
 		} else {
 			//Add goal

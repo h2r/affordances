@@ -63,6 +63,7 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfEndOfMapInFrontOfAgent;
 	public PropositionalFunction		pfTrenchInFrontOfAgent;
 	public PropositionalFunction		pfAgentInMidAir;
+	public PropositionalFunction		pfTower;
 	
 	// Dave's jenky hard coded prop funcs
 	public PropositionalFunction		pfAgentLookForwardAndWalkable;
@@ -86,16 +87,22 @@ public class MinecraftBehavior {
 	 * @param filePath map filepath on which to perform the planning
 	 */
 	public MinecraftBehavior(String filePath) {
-		this.updateMap(filePath);	
+		MapIO mapIO = new MapIO(filePath);
+		this.updateMap(mapIO);	
+	}
+	
+	
+	public MinecraftBehavior(MapIO mapIO) {
+		this.updateMap(mapIO);	
 	}
 	
 	/**
 	 * 
 	 * @param filePathOfMap a filepath to the location of the ascii map to update the behavior to
 	 */
-	public void updateMap(String filePathOfMap) {
+	public void updateMap(MapIO mapIO) {
 		//Perform IO on map�
-		MapIO mapIO = new MapIO(filePathOfMap);
+		
 		char[][][] mapAs3DArray = mapIO.getMapAs3DCharArray();
 		HashMap<String, Integer> headerInfo = mapIO.getHeaderHashMap();
 		
@@ -129,6 +136,7 @@ public class MinecraftBehavior {
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
 		this.pfAgentLookForwardAndWalkable = domain.getPropFunction(NameSpace.PFAGENTLOOKFORWARDWALK);
 		this.pfEmptyCellFrontAgentWalk = domain.getPropFunction(NameSpace.PFEMPTYCELLINWALK);
+		this.pfTower = domain.getPropFunction(NameSpace.PFTOWER);
 		
 		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
 		
@@ -158,6 +166,8 @@ public class MinecraftBehavior {
 			
 		case NameSpace.INTGOLDBARGOAL:
 			return this.pfAgentHasAtLeastXGoldBar;
+		case NameSpace.INTTOWERGOAL:
+			return this.pfTower;
 		default:
 			break;
 		}
@@ -195,6 +205,10 @@ public class MinecraftBehavior {
 	public State getInitialState() {
 		return this.initialState;
 
+	}
+	
+	public MinecraftDomainGenerator getDomainGenerator() {
+		return this.MCDomainGenerator;
 	}
 	
 	// ---------- PLANNERS ---------- 
@@ -295,23 +309,23 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-		String mapsPath = "src/minecraft/maps/";
+		String mapsPath = "src/minecraft/maps/randomMaps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-		String mapName = "TESTING.map";
+		String mapName = "TowerPlaneWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
 		// BFS
-//		mcBeh.BFSExample(outputPath);
+		mcBeh.BFSExample(outputPath);
 		
 		// VI
 //		mcBeh.ValueIterationPlanner();
 		
 		// Affordance RTDP
-		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.load(mcBeh.getDomain(), "trenches100.kb");
-		mcBeh.AffordanceRTDP(affKB);
+//		KnowledgeBase affKB = new KnowledgeBase();
+//		affKB.load(mcBeh.getDomain(), "trenches100.kb");
+//		mcBeh.AffordanceRTDP(affKB);
 		
 		// Subgoal Planner
 //		OOMDPPlanner lowLevelPlanner = new RTDP(mcBeh.domain, mcBeh.rewardFunction, mcBeh.terminalFunction, mcBeh.gamma, mcBeh.hashingFactory, mcBeh.vInit, mcBeh.numRollouts, mcBeh.minDelta, mcBeh.maxDepth);

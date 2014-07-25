@@ -1,5 +1,7 @@
 package minecraft;
 
+import java.util.List;
+
 public class NameSpace {
 	//-------------ATTRIBUTE STRINGS-------------
 	public static final String							ATX = "x";
@@ -20,23 +22,29 @@ public class NameSpace {
 	public static final String							CLASSAGENT = "agent";
 	public static final String							CLASSAGENTFEET = "agentsFeet";
 	public static final String							CLASSGOAL = "goal";
-	public static final String							CLASSDIRTBLOCK = "dirtBlock";
+	public static final String							CLASSDIRTBLOCKPICKUPABLE = "dirtBlockPickupable";
+	public static final String							CLASSDIRTBLOCKNOTPICKUPABLE = "dirtBlockNotPickupable";
 	public static final String							CLASSGOLDBLOCK = "goldBlock";
 	public static final String							CLASSINDWALL = "indestrucibleWall";
 	public static final String							CLASSFURNACE = "furnace";
 	public static final String							CLASSTRENCH = "trench";
 
 	
-	//-------------CHARS FOR ASCII MAPS-------------
+	//-------------ASCII MAP-------------
 	//Map chars
 	public static final char CHARGOAL = 'G';
 	public static final char CHARAGENT = 'A';
-	public static final char CHARDIRTBLOCK = '.';
+	public static final char CHARDIRTBLOCKPICKUPABLE = '.';
+	public static final char CHARDIRTBLOCKNOTPICKUPABLE = ',';
 	public static final char CHAREMPTY = 'e';
 	public static final char CHARAGENTFEET = 'F';
 	public static final char CHARINDBLOCK = 'w';
 	public static final char CHARGOLDBLOCK = 'g';
 	public static final char CHARFURNACE = 'f';
+	public static final char CHAROUTOFBOUNDS = 'o';
+	public static final char CHARUNIDENTIFIED = 'u';
+	
+	
 	
 	//Header chars
 	public static final char CHARPLACEABLEBLOCKS = 'B';
@@ -48,6 +56,7 @@ public class NameSpace {
 	public static final int INTXYZGOAL = 0;
 	public static final int INTGOLDOREGOAL = 1;
 	public static final int INTGOLDBARGOAL = 2;
+	public static final int INTTOWERGOAL = 3;
 	
 	
 	//-------------MAP SEPARATORS-------------
@@ -78,6 +87,7 @@ public class NameSpace {
 	public static final String				PFAGENTADJTRENCH = "AgentAdjacentToTrench";
 	public static final String				PFAGENTLOOKFORWARDWALK = "AgentLookForwardWalk";
 	public static final String				PFEMPTYCELLINWALK = "EmptyCellInWalk";
+	public static final String				PFTOWER = "tower";
 	
 	//-------------ENUMS-------------
 	public enum RotDirection {
