@@ -1,6 +1,8 @@
 package minecraft.MinecraftDomain;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import minecraft.MapIO;
 import minecraft.NameSpace;
@@ -10,6 +12,7 @@ import minecraft.MinecraftDomain.Actions.MovementAction;
 import minecraft.MinecraftDomain.Actions.PlaceBlockAction;
 import minecraft.MinecraftDomain.Actions.RotateAction;
 import minecraft.MinecraftDomain.Actions.RotateVertAction;
+import minecraft.MinecraftDomain.Actions.StochasticAgentAction;
 import minecraft.MinecraftDomain.Actions.UseBlockAction;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentAdjacentToTrenchPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldBarPF;
@@ -206,18 +209,33 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		//ACTIONS
 		
 		//Set up actions
-		new MovementAction(NameSpace.ACTIONMOVE, domain, rows, cols, height);
-		new RotateAction(NameSpace.ACTIONROTATEC, domain, 1, rows, cols, height);
-		new RotateAction(NameSpace.ACTIONROTATECC, domain, NameSpace.RotDirection.size-1, rows, cols, height); 
+		StochasticAgentAction move = new MovementAction(NameSpace.ACTIONMOVE, domain, rows, cols, height);
+		StochasticAgentAction turnRight = new RotateAction(NameSpace.ACTIONROTATEC, domain, 1, rows, cols, height);
+		StochasticAgentAction turnLeft = new RotateAction(NameSpace.ACTIONROTATECC, domain, NameSpace.RotDirection.size-1, rows, cols, height); 
+		StochasticAgentAction lookDown = new RotateVertAction(NameSpace.ACTIONLOOKDOWN, domain, rows, cols, height, -1);
+		StochasticAgentAction lookUp = new RotateVertAction(NameSpace.ACTIONLOOKUP, domain, rows, cols, height, 1);
+
+		
 		new DestroyBlockAction(NameSpace.ACTIONDESTBLOCK, domain, rows, cols, height);
 		new JumpAction(NameSpace.ACTIONJUMP, domain, rows, cols, height, 1);
 		new PlaceBlockAction(NameSpace.ACTIONPLACEBLOCK, domain, rows, cols, height);
-		new RotateVertAction(NameSpace.ACTIONLOOKDOWN, domain, rows, cols, height, -1);
-		new RotateVertAction(NameSpace.ACTIONLOOKUP, domain, rows, cols, height, 1);
 		new UseBlockAction(NameSpace.ACTIONUSEBLOCK, domain, rows, cols, height);
 		
-		//Set up indeterminism in actions
+		//Set up indeterminism/results of actions
+		List<StochasticAgentAction> actions = new ArrayList<StochasticAgentAction>();
+		actions.add(move);
+		actions.add(turnRight);
+		actions.add(turnLeft);
+		actions.add(lookDown);
+		actions.add(lookUp);
 		
+		move.addResultingActionsWithWeights(actions, new double[]{1, 0, 0, 0, 0});
+		turnRight.addResultingActionsWithWeights(actions, new double[]{0, 1, 0, 0, 0});
+		turnLeft.addResultingActionsWithWeights(actions, new double[]{0, 0, 1, 0, 0});
+		lookDown.addResultingActionsWithWeights(actions, new double[]{0, 0, 0, 1, 0});
+		lookUp.addResultingActionsWithWeights(actions, new double[]{0, 0, 0, 0, 1});
+		
+
 		//PROPOSITIONAL FUNCTIONS
 		
 		//Set up propositional functions
@@ -241,7 +259,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 	}
 	
 	public static void main(String[] args) {
-		String filePath = "src/minecraft/maps/randomMaps/TowerPlaneWorld0.map";
+		String filePath = "src/minecraft/maps/emptyMap.map";
 		MapIO io = new MapIO(filePath);
 		
 		char[][][] charMap = io.getMapAs3DCharArray();
