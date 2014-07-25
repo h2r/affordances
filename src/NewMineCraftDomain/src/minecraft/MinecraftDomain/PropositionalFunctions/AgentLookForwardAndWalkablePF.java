@@ -27,7 +27,10 @@ public class AgentLookForwardAndWalkablePF extends PropositionalFunction{
 
 	@Override
 	public boolean isTrue(State state, String[] params) {
-		
+//		boolean t = true;
+//		if(t){
+//			return true;
+//		}
 		String agentString = params[0];
 		
 //		ObjectInstance agent = state.getObject(agentString);

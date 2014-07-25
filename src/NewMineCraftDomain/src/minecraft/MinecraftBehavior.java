@@ -13,7 +13,9 @@ import burlap.behavior.singleagent.*;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
 import burlap.behavior.singleagent.planning.QComputablePlanner;
 import burlap.behavior.singleagent.planning.ValueFunctionPlanner;
+import burlap.behavior.singleagent.planning.commonpolicies.AffordanceBoltzmannQPolicy;
 import burlap.behavior.singleagent.planning.commonpolicies.AffordanceGreedyQPolicy;
+import burlap.behavior.singleagent.planning.commonpolicies.BoltzmannQPolicy;
 import burlap.behavior.singleagent.planning.commonpolicies.GreedyDeterministicQPolicy;
 import burlap.behavior.singleagent.planning.commonpolicies.GreedyQPolicy;
 import burlap.behavior.singleagent.planning.deterministic.DeterministicPlanner;
@@ -78,7 +80,8 @@ public class MinecraftBehavior {
 	private int 						numRollouts = 20000; // RTDP
 	private int							maxDepth = 50; // RTDP
 	private int 						vInit = -1; // RTDP
-	private int 						numRolloutsWithSmallChangeToConverge = 30;
+	private int 						numRolloutsWithSmallChangeToConverge = 200; // RTDP
+	private double						boltzmannTemperature = 0.5;
 
 	
 	// ----- CLASS METHODS -----
@@ -288,7 +291,8 @@ public class MinecraftBehavior {
 		
 		planner.planFromState(initialState);
 		
-		// Create a Q-greedy policy from the planner
+		// Create a BoltzmannQ Policy from the planner
+//		Policy p = new AffordanceBoltzmannQPolicy((QComputablePlanner)planner, boltzmannTemperature, affController);
 		Policy p = new AffordanceGreedyQPolicy(affController, (QComputablePlanner)planner);
 		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
 		System.out.println(ea.getActionSequenceString());
@@ -322,10 +326,11 @@ public class MinecraftBehavior {
 		// VI
 //		mcBeh.ValueIterationPlanner();
 		
-		// Affordance RTDP
-//		KnowledgeBase affKB = new KnowledgeBase();
-//		affKB.load(mcBeh.getDomain(), "trenches100.kb");
-//		mcBeh.AffordanceRTDP(affKB);
+
+		// Affordance RTDP with a BoltzmanQPolicy
+		KnowledgeBase affKB = new KnowledgeBase();
+		affKB.load(mcBeh.getDomain(), "trenches100.kb");
+		mcBeh.AffordanceRTDP(affKB);
 		
 		// Subgoal Planner
 //		OOMDPPlanner lowLevelPlanner = new RTDP(mcBeh.domain, mcBeh.rewardFunction, mcBeh.terminalFunction, mcBeh.gamma, mcBeh.hashingFactory, mcBeh.vInit, mcBeh.numRollouts, mcBeh.minDelta, mcBeh.maxDepth);
