@@ -65,7 +65,7 @@ public class MapFileGenerator {
 		String[] mapsToDelete = mapDir.list();
 	    
         for (int i = 0; i < mapsToDelete.length; i++) {  
-            File map = new File(mapDir, mapsToDelete[i]);   
+            File map = new File(mapDir, mapsToDelete[i]);
             map.delete();  
         }  
 	}

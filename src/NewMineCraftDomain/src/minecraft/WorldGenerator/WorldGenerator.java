@@ -513,8 +513,6 @@ public class WorldGenerator {
 		
 		toReturn.put(Character.toString(NameSpace.CHARPLACEABLEBLOCKS), numPlaceAbleBlocks);
 		
-
-
 		return toReturn;
 	}
 

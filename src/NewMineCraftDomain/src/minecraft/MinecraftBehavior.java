@@ -72,10 +72,9 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfAgentLookForwardAndWalkable;
 	public PropositionalFunction		pfTrenchBetweenAgentAndGoal;
 	public PropositionalFunction		pfEmptyCellFrontAgentWalk;
-	public PropositionalFunction		pfGoldBlockFrontOfAgentOne;
-	public PropositionalFunction		pfGoldBlockFrontOfAgentTwo;
+	public PropositionalFunction		pfGoldBlockFrontOfAgent;
 	public PropositionalFunction		pfFurnaceInFrontOfAgent;
-	
+	public PropositionalFunction		pfWallInFrontOfAgent;
 	
 	//Params for Planners
 	private double						gamma = 0.99;
@@ -86,7 +85,6 @@ public class MinecraftBehavior {
 	private int 						vInit = 1; // RTDP
 	private int 						numRolloutsWithSmallChangeToConverge = 200; // RTDP
 	private double						boltzmannTemperature = 0.5;
-
 	
 	// ----- CLASS METHODS -----
 	/**
@@ -147,9 +145,9 @@ public class MinecraftBehavior {
 		this.pfAgentLookForwardAndWalkable = domain.getPropFunction(NameSpace.PFAGENTLOOKFORWARDWALK);
 		this.pfEmptyCellFrontAgentWalk = domain.getPropFunction(NameSpace.PFEMPTYCELLINWALK);
 		this.pfTower = domain.getPropFunction(NameSpace.PFTOWER);
-		this.pfGoldBlockFrontOfAgentOne = domain.getPropFunction(NameSpace.PFGOLDFRONTAGENTONE);
-		this.pfGoldBlockFrontOfAgentTwo = domain.getPropFunction(NameSpace.PFGOLDFRONTAGENTTWO);
+		this.pfGoldBlockFrontOfAgent = domain.getPropFunction(NameSpace.PFGOLDFRONTAGENTONE);
 		this.pfFurnaceInFrontOfAgent = domain.getPropFunction(NameSpace.PFFURNACEINFRONT);
+		this.pfWallInFrontOfAgent = domain.getPropFunction(NameSpace.PFWALLINFRONT);
 		
 		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
 		
@@ -296,8 +294,9 @@ public class MinecraftBehavior {
 	
 	public double[] AffordanceRTDP(KnowledgeBase affKB){
 		AffordancesController affController = affKB.getAffordancesController();
-
 		AffordanceRTDP planner = new AffordanceRTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth, affController, numRolloutsWithSmallChangeToConverge);
+		
+		long startTime = System.currentTimeMillis( );
 		
 		int bellmanUpdates = planner.planFromStateAndCount(initialState);
 
@@ -305,6 +304,9 @@ public class MinecraftBehavior {
 //		Policy p = new AffordanceBoltzmannQPolicy((QComputablePlanner)planner, boltzmannTemperature, affController);
 		Policy p = new AffordanceGreedyQPolicy(affController, (QComputablePlanner)planner);
 		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
+		
+		// Compute CPU time
+		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
 		
 		// Count reward.
 		double totalReward = 0.;
@@ -318,7 +320,7 @@ public class MinecraftBehavior {
 		
 //		System.out.println(ea.getActionSequenceString());
 
-		double[] results = {bellmanUpdates, totalReward, completed};
+		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
 		
 		return results;
 	}
@@ -331,11 +333,16 @@ public class MinecraftBehavior {
 
 		RTDP planner = new RTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth);
 		planner.setMinNumRolloutsWithSmallValueChange(numRolloutsWithSmallChangeToConverge);
-		int bellmanUpdates = planner.planFromStateAndCount(initialState);
 		
+		long startTime = System.currentTimeMillis( );
+		
+		int bellmanUpdates = planner.planFromStateAndCount(initialState);
 		// Create a Q-greedy policy from the planner
 		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
 		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
+		
+		// Compute CPU time
+		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
 		
 		// Count reward
 		double totalReward = 0.;
@@ -349,7 +356,7 @@ public class MinecraftBehavior {
 		
 //		System.out.println(ea.getActionSequenceString());
 
-		double[] results = {bellmanUpdates, totalReward, completed};
+		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
 
 		return results;
 	}
