@@ -27,13 +27,7 @@ public class AgentLookForwardAndWalkablePF extends PropositionalFunction{
 
 	@Override
 	public boolean isTrue(State state, String[] params) {
-//		boolean t = true;
-//		if(t){
-//			return true;
-//		}
-		String agentString = params[0];
-		
-//		ObjectInstance agent = state.getObject(agentString);
+
 		ObjectInstance agent = state.getFirstObjectOfClass(NameSpace.CLASSAGENT);
 		
 		int ax = agent.getDiscValForAttribute(NameSpace.ATX);
@@ -76,10 +70,14 @@ public class AgentLookForwardAndWalkablePF extends PropositionalFunction{
 			if (block.getBooleanValue(NameSpace.ATCOLLIDES)) {
 				return false;
 			}
-		} 
+		}
+		
+		int arot = agent.getDiscValForAttribute(NameSpace.ATROTDIR);
+		
 		// Is there a block below to walk on?
 		for(ObjectInstance block: objectsInFrontBelow) {
 			if (block.getBooleanValue(NameSpace.ATCOLLIDES)) {
+//				System.out.println("AgentLookForwarDAndWalk) afx,ay,az:arot " + ax + "," + ay + "," + az + ":" + arot);
 				return true;
 			}
 		}

@@ -35,9 +35,7 @@ public class EndOfMapInFrontOfAgentPF extends PropositionalFunction {
 		int y = positionInFront[1];
 		int z = positionInFront[2];
 		
-		return Helpers.withinMapAt(x, y, z, this.cols, this.rows, this.height);
+		return !Helpers.withinMapAt(x, y, z, this.cols, this.rows, this.height);
 	}
-	
-	
 
 }

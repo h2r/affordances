@@ -5,6 +5,7 @@ import burlap.oomdp.logicalexpressions.LogicalExpression;
 import java.util.Random;
 
 import minecraft.NameSpace;
+import minecraft.WorldGenerator.Exceptions.WorldNotTallEnoughException;
 
 public class LearningWorldGenerator extends WorldGenerator {
 	private static Random 	r = new Random();
@@ -27,7 +28,12 @@ public class LearningWorldGenerator extends WorldGenerator {
 		
 		
 		//Add agent
-//		this.addAgent(toReturn);
+		try {
+			this.addAgent(toReturn);
+		} catch (WorldNotTallEnoughException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		// Add trench
 		if(goalDescription.toString().contains("trench")) {

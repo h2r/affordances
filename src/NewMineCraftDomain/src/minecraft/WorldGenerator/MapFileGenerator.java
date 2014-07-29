@@ -1,5 +1,6 @@
 package minecraft.WorldGenerator;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,19 @@ public class MapFileGenerator {
 			currIO.printHeaderAndMapToFile(this.directoryPath + baseFileName + i++ + ".map");
 		}
 			
+	}
+	
+	/**
+	 * Deletes all of the map files in the current directoryPath (used in test pipeline)
+	 */
+	public void clearMapsInDirectory() {
+		File mapDir = new File(this.directoryPath);       
+		String[] mapsToDelete = mapDir.list();
+	    
+        for (int i = 0; i < mapsToDelete.length; i++) {  
+            File map = new File(mapDir, mapsToDelete[i]);   
+            map.delete();  
+        }  
 	}
 	
 	public static void main(String[] args) {

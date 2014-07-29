@@ -42,7 +42,7 @@ public class AffordanceLearner {
 	
 	public void learn() {
 		
-		List<String> maps = new ArrayList<String>();
+		List<MapIO> maps = new ArrayList<MapIO>();
 		
 		LearningWorldGenerator worldGenerator = new LearningWorldGenerator(2,2,4);
 		
@@ -52,19 +52,19 @@ public class AffordanceLearner {
 				
 				// Mapfile name information
 				String mapname = "src/minecraft/maps/learning/" + goal.toString() + "/" + i + ".map";
-				maps.add(mapname);
 			
-				// Build the map
+				// Build the MapIO object
 				char[][][] charMap = worldGenerator.generateMap(goal);
-
 				HashMap<String,Integer> headerInfo = makeHeader(goal);
-				
 				MapIO map = new MapIO(headerInfo, charMap);
 				map.printHeaderAndMapToFile(mapname);
+				
+				maps.add(map);
 			}
 		}
 		
-		for(String map : maps) {
+		// Run learning on all the generated maps
+		for(MapIO map : maps) {
 			learnMap(map);
 		}
 	}
@@ -88,7 +88,7 @@ public class AffordanceLearner {
 		return headerInfo;
 	}
 	
-	private void learnMap(String map) {
+	private void learnMap(MapIO map) {
 		// Update behavior with new map
 		this.mcb.updateMap(map);
 		System.out.println("\n\nLearning with map: " + map);
@@ -104,7 +104,7 @@ public class AffordanceLearner {
 		 * variable.
 		 */
 		
-		// Form a policy on the given map
+		// Synthesize a policy on the given map
 		Policy p = mcb.solve(planner);
 		Map<AffordanceDelegate,List<AbstractGroundedAction>> seen = new HashMap<AffordanceDelegate,List<AbstractGroundedAction>>();  // Makes sure we don't count an action more than once per affordance (per map)
 		
@@ -228,6 +228,74 @@ public class AffordanceLearner {
 		GroundedProp blockGP = new GroundedProp(pf, pfFreeParams);
 		return new PFAtom(blockGP);
 	}
+	
+	public static String generateMinecraftKB(MinecraftBehavior mb) {
+		List<Action> allActions = mb.getDomain().getActions();
+		List<AbstractGroundedAction> allGroundedActions = new ArrayList<AbstractGroundedAction>();
+
+		// Create Grounded Action instances for each action
+		for(Action a : allActions) {
+			String[] freeParams = makeFreeVarListFromObjectClasses(a.getParameterClasses());
+			GroundedAction ga = new GroundedAction(a, freeParams);
+			allGroundedActions.add(ga);
+		}
+		
+		
+		// Set up goal description list
+		List<LogicalExpression> lgds = new ArrayList<LogicalExpression>();
+		PropositionalFunction hasGold = mb.pfAgentHasAtLeastXGoldOre;
+		LogicalExpression goldLE = pfAtomFromPropFunc(hasGold);
+		
+		PropositionalFunction atGoal = mb.pfAgentAtGoal;
+		LogicalExpression goalLE = pfAtomFromPropFunc(atGoal);
+		
+		lgds.add(goalLE);
+//		lgds.add(goldLE);
+		
+		// Set up precondition list
+		List<LogicalExpression> predicates = new ArrayList<LogicalExpression>();
+		
+		// AgentInAir PFAtom
+		PropositionalFunction agentInAir = mb.pfAgentInMidAir;
+		LogicalExpression agentInAirLE = pfAtomFromPropFunc(agentInAir);
+		
+		// EndOfMapInFrontOfAgent PFAtom
+		PropositionalFunction endOfMapInFrontOfAgent = mb.pfEndOfMapInFrontOfAgent;
+		LogicalExpression endOfMapLE = pfAtomFromPropFunc(endOfMapInFrontOfAgent);
+		
+		// TrenchInFrontOfAgent PFAtom
+		PropositionalFunction trenchInFrontOf = mb.pfTrenchInFrontOfAgent;
+		LogicalExpression trenchLE = pfAtomFromPropFunc(trenchInFrontOf);
+		
+		// AgentLookForwardAndWalkable PFAtom
+		PropositionalFunction forwardWalkable = mb.pfAgentLookForwardAndWalkable;
+		LogicalExpression forwardWalkableLE = pfAtomFromPropFunc(forwardWalkable);
+		
+		// Empty Cell front of agent PFAtom
+		PropositionalFunction forwardWalkableTrench = mb.pfEmptyCellFrontAgentWalk;
+		LogicalExpression forwardWalkableTrenchLE = pfAtomFromPropFunc(forwardWalkableTrench);
+		
+		// Add LEs to list
+		predicates.add(agentInAirLE);
+		predicates.add(endOfMapLE);
+		predicates.add(trenchLE);
+		predicates.add(forwardWalkableLE);
+		predicates.add(forwardWalkableTrenchLE);
+		
+		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions);
+
+		// Initialize Learner
+		boolean countTotalActions = true;
+		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions);
+		
+		String kbName = "tests" + affLearn.numWorldsPerLGD + ".kb";
+		
+		affLearn.learn();
+		
+		affKnowledgeBase.save(kbName);
+		
+		return kbName;
+	}
 
 	
 	public static void main(String[] args) {
@@ -277,6 +345,9 @@ public class AffordanceLearner {
 		// Empty Cell front of agent PFAtom
 		PropositionalFunction forwardWalkableTrench = mb.pfEmptyCellFrontAgentWalk;
 		LogicalExpression forwardWalkableTrenchLE = pfAtomFromPropFunc(forwardWalkableTrench);
+
+		PropositionalFunction goldFrontAgent = mb.pfGoldBlockFrontOfAgent;
+		LogicalExpression goldFrontAgentLE = pfAtomFromPropFunc(goldFrontAgent);
 		
 		// Add LEs to list
 		predicates.add(agentInAirLE);
