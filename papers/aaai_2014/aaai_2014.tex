@@ -10,14 +10,14 @@
 \usepackage{amssymb}
 \usepackage{latexsym}
 
-% numbers option provides compact numerical references in the text. 
 \usepackage[numbers]{natbib}
 \usepackage{multicol}
 \usepackage[bookmarks=true]{hyperref}
 \usepackage[usenames,dvipsnames]{color}
+
+% -- Comment commands --
 \newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{ST: #1}}}
 \newcommand{\dnote}[1]{\textcolor{Green}{\textbf{D: #1}}}
-\newcommand{\gnote}[1]{\textcolor{Purple}{\textbf{G: #1}}}
 
 \pdfinfo{
    /Author (David Abel  \& Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex)
@@ -101,7 +101,7 @@ aspects of the environment that are most relevant toward solving its current goa
 and avoids exploration of irrelevant parts of the 
 state-action space, which leads to dramatic speedups in planning.
 
-Further, we propose a learning process that enables agents to
+Further, we created a learning process that enables agents to
 autonomously learn affordances through experience, lessening the
 agent's dependence on expert knowledge. Affordances are not specific
 to a particular reward function or state space, and provide the agent
@@ -218,7 +218,7 @@ means of knowledge representation and reasoning for collaborative cooking with R
 \label{sec:related-work}
 
 In this section, we discuss the differences between
-affordance-aware planning and other forms of knowledge that
+affordance-aware planning and other forms of knowledge engineering that
 have been used to accelerate planning.
 
 % --- Subsection: Temporarily Extended Actions ---
@@ -399,7 +399,7 @@ across a variety of task types, reward functions, and state-spaces, allowing for
 We provided preliminary results indicating the effectiveness of the learned affordances, suggesting that
 the agent may be able to discover novel affordance types and learn to tackle new types of problems on its own.
 
-In the future, we hope to automatically discover useful subgoals - a topic of some active research \cite{Mcgovern01automaticdiscovery,Simsek:2005:IUS:1102351.1102454}. This will allow for affordances to reduce the size of the explored state-action space without requiring knowledge from an expert, increasing transferability across task types. Additionally, we hope to decrease the amount of knowledge given to the planner by implementing Incremental Feature Dependency Discovery, which will allow our affordance learning algorithm to discover novel preconditions that will further enhance their pruning ability. Lastly, we hope to incorporate a more generalizable perception system across all domains, something akin to an RGBD input.
+In the future, we hope to automatically discover useful subgoals - a topic of some active research \cite{Mcgovern01automaticdiscovery,Simsek:2005:IUS:1102351.1102454}. This will allow for affordances to reduce the size of the explored state-action space without requiring knowledge from an expert and increasing transferability across task types. Additionally, we hope to decrease the amount of knowledge given to the planner by implementing Incremental Feature Dependency Discovery ~\cite{ICML2011Geramifard_473}, which will allow our affordance learning algorithm to discover novel preconditions that will further enhance action pruning.
 
 
 {\small
