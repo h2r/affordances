@@ -37,7 +37,17 @@ public class KnowledgeBase {
 	}
 	
 	public void add(AffordanceDelegate aff) {
-		this.affDelegateList.add(aff);
+		// Only add if it's not already in the KB
+		if(!this.affDelegateList.contains(aff)) {
+			this.affDelegateList.add(aff);
+		}
+	}
+	
+	public void remove(AffordanceDelegate aff) {
+		// Only remove if it's in the KB
+		if(this.affDelegateList.contains(aff)) {
+			this.affDelegateList.remove(aff);
+		}
 	}
 	
 	public void save(String filename) {
@@ -49,7 +59,6 @@ public class KnowledgeBase {
 			for (AffordanceDelegate aff: this.affDelegateList) {
 				bw.write(((SoftAffordance)aff.getAffordance()).toFile());
 			}
-			
 			bw.close();
 		} catch (IOException e) {
 			System.out.println("ERROR");

@@ -2,6 +2,8 @@ package affordances;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +35,7 @@ public class AffordanceLearner {
 	private KnowledgeBase 			affordanceKB;
 	private List<LogicalExpression> lgds;
 	private MinecraftBehavior 		mcb;
-	private int 					numWorldsPerLGD = 10;
+	private int 					numWorldsPerLGD = 1;
 	private boolean					countTotalActions = true;
 
 	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, List<LogicalExpression> lgds, boolean countTotalActions) {
@@ -74,7 +76,7 @@ public class AffordanceLearner {
 	 */
 	public void createLearningMaps(String learningMapDir) {
 		
-		MapFileGenerator mapMaker = new MapFileGenerator(2, 3, 4, learningMapDir);
+		MapFileGenerator mapMaker = new MapFileGenerator(1, 3, 4, learningMapDir);
 		
 		// Get rid of old maps
 		mapMaker.clearMapsInDirectory();
@@ -91,22 +93,22 @@ public class AffordanceLearner {
 		String[] baseFileNames = {"DeepTrenchWorld", "WallPlaneWorld", "PlaneGoldMining", "PlaneGoldSmelting", "TowerPlaneWorld",};
 		
 		// Trench
-		mapMaker.generateNMaps(this.numWorldsPerLGD, 0, 2, floorOf, 1, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[0]);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, this.lgds.get(0), 2, floorOf, 1, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[0]);
 		// Wall
-		mapMaker.generateNMaps(this.numWorldsPerLGD, 0, floorDepth, floorOf, numTrenches, straightTrench, 1, wallOf, straightWall, depthOfGoldOre, baseFileNames[1]);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, this.lgds.get(0), floorDepth, floorOf, numTrenches, straightTrench, 1, wallOf, straightWall, depthOfGoldOre, baseFileNames[1]);
 		// Find gold ore
-		mapMaker.generateNMaps(this.numWorldsPerLGD, 1, floorDepth, floorOf, numTrenches, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[2]);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, this.lgds.get(1), floorDepth, floorOf, numTrenches, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[2]);
 		// Smelt gold bar
-		mapMaker.generateNMaps(this.numWorldsPerLGD, 2, floorDepth, floorOf, numTrenches, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[3]);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, this.lgds.get(2), floorDepth, floorOf, numTrenches, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[3]);
 //		// Build tower
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, 3, floorDepth, floorOf, numTrenches, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[4]);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, this.lgds.get(3), floorDepth, floorOf, numTrenches, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[4]);
 	}
 	
 	
 	private void learnMap(MapIO map) {
 		// Update behavior with new map
 		this.mcb.updateMap(map);
-		
+
 		// Initialize behavior and planner
 		OOMDPPlanner planner = new ValueIteration(mcb.getDomain(), mcb.getRewardFunction(), mcb.getTerminalFunction(), mcb.getGamma(), mcb.getHashFactory(), mcb.getMinDelta(), Integer.MAX_VALUE);
 		/**
@@ -125,8 +127,11 @@ public class AffordanceLearner {
 		// Updates the action counts (alpha)
 		updateActionCounts(planner, p, seen, true);
 		
-		// Updates the action set size counts (Beta)
+		// Updates the action set size counts (beta)
 		updateActionSetSizeCounts(seen);
+		
+		// Remove low information affordances
+//		removeLowInfoAffordances();
 	}
 	
 	/**
@@ -170,7 +175,7 @@ public class AffordanceLearner {
 				}
 				
 				// If affordance is lit up
-				if(affDelegate.primeAndCheckIfActiveInState(st)) {
+				if(affDelegate.primeAndCheckIfActiveInState(st, affordanceKB.getAffordancesController().currentGoal)) {
 					
 					// If we're counting total number of actions OR we haven't counted this action for this affordance yet
 					if (this.countTotalActions || !seen.get(affDelegate).contains(ga)) {
@@ -188,6 +193,69 @@ public class AffordanceLearner {
 		}
 	}
 	
+	public void removeLowInfoAffordances() {
+		List<AffordanceDelegate> toRemove = new ArrayList<AffordanceDelegate>();
+		
+		for(AffordanceDelegate aff : affordanceKB.getAffordances()) {
+			Collection<Integer> countsCol = ((SoftAffordance)aff.getAffordance()).getActionCounts().values();
+			List<Integer> counts = new ArrayList<Integer>(countsCol);
+			
+			double total = 0.0;
+			for(Integer d : counts) {
+				
+				total += d;
+			}
+			if (total == 0.0) {
+				toRemove.add(aff);
+			}
+			
+//			double[] multinomial = normalizeCounts(counts);
+//			// If the distribution is indistinguishable from random, get rid of the affordance.
+//			if (!isIndistinguishableFromUniform(multinomial)) {
+//				affordanceKB.remove(aff);
+//			}
+		}
+		
+//		for(AffordanceDelegate affToRemove : toRemove) {
+//			affordanceKB.remove(affToRemove);
+//		}
+		
+	}
+	
+	/**
+	 * Converts a list of counts to a multinomial distribution
+	 * @param counts: the counts to inform the multinomial
+	 * @return result (double[]): represents the multinomial distribution resulting from the counts given
+	 */
+	private double[] normalizeCounts(List<Integer> counts) {
+		double[] result = new double[counts.size()];
+		double total = 0.0;
+		for(Integer i : counts) {
+			total = total + i;
+		}
+		
+		for(int i = 0; i < result.length; i++) {
+			result[i] = counts.get(i) / total;
+		}
+		return result;
+	}
+	
+	private boolean isIndistinguishableFromUniform(double[] multinomial) {
+		double[] uniform = new double[multinomial.length];
+		Arrays.fill(uniform, 1.0/multinomial.length);
+		Double result = 0.0;
+		for(int i = 0; i < multinomial.length; i++) {
+			if (multinomial[i] != 0.0) {
+				System.out.println("affLearner: multi, log(mult): " + multinomial[i] + "," + Math.log(multinomial[i]));
+				result -= multinomial[i] * Math.log(multinomial[i]);
+			}
+		}
+		
+		System.out.println("(AffordanceLearner) entropy: " + result);
+		
+		return false;
+	}
+	
 	/**
 	 * Updates the hyperparameter for the dirichlet over action set size
 	 * @param seen: map from affordances to actions
@@ -203,7 +271,7 @@ public class AffordanceLearner {
 			else{
 			}
 		}
-		System.out.println("(AffordanceLearner)Ratio of counted set sizes: " + (counted / affordanceKB.getAffordances().size()));
+//		System.out.println("(AffordanceLearner)Ratio of counted set sizes: " + (counted / affordanceKB.getAffordances().size()));
 	}
 	
 	/**
@@ -264,7 +332,7 @@ public class AffordanceLearner {
 	 * @param pf
 	 * @return
 	 */
-	private static LogicalExpression pfAtomFromPropFunc(PropositionalFunction pf) {
+	public static LogicalExpression pfAtomFromPropFunc(PropositionalFunction pf) {
 		String[] pfFreeParams = makeFreeVarListFromObjectClasses(pf.getParameterClasses());
 		GroundedProp blockGP = new GroundedProp(pf, pfFreeParams);
 		return new PFAtom(blockGP);
@@ -361,14 +429,14 @@ public class AffordanceLearner {
 		// Set up goal description list
 		List<LogicalExpression> lgds = new ArrayList<LogicalExpression>();
 		
+		PropositionalFunction atGoal = mb.pfAgentAtGoal;
+		LogicalExpression atGoalLE = pfAtomFromPropFunc(atGoal);
+		
 		PropositionalFunction hasGoldOre = mb.pfAgentHasAtLeastXGoldOre;
 		LogicalExpression goldOreLE = pfAtomFromPropFunc(hasGoldOre);
 		
-		PropositionalFunction hasGoldBlock = mb.pfAgentHasAtLeastXGoldOre;
+		PropositionalFunction hasGoldBlock = mb.pfAgentHasAtLeastXGoldBar;
 		LogicalExpression goldBlockLE = pfAtomFromPropFunc(hasGoldBlock);
-		
-		PropositionalFunction atGoal = mb.pfAgentAtGoal;
-		LogicalExpression atGoalLE = pfAtomFromPropFunc(atGoal);
 		
 		PropositionalFunction towerBuilt = mb.pfTower;
 		LogicalExpression towerBuiltLE = pfAtomFromPropFunc(towerBuilt);
@@ -377,7 +445,7 @@ public class AffordanceLearner {
 		lgds.add(atGoalLE);
 		lgds.add(goldOreLE);
 		lgds.add(goldBlockLE);
-		lgds.add(towerBuiltLE);
+//		lgds.add(towerBuiltLE);
 		
 		// Set up precondition list
 		List<LogicalExpression> predicates = new ArrayList<LogicalExpression>();
@@ -423,9 +491,9 @@ public class AffordanceLearner {
 		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions);
 		
 		affLearn.learn();
-		affLearn.printCounts();
+//		affLearn.printCounts();
 		
-		affKnowledgeBase.save("learned" + affLearn.numWorldsPerLGD + ".kb");
+		affKnowledgeBase.save("testremove" + affLearn.numWorldsPerLGD + ".kb");
 	}
 	
 }

@@ -1,0 +1,12 @@
+map: DeepTrenchWorld9.
+	RTDP 11228, -7.3, 1.0, 7231.4
+	Expert 2634, -7.7, 1.0, 1587.8
+	Learned 8332, -7.3, 1.0, 5284.7
+map: PlaneGoldMining9.
+	RTDP 1931, -4.2, 1.0, 1109.9
+	Expert 1307, -4.3, 1.0, 695.9
+	Learned 1681, -4.2, 1.0, 940.4
+map: PlaneGoldSmelting9.
+	RTDP 6975, -8.4, 1.0, 4191.7
+	Expert 14576, -29.8, 0.9, 8329.6
+	Learned 6111, -8.4, 1.0, 3545.7
