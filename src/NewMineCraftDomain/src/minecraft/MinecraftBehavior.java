@@ -62,22 +62,24 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfAgentInMidAir;
 	public PropositionalFunction		pfTower;
 	
+	
 	// Dave's jenky hard coded prop funcs
 	public PropositionalFunction		pfAgentLookForwardAndWalkable;
 	public PropositionalFunction		pfTrenchBetweenAgentAndGoal;
 	public PropositionalFunction		pfEmptyCellFrontAgentWalk;
-	
+	public PropositionalFunction		pfGoldBlockFrontOfAgent;
+	public PropositionalFunction		pfFurnaceInFrontOfAgent;
+	public PropositionalFunction		pfWallInFrontOfAgent;
 	
 	//Params for Planners
 	private double						gamma = 0.99;
 	private double						minDelta = .01;
 	private int							maxSteps = 200;
-	private int 						numRollouts = 20000; // RTDP
+	private int 						numRollouts = 500; // RTDP
 	private int							maxDepth = 50; // RTDP
-	private int 						vInit = -1; // RTDP
+	private int 						vInit = 1; // RTDP
 	private int 						numRolloutsWithSmallChangeToConverge = 200; // RTDP
 	private double						boltzmannTemperature = 0.5;
-
 	
 	// ----- CLASS METHODS -----
 	/**
@@ -114,7 +116,10 @@ public class MinecraftBehavior {
 		// Set up the state hashing system
 		this.hashingFactory = new DiscreteStateHashFactory();
 		this.hashingFactory.setAttributesForClass(NameSpace.CLASSAGENT, domain.getObjectClass(NameSpace.CLASSAGENT).attributeList); 
-		
+		this.hashingFactory.setAttributesForClass(NameSpace.CLASSDIRTBLOCKNOTPICKUPABLE, domain.getObjectClass(NameSpace.CLASSDIRTBLOCKNOTPICKUPABLE).attributeList);
+		this.hashingFactory.setAttributesForClass(NameSpace.CLASSDIRTBLOCKPICKUPABLE, domain.getObjectClass(NameSpace.CLASSDIRTBLOCKPICKUPABLE).attributeList);
+		this.hashingFactory.setAttributesForClass(NameSpace.CLASSGOLDBLOCK, domain.getObjectClass(NameSpace.CLASSGOLDBLOCK).attributeList);
+
 		//Set initial state
 		try {
 			this.initialState = MinecraftStateGenerator.createInitialState(mapAs3DArray, headerInfo, domain);
@@ -122,7 +127,7 @@ public class MinecraftBehavior {
 			e.printStackTrace();
 		}
 		
-		//Get propositional functions
+		// Get propositional functions
 		this.pfAgentAtGoal = domain.getPropFunction(NameSpace.PFATGOAL);
 		this.pfEmptySpace = domain.getPropFunction(NameSpace.PFEMPSPACE);
 		this.pfBlockAt = domain.getPropFunction(NameSpace.PFBLOCKAT);
@@ -135,6 +140,9 @@ public class MinecraftBehavior {
 		this.pfAgentLookForwardAndWalkable = domain.getPropFunction(NameSpace.PFAGENTLOOKFORWARDWALK);
 		this.pfEmptyCellFrontAgentWalk = domain.getPropFunction(NameSpace.PFEMPTYCELLINWALK);
 		this.pfTower = domain.getPropFunction(NameSpace.PFTOWER);
+		this.pfGoldBlockFrontOfAgent = domain.getPropFunction(NameSpace.PFGOLDFRONTAGENTONE);
+		this.pfFurnaceInFrontOfAgent = domain.getPropFunction(NameSpace.PFFURNACEINFRONT);
+		this.pfWallInFrontOfAgent = domain.getPropFunction(NameSpace.PFWALLINFRONT);
 		
 		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
 		
@@ -279,53 +287,97 @@ public class MinecraftBehavior {
 		}
 	}
 	
-	public void AffordanceRTDP(KnowledgeBase affKB){
+	public double[] AffordanceRTDP(KnowledgeBase affKB){
 		AffordancesController affController = affKB.getAffordancesController();
+		AffordanceRTDP planner = new AffordanceRTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth, affController, numRolloutsWithSmallChangeToConverge);
+		
+		long startTime = System.currentTimeMillis( );
+		
+		int bellmanUpdates = planner.planFromStateAndCount(initialState);
 
-		ValueFunctionPlanner planner = new AffordanceRTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth, affController, numRolloutsWithSmallChangeToConverge);
-		
-		planner.planFromState(initialState);
-		
-		// Create a BoltzmannQ Policy from the planner
+		// Create a Policy from the planner
 //		Policy p = new AffordanceBoltzmannQPolicy((QComputablePlanner)planner, boltzmannTemperature, affController);
 		Policy p = new AffordanceGreedyQPolicy(affController, (QComputablePlanner)planner);
 		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
-		System.out.println(ea.getActionSequenceString());
+		
+		// Compute CPU time
+		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
+		
+		// Count reward.
+		double totalReward = 0.;
+		for(Double d : ea.rewardSequence){
+			totalReward = totalReward + d;
+		}
+		
+		// Check if task completed
+		State finalState = ea.getState(ea.stateSequence.size() - 1);
+		double completed = terminalFunction.isTerminal(finalState) ? 1.0 : 0.0;
+		
+//		System.out.println(ea.getActionSequenceString());
 
+		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
+		
+		return results;
 	}
 	
-	public void RTDP() {
+	/**
+	 * Solves the current OO-MDP using Real Time Dynamic Programming
+	 * @return: The number of bellman updates performed during planning
+	 */
+	public double[] RTDP() {
 
-		ValueFunctionPlanner planner = new RTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth);
-		((RTDP) planner).setMinNumRolloutsWithSmallValueChange(numRolloutsWithSmallChangeToConverge);
-		planner.planFromState(initialState);
+		RTDP planner = new RTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth);
+		planner.setMinNumRolloutsWithSmallValueChange(numRolloutsWithSmallChangeToConverge);
 		
+		long startTime = System.currentTimeMillis( );
+		
+		int bellmanUpdates = planner.planFromStateAndCount(initialState);
 		// Create a Q-greedy policy from the planner
 		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
 		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
-		System.out.println(ea.getActionSequenceString());
+		
+		// Compute CPU time
+		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
+		
+		// Count reward
+		double totalReward = 0.;
+		for(Double d : ea.rewardSequence){
+			totalReward = totalReward + d;
+		}
+		
+		// Check if task completed
+		State finalState = ea.getState(ea.stateSequence.size() - 1);
+		double completed = terminalFunction.isTerminal(finalState) ? 1.0 : 0.0;
+		
+//		System.out.println(ea.getActionSequenceString());
 
+		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
+
+		return results;
 	}
 	
 	public static void main(String[] args) {
-		String mapsPath = "src/minecraft/maps/randomMaps/";
+		String mapsPath = "src/minecraft/maps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-		String mapName = "TowerPlaneWorld0.map";
+		String mapName = "test/WallPlaneWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
 		// BFS
 		mcBeh.BFSExample();
+
 		
 		// VI
 //		mcBeh.ValueIterationPlanner();
 		
 
-		// Affordance RTDP with a BoltzmanQPolicy
+		// Affordance RTDP
 		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.load(mcBeh.getDomain(), "trenches100.kb");
-		mcBeh.AffordanceRTDP(affKB);
+		affKB.loadHard(mcBeh.getDomain(), "expertTest.kb");
+		double[] results = mcBeh.AffordanceRTDP(affKB);
+		
+		
 		
 		// Subgoal Planner
 //		OOMDPPlanner lowLevelPlanner = new RTDP(mcBeh.domain, mcBeh.rewardFunction, mcBeh.terminalFunction, mcBeh.gamma, mcBeh.hashingFactory, mcBeh.vInit, mcBeh.numRollouts, mcBeh.minDelta, mcBeh.maxDepth);
@@ -335,8 +387,8 @@ public class MinecraftBehavior {
 //		sgp.solve();
 		
 		// RTDP
-//		mcBeh.RTDP();
-
+//		double[] results = mcBeh.RTDP();
+		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2]);
 	}
 	
 	

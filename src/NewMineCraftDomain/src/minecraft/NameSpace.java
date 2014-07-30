@@ -88,6 +88,10 @@ public class NameSpace {
 	public static final String				PFAGENTLOOKFORWARDWALK = "AgentLookForwardWalk";
 	public static final String				PFEMPTYCELLINWALK = "EmptyCellInWalk";
 	public static final String				PFTOWER = "tower";
+	public static final String				PFGOLDFRONTAGENTONE = "GoldFrontOfAgent1";
+	public static final String				PFGOLDFRONTAGENTTWO = "GoldFrontOfAgent2";
+	public static final String				PFFURNACEINFRONT = "FurnaceInFront";
+	public static final String				PFWALLINFRONT = "WallInFront";
 	
 	//-------------ENUMS-------------
 	public enum RotDirection {

@@ -1,5 +1,6 @@
 package affordances;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +8,9 @@ import java.util.Map;
 
 import minecraft.MapIO;
 import minecraft.MinecraftBehavior;
+import minecraft.NameSpace;
 import minecraft.WorldGenerator.LearningWorldGenerator;
+import minecraft.WorldGenerator.MapFileGenerator;
 import burlap.behavior.affordances.Affordance;
 import burlap.behavior.affordances.AffordanceDelegate;
 import burlap.behavior.affordances.SoftAffordance;
@@ -30,7 +33,7 @@ public class AffordanceLearner {
 	private KnowledgeBase 			affordanceKB;
 	private List<LogicalExpression> lgds;
 	private MinecraftBehavior 		mcb;
-	private int 					numWorldsPerLGD = 100;
+	private int 					numWorldsPerLGD = 10;
 	private boolean					countTotalActions = true;
 
 	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, List<LogicalExpression> lgds, boolean countTotalActions) {
@@ -40,58 +43,69 @@ public class AffordanceLearner {
 		this.countTotalActions = countTotalActions;
 	}
 	
+	/**
+	 * Runs the full learning algorithm
+	 */
 	public void learn() {
 		
-		List<String> maps = new ArrayList<String>();
+		List<MapIO> maps = new ArrayList<MapIO>();
 		
-		LearningWorldGenerator worldGenerator = new LearningWorldGenerator(2,2,4);
+		String learningMapDir = "src/minecraft/maps/learning/";
+		createLearningMaps(learningMapDir);
 		
-		for(LogicalExpression goal : this.lgds){
-			for (int i = 0; i < this.numWorldsPerLGD; i++) {
-				// Make a new map w/ that goal, save it to a file in maps/learning/goal/<name>
-				
-				// Mapfile name information
-				String mapname = "src/minecraft/maps/learning/" + goal.toString() + "/" + i + ".map";
-				maps.add(mapname);
-			
-				// Build the map
-				char[][][] charMap = worldGenerator.generateMap(goal);
-
-				HashMap<String,Integer> headerInfo = makeHeader(goal);
-				
-				MapIO map = new MapIO(headerInfo, charMap);
-				map.printHeaderAndMapToFile(mapname);
-			}
+		File testDir = new File(learningMapDir);
+		String[] learningMaps = testDir.list();
+		
+		for(String map : learningMaps) {
+			MapIO learningMap = new MapIO(learningMapDir + map);
+			maps.add(learningMap);
 		}
-		
-		for(String map : maps) {
+
+		// Run learning on all the generated maps
+		for(MapIO map : maps) {
+			System.out.println("\n\nLearning with map: " + map);
 			learnMap(map);
 		}
 	}
 	
-	private HashMap<String,Integer> makeHeader(LogicalExpression goal) {
-		// Write header info (depends on goal specific information)
-
-		HashMap<String,Integer> headerInfo = new HashMap<String,Integer>();
-		headerInfo.put("B", 0);
-		headerInfo.put("g", 0);
-		headerInfo.put("b", 0);
+	/**
+	 * Creates some number of learning maps, indicated by the parameter
+	 * @param learningMapDir: the number of maps to create for each goal type
+	 */
+	public void createLearningMaps(String learningMapDir) {
 		
-		if(goal.toString().contains("gold")) {
-			headerInfo.put("G", 1);
-		} else {
-			headerInfo.put("G", 0);
-		}
+		MapFileGenerator mapMaker = new MapFileGenerator(2, 3, 4, learningMapDir);
 		
-
+		// Get rid of old maps
+		mapMaker.clearMapsInDirectory();
 		
-		return headerInfo;
+		// Map parameters
+		int floorDepth = 1;
+		char floorOf = NameSpace.CHARINDBLOCK;
+		int numTrenches = 0;
+		boolean straightTrench = true;
+		int numWalls = 0;
+		char wallOf = NameSpace.CHARDIRTBLOCKNOTPICKUPABLE;
+		boolean straightWall = true;
+		int depthOfGoldOre = 1;
+		String[] baseFileNames = {"DeepTrenchWorld", "WallPlaneWorld", "PlaneGoldMining", "PlaneGoldSmelting", "TowerPlaneWorld",};
+		
+		// Trench
+		mapMaker.generateNMaps(this.numWorldsPerLGD, 0, 2, floorOf, 1, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[0]);
+		// Wall
+		mapMaker.generateNMaps(this.numWorldsPerLGD, 0, floorDepth, floorOf, numTrenches, straightTrench, 1, wallOf, straightWall, depthOfGoldOre, baseFileNames[1]);
+		// Find gold ore
+		mapMaker.generateNMaps(this.numWorldsPerLGD, 1, floorDepth, floorOf, numTrenches, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[2]);
+		// Smelt gold bar
+		mapMaker.generateNMaps(this.numWorldsPerLGD, 2, floorDepth, floorOf, numTrenches, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[3]);
+//		// Build tower
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, 3, floorDepth, floorOf, numTrenches, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[4]);
 	}
 	
-	private void learnMap(String map) {
+	
+	private void learnMap(MapIO map) {
 		// Update behavior with new map
 		this.mcb.updateMap(map);
-		System.out.println("\n\nLearning with map: " + map);
 		
 		// Initialize behavior and planner
 		OOMDPPlanner planner = new ValueIteration(mcb.getDomain(), mcb.getRewardFunction(), mcb.getTerminalFunction(), mcb.getGamma(), mcb.getHashFactory(), mcb.getMinDelta(), Integer.MAX_VALUE);
@@ -104,7 +118,7 @@ public class AffordanceLearner {
 		 * variable.
 		 */
 		
-		// Form a policy on the given map
+		// Synthesize a policy on the given map
 		Policy p = mcb.solve(planner);
 		Map<AffordanceDelegate,List<AbstractGroundedAction>> seen = new HashMap<AffordanceDelegate,List<AbstractGroundedAction>>();  // Makes sure we don't count an action more than once per affordance (per map)
 		
@@ -115,6 +129,13 @@ public class AffordanceLearner {
 		updateActionSetSizeCounts(seen);
 	}
 	
+	/**
+	 * Updates the the hyperparameters for the Dirichlet Multinomial
+	 * @param planner: a planner object that has already solved the given OO-MDP
+	 * @param policy: a policy used to get sample trajectories
+	 * @param seen: a map indicating which actions have been seen by each affordance
+	 * @param countTotalActions: a boolean indicating to count total number of actions or worlds in which an action was used
+	 */
 	public void updateActionCounts(OOMDPPlanner planner, Policy policy, Map<AffordanceDelegate,List<AbstractGroundedAction>> seen, boolean countTotalActions) {
 		
 		// Get all states from the policy
@@ -167,18 +188,31 @@ public class AffordanceLearner {
 		}
 	}
 	
+	/**
+	 * Updates the hyperparameter for the dirichlet over action set size
+	 * @param seen: map from affordances to actions
+	 */
 	public void updateActionSetSizeCounts(Map<AffordanceDelegate,List<AbstractGroundedAction>> seen) {
 		// Count the action set size for each affordance for this world
+		double counted = 0.0;
 		for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
 			if (seen.get(affDelegate).size() > 0) {
+				++counted;
 				((SoftAffordance)affDelegate.getAffordance()).updateActionSetSizeCount(seen.get(affDelegate).size());
 			}
 			else{
-				System.out.println("DID NOT COUNT ACTION SET SIZE");
 			}
 		}
+		System.out.println("(AffordanceLearner)Ratio of counted set sizes: " + (counted / affordanceKB.getAffordances().size()));
 	}
 	
+	/**
+	 * Generates an affordance knowledge base object
+	 * @param predicates: the list of predicates to use
+	 * @param lgds: a list of goals to use
+	 * @param allActions: the set of possible actions (OO-MDP action set)
+	 * @return
+	 */
 	public static KnowledgeBase generateAffordanceKB(List<LogicalExpression> predicates, List<LogicalExpression> lgds, List<AbstractGroundedAction> allActions) {
 		KnowledgeBase affordanceKB = new KnowledgeBase();
 		
@@ -194,6 +228,9 @@ public class AffordanceLearner {
 		
 	}
 	
+	/**
+	 * Helper method that prints out the counts for each affordance
+	 */
 	public void printCounts() {
 		for (AffordanceDelegate affDelegate: this.affordanceKB.getAffordances()) {
 			((SoftAffordance)affDelegate.getAffordance()).printCounts();
@@ -222,17 +259,23 @@ public class AffordanceLearner {
 		return groundedPropFreeVars;
 	}
 
-	
+	/**
+	 * Helper method that creates a PFAtom from a propositional function
+	 * @param pf
+	 * @return
+	 */
 	private static LogicalExpression pfAtomFromPropFunc(PropositionalFunction pf) {
 		String[] pfFreeParams = makeFreeVarListFromObjectClasses(pf.getParameterClasses());
 		GroundedProp blockGP = new GroundedProp(pf, pfFreeParams);
 		return new PFAtom(blockGP);
 	}
-
 	
-	public static void main(String[] args) {
-		MinecraftBehavior mb = new MinecraftBehavior("src/minecraft/maps/learning/template.map");
-		
+	/**
+	 * Creates a Minecraft specific KnowledgeBase
+	 * @param mb: MinecraftBehavior instance
+	 * @return
+	 */
+	public static String generateMinecraftKB(MinecraftBehavior mb) {
 		List<Action> allActions = mb.getDomain().getActions();
 		List<AbstractGroundedAction> allGroundedActions = new ArrayList<AbstractGroundedAction>();
 
@@ -291,10 +334,98 @@ public class AffordanceLearner {
 		boolean countTotalActions = true;
 		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions);
 		
+		String kbName = "tests" + affLearn.numWorldsPerLGD + ".kb";
+		
+		affLearn.learn();
+		
+		affKnowledgeBase.save(kbName);
+		
+		return kbName;
+	}
+
+	
+	public static void main(String[] args) {
+		MinecraftBehavior mb = new MinecraftBehavior("src/minecraft/maps/template.map");
+		
+		List<Action> allActions = mb.getDomain().getActions();
+		List<AbstractGroundedAction> allGroundedActions = new ArrayList<AbstractGroundedAction>();
+
+		// Create Grounded Action instances for each action
+		for(Action a : allActions) {
+			String[] freeParams = makeFreeVarListFromObjectClasses(a.getParameterClasses());
+			GroundedAction ga = new GroundedAction(a, freeParams);
+			allGroundedActions.add(ga);
+		}
+		
+		
+		// Set up goal description list
+		List<LogicalExpression> lgds = new ArrayList<LogicalExpression>();
+		
+		PropositionalFunction hasGoldOre = mb.pfAgentHasAtLeastXGoldOre;
+		LogicalExpression goldOreLE = pfAtomFromPropFunc(hasGoldOre);
+		
+		PropositionalFunction hasGoldBlock = mb.pfAgentHasAtLeastXGoldOre;
+		LogicalExpression goldBlockLE = pfAtomFromPropFunc(hasGoldBlock);
+		
+		PropositionalFunction atGoal = mb.pfAgentAtGoal;
+		LogicalExpression atGoalLE = pfAtomFromPropFunc(atGoal);
+		
+		PropositionalFunction towerBuilt = mb.pfTower;
+		LogicalExpression towerBuiltLE = pfAtomFromPropFunc(towerBuilt);
+		
+		// Add goals
+		lgds.add(atGoalLE);
+		lgds.add(goldOreLE);
+		lgds.add(goldBlockLE);
+		lgds.add(towerBuiltLE);
+		
+		// Set up precondition list
+		List<LogicalExpression> predicates = new ArrayList<LogicalExpression>();
+		
+		// AgentInAir PFAtom
+		PropositionalFunction agentInAir = mb.pfAgentInMidAir;
+		LogicalExpression agentInAirLE = pfAtomFromPropFunc(agentInAir);
+		
+		// EndOfMapInFrontOfAgent PFAtom
+		PropositionalFunction endOfMapInFrontOfAgent = mb.pfEndOfMapInFrontOfAgent;
+		LogicalExpression endOfMapLE = pfAtomFromPropFunc(endOfMapInFrontOfAgent);
+		
+		// TrenchInFrontOfAgent PFAtom
+		PropositionalFunction trenchInFrontOf = mb.pfTrenchInFrontOfAgent;
+		LogicalExpression trenchLE = pfAtomFromPropFunc(trenchInFrontOf);
+		
+		// AgentLookForwardAndWalkable PFAtom
+		PropositionalFunction forwardWalkable = mb.pfAgentLookForwardAndWalkable;
+		LogicalExpression forwardWalkableLE = pfAtomFromPropFunc(forwardWalkable);
+
+		PropositionalFunction goldFrontAgent = mb.pfGoldBlockFrontOfAgent;
+		LogicalExpression goldFrontAgentLE = pfAtomFromPropFunc(goldFrontAgent);
+		
+		PropositionalFunction furnaceFrontAgent = mb.pfFurnaceInFrontOfAgent;
+		LogicalExpression furnaceFrontAgentLE = pfAtomFromPropFunc(furnaceFrontAgent);
+		
+		PropositionalFunction wallFrontAgent = mb.pfWallInFrontOfAgent;
+		LogicalExpression wallFrontAgentLE = pfAtomFromPropFunc(wallFrontAgent);
+		
+		// Add LEs to list
+		predicates.add(agentInAirLE);
+		predicates.add(endOfMapLE);
+		predicates.add(trenchLE);
+		predicates.add(forwardWalkableLE);
+		predicates.add(goldFrontAgentLE);
+		predicates.add(furnaceFrontAgentLE);
+		predicates.add(wallFrontAgentLE);
+		
+		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions);
+
+		// Initialize Learner
+		boolean countTotalActions = true;
+		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions);
+		
 		affLearn.learn();
 		affLearn.printCounts();
 		
-		affKnowledgeBase.save("trenches" + affLearn.numWorldsPerLGD + ".kb");
+		affKnowledgeBase.save("learned" + affLearn.numWorldsPerLGD + ".kb");
 	}
 	
 }
