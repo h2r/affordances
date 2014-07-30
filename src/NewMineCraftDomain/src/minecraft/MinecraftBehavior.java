@@ -54,6 +54,7 @@ public class MinecraftBehavior {
 	private TerminalFunction			terminalFunction;
 	private State						initialState;
 	private DiscreteStateHashFactory	hashingFactory;
+	private LogicalExpression 			currentGoal;
 	
 	//Propositional Functions
 	public PropositionalFunction		pfAgentAtGoal;
@@ -75,16 +76,18 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfGoldBlockFrontOfAgent;
 	public PropositionalFunction		pfFurnaceInFrontOfAgent;
 	public PropositionalFunction		pfWallInFrontOfAgent;
+
 	
 	//Params for Planners
 	private double						gamma = 0.99;
 	private double						minDelta = .01;
 	private int							maxSteps = 200;
-	private int 						numRollouts = 500; // RTDP
+	private int 						numRollouts = 2000; // RTDP
 	private int							maxDepth = 50; // RTDP
 	private int 						vInit = 1; // RTDP
 	private int 						numRolloutsWithSmallChangeToConverge = 200; // RTDP
 	private double						boltzmannTemperature = 0.5;
+
 	
 	// ----- CLASS METHODS -----
 	/**
@@ -151,13 +154,13 @@ public class MinecraftBehavior {
 		
 		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
 		
-		LogicalExpression leToUse = new PFAtom(pfToUse.getAllGroundedPropsForState(this.initialState).get(0)); 
+		this.currentGoal = new PFAtom(pfToUse.getAllGroundedPropsForState(this.initialState).get(0)); 
 		
 		//Set up reward function
-		this.rewardFunction = new SingleGoalLERF(leToUse, 0, -1); 
+		this.rewardFunction = new SingleGoalLERF(currentGoal, 0, -1); 
 		
 		//Set up terminal function
-		this.terminalFunction = new SingleLETF(leToUse);
+		this.terminalFunction = new SingleLETF(currentGoal);
 				
 //		//Set up reward function
 //		this.rewardFunction = new SingleGoalPFRF(pfToUse, 0, -1); 
@@ -294,6 +297,8 @@ public class MinecraftBehavior {
 	
 	public double[] AffordanceRTDP(KnowledgeBase affKB){
 		AffordancesController affController = affKB.getAffordancesController();
+		affController.setCurrentGoal(this.currentGoal); // Update goal to determine active affordances
+		
 		AffordanceRTDP planner = new AffordanceRTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth, affController, numRolloutsWithSmallChangeToConverge);
 		
 		long startTime = System.currentTimeMillis( );
@@ -365,7 +370,7 @@ public class MinecraftBehavior {
 		String mapsPath = "src/minecraft/maps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-		String mapName = "test/WallPlaneWorld0.map";
+		String mapName = "TESTING.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
@@ -378,7 +383,7 @@ public class MinecraftBehavior {
 
 		// Affordance RTDP
 		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.loadHard(mcBeh.getDomain(), "expertTest.kb");
+		affKB.loadHard(mcBeh.getDomain(), "goaltest.kb");
 		double[] results = mcBeh.AffordanceRTDP(affKB);
 		
 		

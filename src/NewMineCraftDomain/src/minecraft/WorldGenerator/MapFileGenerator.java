@@ -4,8 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import affordances.AffordanceLearner;
+import burlap.oomdp.logicalexpressions.LogicalExpression;
 import minecraft.MapIO;
 import minecraft.NameSpace;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldBarPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldOrePF;
+import minecraft.MinecraftDomain.PropositionalFunctions.AtGoalPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.TowerInMapPF;
 import minecraft.WorldGenerator.Exceptions.RandomMapGenerationException;
 import minecraft.WorldGenerator.Exceptions.WorldIsTooSmallException;
 
@@ -55,6 +61,68 @@ public class MapFileGenerator {
 			currIO.printHeaderAndMapToFile(this.directoryPath + baseFileName + i++ + ".map");
 		}
 			
+	}
+	
+	/**
+	 * 
+	 * @param numMaps
+	 * @param goal
+	 * @param floorDepth
+	 * @param floorOf
+	 * @param numTrenches
+	 * @param trenchesStraightAndBetweenAgentAndGoal
+	 * @param numWalls
+	 * @param wallOf
+	 * @param wallsStraightAndBetweenAgentAndGoal
+	 * @param depthOfGoldOre
+	 * @param baseFileName
+	 */
+	public void generateNMaps(int numMaps, LogicalExpression goal, int floorDepth, char floorOf, int numTrenches, boolean trenchesStraightAndBetweenAgentAndGoal, int numWalls, char wallOf, boolean wallsStraightAndBetweenAgentAndGoal, Integer depthOfGoldOre, String baseFileName) {
+		System.out.println("Generating " + baseFileName + " maps...");
+		List<MapIO> toWriteToFile = new ArrayList<MapIO>();
+		
+		for (int i = 0; i < numMaps; i++) {
+			
+			int goalNum = goalToGoalNum(goal);
+			
+			try {
+				this.worldGenerator.randomizeMap(goalNum, floorOf, numTrenches, trenchesStraightAndBetweenAgentAndGoal, numWalls, wallOf, wallsStraightAndBetweenAgentAndGoal, depthOfGoldOre, floorDepth);
+			} catch (RandomMapGenerationException e) {
+				System.out.println("\tCouldn't make one of the maps: " + e.toString());
+			}
+			MapIO currIO = this.worldGenerator.getCurrMapIO();
+			toWriteToFile.add(currIO);
+		}
+		
+		int i = 0;
+		for (MapIO currIO : toWriteToFile) {
+			currIO.printHeaderAndMapToFile(this.directoryPath + baseFileName + i++ + ".map");
+		}
+			
+	}
+	
+	/**
+	 * Maps a logical expression representing this map's goal to the int that represents that goal type.
+	 * @param lgd
+	 * @return
+	 */
+	private int goalToGoalNum(LogicalExpression lgd) {
+		int result;
+
+		if(lgd.toString().equals("AtGoal")) {
+			result = 0;
+		}
+		else if(lgd.toString().equals("AgentHasXGoldOre")) {
+			result = 1;
+		}
+		else if(lgd.toString().equals("AgentHasXGoldBlock")) {
+			result = 2;
+		}
+		else {
+			result = 3;
+		}
+		
+		return result;
 	}
 	
 	/**

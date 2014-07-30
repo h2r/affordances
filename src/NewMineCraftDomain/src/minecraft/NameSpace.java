@@ -2,6 +2,13 @@ package minecraft;
 
 import java.util.List;
 
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldBarPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldOrePF;
+import minecraft.MinecraftDomain.PropositionalFunctions.AtGoalPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.TowerInMapPF;
+import affordances.AffordanceLearner;
+import burlap.oomdp.logicalexpressions.LogicalExpression;
+
 public class NameSpace {
 	//-------------ATTRIBUTE STRINGS-------------
 	public static final String							ATX = "x";
@@ -43,8 +50,6 @@ public class NameSpace {
 	public static final char CHARFURNACE = 'f';
 	public static final char CHAROUTOFBOUNDS = 'o';
 	public static final char CHARUNIDENTIFIED = 'u';
-	
-	
 	
 	//Header chars
 	public static final char CHARPLACEABLEBLOCKS = 'B';
@@ -152,4 +157,6 @@ public class NameSpace {
 			return null;
 		}
 	}
+	
+	
 }

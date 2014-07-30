@@ -255,8 +255,6 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new AgentAdjacentToTrenchPF(NameSpace.PFAGENTADJTRENCH, domain, new String[]{NameSpace.CLASSAGENT, NameSpace.CLASSTRENCH});
 		new AgentLookForwardAndWalkablePF(NameSpace.PFAGENTLOOKFORWARDWALK, domain, new String[]{NameSpace.CLASSAGENT});
 		new EmptyCellInAgentWalkDir(NameSpace.PFEMPTYCELLINWALK, domain, new String[]{NameSpace.CLASSAGENT});
-//		new GoldInFrontOfAgentPF(NameSpace.PFGOLDFRONTAGENTONE, domain, new String[]{NameSpace.CLASSAGENT}, 1);
-//		new GoldInFrontOfAgentPF(NameSpace.PFGOLDFRONTAGENTTWO, domain, new String[]{NameSpace.CLASSAGENT}, 2);
 		new BlockInFrontOfAgentPF(NameSpace.PFGOLDFRONTAGENTONE, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOLDBLOCK);
 		new BlockInFrontOfAgentPF(NameSpace.PFFURNACEINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSFURNACE);
 		new WallInFrontOfAgentPF(NameSpace.PFWALLINFRONT, domain,  new String[]{NameSpace.CLASSAGENT}, 1);

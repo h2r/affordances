@@ -23,6 +23,7 @@ import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueItera
 import burlap.oomdp.core.AbstractGroundedAction;
 import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.State;
+import burlap.oomdp.logicalexpressions.LogicalExpression;
 import burlap.oomdp.singleagent.GroundedAction;
 
 /**
@@ -49,6 +50,8 @@ public class MapIO {
 	private Boolean planUsedForLastAllStates;
 	private List<State> allStates;
 	private HashMap<State, AbstractGroundedAction> stateToAction;
+	private LogicalExpression mapGoal;
+	
 	
 	//-----CLASS METHODS-----
 	public MapIO(String filePath) {
@@ -122,6 +125,8 @@ public class MapIO {
 			toReturn.put(key, value);
 		}
 		
+		int goalType = toReturn.get("G");
+
 		return toReturn;
 	}
 	
