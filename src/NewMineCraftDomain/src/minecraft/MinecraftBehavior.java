@@ -13,9 +13,7 @@ import burlap.behavior.singleagent.*;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
 import burlap.behavior.singleagent.planning.QComputablePlanner;
 import burlap.behavior.singleagent.planning.ValueFunctionPlanner;
-import burlap.behavior.singleagent.planning.commonpolicies.AffordanceBoltzmannQPolicy;
 import burlap.behavior.singleagent.planning.commonpolicies.AffordanceGreedyQPolicy;
-import burlap.behavior.singleagent.planning.commonpolicies.BoltzmannQPolicy;
 import burlap.behavior.singleagent.planning.commonpolicies.GreedyDeterministicQPolicy;
 import burlap.behavior.singleagent.planning.commonpolicies.GreedyQPolicy;
 import burlap.behavior.singleagent.planning.deterministic.DeterministicPlanner;
@@ -31,11 +29,8 @@ import burlap.oomdp.logicalexpressions.LogicalExpression;
 import burlap.oomdp.logicalexpressions.PFAtom;
 import burlap.oomdp.singleagent.*;
 import burlap.oomdp.singleagent.common.SingleGoalLERF;
-import burlap.oomdp.singleagent.common.SingleGoalPFRF;
 import burlap.oomdp.singleagent.common.SingleLETF;
-import burlap.oomdp.singleagent.common.SinglePFTF;
 import burlap.behavior.statehashing.DiscreteStateHashFactory;
-import burlap.behavior.statehashing.StateHashFactory;
 import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
 import minecraft.MinecraftStateGenerator.Exceptions.StateCreationException;
 
@@ -236,7 +231,7 @@ public class MinecraftBehavior {
 		return p;
 	}
 	
-	public void BFSExample(String outputPath) {
+	public void BFSExample() {
 		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
 		
 		DeterministicPlanner planner = new BFS(this.domain, goalCondition, this.hashingFactory);
@@ -244,10 +239,10 @@ public class MinecraftBehavior {
 		
 		Policy p = new SDPlannerPolicy(planner);
 		
-		p.evaluateBehavior(initialState, this.rewardFunction, this.terminalFunction).writeToFile(outputPath + "bfsPlanResult", MCStateParser);
+		p.evaluateBehavior(initialState, this.rewardFunction, this.terminalFunction);
 		
 		EpisodeAnalysis ea = p.evaluateBehavior(initialState, this.rewardFunction, this.terminalFunction);
-		ea.writeToFile(outputPath, MCStateParser);
+		System.out.println(ea.getActionSequenceString());
 	}
 	
 	private double sumReward(List<Double> rewardSeq) {
@@ -321,7 +316,7 @@ public class MinecraftBehavior {
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
 		// BFS
-		mcBeh.BFSExample(outputPath);
+		mcBeh.BFSExample();
 		
 		// VI
 //		mcBeh.ValueIterationPlanner();
