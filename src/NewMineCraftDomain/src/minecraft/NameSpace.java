@@ -107,6 +107,9 @@ public class NameSpace {
 	public static final String				ExpertVI = "EVI";
 	public static final String				LearnedHardVI = "LHVI";
 	public static final String				LearnedSoftVI = "LSVI";
+
+	//-------------OPTIONS+MACRO ACTIONS STRINGS-------------
+	public static final String				OPTBUILDTRENCH = "build trench option";
 	
 	//-------------ENUMS-------------
 	public enum RotDirection {

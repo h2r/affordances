@@ -1,6 +1,7 @@
 package affordances;
 
 import java.io.File;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,12 +34,13 @@ import burlap.oomdp.singleagent.GroundedAction;
 public class AffordanceLearner {
 	
 	private KnowledgeBase 			affordanceKB;
-	private List<LogicalExpression> lgds;
+	private Map<Integer,LogicalExpression> lgds;
 	private MinecraftBehavior 		mcb;
-	private int 					numWorldsPerLGD = 1;
+	private int 					numWorldsPerLGD = 5;
 	private boolean					countTotalActions = true;
-
-	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, List<LogicalExpression> lgds, boolean countTotalActions) {
+	private Double 					lowInformationThreshold = 1.55; // Threshold for what is considered high entropy/low information
+	
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions) {
 		this.lgds = lgds;
 		this.mcb = mcb;
 		this.affordanceKB = kb;
@@ -66,10 +68,15 @@ public class AffordanceLearner {
 		// Run learning on all the generated maps
 		for(MapIO map : maps) {
 			System.out.println("\n\nLearning with map: " + map);
+			int lgdInt = map.getHeaderHashMap().get("G");
+			affordanceKB.getAffordancesController().setCurrentGoal(this.lgds.get(lgdInt));
 			learnMap(map);
 		}
+		
+		// Remove low information affordances
+		removeLowInfoAffordances();
 	}
-	
+
 	/**
 	 * Creates some number of learning maps, indicated by the parameter
 	 * @param learningMapDir: the number of maps to create for each goal type
@@ -101,7 +108,7 @@ public class AffordanceLearner {
 		// Smelt gold bar
 		mapMaker.generateNMaps(this.numWorldsPerLGD, this.lgds.get(2), floorDepth, floorOf, numTrenches, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[3]);
 //		// Build tower
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, this.lgds.get(3), floorDepth, floorOf, numTrenches, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[4]);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, this.lgds.get(3), 0, floorOf, numTrenches, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[4]);
 	}
 	
 	
@@ -129,9 +136,6 @@ public class AffordanceLearner {
 		
 		// Updates the action set size counts (beta)
 		updateActionSetSizeCounts(seen);
-		
-		// Remove low information affordances
-//		removeLowInfoAffordances();
 	}
 	
 	/**
@@ -195,30 +199,32 @@ public class AffordanceLearner {
 	
 	public void removeLowInfoAffordances() {
 		List<AffordanceDelegate> toRemove = new ArrayList<AffordanceDelegate>();
-		
+		// Get counts for each affordance and queue zero count affs for removal
 		for(AffordanceDelegate aff : affordanceKB.getAffordances()) {
 			Collection<Integer> countsCol = ((SoftAffordance)aff.getAffordance()).getActionCounts().values();
 			List<Integer> counts = new ArrayList<Integer>(countsCol);
 			
+			// Remove if alpha counts are all 0
 			double total = 0.0;
 			for(Integer d : counts) {
-				
 				total += d;
 			}
-			if (total == 0.0) {
+			if (total == 0.0) {				
 				toRemove.add(aff);
+				continue;
 			}
 			
-//			double[] multinomial = normalizeCounts(counts);
-//			// If the distribution is indistinguishable from random, get rid of the affordance.
-//			if (!isIndistinguishableFromUniform(multinomial)) {
-//				affordanceKB.remove(aff);
-//			}
+			// Remove if indistinguishable from uniform
+			double[] multinomial = normalizeCounts(counts);
+			if(isLowInformationAffordance(multinomial)) {
+				toRemove.add(aff);
+			}
 		}
 		
-//		for(AffordanceDelegate affToRemove : toRemove) {
-//			affordanceKB.remove(affToRemove);
-//		}
+		// Remove any affordances with (alpha) counts of zero
+		for(AffordanceDelegate affToRemove : toRemove) {
+			affordanceKB.remove(affToRemove);
+		}
 		
 	}
 	
@@ -240,19 +246,26 @@ public class AffordanceLearner {
 		return result;
 	}
 	
-	private boolean isIndistinguishableFromUniform(double[] multinomial) {
+	/**
+	 * Determines if a given multinomial is statistically indistinguishable from the uniform distribution.
+	 * @param multinomial
+	 * @return
+	 */
+	private boolean isLowInformationAffordance(double[] multinomial) {
+		
 		double[] uniform = new double[multinomial.length];
 		Arrays.fill(uniform, 1.0/multinomial.length);
 		Double result = 0.0;
 		for(int i = 0; i < multinomial.length; i++) {
 			if (multinomial[i] != 0.0) {
-				System.out.println("affLearner: multi, log(mult): " + multinomial[i] + "," + Math.log(multinomial[i]));
 				result -= multinomial[i] * Math.log(multinomial[i]);
 			}
 		}
 		
-		System.out.println("(AffordanceLearner) entropy: " + result);
-		
+		// High entropy, return false.
+		if(result > this.lowInformationThreshold) {
+			return true;
+		}
 		return false;
 	}
 	
@@ -281,11 +294,11 @@ public class AffordanceLearner {
 	 * @param allActions: the set of possible actions (OO-MDP action set)
 	 * @return
 	 */
-	public static KnowledgeBase generateAffordanceKB(List<LogicalExpression> predicates, List<LogicalExpression> lgds, List<AbstractGroundedAction> allActions) {
+	public static KnowledgeBase generateAffordanceKB(List<LogicalExpression> predicates, Map<Integer,LogicalExpression> lgds, List<AbstractGroundedAction> allActions) {
 		KnowledgeBase affordanceKB = new KnowledgeBase();
 		
 		for (LogicalExpression pf : predicates) {
-			for (LogicalExpression lgd : lgds) {
+			for (LogicalExpression lgd : lgds.values()) {
 				Affordance aff = new SoftAffordance(pf, lgd, allActions);
 				AffordanceDelegate affDelegate = new AffordanceDelegate(aff);	
 				affordanceKB.add(affDelegate);
@@ -356,14 +369,14 @@ public class AffordanceLearner {
 		
 		
 		// Set up goal description list
-		List<LogicalExpression> lgds = new ArrayList<LogicalExpression>();
+		Map<Integer,LogicalExpression> lgds = new HashMap<Integer,LogicalExpression>();
 		PropositionalFunction hasGold = mb.pfAgentHasAtLeastXGoldOre;
 		LogicalExpression goldLE = pfAtomFromPropFunc(hasGold);
 		
 		PropositionalFunction atGoal = mb.pfAgentAtGoal;
 		LogicalExpression goalLE = pfAtomFromPropFunc(atGoal);
 		
-		lgds.add(goalLE);
+		lgds.put(0,goalLE);
 //		lgds.add(goldLE);
 		
 		// Set up precondition list
@@ -427,7 +440,7 @@ public class AffordanceLearner {
 		
 		
 		// Set up goal description list
-		List<LogicalExpression> lgds = new ArrayList<LogicalExpression>();
+		Map<Integer,LogicalExpression> lgds = new HashMap<Integer,LogicalExpression>();
 		
 		PropositionalFunction atGoal = mb.pfAgentAtGoal;
 		LogicalExpression atGoalLE = pfAtomFromPropFunc(atGoal);
@@ -442,10 +455,10 @@ public class AffordanceLearner {
 		LogicalExpression towerBuiltLE = pfAtomFromPropFunc(towerBuilt);
 		
 		// Add goals
-		lgds.add(atGoalLE);
-		lgds.add(goldOreLE);
-		lgds.add(goldBlockLE);
-//		lgds.add(towerBuiltLE);
+		lgds.put(0,atGoalLE);
+		lgds.put(1,goldOreLE);
+		lgds.put(2,goldBlockLE);
+		lgds.put(3,towerBuiltLE);
 		
 		// Set up precondition list
 		List<LogicalExpression> predicates = new ArrayList<LogicalExpression>();
@@ -493,7 +506,8 @@ public class AffordanceLearner {
 		affLearn.learn();
 //		affLearn.printCounts();
 		
-		affKnowledgeBase.save("testremove" + affLearn.numWorldsPerLGD + ".kb");
+		affKnowledgeBase.save("test" + affLearn.numWorldsPerLGD + ".kb");
+		
 	}
 	
 }

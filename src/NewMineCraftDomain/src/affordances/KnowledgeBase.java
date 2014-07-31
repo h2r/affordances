@@ -16,7 +16,7 @@ import burlap.oomdp.core.Domain;
 
 /**
  * The knowledge-base is a wrapper around a collection of objects of type T that are used
- * to encoode knowledge in the minecraft world (ie. affordances, subgoals, etc...)
+ * to encode knowledge in the minecraft world (ie. affordances, subgoals, etc...)
  * @author dabel
  *
  * @param <T> The type of knowledge (affordance, subgoal, etc...)
@@ -30,16 +30,19 @@ public class KnowledgeBase {
 	
 	public KnowledgeBase() {
 		this.affDelegateList = new ArrayList<AffordanceDelegate>();
+		this.affController = new AffordancesController(this.affDelegateList);
 	}
 
 	public KnowledgeBase(List<AffordanceDelegate> kb) {
 		this.affDelegateList = new ArrayList<AffordanceDelegate>(kb);
+		this.affController = new AffordancesController(this.affDelegateList);
 	}
 	
 	public void add(AffordanceDelegate aff) {
 		// Only add if it's not already in the KB
 		if(!this.affDelegateList.contains(aff)) {
 			this.affDelegateList.add(aff);
+			this.affController.addAffordanceDelegate(aff);
 		}
 	}
 	
@@ -47,6 +50,7 @@ public class KnowledgeBase {
 		// Only remove if it's in the KB
 		if(this.affDelegateList.contains(aff)) {
 			this.affDelegateList.remove(aff);
+			this.affController.removeAffordance(aff);
 		}
 	}
 	

@@ -1,0 +1,450 @@
+Running on map: DeepTrenchWorld0.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: DeepTrenchWorld1.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: DeepTrenchWorld2.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: DeepTrenchWorld3.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: DeepTrenchWorld4.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: DeepTrenchWorld5.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: DeepTrenchWorld6.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: DeepTrenchWorld7.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: DeepTrenchWorld8.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: DeepTrenchWorld9.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldMining0.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldMining1.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldMining2.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldMining3.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldMining4.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldMining5.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldMining6.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldMining7.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldMining8.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldMining9.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldSmelting0.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldSmelting1.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldSmelting2.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldSmelting3.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldSmelting4.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldSmelting5.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldSmelting6.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldSmelting7.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldSmelting8.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: PlaneGoldSmelting9.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: TowerPlaneWorld0.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: TowerPlaneWorld1.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: TowerPlaneWorld2.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: TowerPlaneWorld3.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: TowerPlaneWorld4.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: TowerPlaneWorld5.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: TowerPlaneWorld6.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: TowerPlaneWorld7.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: TowerPlaneWorld8.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: TowerPlaneWorld9.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: WallPlaneWorld0.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: WallPlaneWorld1.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: WallPlaneWorld2.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: WallPlaneWorld3.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: WallPlaneWorld4.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: WallPlaneWorld5.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: WallPlaneWorld6.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: WallPlaneWorld7.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: WallPlaneWorld8.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+
+Running on map: WallPlaneWorld9.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+	...VI Finished
+	...Expert VI Finished
+	...Learned Hard VI Finished
+

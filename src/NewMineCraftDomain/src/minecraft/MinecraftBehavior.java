@@ -12,6 +12,7 @@ import minecraft.MapIO;
 import minecraft.MinecraftStateParser;
 import minecraft.NameSpace;
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
+import minecraft.MinecraftDomain.Options.TrenchBuildDetOption;
 import affordances.KnowledgeBase;
 import burlap.behavior.affordances.AffordancesController;
 import burlap.behavior.singleagent.*;
@@ -226,6 +227,11 @@ public class MinecraftBehavior {
 		return this.MCDomainGenerator;
 	}
 	
+	private void addOptionsToOOMDPPlanner(OOMDPPlanner toAddTo) {
+		//Trench build option
+		toAddTo.addNonDomainReferencedAction(new TrenchBuildDetOption(NameSpace.OPTBUILDTRENCH, this.domain));
+	}
+	
 	// ---------- PLANNERS ---------- 
 	
 	/**
@@ -252,6 +258,9 @@ public class MinecraftBehavior {
 		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
 		
 		DeterministicPlanner planner = new BFS(this.domain, goalCondition, this.hashingFactory);
+		
+		addOptionsToOOMDPPlanner(planner);
+		
 		planner.planFromState(initialState);
 		
 		Policy p = new SDPlannerPolicy(planner);
@@ -272,11 +281,14 @@ public class MinecraftBehavior {
 	
 	public double[] ValueIterationPlanner(){
 		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
+
 		ValueIteration planner = new ValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, 0.01, Integer.MAX_VALUE);
 		
 		long startTime = System.currentTimeMillis( );
 		
 		int bellmanUpdates = planner.planFromStateAndCount(initialState);
+		
+		this.addOptionsToOOMDPPlanner(planner);
 		
 		// Create a Q-greedy policy from the planner
 		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
@@ -341,7 +353,7 @@ public class MinecraftBehavior {
 		affController.setCurrentGoal(this.currentGoal); // Update goal to determine active affordances
 		
 		AffordanceRTDP planner = new AffordanceRTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth, affController, numRolloutsWithSmallChangeToConverge);
-		
+				
 		long startTime = System.currentTimeMillis( );
 		
 		int bellmanUpdates = planner.planFromStateAndCount(initialState);
@@ -378,6 +390,9 @@ public class MinecraftBehavior {
 	public double[] RTDP() {
 
 		RTDP planner = new RTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth);
+		
+		addOptionsToOOMDPPlanner(planner);
+		
 		planner.setMinNumRolloutsWithSmallValueChange(numRolloutsWithSmallChangeToConverge);
 		
 		long startTime = System.currentTimeMillis( );
@@ -408,7 +423,7 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-		String mapsPath = "src/minecraft/maps/";
+		String mapsPath = "src/minecraft/maps/randomMaps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
 		String mapName = "/test/TowerPlaneWorld0.map";
@@ -416,7 +431,7 @@ public class MinecraftBehavior {
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
 		// BFS
-		mcBeh.BFSExample();
+//		mcBeh.BFSExample();
 
 		
 		// VI
@@ -457,6 +472,8 @@ public class MinecraftBehavior {
 //		}
 		
 					
+		double[] results = mcBeh.RTDP();
+		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2]);
 	}
 	
 	
