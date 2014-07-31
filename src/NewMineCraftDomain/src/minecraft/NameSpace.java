@@ -92,11 +92,21 @@ public class NameSpace {
 	public static final String				PFAGENTADJTRENCH = "AgentAdjacentToTrench";
 	public static final String				PFAGENTLOOKFORWARDWALK = "AgentLookForwardWalk";
 	public static final String				PFEMPTYCELLINWALK = "EmptyCellInWalk";
-	public static final String				PFTOWER = "tower";
+	public static final String				PFTOWER = "TowerInWorld";
 	public static final String				PFGOLDFRONTAGENTONE = "GoldFrontOfAgent1";
 	public static final String				PFGOLDFRONTAGENTTWO = "GoldFrontOfAgent2";
 	public static final String				PFFURNACEINFRONT = "FurnaceInFront";
 	public static final String				PFWALLINFRONT = "WallInFront";
+	
+	//-----------PLANNERS-------------
+	public static final String				RTDP = "RTDP";
+	public static final String				ExpertRTDP = "ERTDP";
+	public static final String				LearnedHardRTDP = "LHRTDP";
+	public static final String				LearnedSoftRTDP = "LSRTDP";
+	public static final String				VI = "VI";
+	public static final String				ExpertVI = "EVI";
+	public static final String				LearnedHardVI = "LHVI";
+	public static final String				LearnedSoftVI = "LSVI";
 	
 	//-------------ENUMS-------------
 	public enum RotDirection {

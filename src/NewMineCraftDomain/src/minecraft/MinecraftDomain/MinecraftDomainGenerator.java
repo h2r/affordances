@@ -249,7 +249,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new EndOfMapInFrontOfAgentPF(NameSpace.PFENDOFMAPINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new EmptyCellInFrontOfAgentPF(NameSpace.PFEMPTYCELLINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new AgentInMidAirPF(NameSpace.PFAGENTINMIDAIR, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
-		new TowerInMapPF(NameSpace.PFTOWER, domain, new String[]{}, 2, NameSpace.CHARDIRTBLOCKNOTPICKUPABLE, rows, cols, height);
+		new TowerInMapPF(NameSpace.PFTOWER, domain, new String[]{NameSpace.CLASSAGENT}, 2, NameSpace.CHARDIRTBLOCKNOTPICKUPABLE, rows, cols, height);
 		
 		// Dave's jenky hard coded prop funcs
 		new AgentAdjacentToTrenchPF(NameSpace.PFAGENTADJTRENCH, domain, new String[]{NameSpace.CLASSAGENT, NameSpace.CLASSTRENCH});

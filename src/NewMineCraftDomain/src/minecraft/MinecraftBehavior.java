@@ -1,8 +1,13 @@
 package minecraft;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import tests.Result;
 import minecraft.MapIO;
 import minecraft.MinecraftStateParser;
 import minecraft.NameSpace;
@@ -22,6 +27,7 @@ import burlap.behavior.singleagent.planning.deterministic.TFGoalCondition;
 import burlap.behavior.singleagent.planning.deterministic.uninformed.bfs.BFS;
 import burlap.behavior.singleagent.planning.stochastic.rtdp.AffordanceRTDP;
 import burlap.behavior.singleagent.planning.stochastic.rtdp.RTDP;
+import burlap.behavior.singleagent.planning.stochastic.valueiteration.AffordanceValueIteration;
 import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueIteration;
 import burlap.oomdp.auxiliary.StateParser;
 import burlap.oomdp.core.*;
@@ -264,11 +270,13 @@ public class MinecraftBehavior {
 		return total;
 	}
 	
-	public void ValueIterationPlanner(){
+	public double[] ValueIterationPlanner(){
 		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
-		OOMDPPlanner planner = new ValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, 0.01, Integer.MAX_VALUE);
+		ValueIteration planner = new ValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, 0.01, Integer.MAX_VALUE);
 		
-		planner.planFromState(initialState);
+		long startTime = System.currentTimeMillis( );
+		
+		int bellmanUpdates = planner.planFromStateAndCount(initialState);
 		
 		// Create a Q-greedy policy from the planner
 		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
@@ -276,18 +284,56 @@ public class MinecraftBehavior {
 		// Record the plan results to a file
 		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
 		
-		System.out.println(ea.getActionSequenceString());
-		double totalReward = sumReward(ea.rewardSequence);
+		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
+		
+		// Count reward.
+		double totalReward = 0.;
+		for(Double d : ea.rewardSequence){
+			totalReward = totalReward + d;
+		}
 		
 		State finalState = ea.stateSequence.get(ea.stateSequence.size()-1);
-		
 		double completed = goalCondition.satisfies(finalState) ? 1.0 : 0.0;
-		if (completed == 1.0) {
-			System.out.println("VI completed with " + totalReward + " reward!");
+		
+		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
+		return results;
+	}
+	
+	public double[] AffordanceVI(KnowledgeBase affKB){
+		AffordancesController affController = affKB.getAffordancesController();
+		affController.setCurrentGoal(this.currentGoal); // Update goal to determine active affordances
+		
+		// Setup goal condition and planner
+		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
+		AffordanceValueIteration planner = new AffordanceValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, 0.01, Integer.MAX_VALUE, affController);
+		
+		// Time
+		long startTime = System.currentTimeMillis( );
+		
+		// Plan and record bellmanUpdates
+		int bellmanUpdates = planner.planFromStateAndCount(initialState);
+		
+		// Create a Q-greedy policy from the planner
+		Policy p = new AffordanceGreedyQPolicy(affController, (QComputablePlanner)planner);
+		
+		// Record the plan results to a file
+		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
+		
+		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
+		
+		// Count reward.
+		double totalReward = 0.;
+		for(Double d : ea.rewardSequence){
+			totalReward = totalReward + d;
 		}
-		else {
-			System.out.println("VI failed!");
-		}
+		
+		// Check to see if the planner found the goal
+		State finalState = ea.stateSequence.get(ea.stateSequence.size()-1);
+		double completed = goalCondition.satisfies(finalState) ? 1.0 : 0.0;
+		
+		
+		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
+		return results;
 	}
 	
 	public double[] AffordanceRTDP(KnowledgeBase affKB){
@@ -365,7 +411,7 @@ public class MinecraftBehavior {
 		String mapsPath = "src/minecraft/maps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-		String mapName = "TESTING.map";
+		String mapName = "/test/TowerPlaneWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
@@ -378,9 +424,9 @@ public class MinecraftBehavior {
 		
 
 		// Affordance RTDP
-		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.loadHard(mcBeh.getDomain(), "goaltest.kb");
-		double[] results = mcBeh.AffordanceRTDP(affKB);
+//		KnowledgeBase affKB = new KnowledgeBase();
+//		affKB.loadHard(mcBeh.getDomain(), "test25.kb");
+//		double[] results = mcBeh.AffordanceRTDP(affKB);
 		
 		
 		
@@ -393,7 +439,24 @@ public class MinecraftBehavior {
 		
 		// RTDP
 //		double[] results = mcBeh.RTDP();
-		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2]);
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		
+		
+		// Collect results and write to file
+//		File resultsFile = new File("src/tests/results/mcBeh_results.txt");
+//		BufferedWriter bw;
+//		FileWriter fw;
+//		try {
+//			fw = new FileWriter(resultsFile.getAbsoluteFile());
+//			bw = new BufferedWriter(fw);
+//			bw.write("(minecraftBehavior) results: test25 " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+//			bw.flush();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+					
 	}
 	
 	
