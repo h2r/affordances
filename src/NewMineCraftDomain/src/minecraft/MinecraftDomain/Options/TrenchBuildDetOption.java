@@ -11,6 +11,7 @@ import minecraft.MinecraftDomain.PropositionalFunctions.EmptyCellInFrontOfAgentP
 import minecraft.MinecraftDomain.PropositionalFunctions.EndOfMapInFrontOfAgentPF;
 import burlap.behavior.singleagent.Policy.ActionProb;
 import burlap.behavior.singleagent.options.Option;
+import burlap.behavior.statehashing.StateHashFactory;
 import burlap.oomdp.core.AbstractGroundedAction;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectInstance;
@@ -26,11 +27,13 @@ public class TrenchBuildDetOption extends Option {
 	int counter;
 	int terminateAfter = 10;
 	
-	public TrenchBuildDetOption(String name, Domain domain) {
+	public TrenchBuildDetOption(String name, Domain domain, StateHashFactory shf) {
 		super(name, domain, new String[]{});
 		this.trenchPF = (EmptyCellInFrontOfAgentPF) this.domain.getPropFunction(NameSpace.PFEMPTYCELLINFRONT);
 		this.canWalkPF = (AgentLookForwardAndWalkablePF) this.domain.getPropFunction(NameSpace.PFAGENTLOOKFORWARDWALK);
 		this.endOfMapPF = (EndOfMapInFrontOfAgentPF) this.domain.getPropFunction(NameSpace.PFENDOFMAPINFRONT);
+		this.setExpectationHashingFactory(shf);
+		
 	}
 	
 	@Override
