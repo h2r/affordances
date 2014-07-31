@@ -35,8 +35,11 @@ public class TrenchBuildDetOption extends Option {
 	
 	@Override
 	public List<ActionProb> getActionDistributionForState(State state, String[] params) {
-
-		return null;
+		List<ActionProb> toReturn = new ArrayList<ActionProb>();
+		GroundedAction move = this.domain.getAction(NameSpace.ACTIONMOVE).getAllApplicableGroundedActions(state).get(0);
+		
+		toReturn.add(new ActionProb(move, 1.));
+		return toReturn;
 	}
 
 	//Initializes local vars when option called
