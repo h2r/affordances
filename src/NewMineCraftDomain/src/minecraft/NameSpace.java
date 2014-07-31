@@ -98,6 +98,9 @@ public class NameSpace {
 	public static final String				PFFURNACEINFRONT = "FurnaceInFront";
 	public static final String				PFWALLINFRONT = "WallInFront";
 	
+	//-------------OPTIONS+MACRO ACTIONS STRINGS-------------
+	public static final String				OPTBUILDTRENCH = "build trench option";
+	
 	//-------------ENUMS-------------
 	public enum RotDirection {
 		NORTH(0), EAST(1), SOUTH(2), WEST(3);
