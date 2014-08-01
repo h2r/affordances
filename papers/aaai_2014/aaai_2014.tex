@@ -366,7 +366,7 @@ For each affordance, we get an action set $\mathcal{A}'$. This
 process is outlined by Algorithm \ref{alg:get_actions}. To compute $\mathcal{A}'$, we form a Dirichlet-multinomial distribution
 over actions ($\lambda$), and a Dirichlet distribution over the size ($N$) of each action set. Therefore, the probability of getting an action set from affordance $i$ in state $s$ is:
 \begin{equation}
-\text{Pr}(\mathcal{A}_i' \mid s,\Delta_i) = \text{Pr}(\mathcal{A}_i' \mid N_i, \lambda_i) = \text{Pr}(\lambda_i \mid \alpha_i) \cdot \text{Pr}(N_i \mid \beta_i)
+\text{Pr}(\mathcal{A}_i' \mid s,\Delta_i) = \text{Pr}(\mathcal{A}_i' \mid N_i, \lambda_i) = \text{Pr}(\lambda_i \mid \alpha_i) \text{Pr}(N_i \mid \beta_i)
 \end{equation}
 %\gnote{I changed $\text{Pr}(\mathcal{A}_i \mid s,\Delta_i)$ to $\text{Pr}(\mathcal{A}_i' \mid s,\Delta_i)$, just wanted to make sure that is right.}
 %JM - that seems like a correct change to me.
