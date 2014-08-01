@@ -12,7 +12,9 @@ import minecraft.MapIO;
 import minecraft.MinecraftStateParser;
 import minecraft.NameSpace;
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
-import minecraft.MinecraftDomain.Options.TrenchBuildDetOption;
+import minecraft.MinecraftDomain.Options.MinecraftOptionWrapper;
+import minecraft.MinecraftDomain.Options.SprintMacroActionWrapper;
+import minecraft.MinecraftDomain.Options.TrenchBuildOptionWrapper;
 import affordances.KnowledgeBase;
 import burlap.behavior.affordances.AffordancesController;
 import burlap.behavior.singleagent.*;
@@ -229,7 +231,13 @@ public class MinecraftBehavior {
 	
 	private void addOptionsToOOMDPPlanner(OOMDPPlanner toAddTo) {
 		//Trench build option
-		toAddTo.addNonDomainReferencedAction(new TrenchBuildDetOption(NameSpace.OPTBUILDTRENCH, this.domain));
+//		MinecraftOptionWrapper trenchWrapper = new TrenchBuildOptionWrapper("test trench option", this.domain, this.rewardFunction, this.gamma);
+//		toAddTo.addNonDomainReferencedAction(trenchWrapper.getOption());
+		
+		//Sprint macro-action
+		SprintMacroActionWrapper sprintWrapper = new SprintMacroActionWrapper(this.initialState,this.domain);
+		toAddTo.addNonDomainReferencedAction(sprintWrapper.getMacroAction());
+		
 	}
 	
 	// ---------- PLANNERS ---------- 
@@ -424,14 +432,14 @@ public class MinecraftBehavior {
 	
 	public static void main(String[] args) {
 		String mapsPath = "src/minecraft/maps/randomMaps/";
-		String outputPath = "src/minecraft/planningOutput/";
+		String outputPath = "src/minecraft/maps/randomMaps/";
 		
-		String mapName = "/test/TowerPlaneWorld0.map";
+		String mapName = "DeepTrenchWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
 		// BFS
-//		mcBeh.BFSExample();
+		mcBeh.BFSExample();
 
 		
 		// VI
@@ -453,8 +461,8 @@ public class MinecraftBehavior {
 //		sgp.solve();
 		
 		// RTDP
-//		double[] results = mcBeh.RTDP();
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		double[] results = mcBeh.RTDP();
+		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		
 		// Collect results and write to file
@@ -472,8 +480,8 @@ public class MinecraftBehavior {
 //		}
 		
 					
-		double[] results = mcBeh.RTDP();
-		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2]);
+//		double[] results = mcBeh.RTDP();
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2]);
 	}
 	
 	
