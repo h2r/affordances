@@ -35,6 +35,7 @@ public class NameSpace {
 	public static final String							CLASSINDWALL = "indestrucibleWall";
 	public static final String							CLASSFURNACE = "furnace";
 	public static final String							CLASSTRENCH = "trench";
+	public static final String							CLASSLAVA = "lava";
 
 	
 	//-------------ASCII MAP-------------
@@ -50,6 +51,7 @@ public class NameSpace {
 	public static final char CHARFURNACE = 'f';
 	public static final char CHAROUTOFBOUNDS = 'o';
 	public static final char CHARUNIDENTIFIED = 'u';
+	public static final char CHARLAVA = 'l';
 	
 	//Header chars
 	public static final char CHARPLACEABLEBLOCKS = 'B';
@@ -97,6 +99,7 @@ public class NameSpace {
 	public static final String				PFGOLDFRONTAGENTTWO = "GoldFrontOfAgent2";
 	public static final String				PFFURNACEINFRONT = "FurnaceInFront";
 	public static final String				PFWALLINFRONT = "WallInFront";
+	public static final String				PFAGENTINLAVA = "agentInLava";
 	
 	//-----------PLANNERS-------------
 	public static final String				RTDP = "RTDP";
