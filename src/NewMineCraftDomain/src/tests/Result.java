@@ -102,7 +102,7 @@ public class Result {
 	 */
 	public String toString() {
 		computeAverages();
-		String result = plannerName + " " + this.avgBellmanUpdates + ", " + this.avgAccumulatedReward + ", " + this.taskCompletedRate + ", " + String.format("%.2f", this.avgCpuTime) + "s"; 
+		String result = plannerName + " " + this.avgBellmanUpdates + ", " + String.format("%.2f", this.avgAccumulatedReward) + ", " + String.format("%.2f", this.taskCompletedRate) + ", " + String.format("%.2f", this.avgCpuTime) + "s"; 
 		return result;
 	}
 

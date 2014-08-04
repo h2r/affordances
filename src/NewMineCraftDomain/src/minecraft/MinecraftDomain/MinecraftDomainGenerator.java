@@ -21,6 +21,7 @@ import minecraft.MinecraftDomain.PropositionalFunctions.AgentInLavaPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentInMidAirPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentLookForwardAndWalkablePF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AtGoalPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.BlockAtAgentsFeetHeadClearPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockAtPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockInFrontOfAgentPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptyCellInAgentWalkDir;
@@ -227,7 +228,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new PlaceBlockAction(NameSpace.ACTIONPLACEBLOCK, domain, rows, cols, height);
 		new UseBlockAction(NameSpace.ACTIONUSEBLOCK, domain, rows, cols, height);
 		
-		//Set up indeterminism/results of actions
+		//Set up non-determinism
 		List<StochasticAgentAction> actions = new ArrayList<StochasticAgentAction>();
 		actions.add(move);
 		actions.add(turnRight);
@@ -236,8 +237,8 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		actions.add(lookUp);
 		
 		move.addResultingActionsWithWeights(actions, new double[]{0.95, 0.025, 0.025, 0, 0});
-		turnRight.addResultingActionsWithWeights(actions, new double[]{0, 1, 0, 0, 0});
-		turnLeft.addResultingActionsWithWeights(actions, new double[]{0, 0, 1, 0, 0});
+		turnRight.addResultingActionsWithWeights(actions, new double[]{0.025, .95, 0.025, 0, 0});
+		turnLeft.addResultingActionsWithWeights(actions, new double[]{0.025, 0.025, 0.95, 0, 0});
 		lookDown.addResultingActionsWithWeights(actions, new double[]{0, 0, 0, 1, 0});
 		lookUp.addResultingActionsWithWeights(actions, new double[]{0, 0, 0, 0, 1});
 		
@@ -264,6 +265,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new BlockInFrontOfAgentPF(NameSpace.PFGOLDFRONTAGENTONE, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOLDBLOCK);
 		new BlockInFrontOfAgentPF(NameSpace.PFFURNACEINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSFURNACE);
 		new WallInFrontOfAgentPF(NameSpace.PFWALLINFRONT, domain,  new String[]{NameSpace.CLASSAGENT}, 1);
+		new BlockAtAgentsFeetHeadClearPF(NameSpace.PFFEETBLOCKHEADCLEAR, domain, new String[]{NameSpace.CLASSAGENT});
 		return domain;
 	}
 	

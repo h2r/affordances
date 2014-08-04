@@ -24,15 +24,13 @@ import burlap.oomdp.core.Domain;
 public class KnowledgeBase {
 	private List<AffordanceDelegate>	affDelegateList;
 	private AffordancesController		affController;
-	private String						kbName;
 	private String						basePath = System.getProperty("user.dir") + "/src/minecraft/kb/";
-	
 	
 	public KnowledgeBase() {
 		this.affDelegateList = new ArrayList<AffordanceDelegate>();
 		this.affController = new AffordancesController(this.affDelegateList);
 	}
-
+	
 	public KnowledgeBase(List<AffordanceDelegate> kb) {
 		this.affDelegateList = new ArrayList<AffordanceDelegate>(kb);
 		this.affController = new AffordancesController(this.affDelegateList);
@@ -71,7 +69,7 @@ public class KnowledgeBase {
 		}
 	}
 	
-	public void load(Domain d, String filename) {
+	public void loadSoft(Domain d, String filename) {
 
 		AffordanceDelegate aff = null;
 		try {

@@ -72,6 +72,7 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfGoldBlockFrontOfAgent;
 	public PropositionalFunction		pfFurnaceInFrontOfAgent;
 	public PropositionalFunction		pfWallInFrontOfAgent;
+	public PropositionalFunction		pfFeetBlockedHeadClear;
 
 	//Params for Planners
 	private double						gamma = 0.99;
@@ -80,7 +81,7 @@ public class MinecraftBehavior {
 	private int 						numRollouts = 2500; // RTDP
 	private int							maxDepth = 50; // RTDP
 	private int 						vInit = 1; // RTDP
-	private int 						numRolloutsWithSmallChangeToConverge = 5; // RTDP
+	private int 						numRolloutsWithSmallChangeToConverge = 3; // RTDP
 	private double						boltzmannTemperature = 0.5;
 
 	// ----- CLASS METHODS -----
@@ -145,6 +146,7 @@ public class MinecraftBehavior {
 		this.pfGoldBlockFrontOfAgent = domain.getPropFunction(NameSpace.PFGOLDFRONTAGENTONE);
 		this.pfFurnaceInFrontOfAgent = domain.getPropFunction(NameSpace.PFFURNACEINFRONT);
 		this.pfWallInFrontOfAgent = domain.getPropFunction(NameSpace.PFWALLINFRONT);
+		this.pfFeetBlockedHeadClear = domain.getPropFunction(NameSpace.PFFEETBLOCKHEADCLEAR);
 		this.pfAgentInLava = domain.getPropFunction(NameSpace.PFAGENTINLAVA);
 		
 		PropositionalFunction pfToUse = this.pfAgentInLava;//getPFFromHeader(headerInfo);
@@ -227,7 +229,7 @@ public class MinecraftBehavior {
 //		toAddTo.addNonDomainReferencedAction(trenchWrapper.getOption());
 		
 		//Sprint macro-action
-		SprintMacroActionWrapper sprintWrapper = new SprintMacroActionWrapper(this.initialState,this.domain);
+		SprintMacroActionWrapper sprintWrapper = new SprintMacroActionWrapper(this.initialState, this.domain, 5);
 		toAddTo.addNonDomainReferencedAction(sprintWrapper.getMacroAction());
 		
 	}
@@ -283,6 +285,8 @@ public class MinecraftBehavior {
 		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
 
 		ValueIteration planner = new ValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, 0.01, Integer.MAX_VALUE);
+		
+		addOptionsToOOMDPPlanner(planner);
 		
 		long startTime = System.currentTimeMillis( );
 		
@@ -389,6 +393,7 @@ public class MinecraftBehavior {
 
 		RTDP planner = new RTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth);
 		
+//		addOptionsToOOMDPPlanner(planner);
 		
 		planner.setMinNumRolloutsWithSmallValueChange(numRolloutsWithSmallChangeToConverge);
 		
@@ -423,12 +428,12 @@ public class MinecraftBehavior {
 		String mapsPath = "src/minecraft/maps/randomMaps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-		String mapName = "PlaneWorld0.map";
+		String mapName = "6c6.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
 		// BFS
-		mcBeh.BFSExample();
+//		mcBeh.BFSExample();
 
 		// VI
 //		double[] results = mcBeh.ValueIterationPlanner();
@@ -452,8 +457,8 @@ public class MinecraftBehavior {
 //		sgp.solve();
 		
 		// RTDP
-//		double[] results = mcBeh.RTDP();
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		double[] results = mcBeh.RTDP();
+		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		
 		// Collect results and write to file
