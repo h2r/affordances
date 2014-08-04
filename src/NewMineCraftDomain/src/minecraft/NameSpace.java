@@ -97,6 +97,7 @@ public class NameSpace {
 	public static final String				PFGOLDFRONTAGENTTWO = "GoldFrontOfAgent2";
 	public static final String				PFFURNACEINFRONT = "FurnaceInFront";
 	public static final String				PFWALLINFRONT = "WallInFront";
+	public static final String				PFFEETBLOCKHEADCLEAR = "FeetBlockedHeadClear";
 	
 	//-----------PLANNERS-------------
 	public static final String				RTDP = "RTDP";

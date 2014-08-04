@@ -13,10 +13,17 @@ public class SprintMacroActionWrapper {
 
 	private State state;
 	private Domain domain;
+	private int numSprints = 2;
 	
 	public SprintMacroActionWrapper(State state, Domain domain) {
 		this.state = state;
 		this.domain = domain;
+	}
+	
+	public SprintMacroActionWrapper(State state, Domain domain, int numSprints) {
+		this.state = state;
+		this.domain = domain;
+		this.numSprints = numSprints;
 	}
 	
 	public List<GroundedAction> getGroundedActions() {
@@ -24,13 +31,9 @@ public class SprintMacroActionWrapper {
 		
 		GroundedAction moveGroundedAction = this.domain.getAction(NameSpace.ACTIONMOVE).getAllApplicableGroundedActions(state).get(0);
 		
-		int numSprints = 2;
-		
-		for (int i = 0; i < numSprints; i++) {
+		for (int i = 0; i < this.numSprints; i++) {
 			toReturn.add(moveGroundedAction);
 		}
-		
-		
 		
 		return toReturn;
 	}

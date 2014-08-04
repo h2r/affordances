@@ -178,8 +178,13 @@ public class WorldGenerator {
 
 		
 		assert(this.depthOfDirtFloor+1 < this.height);
-		
-		int[] goalPosition = addCharRandomly(NameSpace.CHARGOAL, null, null, this.depthOfDirtFloor+ 2 + heightOfGoalShelf, toChange, false);
+
+		// Put the goal {1,2} higher in z for certain worlds
+		int goalZOffset = 1;
+		if(heightOfGoalShelf > 0) {
+			goalZOffset = 2;
+		}
+		int[] goalPosition = addCharRandomly(NameSpace.CHARGOAL, null, null, this.depthOfDirtFloor + goalZOffset + heightOfGoalShelf, toChange, false);
 		if (heightOfGoalShelf > 0) {
 			for (int currZ = this.depthOfDirtFloor; currZ < this.depthOfDirtFloor + heightOfGoalShelf + 1; currZ++) {
 				addChar(toChange, floorOf,  goalPosition[0], goalPosition[1], currZ, true);
@@ -448,7 +453,7 @@ public class WorldGenerator {
 				impPositions.add(goalPosition);
 			}
 			
-			//Add gold blocks
+			//Add gold ore
 			if (goal == NameSpace.INTGOLDBARGOAL || goal == NameSpace.INTGOLDOREGOAL) {
 				goalPosition =  addGoldOre(toReturn, depthOfGoldOre);
 				impPositions.add(goalPosition);
