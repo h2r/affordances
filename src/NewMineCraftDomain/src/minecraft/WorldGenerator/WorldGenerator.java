@@ -142,7 +142,6 @@ public class WorldGenerator {
 		// Randomly add the given char toAdd to the map so that it does not conflict with already placed characters
 		int[] toReturn = addCharRandomlyHelper(toAdd,x,y,z,toChange,0,canReplaceEqualsInHier, hierarchyVal);
 		
-
 		
 		return toReturn;
 		
@@ -202,7 +201,7 @@ public class WorldGenerator {
 		int[] goalPosition = addCharRandomly(NameSpace.CHARGOAL, null, null, this.depthOfDirtFloor + goalZOffset + heightOfGoalShelf, toChange, false, null);
 		if (heightOfGoalShelf > 0) {
 			for (int currZ = this.depthOfDirtFloor; currZ < this.depthOfDirtFloor + heightOfGoalShelf + 1; currZ++) {
-				addChar(toChange, floorOf,  goalPosition[0], goalPosition[1], currZ, true, null);
+				addChar(toChange, floorOf,  goalPosition[0], goalPosition[1], currZ, true, 10);
 			}
 		}
 		return goalPosition;
@@ -478,8 +477,6 @@ public class WorldGenerator {
 			
 			//Add agent
 			impPositions.add(agentPosition);
-
-			
 			
 			//Add gold ore
 			if (goal == NameSpace.INTGOLDBARGOAL || goal == NameSpace.INTGOLDOREGOAL) {
@@ -506,13 +503,34 @@ public class WorldGenerator {
 
 
 			//Restart if agent or goal in walk location
-			if (aLocationWasWalked(impPositions)) {
+			
+			if (shouldRestart(impPositions, toReturn)) {
 				continue;
 			}
+			
+			//Restart if no agent
 
 			break;
 		}
 		return toReturn;
+	}
+	
+	boolean shouldRestart(List<int []> impPositions, char[][][] charArray) {
+		if (aLocationWasWalked(impPositions)) return true;
+		if (noAgent(charArray)) return true;
+		
+		return false;
+	}
+	
+	boolean noAgent(char[][][] charArray) {
+		for (char[][] row: charArray) {
+			for (char[] col: row) {
+				for (char currChar : col) {
+					if (currChar == NameSpace.CHARAGENT) return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	boolean aLocationWasWalked(List<int[]> positions) {
