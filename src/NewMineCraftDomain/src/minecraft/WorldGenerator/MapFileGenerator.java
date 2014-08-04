@@ -14,6 +14,14 @@ import minecraft.MinecraftDomain.PropositionalFunctions.AtGoalPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.TowerInMapPF;
 import minecraft.WorldGenerator.Exceptions.RandomMapGenerationException;
 import minecraft.WorldGenerator.Exceptions.WorldIsTooSmallException;
+import minecraft.WorldGenerator.WorldTypes.DeepTrenchWorld;
+import minecraft.WorldGenerator.WorldTypes.PlaneGoalShelfWorld;
+import minecraft.WorldGenerator.WorldTypes.PlaneGoldMineWorld;
+import minecraft.WorldGenerator.WorldTypes.MinecraftWorld;
+import minecraft.WorldGenerator.WorldTypes.PlaneGoldSmeltWorld;
+import minecraft.WorldGenerator.WorldTypes.PlaneTowerWorld;
+import minecraft.WorldGenerator.WorldTypes.PlaneWallWorld;
+import minecraft.WorldGenerator.WorldTypes.PlaneWorld;
 
 public class MapFileGenerator {
 	int rows;
@@ -41,14 +49,18 @@ public class MapFileGenerator {
 	 * @param depthOfGoldOre
 	 * @param baseFileName
 	 */
-	public void generateNMaps(int numMaps, int goal, int floorDepth, char floorOf, int numTrenches, boolean trenchesStraightAndBetweenAgentAndGoal, int numWalls, char wallOf, boolean wallsStraightAndBetweenAgentAndGoal, Integer depthOfGoldOre, String baseFileName) {
+	public void generateNMaps(MinecraftWorld minecraftWorld, String baseFileName, int numMaps) {
 		System.out.println("Generating " + baseFileName + " maps...");
 		List<MapIO> toWriteToFile = new ArrayList<MapIO>();
 		
 		for (int i = 0; i < numMaps; i++) {
 			
 			try {
-				this.worldGenerator.randomizeMap(goal, floorOf, numTrenches, trenchesStraightAndBetweenAgentAndGoal, numWalls, wallOf, wallsStraightAndBetweenAgentAndGoal, depthOfGoldOre, floorDepth);
+				this.worldGenerator.randomizeMap(minecraftWorld.getGoal(), minecraftWorld.getFloorOf(), 
+						minecraftWorld.getNumTrenches(), minecraftWorld.getTrenchStraightAndBetweenAgentAndGoal(),
+						minecraftWorld.getNumWalls(), minecraftWorld.getWallOf(), minecraftWorld.getwallsStraightAndBetweenAgentAndGoal(),
+						minecraftWorld.getDepthOfGoldOre(), minecraftWorld.getFloorDepth(), minecraftWorld.getNumPlaceBlocks(),
+						minecraftWorld.getGoalShelfHeight());
 			} catch (RandomMapGenerationException e) {
 				System.out.println("\tCouldn't make one of the maps: " + e.toString());
 			}
@@ -77,16 +89,19 @@ public class MapFileGenerator {
 	 * @param depthOfGoldOre
 	 * @param baseFileName
 	 */
-	public void generateNMaps(int numMaps, LogicalExpression goal, int floorDepth, char floorOf, int numTrenches, boolean trenchesStraightAndBetweenAgentAndGoal, int numWalls, char wallOf, boolean wallsStraightAndBetweenAgentAndGoal, Integer depthOfGoldOre, String baseFileName) {
+	public void generateNMaps(int numMaps, MinecraftWorld minecraftWorld) {
+		String baseFileName = minecraftWorld.getName();
+		
 		System.out.println("Generating " + baseFileName + " maps...");
 		List<MapIO> toWriteToFile = new ArrayList<MapIO>();
 		
 		for (int i = 0; i < numMaps; i++) {
-			
-			int goalNum = goalToGoalNum(goal);
-			
+						
 			try {
-				this.worldGenerator.randomizeMap(goalNum, floorOf, numTrenches, trenchesStraightAndBetweenAgentAndGoal, numWalls, wallOf, wallsStraightAndBetweenAgentAndGoal, depthOfGoldOre, floorDepth);
+				this.worldGenerator.randomizeMap(minecraftWorld.getGoal(), minecraftWorld.getFloorOf(), minecraftWorld.getNumTrenches(),
+						minecraftWorld.getTrenchStraightAndBetweenAgentAndGoal(), minecraftWorld.getNumWalls(),
+						minecraftWorld.getWallOf(), minecraftWorld.getwallsStraightAndBetweenAgentAndGoal(), minecraftWorld.getDepthOfGoldOre(),
+						minecraftWorld.getFloorDepth(), minecraftWorld.getNumPlaceBlocks(), minecraftWorld.getGoalShelfHeight());
 			} catch (RandomMapGenerationException e) {
 				System.out.println("\tCouldn't make one of the maps: " + e.toString());
 			}
@@ -140,19 +155,18 @@ public class MapFileGenerator {
 	
 	public static void main(String[] args) {
 		String filePath = "src/minecraft/maps/randomMaps/";
-		MapFileGenerator test = new MapFileGenerator(4,4,4,filePath);
+		MapFileGenerator test = new MapFileGenerator(4,4,6,filePath);
 		
 		//Constant map parameters
-		int numMaps = 50;
-		boolean trenchStraightAndBetweenAgentAndGoal = true;
-		boolean wallsStraightAndBetweenAgentAndGoal = true;
-		char wallOf = NameSpace.CHARDIRTBLOCKNOTPICKUPABLE;
-		
-		test.generateNMaps(numMaps, NameSpace.INTTOWERGOAL, 1, NameSpace.CHARDIRTBLOCKNOTPICKUPABLE, 0, trenchStraightAndBetweenAgentAndGoal, 0, wallOf, wallsStraightAndBetweenAgentAndGoal, null, "TowerPlaneWorld");
-		test.generateNMaps(numMaps, NameSpace.INTGOLDOREGOAL, 2, NameSpace.CHARDIRTBLOCKNOTPICKUPABLE, 0, trenchStraightAndBetweenAgentAndGoal, 0, wallOf, wallsStraightAndBetweenAgentAndGoal, -2, "PlaneGoldMining");
-		test.generateNMaps(numMaps, NameSpace.INTXYZGOAL, 1, NameSpace.CHARINDBLOCK, 0, trenchStraightAndBetweenAgentAndGoal, 1, NameSpace.CHARDIRTBLOCKPICKUPABLE, wallsStraightAndBetweenAgentAndGoal, null, "WallPlaneWorld");
-		test.generateNMaps(numMaps, NameSpace.INTXYZGOAL, 2, NameSpace.CHARINDBLOCK, 1, trenchStraightAndBetweenAgentAndGoal, 0, wallOf, wallsStraightAndBetweenAgentAndGoal, null, "DeepTrenchWorld");
-		test.generateNMaps(numMaps, NameSpace.INTGOLDBARGOAL, 1, NameSpace.CHARINDBLOCK, 0, trenchStraightAndBetweenAgentAndGoal, 0, wallOf, wallsStraightAndBetweenAgentAndGoal, 0, "PlaneGoldSmelting");
+		int numMaps = 1;
+
+		test.generateNMaps(numMaps, new DeepTrenchWorld(1));
+		test.generateNMaps(numMaps, new PlaneGoldMineWorld());
+		test.generateNMaps(numMaps, new PlaneGoldSmeltWorld());
+		test.generateNMaps(numMaps, new PlaneTowerWorld(2));
+		test.generateNMaps(numMaps, new PlaneWallWorld(1));
+		test.generateNMaps(numMaps, new PlaneWorld());
+		test.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1));
 
 	}
 	

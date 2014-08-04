@@ -173,9 +173,19 @@ public class WorldGenerator {
 		}
 	}
 
-	protected int[] addRandomSpatialGoal(char[][][] toChange) {
+	protected int[] addRandomSpatialGoal(char[][][] toChange, int heightOfGoalShelf, char floorOf) {
+		//Add shelf tower
+
+		
 		assert(this.depthOfDirtFloor+1 < this.height);
-		return addCharRandomly(NameSpace.CHARGOAL, null, null, this.depthOfDirtFloor+1, toChange, false);
+		
+		int[] goalPosition = addCharRandomly(NameSpace.CHARGOAL, null, null, this.depthOfDirtFloor+ 2 + heightOfGoalShelf, toChange, false);
+		if (heightOfGoalShelf > 0) {
+			for (int currZ = this.depthOfDirtFloor; currZ < this.depthOfDirtFloor + heightOfGoalShelf + 1; currZ++) {
+				addChar(toChange, floorOf,  goalPosition[0], goalPosition[1], currZ, true);
+			}
+		}
+		return goalPosition;
 	}
 
 
@@ -410,7 +420,7 @@ public class WorldGenerator {
 
 	}
 
-	private char[][][] generateNewCharArray(int goal, char floorOf, int numTrenches, boolean trenchStraightAndBetweenAgentAndGoal, int numWalls, char wallOf, boolean wallStraightAndBetweenAgentAndGoal, Integer depthOfGoldOre) throws RandomMapGenerationException {
+	private char[][][] generateNewCharArray(int goal, char floorOf, int numTrenches, boolean trenchStraightAndBetweenAgentAndGoal, int numWalls, char wallOf, boolean wallStraightAndBetweenAgentAndGoal, Integer depthOfGoldOre, int heightOfGoalShelf) throws RandomMapGenerationException {
 		//System.out.println("RESTARTING");
 		char[][][] toReturn = new char[this.rows][this.cols][this.height];
 
@@ -434,7 +444,7 @@ public class WorldGenerator {
 
 			//Add goal
 			if (goal == NameSpace.INTXYZGOAL) {
-				goalPosition = addRandomSpatialGoal(toReturn);
+				goalPosition = addRandomSpatialGoal(toReturn, heightOfGoalShelf, floorOf);
 				impPositions.add(goalPosition);
 			}
 			
@@ -491,7 +501,7 @@ public class WorldGenerator {
 		return false;
 	}
 
-	private HashMap<String, Integer> generateHeaderInfo(int goal, int numTrenches) {
+	private HashMap<String, Integer> generateHeaderInfo(int goal, int numTrenches, int numPlaceBlocks) {
 		HashMap<String, Integer> toReturn = new HashMap<String, Integer>();
 
 		//Goal
@@ -504,14 +514,7 @@ public class WorldGenerator {
 		toReturn.put(Character.toString(NameSpace.CHARSTARTINGGOLDBAR), 0);
 
 		//Placeable blocks
-		int towerHeight = 2;
-		int numPlaceAbleBlocks = 0;
-		if (goal == NameSpace.INTTOWERGOAL) numPlaceAbleBlocks += towerHeight;
-		if (this.depthOfDirtFloor > 1) {
-			numPlaceAbleBlocks += numTrenches;
-		}
-		
-		toReturn.put(Character.toString(NameSpace.CHARPLACEABLEBLOCKS), numPlaceAbleBlocks);
+		toReturn.put(Character.toString(NameSpace.CHARPLACEABLEBLOCKS), numPlaceBlocks);
 		
 		return toReturn;
 	}
@@ -527,10 +530,10 @@ public class WorldGenerator {
 	 * @param wallsStraightAndBetweenAgentAndGoal
 	 * @throws WorldIsTooSmallException 
 	 */
-	public void randomizeMap(int goal, char floorOf, int numTrenches, boolean trenchStraightAndBetweenAgentAndGoal, int numWalls, char wallOf, boolean wallsStraightAndBetweenAgentAndGoal, Integer depthOfGoldOre, int floorDepth) throws RandomMapGenerationException {
+	public void randomizeMap(int goal, char floorOf, int numTrenches, boolean trenchStraightAndBetweenAgentAndGoal, int numWalls, char wallOf, boolean wallsStraightAndBetweenAgentAndGoal, Integer depthOfGoldOre, int floorDepth, int numPlaceBlocks, int heightOfGoalShelf) throws RandomMapGenerationException {
 		this.depthOfDirtFloor = floorDepth;
-		this.charArray = generateNewCharArray(goal, floorOf, numTrenches, trenchStraightAndBetweenAgentAndGoal, numWalls, wallOf, wallsStraightAndBetweenAgentAndGoal, depthOfGoldOre);
-		this.headerInfo = generateHeaderInfo(goal, numTrenches);
+		this.charArray = generateNewCharArray(goal, floorOf, numTrenches, trenchStraightAndBetweenAgentAndGoal, numWalls, wallOf, wallsStraightAndBetweenAgentAndGoal, depthOfGoldOre, heightOfGoalShelf);
+		this.headerInfo = generateHeaderInfo(goal, numTrenches, numPlaceBlocks);
 	}
 
 	public char[][][] getCurrCharArray() {
@@ -566,11 +569,11 @@ public class WorldGenerator {
 		Integer depthOfGoldOre = 0;
 		int floorDepth = 1;
 		
-		try {
-			generator.randomizeMap(goal, floorOf, numTrenches, trenchStraightAndBetweenAgentAndGoal, numWalls, wallOf, wallsStraightAndBetweenAgentAndGoal, depthOfGoldOre, floorDepth);
-		} catch (RandomMapGenerationException e) {
-			e.printStackTrace();
-		}
+//		try {
+////			generator.randomizeMap(goal, floorOf, numTrenches, trenchStraightAndBetweenAgentAndGoal, numWalls, wallOf, wallsStraightAndBetweenAgentAndGoal, depthOfGoldOre, floorDepth, 0);
+//		} catch (RandomMapGenerationException e) {
+//			e.printStackTrace();
+//		}
 		String map = generator.getCurrMapIOAsString();
 		System.out.println(map);
 	}
