@@ -44,7 +44,7 @@ public class AffordanceLearner {
 	private KnowledgeBase 			affordanceKB;
 	private Map<Integer,LogicalExpression> lgds;
 	private MinecraftBehavior 		mcb;
-	private int 					numWorldsPerLGD = 10;
+	private int 					numWorldsPerLGD = 5;
 	private boolean					countTotalActions = true;
 	private Double 					lowInformationThreshold = 1.55; // Threshold for what is considered high entropy/low information
 	
@@ -104,13 +104,15 @@ public class AffordanceLearner {
 		// Get rid of old maps
 		mapMaker.clearMapsInDirectory();
 		
+		int numLavaBlocks = 1;
+		
 		System.out.println("Generating maps..." + this.numWorldsPerLGD);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1), 1, 3, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(), 1, 2, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(), 2, 2, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1), 1, 3, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(), 2, 3, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1), 1, 2, 5);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 2, 3, 5);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 2, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 2, 3, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 1, 2, 5);
 	}
 	
 	
@@ -439,7 +441,7 @@ public class AffordanceLearner {
 		// Initialize Learner
 		boolean countTotalActions = true;
 		
-		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions);
+		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions, numWorlds);
 		
 		String kbName;
 		if(learningRate) {
@@ -458,7 +460,7 @@ public class AffordanceLearner {
 
 	public static void main(String[] args) {
 		MinecraftBehavior mb = new MinecraftBehavior("src/minecraft/maps/template.map");
-		generateMinecraftKB(mb, 5, false);
+		generateMinecraftKB(mb, 1, false);
 		
 	}
 	

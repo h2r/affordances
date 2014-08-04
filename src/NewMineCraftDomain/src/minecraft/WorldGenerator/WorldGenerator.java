@@ -436,7 +436,7 @@ public class WorldGenerator {
 		if (this.depthOfDirtFloor + 2 > this.height) throw new WorldNotTallEnoughException();
 		
 		// Add agent's head
-		int[] headLocation = addCharRandomly(NameSpace.CHARAGENT, null, null, this.depthOfDirtFloor+1, toChange, true, 5);
+		int[] headLocation = addCharRandomly(NameSpace.CHARAGENT, null, null, this.depthOfDirtFloor+1, toChange, false, 5);
 
 		// Add agent's feet
 		toChange[headLocation[1]][headLocation[0]][headLocation[2]-1] = NameSpace.CHARAGENTFEET;
@@ -470,14 +470,16 @@ public class WorldGenerator {
 			}
 			
 			
-			//Add agent
-			impPositions.add(agentPosition);
-
 			//Add goal
 			if (goal == NameSpace.INTXYZGOAL) {
 				goalPosition = addRandomSpatialGoal(toReturn, heightOfGoalShelf, floorOf);
 				impPositions.add(goalPosition);
 			}
+			
+			//Add agent
+			impPositions.add(agentPosition);
+
+			
 			
 			//Add gold ore
 			if (goal == NameSpace.INTGOLDBARGOAL || goal == NameSpace.INTGOLDOREGOAL) {

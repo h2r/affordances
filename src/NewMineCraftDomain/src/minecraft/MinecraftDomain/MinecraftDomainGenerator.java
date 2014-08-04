@@ -68,6 +68,11 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 	 */
 	private HashMap<String, Integer> headerInfo;
 	
+	/**
+	 * boolean indicating whether or not the domain's actions should be stochastic or deterministic
+	 */
+	private boolean stochasticActions = true;
+	
 	//------------CONSTRUCTOR------------
 	/**
 	 * Constructs a burlap domain for minecraft given a map and a hashmap of header information
@@ -236,9 +241,20 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		actions.add(lookDown);
 		actions.add(lookUp);
 		
-		move.addResultingActionsWithWeights(actions, new double[]{0.95, 0.025, 0.025, 0, 0});
-		turnRight.addResultingActionsWithWeights(actions, new double[]{0.025, .95, 0.025, 0, 0});
-		turnLeft.addResultingActionsWithWeights(actions, new double[]{0.025, 0.025, 0.95, 0, 0});
+		if(stochasticActions) { 
+			// Stochastic
+			move.addResultingActionsWithWeights(actions, new double[]{1, 0 , 0, 0, 0});
+			turnRight.addResultingActionsWithWeights(actions, new double[]{0, 1 , 0, 0, 0});
+			turnLeft.addResultingActionsWithWeights(actions, new double[]{0, 0 , 1, 0, 0});
+		}
+		else {
+			// Deterministic
+			move.addResultingActionsWithWeights(actions, new double[]{0.95, 0.025, 0.025, 0, 0});
+			turnRight.addResultingActionsWithWeights(actions, new double[]{0.025, .95, 0.025, 0, 0});
+			turnLeft.addResultingActionsWithWeights(actions, new double[]{0.025, 0.025, 0.95, 0, 0});
+		}
+
+		
 		lookDown.addResultingActionsWithWeights(actions, new double[]{0, 0, 0, 1, 0});
 		lookUp.addResultingActionsWithWeights(actions, new double[]{0, 0, 0, 0, 1});
 		
@@ -270,7 +286,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 	}
 	
 	public static void main(String[] args) {
-		String filePath = "src/minecraft/maps/emptyMap.map";
+		String filePath = "src/minecraft/maps/learning/DeepTrenchWorld0.map";
 		MapIO io = new MapIO(filePath);
 		
 		char[][][] charMap = io.getMapAs3DCharArray();

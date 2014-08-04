@@ -1,5 +1,9 @@
 package minecraft;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,6 +34,7 @@ import burlap.oomdp.logicalexpressions.LogicalExpression;
 import burlap.oomdp.logicalexpressions.PFAtom;
 import burlap.oomdp.singleagent.*;
 import burlap.oomdp.singleagent.common.SingleGoalLERF;
+import burlap.oomdp.singleagent.common.SingleGoalMultipleLERF;
 import burlap.oomdp.singleagent.common.SingleLETF;
 import burlap.behavior.statehashing.DiscreteStateHashFactory;
 import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
@@ -83,6 +88,7 @@ public class MinecraftBehavior {
 	private int 						vInit = 1; // RTDP
 	private int 						numRolloutsWithSmallChangeToConverge = 3; // RTDP
 	private double						boltzmannTemperature = 0.5;
+	private PFAtom lavaLE;
 
 	// ----- CLASS METHODS -----
 	/**
@@ -149,12 +155,18 @@ public class MinecraftBehavior {
 		this.pfFeetBlockedHeadClear = domain.getPropFunction(NameSpace.PFFEETBLOCKHEADCLEAR);
 		this.pfAgentInLava = domain.getPropFunction(NameSpace.PFAGENTINLAVA);
 		
-		PropositionalFunction pfToUse = this.pfAgentInLava;//getPFFromHeader(headerInfo);
-		
+		// Set up goal LE and lava LE for use in reward function
+		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
 		this.currentGoal = new PFAtom(pfToUse.getAllGroundedPropsForState(this.initialState).get(0)); 
+		this.lavaLE = new PFAtom(this.pfAgentInLava.getAllGroundedPropsForState(this.initialState).get(0));
 		
 		//Set up reward function
-		this.rewardFunction = new SingleGoalLERF(currentGoal, 0, -1); 
+		HashMap<LogicalExpression, Double> rewardMap = new HashMap<LogicalExpression, Double>();
+		rewardMap.put(this.currentGoal, 0.0);
+		rewardMap.put(this.lavaLE, -100.0);
+		this.rewardFunction = new SingleGoalMultipleLERF(rewardMap, -1);
+		
+//		this.rewardFunction = new SingleGoalLERF(currentGoal, 0, -1); 
 		
 		//Set up terminal function
 		this.terminalFunction = new SingleLETF(currentGoal);
@@ -286,8 +298,6 @@ public class MinecraftBehavior {
 
 		ValueIteration planner = new ValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, 0.01, Integer.MAX_VALUE);
 		
-		addOptionsToOOMDPPlanner(planner);
-		
 		long startTime = System.currentTimeMillis( );
 		
 		int bellmanUpdates = planner.planFromStateAndCount(initialState);
@@ -297,9 +307,9 @@ public class MinecraftBehavior {
 		
 		// Record the plan results to a file
 		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
-		
+
 		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
-		
+		System.out.println(ea.getActionSequenceString());
 		// Count reward.
 		double totalReward = 0.;
 		for(Double d : ea.rewardSequence){
@@ -425,10 +435,10 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-		String mapsPath = "src/minecraft/maps/randomMaps/";
+		String mapsPath = "src/minecraft/maps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-		String mapName = "6c6.map";
+		String mapName = "lava_test.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
@@ -436,11 +446,11 @@ public class MinecraftBehavior {
 //		mcBeh.BFSExample();
 
 		// VI
-//		double[] results = mcBeh.ValueIterationPlanner();
+		double[] results = mcBeh.ValueIterationPlanner();
 		
 		// Affordance VI
 //		KnowledgeBase affKB = new KnowledgeBase();
-//		affKB.loadHard(mcBeh.getDomain(), "test50.kb");
+//		affKB.loadHard(mcBeh.getDomain(), "tests1.kb");
 //		double[] results = mcBeh.AffordanceVI(affKB);
 		
 		// Affordance RTDP
@@ -457,27 +467,24 @@ public class MinecraftBehavior {
 //		sgp.solve();
 		
 		// RTDP
-		double[] results = mcBeh.RTDP();
-		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+//		double[] results = mcBeh.RTDP();
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		
 		// Collect results and write to file
-//		File resultsFile = new File("src/tests/results/mcBeh_results.txt");
-//		BufferedWriter bw;
-//		FileWriter fw;
-//		try {
-//			fw = new FileWriter(resultsFile.getAbsoluteFile());
-//			bw = new BufferedWriter(fw);
-//			bw.write("(minecraftBehavior) results: VI " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
-//			bw.flush();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		File resultsFile = new File("src/tests/results/mcBeh_results.txt");
+		BufferedWriter bw;
+		FileWriter fw;
+		try {
+			fw = new FileWriter(resultsFile.getAbsoluteFile());
+			bw = new BufferedWriter(fw);
+			bw.write("(minecraftBehavior) results: VI " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
+			bw.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-					
-//		double[] results = mcBeh.RTDP();
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2]);
 	}
 	
 	

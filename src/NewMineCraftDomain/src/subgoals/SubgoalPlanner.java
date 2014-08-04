@@ -136,28 +136,28 @@ public class SubgoalPlanner {
 
 	}
 		
-		/**
-		 * Performs a BFS on a graph of subgoals to find a high-level plan from the start to the goal condition
-		 * @param root
-		 * @param initialState
-		 * @return
-		 */
-		public Node getHighLevelPlan() {
-			ArrayDeque<Node> nodeQueue = new ArrayDeque<Node>();
-			
-			nodeQueue.add(this.root);
-			Node curr = null;
-			while (!nodeQueue.isEmpty()) {
-				curr = nodeQueue.poll();
-				if (curr.getLogicalExpression().evaluateIn(this.initialState)) {
-					return curr;
-				}
-				if (curr.getChildren() != null) {
-					nodeQueue.addAll(curr.getChildren());
-				}
+	/**
+	 * Performs a BFS on a graph of subgoals to find a high-level plan from the start to the goal condition
+	 * @param root
+	 * @param initialState
+	 * @return
+	 */
+	public Node getHighLevelPlan() {
+		ArrayDeque<Node> nodeQueue = new ArrayDeque<Node>();
+		
+		nodeQueue.add(this.root);
+		Node curr = null;
+		while (!nodeQueue.isEmpty()) {
+			curr = nodeQueue.poll();
+			if (curr.getLogicalExpression().evaluateIn(this.initialState)) {
+				return curr;
 			}
-			
-			return curr;
+			if (curr.getChildren() != null) {
+				nodeQueue.addAll(curr.getChildren());
+			}
 		}
+		
+		return curr;
+	}
 	
 }

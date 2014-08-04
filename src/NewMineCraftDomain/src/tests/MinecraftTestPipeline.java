@@ -41,12 +41,14 @@ public class MinecraftTestPipeline {
 		// Get rid of old maps
 		mapMaker.clearMapsInDirectory();
 		
-		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1), 3, 3, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(), 3, 3, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(), 3, 3, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1), 2, 3, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneWorld() , 6, 6, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1), 3, 3, 5);
+		int numLavaBlocks = 1;
+		
+		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 3, 3, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 3, 3, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 3, 3, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks), 2, 3, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks) , 6, 6, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 3, 3, 5);
 		
 	}
 	
