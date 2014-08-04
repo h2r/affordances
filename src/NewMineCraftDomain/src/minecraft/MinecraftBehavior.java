@@ -7,8 +7,6 @@ import minecraft.MapIO;
 import minecraft.MinecraftStateParser;
 import minecraft.NameSpace;
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
-//import minecraft.MinecraftDomain.Options.OptionConditionTest;
-//import minecraft.MinecraftDomain.Options.StubbornPolicy;
 import minecraft.MinecraftDomain.Options.SprintMacroActionWrapper;
 import affordances.KnowledgeBase;
 import burlap.behavior.affordances.AffordancesController;
@@ -65,6 +63,7 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfTrenchInFrontOfAgent;
 	public PropositionalFunction		pfAgentInMidAir;
 	public PropositionalFunction		pfTower;
+	public PropositionalFunction		pfAgentInLava;
 	
 	// Dave's jenky hard coded prop funcs
 	public PropositionalFunction		pfAgentLookForwardAndWalkable;
@@ -148,8 +147,9 @@ public class MinecraftBehavior {
 		this.pfFurnaceInFrontOfAgent = domain.getPropFunction(NameSpace.PFFURNACEINFRONT);
 		this.pfWallInFrontOfAgent = domain.getPropFunction(NameSpace.PFWALLINFRONT);
 		this.pfFeetBlockedHeadClear = domain.getPropFunction(NameSpace.PFFEETBLOCKHEADCLEAR);
+		this.pfAgentInLava = domain.getPropFunction(NameSpace.PFAGENTINLAVA);
 		
-		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
+		PropositionalFunction pfToUse = this.pfAgentInLava;//getPFFromHeader(headerInfo);
 		
 		this.currentGoal = new PFAtom(pfToUse.getAllGroundedPropsForState(this.initialState).get(0)); 
 		
@@ -425,7 +425,7 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-		String mapsPath = "src/minecraft/maps/";
+		String mapsPath = "src/minecraft/maps/randomMaps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
 		String mapName = "6c6.map";

@@ -142,6 +142,9 @@ public class MinecraftStateGenerator {
 		case NameSpace.CHARINDBLOCK:
 			toAdd = createIndWall(domain, col, row, height, objectIndex);
 			break;
+		case NameSpace.CHARLAVA:
+			toAdd = createLava(domain, col, row, height, objectIndex);
+			break;
 		default:
 			return false;
 		}
@@ -222,6 +225,13 @@ public class MinecraftStateGenerator {
 		String objectName = NameSpace.CLASSINDWALL;
 		ObjectInstance block = new ObjectInstance(d.getObjectClass(objectName), objectName+objectIndex);
 		setObjectLocation(block, x, y, z, true, true, false, false);
+		return block;
+	}
+	
+	public static ObjectInstance createLava(Domain d, int x, int y, int z, int objectIndex) {
+		String objectName = NameSpace.CLASSLAVA;
+		ObjectInstance block = new ObjectInstance(d.getObjectClass(objectName), objectName+objectIndex);
+		setObjectLocation(block, x, y, z, false, false, false, false);
 		return block;
 	}
 	
