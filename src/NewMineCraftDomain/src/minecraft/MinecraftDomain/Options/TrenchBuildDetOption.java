@@ -41,7 +41,7 @@ public class TrenchBuildDetOption extends Option {
 		List<ActionProb> toReturn = new ArrayList<ActionProb>();
 		GroundedAction move = this.domain.getAction(NameSpace.ACTIONMOVE).getAllApplicableGroundedActions(state).get(0);
 		
-		toReturn.add(new ActionProb(move, 1.));
+		toReturn.add(new ActionProb(move, 0.5));
 		return toReturn;
 	}
 

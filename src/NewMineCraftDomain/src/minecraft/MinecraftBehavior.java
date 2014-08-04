@@ -12,10 +12,14 @@ import minecraft.MapIO;
 import minecraft.MinecraftStateParser;
 import minecraft.NameSpace;
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
+import minecraft.MinecraftDomain.Options.OptionConditionTest;
+import minecraft.MinecraftDomain.Options.StubbornPolicy;
 import minecraft.MinecraftDomain.Options.TrenchBuildDetOption;
 import affordances.KnowledgeBase;
 import burlap.behavior.affordances.AffordancesController;
 import burlap.behavior.singleagent.*;
+import burlap.behavior.singleagent.options.Option;
+import burlap.behavior.singleagent.options.PolicyDefinedSubgoalOption;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
 import burlap.behavior.singleagent.planning.QComputablePlanner;
 import burlap.behavior.singleagent.planning.ValueFunctionPlanner;
@@ -70,7 +74,6 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfAgentInMidAir;
 	public PropositionalFunction		pfTower;
 	
-	
 	// Dave's jenky hard coded prop funcs
 	public PropositionalFunction		pfAgentLookForwardAndWalkable;
 	public PropositionalFunction		pfTrenchBetweenAgentAndGoal;
@@ -79,18 +82,16 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfFurnaceInFrontOfAgent;
 	public PropositionalFunction		pfWallInFrontOfAgent;
 
-	
 	//Params for Planners
 	private double						gamma = 0.99;
 	private double						minDelta = .01;
 	private int							maxSteps = 200;
-	private int 						numRollouts = 2000; // RTDP
+	private int 						numRollouts = 2500; // RTDP
 	private int							maxDepth = 50; // RTDP
 	private int 						vInit = 1; // RTDP
-	private int 						numRolloutsWithSmallChangeToConverge = 200; // RTDP
+	private int 						numRolloutsWithSmallChangeToConverge = 5; // RTDP
 	private double						boltzmannTemperature = 0.5;
 
-	
 	// ----- CLASS METHODS -----
 	/**
 	 * Constructor to instantiate behavior
@@ -229,7 +230,13 @@ public class MinecraftBehavior {
 	
 	private void addOptionsToOOMDPPlanner(OOMDPPlanner toAddTo) {
 		//Trench build option
-		toAddTo.addNonDomainReferencedAction(new TrenchBuildDetOption(NameSpace.OPTBUILDTRENCH, this.domain));
+		
+		Option myFirstOption = new PolicyDefinedSubgoalOption("Sprint Forward", new StubbornPolicy(this.getDomain().getAction(NameSpace.ACTIONMOVE)), new OptionConditionTest(this.getDomain().getPropFunction(NameSpace.PFENDOFMAPINFRONT), false));
+		myFirstOption.keepTrackOfRewardWith(this.getRewardFunction(), this.getGamma());
+		toAddTo.addNonDomainReferencedAction(myFirstOption);
+		
+//		toAddTo.addNonDomainReferencedAction(new TrenchBuildDetOption(NameSpace.OPTBUILDTRENCH, this.domain, this.hashingFactory));
+		
 	}
 	
 	// ---------- PLANNERS ---------- 
@@ -287,8 +294,6 @@ public class MinecraftBehavior {
 		long startTime = System.currentTimeMillis( );
 		
 		int bellmanUpdates = planner.planFromStateAndCount(initialState);
-		
-		this.addOptionsToOOMDPPlanner(planner);
 		
 		// Create a Q-greedy policy from the planner
 		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
@@ -391,7 +396,6 @@ public class MinecraftBehavior {
 
 		RTDP planner = new RTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth);
 		
-		addOptionsToOOMDPPlanner(planner);
 		
 		planner.setMinNumRolloutsWithSmallValueChange(numRolloutsWithSmallChangeToConverge);
 		
@@ -423,27 +427,29 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-		String mapsPath = "src/minecraft/maps/randomMaps/";
+		String mapsPath = "src/minecraft/maps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-		String mapName = "/test/TowerPlaneWorld0.map";
+		String mapName = "test/TowerPlaneWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
 		// BFS
 //		mcBeh.BFSExample();
 
-		
 		// VI
-//		mcBeh.ValueIterationPlanner();
+//		double[] results = mcBeh.ValueIterationPlanner();
 		
-
+		// Affordance VI
+		KnowledgeBase affKB = new KnowledgeBase();
+		affKB.loadHard(mcBeh.getDomain(), "test50.kb");
+		double[] results = mcBeh.AffordanceVI(affKB);
+		
 		// Affordance RTDP
 //		KnowledgeBase affKB = new KnowledgeBase();
-//		affKB.loadHard(mcBeh.getDomain(), "test25.kb");
+//		affKB.loadHard(mcBeh.getDomain(), "test50.kb");
 //		double[] results = mcBeh.AffordanceRTDP(affKB);
-		
-		
+//		System.out.println("(minecraftBehavior) results: [affRTDP] " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
 		
 		// Subgoal Planner
 //		OOMDPPlanner lowLevelPlanner = new RTDP(mcBeh.domain, mcBeh.rewardFunction, mcBeh.terminalFunction, mcBeh.gamma, mcBeh.hashingFactory, mcBeh.vInit, mcBeh.numRollouts, mcBeh.minDelta, mcBeh.maxDepth);
@@ -453,8 +459,8 @@ public class MinecraftBehavior {
 //		sgp.solve();
 		
 		// RTDP
-//		double[] results = mcBeh.RTDP();
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+//		results = mcBeh.RTDP();
+//		System.out.println("(minecraftBehavior) results: [RTDP] " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
 		
 		
 		// Collect results and write to file
@@ -464,16 +470,14 @@ public class MinecraftBehavior {
 //		try {
 //			fw = new FileWriter(resultsFile.getAbsoluteFile());
 //			bw = new BufferedWriter(fw);
-//			bw.write("(minecraftBehavior) results: test25 " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+//			bw.write("(minecraftBehavior) results: VI " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
 //			bw.flush();
 //		} catch (IOException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
 		
-					
-		double[] results = mcBeh.RTDP();
-		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2]);
+		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
 	}
 	
 	
