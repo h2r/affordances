@@ -131,11 +131,12 @@ public class MapFileGenerator {
 	public void clearMapsInDirectory() {
 		File mapDir = new File(this.directoryPath);       
 		String[] mapsToDelete = mapDir.list();
-	    
-        for (int i = 0; i < mapsToDelete.length; i++) {  
-            File map = new File(mapDir, mapsToDelete[i]);
-            map.delete();  
-        }  
+	    if(mapsToDelete != null){
+	    	for (int i = 0; i < mapsToDelete.length; i++) {  
+	    		File map = new File(mapDir, mapsToDelete[i]);
+	    		map.delete();  
+	    	}
+	    }
 	}
 	
 	public static void main(String[] args) {

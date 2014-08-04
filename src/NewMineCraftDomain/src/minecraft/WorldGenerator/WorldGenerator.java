@@ -505,7 +505,7 @@ public class WorldGenerator {
 
 		//Placeable blocks
 		int towerHeight = 2;
-		int numPlaceAbleBlocks = 0;
+		int numPlaceAbleBlocks = 2; // Agent should have to plan over having blocks.
 		if (goal == NameSpace.INTTOWERGOAL) numPlaceAbleBlocks += towerHeight;
 		if (this.depthOfDirtFloor > 1) {
 			numPlaceAbleBlocks += numTrenches;
