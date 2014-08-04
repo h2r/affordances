@@ -60,7 +60,7 @@ public class MapFileGenerator {
 						minecraftWorld.getNumTrenches(), minecraftWorld.getTrenchStraightAndBetweenAgentAndGoal(),
 						minecraftWorld.getNumWalls(), minecraftWorld.getWallOf(), minecraftWorld.getwallsStraightAndBetweenAgentAndGoal(),
 						minecraftWorld.getDepthOfGoldOre(), minecraftWorld.getFloorDepth(), minecraftWorld.getNumPlaceBlocks(),
-						minecraftWorld.getGoalShelfHeight());
+						minecraftWorld.getGoalShelfHeight(), minecraftWorld.getNumLava());
 			} catch (RandomMapGenerationException e) {
 				System.out.println("\tCouldn't make one of the maps: " + e.toString());
 			}
@@ -101,7 +101,7 @@ public class MapFileGenerator {
 				this.worldGenerator.randomizeMap(minecraftWorld.getGoal(), minecraftWorld.getFloorOf(), minecraftWorld.getNumTrenches(),
 						minecraftWorld.getTrenchStraightAndBetweenAgentAndGoal(), minecraftWorld.getNumWalls(),
 						minecraftWorld.getWallOf(), minecraftWorld.getwallsStraightAndBetweenAgentAndGoal(), minecraftWorld.getDepthOfGoldOre(),
-						minecraftWorld.getFloorDepth(), minecraftWorld.getNumPlaceBlocks(), minecraftWorld.getGoalShelfHeight());
+						minecraftWorld.getFloorDepth(), minecraftWorld.getNumPlaceBlocks(), minecraftWorld.getGoalShelfHeight(), minecraftWorld.getNumLava());
 			} catch (RandomMapGenerationException e) {
 				System.out.println("\tCouldn't make one of the maps: " + e.toString());
 			}
@@ -160,14 +160,15 @@ public class MapFileGenerator {
 		
 		//Constant map parameters
 		int numMaps = 1;
-
-		test.generateNMaps(numMaps, new DeepTrenchWorld(1));
-		test.generateNMaps(numMaps, new PlaneGoldMineWorld());
-		test.generateNMaps(numMaps, new PlaneGoldSmeltWorld());
-		test.generateNMaps(numMaps, new PlaneTowerWorld(2));
-		test.generateNMaps(numMaps, new PlaneWallWorld(1));
-		test.generateNMaps(numMaps, new PlaneWorld());
-		test.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1));
+		int numLava = 1;
+		
+		test.generateNMaps(numMaps, new DeepTrenchWorld(1, numLava));
+		test.generateNMaps(numMaps, new PlaneGoldMineWorld(numLava));
+		test.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLava));
+		test.generateNMaps(numMaps, new PlaneTowerWorld(2, numLava));
+		test.generateNMaps(numMaps, new PlaneWallWorld(1, numLava));
+		test.generateNMaps(numMaps, new PlaneWorld(numLava));
+		test.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLava));
 
 	}
 	

@@ -3,24 +3,20 @@ package minecraft.WorldGenerator.WorldTypes;
 import minecraft.NameSpace;
 
 public class PlaneTowerWorld extends MinecraftWorld{
-
-	private int numPlaceBlocks;
 	
 	/**
+	 * 
 	 * @param numPlaceBlocks
+	 * @param numLava
 	 */
-	public PlaneTowerWorld(int numPlaceBlocks) {
+	public PlaneTowerWorld(int numPlaceBlocks, int numLava) {
 		this.numPlaceBlocks = numPlaceBlocks;
+		this.numLava = numLava;
 	}
 	
 	@Override
 	public int getGoal() {
 		return NameSpace.INTTOWERGOAL;
-	}
-	
-	@Override 
-	public int getNumPlaceBlocks(){
-		return this.numPlaceBlocks;
 	}
 
 	@Override

@@ -3,24 +3,21 @@ package minecraft.WorldGenerator.WorldTypes;
 import minecraft.NameSpace;
 
 public class PlaneGoldMineWorld extends MinecraftWorld {
-	@Override
-	public char getFloorOf() {
-		return NameSpace.CHARDIRTBLOCKNOTPICKUPABLE;
-	}
 	
-	@Override 
-	public Integer getDepthOfGoldOre() {
-		return -2;
+	/**
+	 * @param numLava
+	 */
+	public PlaneGoldMineWorld(int numLava) {
+		this.numLava = numLava;
+		this.goldOreDepth = -2;
+		this.floorDepth = 2;
+		this.floorOf = NameSpace.CHARDIRTBLOCKNOTPICKUPABLE;
+		
 	}
 
 	@Override
 	public int getGoal() {
 		return NameSpace.INTGOLDOREGOAL;
-	}
-	
-	@Override
-	public int getFloorDepth() {
-		return 2;
 	}
 
 	@Override

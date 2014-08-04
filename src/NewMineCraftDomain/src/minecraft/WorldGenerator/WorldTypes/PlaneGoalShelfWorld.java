@@ -3,17 +3,17 @@ package minecraft.WorldGenerator.WorldTypes;
 import minecraft.NameSpace;
 
 public class PlaneGoalShelfWorld extends MinecraftWorld {
-	private int numPlaceBlocks;
-	private int shelfHeight;
-	
 	/**
+	 * 
 	 * @param numPlaceBlocks
 	 * @param shelfHeight
+	 * @param numLava
 	 */
 	
-	public PlaneGoalShelfWorld(int numPlaceBlocks, int shelfHeight) {
+	public PlaneGoalShelfWorld(int numPlaceBlocks, int shelfHeight, int numLava) {
 		this.numPlaceBlocks = numPlaceBlocks;
-		this.shelfHeight = shelfHeight;
+		this.goalShelfHeight = shelfHeight;
+		this.numLava = numLava;
 	}
 	
 	@Override
@@ -21,15 +21,6 @@ public class PlaneGoalShelfWorld extends MinecraftWorld {
 		return NameSpace.INTXYZGOAL;
 	}
 
-	@Override
-	public int getGoalShelfHeight() {
-		return this.shelfHeight;
-	}
-	
-	@Override
-	public int getNumPlaceBlocks(){
-		return this.numPlaceBlocks;
-	}
 	
 	@Override
 	public String getName() {

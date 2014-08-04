@@ -4,16 +4,17 @@ import minecraft.NameSpace;
 
 public abstract class MinecraftWorld {
 	//Default values
-	private final int defaultNumWalls = 0;
-	private final int defaultNumTrenches = 0;
-	private final char defaultWallOf = NameSpace.CHARDIRTBLOCKNOTPICKUPABLE;
-	private final char defaultFloorOf = NameSpace.CHARINDBLOCK;
-	private final boolean defaultTrenchStraightAndBetweenAgentAndGoal = true;
-	private final boolean defaultWallsStraightAndBetweenAgentAndGoal = true;
-	private final int defaultFloorDepth = 1;
-	private final Integer defaultGoldOreDepth = 0;//Agent's feet is the origin
-	private final int defaultNumPlaceBlocks = 0;//Num blocks agent can place
-	private final int defaultGoalShelfHeight = 0;
+	protected int numWalls = 0;
+	protected int numTrenches = 0;
+	protected char wallOf = NameSpace.CHARDIRTBLOCKNOTPICKUPABLE;
+	protected char floorOf = NameSpace.CHARINDBLOCK;
+	protected boolean trenchStraightAndBetweenAgentAndGoal = true;
+	protected boolean wallsStraightAndBetweenAgentAndGoal = true;
+	protected int floorDepth = 1;
+	protected Integer goldOreDepth = 0;//Agent's feet is the origin
+	protected int numPlaceBlocks = 0;//Num blocks agent can place
+	protected int goalShelfHeight = 0;
+	protected int numLava = 0;
 	
 	//Things that definetely need to be overridden
 	public abstract int getGoal();
@@ -22,43 +23,47 @@ public abstract class MinecraftWorld {
 	
 	
 	//Defaulted world features getters:
+	public int getNumLava() {
+		return this.numLava;
+	}
+	
 	public int getGoalShelfHeight() {
-		return this.defaultGoalShelfHeight;
+		return this.goalShelfHeight;
 	}
 	
 	public Integer getDepthOfGoldOre() {
-		return this.defaultGoldOreDepth;
+		return this.goldOreDepth;
 	}
 	
 	public boolean getTrenchStraightAndBetweenAgentAndGoal() {
-		 return this.defaultTrenchStraightAndBetweenAgentAndGoal;
+		 return this.trenchStraightAndBetweenAgentAndGoal;
 	}
 	public int getNumWalls() {
-		return this.defaultNumWalls;
+		return this.numWalls;
 	}
 	
 	public char getWallOf() {
-		return this.defaultWallOf;
+		return this.wallOf;
 	}
 	
 	public char getFloorOf() {
-		return this.defaultFloorOf;
+		return this.floorOf;
 	}
 	
 	public int getNumTrenches() {
-		return this.defaultNumTrenches;
+		return this.numTrenches;
 	}
 	
 	public int getFloorDepth() {
-		return this.defaultFloorDepth;
+		return this.floorDepth;
 	}
 	
 	public boolean getwallsStraightAndBetweenAgentAndGoal() {
-		return defaultWallsStraightAndBetweenAgentAndGoal;
+		return wallsStraightAndBetweenAgentAndGoal;
 	}
 	
 	public int getNumPlaceBlocks() {
-		return this.defaultNumPlaceBlocks;
+		return this.numPlaceBlocks;
 	}
 	
 }

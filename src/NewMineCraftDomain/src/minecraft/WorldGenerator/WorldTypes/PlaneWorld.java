@@ -4,6 +4,10 @@ import minecraft.NameSpace;
 
 public class PlaneWorld extends MinecraftWorld {
 
+	public PlaneWorld(int numLava) {
+		this.numLava = numLava;
+	}
+	
 	@Override
 	public int getGoal() {
 		return NameSpace.INTXYZGOAL;
