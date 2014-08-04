@@ -100,7 +100,8 @@ public class NameSpace {
 	public static final String				PFFURNACEINFRONT = "FurnaceInFront";
 	public static final String				PFWALLINFRONT = "WallInFront";
 	public static final String				PFFEETBLOCKHEADCLEAR = "FeetBlockedHeadClear";
-	public static final String				PFAGENTINLAVA = "agentInLava";
+	public static final String				PFAGENTINLAVA = "AgentInLava";
+	public static final String				PFLAVAFRONTAGENT = "LavaFrontOfAgent";
 	
 	//-----------PLANNERS-------------
 	public static final String				RTDP = "RTDP";

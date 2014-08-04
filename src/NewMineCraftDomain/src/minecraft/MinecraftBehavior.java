@@ -78,7 +78,8 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfFurnaceInFrontOfAgent;
 	public PropositionalFunction		pfWallInFrontOfAgent;
 	public PropositionalFunction		pfFeetBlockedHeadClear;
-
+	public PropositionalFunction 		pfLavaFrontAgent;
+	
 	//Params for Planners
 	private double						gamma = 0.99;
 	private double						minDelta = .01;
@@ -88,7 +89,7 @@ public class MinecraftBehavior {
 	private int 						vInit = 1; // RTDP
 	private int 						numRolloutsWithSmallChangeToConverge = 3; // RTDP
 	private double						boltzmannTemperature = 0.5;
-	private PFAtom lavaLE;
+	private double						lavaReward = -10.0;
 
 	// ----- CLASS METHODS -----
 	/**
@@ -154,16 +155,17 @@ public class MinecraftBehavior {
 		this.pfWallInFrontOfAgent = domain.getPropFunction(NameSpace.PFWALLINFRONT);
 		this.pfFeetBlockedHeadClear = domain.getPropFunction(NameSpace.PFFEETBLOCKHEADCLEAR);
 		this.pfAgentInLava = domain.getPropFunction(NameSpace.PFAGENTINLAVA);
+		this.pfLavaFrontAgent = domain.getPropFunction(NameSpace.PFLAVAFRONTAGENT);
 		
 		// Set up goal LE and lava LE for use in reward function
 		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
 		this.currentGoal = new PFAtom(pfToUse.getAllGroundedPropsForState(this.initialState).get(0)); 
-		this.lavaLE = new PFAtom(this.pfAgentInLava.getAllGroundedPropsForState(this.initialState).get(0));
+		LogicalExpression lavaLE = new PFAtom(this.pfAgentInLava.getAllGroundedPropsForState(this.initialState).get(0));
 		
-		//Set up reward function
+		// Set up reward function
 		HashMap<LogicalExpression, Double> rewardMap = new HashMap<LogicalExpression, Double>();
 		rewardMap.put(this.currentGoal, 0.0);
-		rewardMap.put(this.lavaLE, -100.0);
+		rewardMap.put(lavaLE, this.lavaReward);
 		this.rewardFunction = new SingleGoalMultipleLERF(rewardMap, -1);
 		
 //		this.rewardFunction = new SingleGoalLERF(currentGoal, 0, -1); 
@@ -438,7 +440,7 @@ public class MinecraftBehavior {
 		String mapsPath = "src/minecraft/maps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-		String mapName = "lava_test.map";
+		String mapName = "/learning/PlaneGoldMineWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
@@ -472,18 +474,18 @@ public class MinecraftBehavior {
 		
 		
 		// Collect results and write to file
-		File resultsFile = new File("src/tests/results/mcBeh_results.txt");
-		BufferedWriter bw;
-		FileWriter fw;
-		try {
-			fw = new FileWriter(resultsFile.getAbsoluteFile());
-			bw = new BufferedWriter(fw);
-			bw.write("(minecraftBehavior) results: VI " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
-			bw.flush();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		File resultsFile = new File("src/tests/results/mcBeh_results.txt");
+//		BufferedWriter bw;
+//		FileWriter fw;
+//		try {
+//			fw = new FileWriter(resultsFile.getAbsoluteFile());
+//			bw = new BufferedWriter(fw);
+//			bw.write("(minecraftBehavior) results: VI " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
+//			bw.flush();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 	}
 	

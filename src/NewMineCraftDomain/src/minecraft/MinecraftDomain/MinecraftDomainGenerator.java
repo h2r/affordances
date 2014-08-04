@@ -282,11 +282,13 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new BlockInFrontOfAgentPF(NameSpace.PFFURNACEINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSFURNACE);
 		new WallInFrontOfAgentPF(NameSpace.PFWALLINFRONT, domain,  new String[]{NameSpace.CLASSAGENT}, 1);
 		new BlockAtAgentsFeetHeadClearPF(NameSpace.PFFEETBLOCKHEADCLEAR, domain, new String[]{NameSpace.CLASSAGENT});
+		new BlockInFrontOfAgentPF(NameSpace.PFLAVAFRONTAGENT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSLAVA);
+		
 		return domain;
 	}
 	
 	public static void main(String[] args) {
-		String filePath = "src/minecraft/maps/learning/DeepTrenchWorld0.map";
+		String filePath = "src/minecraft/maps/learning/PlaneGoldMineWorld0.map";
 		MapIO io = new MapIO(filePath);
 		
 		char[][][] charMap = io.getMapAs3DCharArray();

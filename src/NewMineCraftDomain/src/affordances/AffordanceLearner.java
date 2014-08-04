@@ -427,6 +427,9 @@ public class AffordanceLearner {
 		PropositionalFunction feetBlockHeadClear = mb.pfFeetBlockedHeadClear;
 		LogicalExpression feetBlockHeadClearLE = pfAtomFromPropFunc(feetBlockHeadClear);
 		
+		PropositionalFunction lavaFrontAgent = mb.pfLavaFrontAgent;
+		LogicalExpression lavaFrontAgentLE = pfAtomFromPropFunc(lavaFrontAgent);
+		
 		// Add LEs to list
 		predicates.add(agentInAirLE);
 		predicates.add(endOfMapLE);
@@ -436,6 +439,7 @@ public class AffordanceLearner {
 		predicates.add(furnaceFrontAgentLE);
 		predicates.add(wallFrontAgentLE);
 		predicates.add(feetBlockHeadClearLE);
+		predicates.add(lavaFrontAgentLE);
 		
 		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions, true);
 		// Initialize Learner
