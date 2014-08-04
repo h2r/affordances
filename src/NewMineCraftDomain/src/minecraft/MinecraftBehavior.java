@@ -12,9 +12,12 @@ import minecraft.MapIO;
 import minecraft.MinecraftStateParser;
 import minecraft.NameSpace;
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
-import minecraft.MinecraftDomain.Options.OptionConditionTest;
-import minecraft.MinecraftDomain.Options.StubbornPolicy;
+//import minecraft.MinecraftDomain.Options.OptionConditionTest;
+//import minecraft.MinecraftDomain.Options.StubbornPolicy;
 import minecraft.MinecraftDomain.Options.TrenchBuildDetOption;
+import minecraft.MinecraftDomain.Options.MinecraftOptionWrapper;
+import minecraft.MinecraftDomain.Options.SprintMacroActionWrapper;
+import minecraft.MinecraftDomain.Options.TrenchBuildOptionWrapper;
 import affordances.KnowledgeBase;
 import burlap.behavior.affordances.AffordancesController;
 import burlap.behavior.singleagent.*;
@@ -230,12 +233,13 @@ public class MinecraftBehavior {
 	
 	private void addOptionsToOOMDPPlanner(OOMDPPlanner toAddTo) {
 		//Trench build option
+
+//		MinecraftOptionWrapper trenchWrapper = new TrenchBuildOptionWrapper("test trench option", this.domain, this.rewardFunction, this.gamma);
+//		toAddTo.addNonDomainReferencedAction(trenchWrapper.getOption());
 		
-		Option myFirstOption = new PolicyDefinedSubgoalOption("Sprint Forward", new StubbornPolicy(this.getDomain().getAction(NameSpace.ACTIONMOVE)), new OptionConditionTest(this.getDomain().getPropFunction(NameSpace.PFENDOFMAPINFRONT), false));
-		myFirstOption.keepTrackOfRewardWith(this.getRewardFunction(), this.getGamma());
-		toAddTo.addNonDomainReferencedAction(myFirstOption);
-		
-//		toAddTo.addNonDomainReferencedAction(new TrenchBuildDetOption(NameSpace.OPTBUILDTRENCH, this.domain, this.hashingFactory));
+		//Sprint macro-action
+		SprintMacroActionWrapper sprintWrapper = new SprintMacroActionWrapper(this.initialState,this.domain);
+		toAddTo.addNonDomainReferencedAction(sprintWrapper.getMacroAction());
 		
 	}
 	
@@ -435,7 +439,7 @@ public class MinecraftBehavior {
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
 		// BFS
-//		mcBeh.BFSExample();
+		mcBeh.BFSExample();
 
 		// VI
 //		double[] results = mcBeh.ValueIterationPlanner();
@@ -459,8 +463,8 @@ public class MinecraftBehavior {
 //		sgp.solve();
 		
 		// RTDP
-//		results = mcBeh.RTDP();
-//		System.out.println("(minecraftBehavior) results: [RTDP] " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
+//		double[] results = mcBeh.RTDP();
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		
 		// Collect results and write to file
@@ -477,7 +481,9 @@ public class MinecraftBehavior {
 //			e.printStackTrace();
 //		}
 		
-		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
+					
+//		double[] results = mcBeh.RTDP();
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2]);
 	}
 	
 	
