@@ -60,9 +60,7 @@ public class TrenchBuildOptionWrapper extends MinecraftOptionWrapper {
 		//Default is to move (up to  times)
 		return domain.getAction(NameSpace.ACTIONMOVE).getAllApplicableGroundedActions(state).get(0);
 	}
-	
-	public class testing extends Option {}
-	
+		
 
 
 }
