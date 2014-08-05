@@ -12,8 +12,9 @@ import minecraft.MapIO;
 import minecraft.MinecraftStateParser;
 import minecraft.NameSpace;
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
+import minecraft.MinecraftDomain.MacroActions.MinecraftMacroActionWrapper;
+import minecraft.MinecraftDomain.MacroActions.SprintMacroActionWrapper;
 import minecraft.MinecraftDomain.Options.MinecraftOptionWrapper;
-import minecraft.MinecraftDomain.Options.SprintMacroActionWrapper;
 import minecraft.MinecraftDomain.Options.TrenchBuildOptionWrapper;
 import affordances.KnowledgeBase;
 import burlap.behavior.affordances.AffordancesController;
@@ -240,15 +241,23 @@ public class MinecraftBehavior {
 		return this.MCDomainGenerator;
 	}
 	
-	private void addOptionsToOOMDPPlanner(OOMDPPlanner toAddTo, StateHashFactory hashingFactory) {
-		//Trench build option
+	private void addOptionsToOOMDPPlanner(OOMDPPlanner toAddTo, boolean addOptions, boolean addMAs) {
+		//OPTIONS
+		if (addOptions) {
+			//Trench build option
+			MinecraftOptionWrapper trenchWrapper = new TrenchBuildOptionWrapper(NameSpace.OPTBUILDTRENCH, this.domain, this.rewardFunction, this.gamma, this.hashingFactory);
+			toAddTo.addNonDomainReferencedAction(trenchWrapper.getOption());
+		}
 
-		MinecraftOptionWrapper trenchWrapper = new TrenchBuildOptionWrapper("test trench option", this.domain, this.rewardFunction, this.gamma, hashingFactory);
-		toAddTo.addNonDomainReferencedAction(trenchWrapper.getOption());
 		
-		//Sprint macro-action
-		SprintMacroActionWrapper sprintWrapper = new SprintMacroActionWrapper(this.initialState, this.domain, 5);
-		toAddTo.addNonDomainReferencedAction(sprintWrapper.getMacroAction());
+		
+		//MACROACTIONS
+		if (addMAs) {
+			//Sprint macro-action
+			MinecraftMacroActionWrapper sprintWrapper = new SprintMacroActionWrapper(NameSpace.MACROACTIONSPRINT,this.initialState, this.domain, this.hashingFactory, this.rewardFunction, this.gamma, 2);
+			toAddTo.addNonDomainReferencedAction(sprintWrapper.getMacroAction());	
+		}
+
 		
 	}
 	
@@ -274,12 +283,12 @@ public class MinecraftBehavior {
 		return p;
 	}
 	
-	public void BFSExample() {
+	public void BFSExample(boolean addOptions, boolean addMAs) {
 		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
 		
 		DeterministicPlanner planner = new BFS(this.domain, goalCondition, this.hashingFactory);
 		
-		addOptionsToOOMDPPlanner(planner, this.hashingFactory);
+		addOptionsToOOMDPPlanner(planner, addOptions, addMAs);
 		
 		planner.planFromState(initialState);
 		
@@ -405,11 +414,11 @@ public class MinecraftBehavior {
 	 * Solves the current OO-MDP using Real Time Dynamic Programming
 	 * @return: The number of bellman updates performed during planning
 	 */
-	public double[] RTDP() {
+	public double[] RTDP(boolean addOptions, boolean addMAs) {
 
 		RTDP planner = new RTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth);
 		
-		addOptionsToOOMDPPlanner(planner, this.hashingFactory);
+		addOptionsToOOMDPPlanner(planner, addOptions, addMAs);
 		
 		planner.setMinNumRolloutsWithSmallValueChange(numRolloutsWithSmallChangeToConverge);
 		
@@ -459,12 +468,12 @@ public class MinecraftBehavior {
 		String mapsPath = "src/minecraft/maps/randomMaps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-		String mapName = "/learning/DeepTrenchWorld0.map";
+		String mapName = "PlaneWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
 		// BFS
-		mcBeh.BFSExample();
+		mcBeh.BFSExample(true, true);
 
 		// VI
 //		double[] results = mcBeh.ValueIterationPlanner();
@@ -494,7 +503,7 @@ public class MinecraftBehavior {
 //		sgp.solve();
 		
 		// RTDP
-		double[] results = mcBeh.RTDP();
+		double[] results = mcBeh.RTDP(true, true);
 		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		
