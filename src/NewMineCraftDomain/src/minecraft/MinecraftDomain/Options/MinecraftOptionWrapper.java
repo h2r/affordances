@@ -23,8 +23,8 @@ public abstract class MinecraftOptionWrapper{
 
 	public Option getOption() {
 		Policy p = getOptionPolicy();
-		StateConditionTest termTest = getInitTest();
-		StateConditionTest initTest = getTermTest();
+		StateConditionTest initTest = getInitTest();
+		StateConditionTest termTest = getTermTest();
 		
 		Option toReturn = new DeterminisitcTerminationOption(this.name, p, initTest, termTest);
 		toReturn.keepTrackOfRewardWith(rf, gamma);
@@ -35,7 +35,7 @@ public abstract class MinecraftOptionWrapper{
 	
 	
 	public MinecraftOptionWrapper(String optionName, Domain domain, RewardFunction rf, double gamma, StateHashFactory hashingFactory) {
-		this.name = name;
+		this.name = optionName;
 		this.domain = domain;
 		this.rf = rf;
 		this.gamma = gamma;
