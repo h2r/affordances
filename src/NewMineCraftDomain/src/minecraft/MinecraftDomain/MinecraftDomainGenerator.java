@@ -227,7 +227,6 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		StochasticAgentAction lookDown = new RotateVertAction(NameSpace.ACTIONLOOKDOWN, domain, rows, cols, height, -1);
 		StochasticAgentAction lookUp = new RotateVertAction(NameSpace.ACTIONLOOKUP, domain, rows, cols, height, 1);
 
-		
 		new DestroyBlockAction(NameSpace.ACTIONDESTBLOCK, domain, rows, cols, height);
 		new JumpAction(NameSpace.ACTIONJUMP, domain, rows, cols, height, 1);
 		new PlaceBlockAction(NameSpace.ACTIONPLACEBLOCK, domain, rows, cols, height);
