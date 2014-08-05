@@ -456,15 +456,15 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-		String mapsPath = "src/minecraft/maps/randomMaps/";
+		String mapsPath = "src/minecraft/maps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-		String mapName = "/learning/DeepTrenchWorld0.map";
+		String mapName = "learning/DeepTrenchWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
 		// BFS
-		mcBeh.BFSExample();
+//		mcBeh.BFSExample();
 
 		// VI
 //		double[] results = mcBeh.ValueIterationPlanner();
