@@ -14,8 +14,16 @@ import minecraft.MinecraftBehavior;
 import minecraft.NameSpace;
 import minecraft.WorldGenerator.LearningWorldGenerator;
 import minecraft.WorldGenerator.MapFileGenerator;
+import minecraft.WorldGenerator.WorldTypes.DeepTrenchWorld;
+import minecraft.WorldGenerator.WorldTypes.PlaneGoalShelfWorld;
+import minecraft.WorldGenerator.WorldTypes.PlaneGoldMineWorld;
+import minecraft.WorldGenerator.WorldTypes.PlaneGoldSmeltWorld;
+import minecraft.WorldGenerator.WorldTypes.PlaneTowerWorld;
+import minecraft.WorldGenerator.WorldTypes.PlaneWallWorld;
+import minecraft.WorldGenerator.WorldTypes.PlaneWorld;
 import burlap.behavior.affordances.Affordance;
 import burlap.behavior.affordances.AffordanceDelegate;
+import burlap.behavior.affordances.HardAffordance;
 import burlap.behavior.affordances.SoftAffordance;
 import burlap.behavior.singleagent.Policy;
 import burlap.behavior.singleagent.QValue;
@@ -45,6 +53,14 @@ public class AffordanceLearner {
 		this.mcb = mcb;
 		this.affordanceKB = kb;
 		this.countTotalActions = countTotalActions;
+	}
+	
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorldsPerLGD) {
+		this.lgds = lgds;
+		this.mcb = mcb;
+		this.affordanceKB = kb;
+		this.countTotalActions = countTotalActions;
+		this.numWorldsPerLGD = numWorldsPerLGD;
 	}
 	
 	/**
@@ -83,32 +99,20 @@ public class AffordanceLearner {
 	 */
 	public void createLearningMaps(String learningMapDir) {
 		
-		MapFileGenerator mapMaker = new MapFileGenerator(1, 3, 4, learningMapDir);
+		MapFileGenerator mapMaker = new MapFileGenerator(2, 3, 4, learningMapDir);
 		
 		// Get rid of old maps
 		mapMaker.clearMapsInDirectory();
 		
-		// Map parameters
-		int floorDepth = 1;
-		char floorOf = NameSpace.CHARINDBLOCK;
-		int numTrenches = 0;
-		boolean straightTrench = true;
-		int numWalls = 0;
-		char wallOf = NameSpace.CHARDIRTBLOCKNOTPICKUPABLE;
-		boolean straightWall = true;
-		int depthOfGoldOre = 1;
-		String[] baseFileNames = {"DeepTrenchWorld", "WallPlaneWorld", "PlaneGoldMining", "PlaneGoldSmelting", "TowerPlaneWorld",};
+		int numLavaBlocks = 1;
 		
-		// Trench
-		mapMaker.generateNMaps(this.numWorldsPerLGD, this.lgds.get(0), 2, floorOf, 1, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[0]);
-		// Wall
-		mapMaker.generateNMaps(this.numWorldsPerLGD, this.lgds.get(0), floorDepth, floorOf, numTrenches, straightTrench, 1, wallOf, straightWall, depthOfGoldOre, baseFileNames[1]);
-		// Find gold ore
-		mapMaker.generateNMaps(this.numWorldsPerLGD, this.lgds.get(1), floorDepth, floorOf, numTrenches, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[2]);
-		// Smelt gold bar
-		mapMaker.generateNMaps(this.numWorldsPerLGD, this.lgds.get(2), floorDepth, floorOf, numTrenches, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[3]);
-//		// Build tower
-		mapMaker.generateNMaps(this.numWorldsPerLGD, this.lgds.get(3), 0, floorOf, numTrenches, straightTrench, numWalls, wallOf, straightWall, depthOfGoldOre, baseFileNames[4]);
+		System.out.println("Generating maps..." + this.numWorldsPerLGD);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 2, 3, 5);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 2, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 2, 3, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 1, 2, 5);
 	}
 	
 	
@@ -121,10 +125,6 @@ public class AffordanceLearner {
 		/**
 		 * We iterate through each state in the formed policy and get its "optimal" action. For each affordance,
 		 * if that affordance is applicable in the state we increment its action count for the "optimal" action.
-		 * 
-		 * Note: We DO NOT want to increment an affordance's action count more than once for any given action. To
-		 * avoid this we keep track of the actions that have been incremented so far for each affordance in the seen
-		 * variable.
 		 */
 		
 		// Synthesize a policy on the given map
@@ -214,14 +214,14 @@ public class AffordanceLearner {
 				continue;
 			}
 			
-			// Remove if indistinguishable from uniform
+			// Remove if entropy is close to as high as uniform
 			double[] multinomial = normalizeCounts(counts);
 			if(isLowInformationAffordance(multinomial)) {
 				toRemove.add(aff);
 			}
 		}
 		
-		// Remove any affordances with (alpha) counts of zero
+		// Actually remove (done separately to avoid modifying the iterable while looping)
 		for(AffordanceDelegate affToRemove : toRemove) {
 			affordanceKB.remove(affToRemove);
 		}
@@ -294,12 +294,18 @@ public class AffordanceLearner {
 	 * @param allActions: the set of possible actions (OO-MDP action set)
 	 * @return
 	 */
-	public static KnowledgeBase generateAffordanceKB(List<LogicalExpression> predicates, Map<Integer,LogicalExpression> lgds, List<AbstractGroundedAction> allActions) {
+	public static KnowledgeBase generateAffordanceKB(List<LogicalExpression> predicates, Map<Integer, LogicalExpression> lgds, List<AbstractGroundedAction> allActions, boolean softFlag) {
 		KnowledgeBase affordanceKB = new KnowledgeBase();
 		
 		for (LogicalExpression pf : predicates) {
 			for (LogicalExpression lgd : lgds.values()) {
-				Affordance aff = new SoftAffordance(pf, lgd, allActions);
+				Affordance aff;
+				if(softFlag) {
+					aff = new SoftAffordance(pf, lgd, allActions);
+				}
+				else {
+					aff = new HardAffordance(pf, lgd, allActions);
+				}
 				AffordanceDelegate affDelegate = new AffordanceDelegate(aff);	
 				affordanceKB.add(affDelegate);
 			}
@@ -356,77 +362,7 @@ public class AffordanceLearner {
 	 * @param mb: MinecraftBehavior instance
 	 * @return
 	 */
-	public static String generateMinecraftKB(MinecraftBehavior mb) {
-		List<Action> allActions = mb.getDomain().getActions();
-		List<AbstractGroundedAction> allGroundedActions = new ArrayList<AbstractGroundedAction>();
-
-		// Create Grounded Action instances for each action
-		for(Action a : allActions) {
-			String[] freeParams = makeFreeVarListFromObjectClasses(a.getParameterClasses());
-			GroundedAction ga = new GroundedAction(a, freeParams);
-			allGroundedActions.add(ga);
-		}
-		
-		
-		// Set up goal description list
-		Map<Integer,LogicalExpression> lgds = new HashMap<Integer,LogicalExpression>();
-		PropositionalFunction hasGold = mb.pfAgentHasAtLeastXGoldOre;
-		LogicalExpression goldLE = pfAtomFromPropFunc(hasGold);
-		
-		PropositionalFunction atGoal = mb.pfAgentAtGoal;
-		LogicalExpression goalLE = pfAtomFromPropFunc(atGoal);
-		
-		lgds.put(0,goalLE);
-//		lgds.add(goldLE);
-		
-		// Set up precondition list
-		List<LogicalExpression> predicates = new ArrayList<LogicalExpression>();
-		
-		// AgentInAir PFAtom
-		PropositionalFunction agentInAir = mb.pfAgentInMidAir;
-		LogicalExpression agentInAirLE = pfAtomFromPropFunc(agentInAir);
-		
-		// EndOfMapInFrontOfAgent PFAtom
-		PropositionalFunction endOfMapInFrontOfAgent = mb.pfEndOfMapInFrontOfAgent;
-		LogicalExpression endOfMapLE = pfAtomFromPropFunc(endOfMapInFrontOfAgent);
-		
-		// TrenchInFrontOfAgent PFAtom
-		PropositionalFunction trenchInFrontOf = mb.pfTrenchInFrontOfAgent;
-		LogicalExpression trenchLE = pfAtomFromPropFunc(trenchInFrontOf);
-		
-		// AgentLookForwardAndWalkable PFAtom
-		PropositionalFunction forwardWalkable = mb.pfAgentLookForwardAndWalkable;
-		LogicalExpression forwardWalkableLE = pfAtomFromPropFunc(forwardWalkable);
-		
-		// Empty Cell front of agent PFAtom
-		PropositionalFunction forwardWalkableTrench = mb.pfEmptyCellFrontAgentWalk;
-		LogicalExpression forwardWalkableTrenchLE = pfAtomFromPropFunc(forwardWalkableTrench);
-		
-		// Add LEs to list
-		predicates.add(agentInAirLE);
-		predicates.add(endOfMapLE);
-		predicates.add(trenchLE);
-		predicates.add(forwardWalkableLE);
-		predicates.add(forwardWalkableTrenchLE);
-		
-		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions);
-
-		// Initialize Learner
-		boolean countTotalActions = true;
-		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions);
-		
-		String kbName = "tests" + affLearn.numWorldsPerLGD + ".kb";
-		
-		affLearn.learn();
-		
-		affKnowledgeBase.save(kbName);
-		
-		return kbName;
-	}
-
-	
-	public static void main(String[] args) {
-		MinecraftBehavior mb = new MinecraftBehavior("src/minecraft/maps/template.map");
+	public static String generateMinecraftKB(MinecraftBehavior mb, int numWorlds, boolean learningRate) {
 		
 		List<Action> allActions = mb.getDomain().getActions();
 		List<AbstractGroundedAction> allGroundedActions = new ArrayList<AbstractGroundedAction>();
@@ -437,7 +373,6 @@ public class AffordanceLearner {
 			GroundedAction ga = new GroundedAction(a, freeParams);
 			allGroundedActions.add(ga);
 		}
-		
 		
 		// Set up goal description list
 		Map<Integer,LogicalExpression> lgds = new HashMap<Integer,LogicalExpression>();
@@ -471,14 +406,15 @@ public class AffordanceLearner {
 		PropositionalFunction endOfMapInFrontOfAgent = mb.pfEndOfMapInFrontOfAgent;
 		LogicalExpression endOfMapLE = pfAtomFromPropFunc(endOfMapInFrontOfAgent);
 		
-		// TrenchInFrontOfAgent PFAtom
+		// Trench in front of the agent PFAtom
 		PropositionalFunction trenchInFrontOf = mb.pfTrenchInFrontOfAgent;
 		LogicalExpression trenchLE = pfAtomFromPropFunc(trenchInFrontOf);
 		
-		// AgentLookForwardAndWalkable PFAtom
+		// Area in front of agent is clear PFAtom
 		PropositionalFunction forwardWalkable = mb.pfAgentLookForwardAndWalkable;
 		LogicalExpression forwardWalkableLE = pfAtomFromPropFunc(forwardWalkable);
 
+		// Gold is in front of the agent
 		PropositionalFunction goldFrontAgent = mb.pfGoldBlockFrontOfAgent;
 		LogicalExpression goldFrontAgentLE = pfAtomFromPropFunc(goldFrontAgent);
 		
@@ -488,6 +424,12 @@ public class AffordanceLearner {
 		PropositionalFunction wallFrontAgent = mb.pfWallInFrontOfAgent;
 		LogicalExpression wallFrontAgentLE = pfAtomFromPropFunc(wallFrontAgent);
 		
+		PropositionalFunction feetBlockHeadClear = mb.pfFeetBlockedHeadClear;
+		LogicalExpression feetBlockHeadClearLE = pfAtomFromPropFunc(feetBlockHeadClear);
+		
+		PropositionalFunction lavaFrontAgent = mb.pfLavaFrontAgent;
+		LogicalExpression lavaFrontAgentLE = pfAtomFromPropFunc(lavaFrontAgent);
+		
 		// Add LEs to list
 		predicates.add(agentInAirLE);
 		predicates.add(endOfMapLE);
@@ -496,17 +438,33 @@ public class AffordanceLearner {
 		predicates.add(goldFrontAgentLE);
 		predicates.add(furnaceFrontAgentLE);
 		predicates.add(wallFrontAgentLE);
+		predicates.add(feetBlockHeadClearLE);
+		predicates.add(lavaFrontAgentLE);
 		
-		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions);
-
+		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions, true);
 		// Initialize Learner
 		boolean countTotalActions = true;
-		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions);
+		
+		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions, numWorlds);
+		
+		String kbName;
+		if(learningRate) {
+			kbName = "learning_rate/tests" + affLearn.numWorldsPerLGD + ".kb";
+		}
+		else {
+			kbName = "tests" + affLearn.numWorldsPerLGD + ".kb";
+		}
 		
 		affLearn.learn();
-//		affLearn.printCounts();
 		
-		affKnowledgeBase.save("test" + affLearn.numWorldsPerLGD + ".kb");
+		affKnowledgeBase.save(kbName);
+		
+		return kbName;
+	}
+
+	public static void main(String[] args) {
+		MinecraftBehavior mb = new MinecraftBehavior("src/minecraft/maps/template.map");
+		generateMinecraftKB(mb, 1, false);
 		
 	}
 	

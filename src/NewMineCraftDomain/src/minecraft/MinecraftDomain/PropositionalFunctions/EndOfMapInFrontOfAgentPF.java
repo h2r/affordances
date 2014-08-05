@@ -30,7 +30,7 @@ public class EndOfMapInFrontOfAgentPF extends PropositionalFunction {
 
 	@Override
 	public boolean isTrue(State state, String[] parameterClasses) {
-		int[]positionInFront = Helpers.positionInFrontOfAgent(1, state);
+		int[] positionInFront = Helpers.positionInFrontOfAgent(1, state);
 		int x = positionInFront[0];
 		int y = positionInFront[1];
 		int z = positionInFront[2];

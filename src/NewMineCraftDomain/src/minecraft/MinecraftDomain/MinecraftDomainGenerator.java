@@ -17,9 +17,11 @@ import minecraft.MinecraftDomain.Actions.UseBlockAction;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentAdjacentToTrenchPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldBarPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldOrePF;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentInLavaPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentInMidAirPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentLookForwardAndWalkablePF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AtGoalPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.BlockAtAgentsFeetHeadClearPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockAtPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockInFrontOfAgentPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptyCellInAgentWalkDir;
@@ -65,6 +67,11 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 	 * has (ultimately derived from the first line of the ascii file).
 	 */
 	private HashMap<String, Integer> headerInfo;
+	
+	/**
+	 * boolean indicating whether or not the domain's actions should be stochastic or deterministic
+	 */
+	private boolean stochasticActions = true;
 	
 	//------------CONSTRUCTOR------------
 	/**
@@ -200,6 +207,10 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		ObjectClass furnaceClass = new ObjectClass(domain, NameSpace.CLASSFURNACE);
 		addSpatialAttributes(furnaceClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
 		
+		//Burlap object for lava
+		ObjectClass lavaClass = new ObjectClass(domain, NameSpace.CLASSLAVA);
+		addSpatialAttributes(lavaClass, xAtt, yAtt, zAtt, collAt, floatsAt, destroyWhenWalkedAt, destAt);
+		
 		//Burlap object for Trench (high level)
 		ObjectClass trenchClass = new ObjectClass(domain, NameSpace.CLASSTRENCH);
 		trenchClass.addAttribute(xAtt);
@@ -222,7 +233,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new PlaceBlockAction(NameSpace.ACTIONPLACEBLOCK, domain, rows, cols, height);
 		new UseBlockAction(NameSpace.ACTIONUSEBLOCK, domain, rows, cols, height);
 		
-		//Set up indeterminism/results of actions
+		//Set up non-determinism
 		List<StochasticAgentAction> actions = new ArrayList<StochasticAgentAction>();
 		actions.add(move);
 		actions.add(turnRight);
@@ -230,9 +241,20 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		actions.add(lookDown);
 		actions.add(lookUp);
 		
-		move.addResultingActionsWithWeights(actions, new double[]{1, 0, 0, 0, 0});
-		turnRight.addResultingActionsWithWeights(actions, new double[]{0, 1, 0, 0, 0});
-		turnLeft.addResultingActionsWithWeights(actions, new double[]{0, 0, 1, 0, 0});
+		if(stochasticActions) { 
+			// Stochastic
+			move.addResultingActionsWithWeights(actions, new double[]{1, 0 , 0, 0, 0});
+			turnRight.addResultingActionsWithWeights(actions, new double[]{0, 1 , 0, 0, 0});
+			turnLeft.addResultingActionsWithWeights(actions, new double[]{0, 0 , 1, 0, 0});
+		}
+		else {
+			// Deterministic
+			move.addResultingActionsWithWeights(actions, new double[]{0.95, 0.025, 0.025, 0, 0});
+			turnRight.addResultingActionsWithWeights(actions, new double[]{0.025, .95, 0.025, 0, 0});
+			turnLeft.addResultingActionsWithWeights(actions, new double[]{0.025, 0.025, 0.95, 0, 0});
+		}
+
+		
 		lookDown.addResultingActionsWithWeights(actions, new double[]{0, 0, 0, 1, 0});
 		lookUp.addResultingActionsWithWeights(actions, new double[]{0, 0, 0, 0, 1});
 		
@@ -250,6 +272,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new EmptyCellInFrontOfAgentPF(NameSpace.PFEMPTYCELLINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new AgentInMidAirPF(NameSpace.PFAGENTINMIDAIR, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new TowerInMapPF(NameSpace.PFTOWER, domain, new String[]{NameSpace.CLASSAGENT}, 2, NameSpace.CHARDIRTBLOCKNOTPICKUPABLE, rows, cols, height);
+		new AgentInLavaPF(NameSpace.PFAGENTINLAVA, domain, new String[]{NameSpace.CLASSAGENT});
 		
 		// Dave's jenky hard coded prop funcs
 		new AgentAdjacentToTrenchPF(NameSpace.PFAGENTADJTRENCH, domain, new String[]{NameSpace.CLASSAGENT, NameSpace.CLASSTRENCH});
@@ -258,11 +281,14 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new BlockInFrontOfAgentPF(NameSpace.PFGOLDFRONTAGENTONE, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOLDBLOCK);
 		new BlockInFrontOfAgentPF(NameSpace.PFFURNACEINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSFURNACE);
 		new WallInFrontOfAgentPF(NameSpace.PFWALLINFRONT, domain,  new String[]{NameSpace.CLASSAGENT}, 1);
+		new BlockAtAgentsFeetHeadClearPF(NameSpace.PFFEETBLOCKHEADCLEAR, domain, new String[]{NameSpace.CLASSAGENT});
+		new BlockInFrontOfAgentPF(NameSpace.PFLAVAFRONTAGENT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSLAVA);
+		
 		return domain;
 	}
 	
 	public static void main(String[] args) {
-		String filePath = "src/minecraft/maps/emptyMap.map";
+		String filePath = "src/minecraft/maps/learning/PlaneGoldMineWorld0.map";
 		MapIO io = new MapIO(filePath);
 		
 		char[][][] charMap = io.getMapAs3DCharArray();

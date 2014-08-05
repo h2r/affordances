@@ -69,26 +69,34 @@ public class WorldGenerator {
 
 	private HashMap<Character, Integer> createCharacterHierarchy() {
 		HashMap<Character, Integer> hierarchy = new HashMap<Character, Integer>();
-		//Must haves
-		hierarchy.put(NameSpace.CHARAGENT, 10);
-		hierarchy.put(NameSpace.CHARAGENTFEET, 10);
-		hierarchy.put(NameSpace.CHARAGENTFEET, 10);
-		hierarchy.put(NameSpace.CHARFURNACE, 10);
-		hierarchy.put(NameSpace.CHARGOAL, 10);
-		hierarchy.put(NameSpace.CHARGOLDBLOCK, 10);
 
+
+
+		//Don't matter
+		
+				
 		//Less importants
 		hierarchy.put(NameSpace.CHARDIRTBLOCKNOTPICKUPABLE, 5);
 		hierarchy.put(NameSpace.CHARDIRTBLOCKPICKUPABLE, 5);
 		hierarchy.put(NameSpace.CHARINDBLOCK, 5);
-		hierarchy.put(NameSpace.CHAREMPTY, 5);
+		hierarchy.put(NameSpace.CHAREMPTY, 0);
 
-		//Don't matter
-
+		//Must haves
+		hierarchy.put(NameSpace.CHARAGENT, 10);
+		hierarchy.put(NameSpace.CHARAGENTFEET, 10);
+		hierarchy.put(NameSpace.CHARFURNACE, 10);
+		hierarchy.put(NameSpace.CHARGOAL, 10);
+		hierarchy.put(NameSpace.CHARGOLDBLOCK, 10);
+		hierarchy.put(NameSpace.CHARLAVA, 10);
+		
 		return hierarchy;
 	}
 
-	private boolean addChar(char [][][] toAddTo, char newChar, int  toAddX, int toAddY, int toAddZ, boolean canReplaceEquals) {
+	private boolean addChar(char [][][] toAddTo, char newChar, int  toAddX, int toAddY, int toAddZ, boolean canReplaceEquals, Integer hierVal) {
+		int oldHierVal = this.characterHierarchy.get(newChar);
+		if (hierVal != null) this.characterHierarchy.put(newChar, hierVal);
+		
+		boolean toReturn = false;
 		char oldChar = toAddTo[toAddY][toAddX][toAddZ];
 		Integer oldCharVal = this.characterHierarchy.get(oldChar);
 		if (oldCharVal == null) oldCharVal = -1;
@@ -96,16 +104,16 @@ public class WorldGenerator {
 		Integer newCharVal = this.characterHierarchy.get(newChar);
 		if (newCharVal == null) newCharVal = -1;
 
-		if (newChar == NameSpace.CHARDIRTBLOCKPICKUPABLE) {
-		}
 
 		if (canReplaceEquals) newCharVal++;
+		
 		if (newCharVal > oldCharVal) {
 			toAddTo[toAddY][toAddX][toAddZ] = newChar;
-			return true;
+			toReturn = true;
 		}
-
-		return false;  
+		
+		this.characterHierarchy.put(newChar, oldHierVal);
+		return toReturn;  
 	}
 
 	protected void emptifyCharArray(char [][][] toChange) {
@@ -123,18 +131,23 @@ public class WorldGenerator {
 		for (int currHeight = 0; currHeight < depthOfDirtFloor; currHeight++) {
 			for(int row = 0; row < this.rows; row++) {
 				for(int col = 0; col < this.cols; col++) {
-					addChar(toChange, floorOf,  col, row, currHeight, true);
+					addChar(toChange, floorOf,  col, row, currHeight, true, null);
 				}
 			}
 		}
 	}
 
-	private int[] addCharRandomly(char toAdd, Integer x, Integer y, Integer z, char[][][] toChange, boolean canReplaceEqualsInHier) {
+	private int[] addCharRandomly(char toAdd, Integer x, Integer y, Integer z, char[][][] toChange, boolean canReplaceEqualsInHier, Integer hierarchyVal) {
+		
 		// Randomly add the given char toAdd to the map so that it does not conflict with already placed characters
-		return addCharRandomlyHelper(toAdd,x,y,z,toChange,0,canReplaceEqualsInHier);
+		int[] toReturn = addCharRandomlyHelper(toAdd,x,y,z,toChange,0,canReplaceEqualsInHier, hierarchyVal);
+		
+		
+		return toReturn;
+		
 	}
 
-	private int[] addCharRandomlyHelper(char toAdd, Integer x, Integer y, Integer z, char[][][] toChange, int counter, boolean canReplaceEqualsInHier) {
+	private int[] addCharRandomlyHelper(char toAdd, Integer x, Integer y, Integer z, char[][][] toChange, int counter, boolean canReplaceEqualsInHier, Integer hierVal) {
 		// If we tried placing a reasonable number of times and failed, exit.
 		try {
 			if(counter > this.rows*this.cols*this.height) {
@@ -163,27 +176,43 @@ public class WorldGenerator {
 			nz = this.rand.nextInt(this.height);
 		}
 
-		boolean charWasAdded = addChar(toChange, toAdd,  nx, ny, nz, canReplaceEqualsInHier);
+		boolean charWasAdded = addChar(toChange, toAdd,  nx, ny, nz, canReplaceEqualsInHier, hierVal);
 
 		if(!charWasAdded) {
-			return addCharRandomlyHelper(toAdd, x, y, z, toChange, ++counter, canReplaceEqualsInHier);
+			return addCharRandomlyHelper(toAdd, x, y, z, toChange, ++counter, canReplaceEqualsInHier, hierVal);
 		}
 		else {
 			return new int[]{nx,ny,nz};
 		}
 	}
 
-	protected int[] addRandomSpatialGoal(char[][][] toChange) {
+	protected int[] addRandomSpatialGoal(char[][][] toChange, int heightOfGoalShelf, char floorOf) {
+		//Add shelf tower
+
+		
 		assert(this.depthOfDirtFloor+1 < this.height);
-		return addCharRandomly(NameSpace.CHARGOAL, null, null, this.depthOfDirtFloor+1, toChange, false);
+
+
+		// Put the goal {1,2} higher in z for certain worlds
+		int goalZOffset = 1;
+		if(heightOfGoalShelf > 0) {
+			goalZOffset = 2;
+		}
+		int[] goalPosition = addCharRandomly(NameSpace.CHARGOAL, null, null, this.depthOfDirtFloor + goalZOffset + heightOfGoalShelf, toChange, false, null);
+		if (heightOfGoalShelf > 0) {
+			for (int currZ = this.depthOfDirtFloor; currZ < this.depthOfDirtFloor + heightOfGoalShelf + 1; currZ++) {
+				addChar(toChange, floorOf,  goalPosition[0], goalPosition[1], currZ, true, 10);
+			}
+		}
+		return goalPosition;
 	}
 
 
-	private boolean addCharColAt(int x, int y, char[][][] toChange, char toAdd, boolean canReplaceEqualsInHier) {
+	private boolean addCharColAt(int x, int y, char[][][] toChange, char toAdd, boolean canReplaceEqualsInHier, int hierVal) {
 		boolean willNeedToRestart = false;
 		for (int currHeight = 0; currHeight < this.height; currHeight++) {
 			//System.out.println("Adding: " + toAdd + " and previously: " + toChange[y][x][currHeight]);
-			boolean wasAdded = addChar(toChange, toAdd, x, y, currHeight, canReplaceEqualsInHier);
+			boolean wasAdded = addChar(toChange, toAdd, x, y, currHeight, canReplaceEqualsInHier, hierVal);
 			willNeedToRestart = willNeedToRestart || !wasAdded;
 			//System.out.println("\twas added:" + wasAdded);
 		}
@@ -260,7 +289,9 @@ public class WorldGenerator {
 	 * @param walkPositions
 	 * @return if need to restart
 	 */
-	private boolean runCharColWalk(char[][][] toChange, int startX, int startY, int startXChange, int startYChange, char charToAdd, boolean straightWalk, HashMap<Integer, List<Integer>> walkPositions, boolean canReplaceEqualsInHier) {
+	private boolean runCharColWalk(char[][][] toChange, int startX, int startY, int startXChange,
+			int startYChange, char charToAdd, boolean straightWalk, HashMap<Integer, List<Integer>> walkPositions,
+			boolean canReplaceEqualsInHier, int hierVal) {
 		int currX = startX;
 		int currY = startY;
 		int xChange = startXChange;
@@ -276,7 +307,7 @@ public class WorldGenerator {
 			oldYList.add(currY);
 			walkPositions.put(currX, oldYList);
 			//Add column
-			this.addCharColAt(currX, currY, toChange, charToAdd, canReplaceEqualsInHier);
+			this.addCharColAt(currX, currY, toChange, charToAdd, canReplaceEqualsInHier, hierVal);
 
 			//Change direction with some probability
 			if (rand.nextFloat() < probabilityToUse) {
@@ -309,7 +340,9 @@ public class WorldGenerator {
 		return false;
 	}
 
-	private boolean randomWalkInsertOfCharacterColumns(char[][][] toChange, char toInsert, boolean straightAndBetweenAgentAndGoal, int agentX, int agentY, int goalX, int goalY, boolean canReplaceEqualsInHier) {
+	private boolean randomWalkInsertOfCharacterColumns(char[][][] toChange, char toInsert,
+			boolean straightAndBetweenAgentAndGoal, int agentX, int agentY, int goalX,
+			int goalY, boolean canReplaceEqualsInHier, Integer hierVal) {
 
 		boolean startingBotOrTop = this.fairCoinFlip();
 
@@ -349,7 +382,8 @@ public class WorldGenerator {
 		//Do the walk
 
 		HashMap<Integer, List<Integer>> walkPositions = new HashMap<Integer, List<Integer>>();
-		boolean needToRestart = runCharColWalk(toChange, startX, startY, startXChange, startYChange, toInsert, straightAndBetweenAgentAndGoal, walkPositions, canReplaceEqualsInHier);
+		boolean needToRestart = runCharColWalk(toChange, startX, startY, startXChange, startYChange, toInsert, straightAndBetweenAgentAndGoal,
+				walkPositions, canReplaceEqualsInHier, hierVal);
 
 		//Break if straight and no trench between
 		if(!(straightAndBetweenAgentAndGoal && walkInBetweenAgentAndGoal(agentX, agentY, goalX, goalY, walkPositions))) {
@@ -374,7 +408,7 @@ public class WorldGenerator {
 	protected boolean addTrenches(int numTrenches, char[][][] toChange, boolean trenchStraightAndBetweenAgentAndGoal, int agentX, int agentY, int goalX, int goalY, boolean canReplaceEqualsInHier) {
 		boolean toReturn = false;	
 		for (int trenchIndex = 0; trenchIndex < numTrenches; trenchIndex++) {
-			toReturn = toReturn || this.randomWalkInsertOfCharacterColumns(toChange, NameSpace.CHAREMPTY, trenchStraightAndBetweenAgentAndGoal, agentX, agentY, goalX, goalY, canReplaceEqualsInHier);
+			toReturn = toReturn || this.randomWalkInsertOfCharacterColumns(toChange, NameSpace.CHAREMPTY, trenchStraightAndBetweenAgentAndGoal, agentX, agentY, goalX, goalY, canReplaceEqualsInHier, 10);
 		}
 		return toReturn;
 	}
@@ -382,17 +416,17 @@ public class WorldGenerator {
 	protected int[] addGoldOre(char[][][] toChange, Integer depthOfGoldOre) throws FloorNotDeepEnoughException {
 		if (this.depthOfDirtFloor + depthOfGoldOre < 0) throw new FloorNotDeepEnoughException();
 		
-		return this.addCharRandomly(NameSpace.CHARGOLDBLOCK, null, null, this.depthOfDirtFloor + depthOfGoldOre, toChange, false);
+		return this.addCharRandomly(NameSpace.CHARGOLDBLOCK, null, null, this.depthOfDirtFloor + depthOfGoldOre, toChange, false, null);
 	}
 
 	protected int [] addFurnace(char[][][] toChange) {
-		return this.addCharRandomly(NameSpace.CHARFURNACE, null, null, this.depthOfDirtFloor, toChange, false);
+		return this.addCharRandomly(NameSpace.CHARFURNACE, null, null, this.depthOfDirtFloor, toChange, false, null);
 	}
 
 	protected boolean addWalls(int numWalls, char[][][] toChange, char wallOf, boolean wallStraightAndBetweenAgentAndGoal, int agentX, int agentY, int goalX, int goalY, boolean canReplaceEqualsInHier) {
 		boolean needToRestart = false;
 		for (int wallIndex = 0; wallIndex < numWalls; wallIndex++) {
-			needToRestart = needToRestart || this.randomWalkInsertOfCharacterColumns(toChange, wallOf, wallStraightAndBetweenAgentAndGoal, agentX, agentY, goalX, goalY, canReplaceEqualsInHier);
+			needToRestart = needToRestart || this.randomWalkInsertOfCharacterColumns(toChange, wallOf, wallStraightAndBetweenAgentAndGoal, agentX, agentY, goalX, goalY, canReplaceEqualsInHier, 5);
 		}
 		return needToRestart;
 	}
@@ -401,7 +435,7 @@ public class WorldGenerator {
 		if (this.depthOfDirtFloor + 2 > this.height) throw new WorldNotTallEnoughException();
 		
 		// Add agent's head
-		int[] headLocation = addCharRandomly(NameSpace.CHARAGENT, null, null, this.depthOfDirtFloor+1, toChange, false);
+		int[] headLocation = addCharRandomly(NameSpace.CHARAGENT, null, null, this.depthOfDirtFloor+1, toChange, false, 5);
 
 		// Add agent's feet
 		toChange[headLocation[1]][headLocation[0]][headLocation[2]-1] = NameSpace.CHARAGENTFEET;
@@ -410,7 +444,7 @@ public class WorldGenerator {
 
 	}
 
-	private char[][][] generateNewCharArray(int goal, char floorOf, int numTrenches, boolean trenchStraightAndBetweenAgentAndGoal, int numWalls, char wallOf, boolean wallStraightAndBetweenAgentAndGoal, Integer depthOfGoldOre) throws RandomMapGenerationException {
+	private char[][][] generateNewCharArray(int goal, char floorOf, int numTrenches, boolean trenchStraightAndBetweenAgentAndGoal, int numWalls, char wallOf, boolean wallStraightAndBetweenAgentAndGoal, Integer depthOfGoldOre, int heightOfGoalShelf, int numLava) throws RandomMapGenerationException {
 		//System.out.println("RESTARTING");
 		char[][][] toReturn = new char[this.rows][this.cols][this.height];
 
@@ -429,16 +463,22 @@ public class WorldGenerator {
 			int[] agentPosition = this.addAgent(toReturn);
 			int[] goalPosition = new int[2];
 			
-			//Add agent
-			impPositions.add(agentPosition);
-
+			//Add lava
+			for (int i = 0; i < numLava; i++) {
+				impPositions.add(addCharRandomly(NameSpace.CHARLAVA, null, null, this.depthOfDirtFloor-1, toReturn, false, null));
+			}
+			
+			
 			//Add goal
 			if (goal == NameSpace.INTXYZGOAL) {
-				goalPosition = addRandomSpatialGoal(toReturn);
+				goalPosition = addRandomSpatialGoal(toReturn, heightOfGoalShelf, floorOf);
 				impPositions.add(goalPosition);
 			}
 			
-			//Add gold blocks
+			//Add agent
+			impPositions.add(agentPosition);
+			
+			//Add gold ore
 			if (goal == NameSpace.INTGOLDBARGOAL || goal == NameSpace.INTGOLDOREGOAL) {
 				goalPosition =  addGoldOre(toReturn, depthOfGoldOre);
 				impPositions.add(goalPosition);
@@ -463,13 +503,34 @@ public class WorldGenerator {
 
 
 			//Restart if agent or goal in walk location
-			if (aLocationWasWalked(impPositions)) {
+			
+			if (shouldRestart(impPositions, toReturn)) {
 				continue;
 			}
+			
+			//Restart if no agent
 
 			break;
 		}
 		return toReturn;
+	}
+	
+	boolean shouldRestart(List<int []> impPositions, char[][][] charArray) {
+		if (aLocationWasWalked(impPositions)) return true;
+		if (noAgent(charArray)) return true;
+		
+		return false;
+	}
+	
+	boolean noAgent(char[][][] charArray) {
+		for (char[][] row: charArray) {
+			for (char[] col: row) {
+				for (char currChar : col) {
+					if (currChar == NameSpace.CHARAGENT) return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	boolean aLocationWasWalked(List<int[]> positions) {
@@ -491,7 +552,7 @@ public class WorldGenerator {
 		return false;
 	}
 
-	private HashMap<String, Integer> generateHeaderInfo(int goal, int numTrenches) {
+	private HashMap<String, Integer> generateHeaderInfo(int goal, int numTrenches, int numPlaceBlocks) {
 		HashMap<String, Integer> toReturn = new HashMap<String, Integer>();
 
 		//Goal
@@ -504,14 +565,7 @@ public class WorldGenerator {
 		toReturn.put(Character.toString(NameSpace.CHARSTARTINGGOLDBAR), 0);
 
 		//Placeable blocks
-		int towerHeight = 2;
-		int numPlaceAbleBlocks = 0;
-		if (goal == NameSpace.INTTOWERGOAL) numPlaceAbleBlocks += towerHeight;
-		if (this.depthOfDirtFloor > 1) {
-			numPlaceAbleBlocks += numTrenches;
-		}
-		
-		toReturn.put(Character.toString(NameSpace.CHARPLACEABLEBLOCKS), numPlaceAbleBlocks);
+		toReturn.put(Character.toString(NameSpace.CHARPLACEABLEBLOCKS), numPlaceBlocks);
 		
 		return toReturn;
 	}
@@ -527,10 +581,14 @@ public class WorldGenerator {
 	 * @param wallsStraightAndBetweenAgentAndGoal
 	 * @throws WorldIsTooSmallException 
 	 */
-	public void randomizeMap(int goal, char floorOf, int numTrenches, boolean trenchStraightAndBetweenAgentAndGoal, int numWalls, char wallOf, boolean wallsStraightAndBetweenAgentAndGoal, Integer depthOfGoldOre, int floorDepth) throws RandomMapGenerationException {
+	public void randomizeMap(int goal, char floorOf, int numTrenches, boolean trenchStraightAndBetweenAgentAndGoal,
+			int numWalls, char wallOf, boolean wallsStraightAndBetweenAgentAndGoal, Integer depthOfGoldOre, 
+			int floorDepth, int numPlaceBlocks, int heightOfGoalShelf, int numLava) throws RandomMapGenerationException {
+		
 		this.depthOfDirtFloor = floorDepth;
-		this.charArray = generateNewCharArray(goal, floorOf, numTrenches, trenchStraightAndBetweenAgentAndGoal, numWalls, wallOf, wallsStraightAndBetweenAgentAndGoal, depthOfGoldOre);
-		this.headerInfo = generateHeaderInfo(goal, numTrenches);
+		this.charArray = generateNewCharArray(goal, floorOf, numTrenches, trenchStraightAndBetweenAgentAndGoal,
+				numWalls, wallOf, wallsStraightAndBetweenAgentAndGoal, depthOfGoldOre, heightOfGoalShelf, numLava);
+		this.headerInfo = generateHeaderInfo(goal, numTrenches, numPlaceBlocks);
 	}
 
 	public char[][][] getCurrCharArray() {
@@ -566,11 +624,11 @@ public class WorldGenerator {
 		Integer depthOfGoldOre = 0;
 		int floorDepth = 1;
 		
-		try {
-			generator.randomizeMap(goal, floorOf, numTrenches, trenchStraightAndBetweenAgentAndGoal, numWalls, wallOf, wallsStraightAndBetweenAgentAndGoal, depthOfGoldOre, floorDepth);
-		} catch (RandomMapGenerationException e) {
-			e.printStackTrace();
-		}
+//		try {
+////			generator.randomizeMap(goal, floorOf, numTrenches, trenchStraightAndBetweenAgentAndGoal, numWalls, wallOf, wallsStraightAndBetweenAgentAndGoal, depthOfGoldOre, floorDepth, 0);
+//		} catch (RandomMapGenerationException e) {
+//			e.printStackTrace();
+//		}
 		String map = generator.getCurrMapIOAsString();
 		System.out.println(map);
 	}

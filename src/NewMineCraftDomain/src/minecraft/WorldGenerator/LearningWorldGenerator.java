@@ -47,7 +47,7 @@ public class LearningWorldGenerator extends WorldGenerator {
 			this.addFurnace(toReturn);
 		} else {
 			//Add goal
-			this.addRandomSpatialGoal(toReturn);			
+//			this.addRandomSpatialGoal(toReturn);			
 		}
 				
 		return toReturn;
