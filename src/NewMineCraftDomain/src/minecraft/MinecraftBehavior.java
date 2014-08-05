@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,7 +12,9 @@ import minecraft.MapIO;
 import minecraft.MinecraftStateParser;
 import minecraft.NameSpace;
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
+import minecraft.MinecraftDomain.Options.MinecraftOptionWrapper;
 import minecraft.MinecraftDomain.Options.SprintMacroActionWrapper;
+import minecraft.MinecraftDomain.Options.TrenchBuildOptionWrapper;
 import affordances.KnowledgeBase;
 import burlap.behavior.affordances.AffordancesController;
 import burlap.behavior.singleagent.*;
@@ -39,7 +42,7 @@ import burlap.oomdp.singleagent.common.SingleLETF;
 import burlap.behavior.statehashing.DiscreteStateHashFactory;
 import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
 import minecraft.MinecraftStateGenerator.Exceptions.StateCreationException;
-
+import subgoals.*;
 
 /**
  * The main behavior class for the minecraft domain
@@ -85,9 +88,9 @@ public class MinecraftBehavior {
 	private double						minDelta = .01;
 	private int							maxSteps = 200;
 	private int 						numRollouts = 2500; // RTDP
-	private int							maxDepth = 50; // RTDP
+	private int							maxDepth = 70; // RTDP
 	private int 						vInit = 1; // RTDP
-	private int 						numRolloutsWithSmallChangeToConverge = 3; // RTDP
+	private int 						numRolloutsWithSmallChangeToConverge = 10; // RTDP
 	private double						boltzmannTemperature = 0.5;
 	private double						lavaReward = -10.0;
 
@@ -239,12 +242,12 @@ public class MinecraftBehavior {
 	private void addOptionsToOOMDPPlanner(OOMDPPlanner toAddTo) {
 		//Trench build option
 
-//		MinecraftOptionWrapper trenchWrapper = new TrenchBuildOptionWrapper("test trench option", this.domain, this.rewardFunction, this.gamma);
-//		toAddTo.addNonDomainReferencedAction(trenchWrapper.getOption());
+		MinecraftOptionWrapper trenchWrapper = new TrenchBuildOptionWrapper("test trench option", this.domain, this.rewardFunction, this.gamma);
+		toAddTo.addNonDomainReferencedAction(trenchWrapper.getOption());
 		
 		//Sprint macro-action
-		SprintMacroActionWrapper sprintWrapper = new SprintMacroActionWrapper(this.initialState, this.domain, 5);
-		toAddTo.addNonDomainReferencedAction(sprintWrapper.getMacroAction());
+//		SprintMacroActionWrapper sprintWrapper = new SprintMacroActionWrapper(this.initialState, this.domain, 5);
+//		toAddTo.addNonDomainReferencedAction(sprintWrapper.getMacroAction());
 		
 	}
 	
@@ -405,7 +408,7 @@ public class MinecraftBehavior {
 
 		RTDP planner = new RTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth);
 		
-//		addOptionsToOOMDPPlanner(planner);
+		addOptionsToOOMDPPlanner(planner);
 		
 		planner.setMinNumRolloutsWithSmallValueChange(numRolloutsWithSmallChangeToConverge);
 		
@@ -436,24 +439,41 @@ public class MinecraftBehavior {
 		return results;
 	}
 	
+	public double[] SubgoalPlanner(OOMDPPlanner planner) {
+		
+		List<Subgoal> subgoalKB = new ArrayList<Subgoal>();
+		
+		LogicalExpression hasOreLE = new PFAtom(this.pfAgentHasAtLeastXGoldOre.getAllGroundedPropsForState(this.initialState).get(0));
+		LogicalExpression hasGoldLE = new PFAtom(this.pfAgentHasAtLeastXGoldBar.getAllGroundedPropsForState(this.initialState).get(0));
+		Subgoal hasOreSG = new Subgoal(hasOreLE, hasGoldLE);
+		subgoalKB.add(hasOreSG);
+		
+		SubgoalPlanner sgPlanner = new SubgoalPlanner(domain, initialState, rewardFunction, terminalFunction, planner, subgoalKB);
+		sgPlanner.solve();
+		
+		return null;
+	}
+	
 	public static void main(String[] args) {
 		String mapsPath = "src/minecraft/maps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-		String mapName = "/learning/PlaneGoldMineWorld0.map";
+		String mapName = "/learning/DeepTrenchWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
 		// BFS
-//		mcBeh.BFSExample();
+		mcBeh.BFSExample();
 
 		// VI
-		double[] results = mcBeh.ValueIterationPlanner();
-		
+//		double[] results = mcBeh.ValueIterationPlanner();
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+
 		// Affordance VI
 //		KnowledgeBase affKB = new KnowledgeBase();
-//		affKB.loadHard(mcBeh.getDomain(), "tests1.kb");
-//		double[] results = mcBeh.AffordanceVI(affKB);
+//		affKB.loadHard(mcBeh.getDomain(), "expert.kb");
+//		results = mcBeh.AffordanceVI(affKB);
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		// Affordance RTDP
 //		KnowledgeBase affKB = new KnowledgeBase();
@@ -463,7 +483,10 @@ public class MinecraftBehavior {
 		
 		// Subgoal Planner
 //		OOMDPPlanner lowLevelPlanner = new RTDP(mcBeh.domain, mcBeh.rewardFunction, mcBeh.terminalFunction, mcBeh.gamma, mcBeh.hashingFactory, mcBeh.vInit, mcBeh.numRollouts, mcBeh.minDelta, mcBeh.maxDepth);
-//		SubgoalKnowledgeBase subgoalKB = new SubgoalKnowledgeBase(mapName, mcBeh.domain);
+//		mcBeh.SubgoalPlanner(lowLevelPlanner);
+		
+		
+		//		SubgoalKnowledgeBase subgoalKB = new SubgoalKnowledgeBase(mapName, mcBeh.domain);
 //		List<Subgoal> highLevelPlan = subgoalKB.generateSubgoalKB(mapName);
 //		SubgoalPlanner sgp = new SubgoalPlanner(mcBeh.domain, mcBeh.getInitialState(), mcBeh.rewardFunction, mcBeh.terminalFunction, lowLevelPlanner, highLevelPlan);
 //		sgp.solve();
