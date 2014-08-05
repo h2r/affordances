@@ -452,7 +452,7 @@ public class AffordanceLearner {
 			kbName = "learning_rate/tests" + affLearn.numWorldsPerLGD + ".kb";
 		}
 		else {
-			kbName = "tests" + affLearn.numWorldsPerLGD + ".kb";
+			kbName = "learned" + affLearn.numWorldsPerLGD + ".kb";
 		}
 		
 		affLearn.learn();
@@ -464,7 +464,7 @@ public class AffordanceLearner {
 
 	public static void main(String[] args) {
 		MinecraftBehavior mb = new MinecraftBehavior("src/minecraft/maps/template.map");
-		generateMinecraftKB(mb, 1, false);
+		generateMinecraftKB(mb, 20, true);
 		
 	}
 	

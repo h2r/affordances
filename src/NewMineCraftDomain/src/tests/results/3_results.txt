@@ -1,0 +1,25 @@
+map: DeepTrenchWorld
+	RTDP 1182, -70.00, 0.67, 0.57s
+	ERTDP 964, -6.00, 1.00, 0.35s
+	LHRTDP 1688, -6.00, 1.00, 0.59s
+	LSRTDP 1810, -6.67, 1.00, 0.80s
+map: PlaneGoldMining
+	RTDP 5222, -69.67, 0.67, 2.00s
+	ERTDP 987, -7.33, 1.00, 0.34s
+	LHRTDP 7366, -199.00, 0.00, 2.52s
+	LSRTDP 4733, -116.00, 0.67, 2.23s
+map: PlaneGoldSmelting
+	RTDP 10567, -9.00, 1.00, 5.06s
+	ERTDP 4772, -14.33, 1.00, 2.17s
+	LHRTDP 2201, -10.00, 1.00, 0.95s
+	LSRTDP 9505, -73.00, 0.67, 5.32s
+map: TowerPlaneWorld
+	RTDP 1740, -4.67, 1.00, 0.40s
+	ERTDP 1423, -134.33, 0.33, 0.31s
+	LHRTDP 1230, -134.00, 0.33, 0.30s
+	LSRTDP 1521, -4.67, 1.00, 0.48s
+map: WallPlaneWorld
+	RTDP 3764, -13.00, 1.00, 1.76s
+	ERTDP 2202, -70.67, 0.67, 1.00s
+	LHRTDP 2139, -6.67, 1.00, 0.97s
+	LSRTDP 3130, -70.33, 0.67, 1.75s
