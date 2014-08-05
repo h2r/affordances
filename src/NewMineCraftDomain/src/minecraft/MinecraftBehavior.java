@@ -247,8 +247,8 @@ public class MinecraftBehavior {
 		toAddTo.addNonDomainReferencedAction(trenchWrapper.getOption());
 		
 		//Sprint macro-action
-//		SprintMacroActionWrapper sprintWrapper = new SprintMacroActionWrapper(this.initialState, this.domain, 5);
-//		toAddTo.addNonDomainReferencedAction(sprintWrapper.getMacroAction());
+		SprintMacroActionWrapper sprintWrapper = new SprintMacroActionWrapper(this.initialState, this.domain, 5);
+		toAddTo.addNonDomainReferencedAction(sprintWrapper.getMacroAction());
 		
 	}
 	
@@ -433,7 +433,7 @@ public class MinecraftBehavior {
 		State finalState = ea.getState(ea.stateSequence.size() - 1);
 		double completed = terminalFunction.isTerminal(finalState) ? 1.0 : 0.0;
 		
-//		System.out.println(ea.getActionSequenceString());
+		System.out.println(ea.getActionSequenceString());
 
 		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
 
