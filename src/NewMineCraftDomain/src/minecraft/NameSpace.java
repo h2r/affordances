@@ -81,6 +81,12 @@ public class NameSpace {
 	public static final String						ACTIONLOOKDOWN = "lookdown";
 	public static final String						ACTIONUSEBLOCK = "useBlock";
 	
+	//-------------MACRO-ACTIONS STRINGS-------------
+	public static final String						MACROACTIONSPRINT = "sprintMacroAction";
+	
+	//-------------OPTIONS STRINGS-------------
+	public static final String						OPTIONTRENCHBUILD = "trenchBuildOption";
+	
 	//-------------PROPOSITIONAL FUNCTION STRINGS-------------
 	public static final String				PFATGOAL = "AtGoal";
 	public static final String				PFEMPSPACE = "EmptySpace";
