@@ -178,18 +178,18 @@ public class MapFileGenerator {
 	
 	public static void main(String[] args) {
 		String filePath = "src/minecraft/maps/randomMaps/";
-		MapFileGenerator test = new MapFileGenerator(1,2,5,filePath);
+		MapFileGenerator test = new MapFileGenerator(3,3,5,filePath);
 		
 		// Constant map parameters
 		int numMaps = 1;
-		int numLava = 1;
+		int numLava = 0;
 		
-//		test.generateNMaps(numMaps, new DeepTrenchWorld(1, numLava));
-//		test.generateNMaps(numMaps, new PlaneGoldMineWorld(numLava));
-//		test.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLava));
-//		test.generateNMaps(numMaps, new PlaneTowerWorld(2, numLava));
-//		test.generateNMaps(numMaps, new PlaneWallWorld(1, numLava));
-//		test.generateNMaps(numMaps, new PlaneWorld(numLava));
+		test.generateNMaps(numMaps, new DeepTrenchWorld(1, numLava));
+		test.generateNMaps(numMaps, new PlaneGoldMineWorld(numLava));
+		test.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLava));
+		test.generateNMaps(numMaps, new PlaneTowerWorld(2, numLava));
+		test.generateNMaps(numMaps, new PlaneWallWorld(1, numLava));
+		test.generateNMaps(numMaps, new PlaneWorld(numLava));
 		test.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLava));
 
 

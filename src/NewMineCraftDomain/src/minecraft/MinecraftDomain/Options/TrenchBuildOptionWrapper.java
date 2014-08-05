@@ -5,6 +5,7 @@ import minecraft.MinecraftDomain.PropositionalFunctions.AgentLookForwardAndWalka
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptyCellInFrontOfAgentPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EndOfMapInFrontOfAgentPF;
 import burlap.behavior.singleagent.planning.StateConditionTest;
+import burlap.behavior.statehashing.StateHashFactory;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.State;
@@ -19,8 +20,8 @@ public class TrenchBuildOptionWrapper extends MinecraftOptionWrapper {
 	int counter;
 	int terminateAfter = 100;
 
-	public TrenchBuildOptionWrapper(String name, Domain domain, RewardFunction rf, double gamma) {
-		super(name, domain, rf, gamma);
+	public TrenchBuildOptionWrapper(String name, Domain domain, RewardFunction rf, double gamma, StateHashFactory hashingFactory) {
+		super(name, domain, rf, gamma, hashingFactory);
 
 
 		this.trenchPF = (EmptyCellInFrontOfAgentPF) this.domain.getPropFunction(NameSpace.PFEMPTYCELLINFRONT);
