@@ -249,16 +249,12 @@ public class MinecraftBehavior {
 			toAddTo.addNonDomainReferencedAction(trenchWrapper.getOption());
 		}
 
-		
-		
 		//MACROACTIONS
 		if (addMAs) {
 			//Sprint macro-action
 			MinecraftMacroActionWrapper sprintWrapper = new SprintMacroActionWrapper(NameSpace.MACROACTIONSPRINT,this.initialState, this.domain, this.hashingFactory, this.rewardFunction, this.gamma, 2);
 			toAddTo.addNonDomainReferencedAction(sprintWrapper.getMacroAction());	
-		}
-
-		
+		}	
 	}
 	
 	// ---------- PLANNERS ---------- 
@@ -308,11 +304,12 @@ public class MinecraftBehavior {
 		return total;
 	}
 	
-	public double[] ValueIterationPlanner(){
+	public double[] ValueIterationPlanner(boolean addOptions, boolean addMAs){
 		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
 
 		ValueIteration planner = new ValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, 0.01, Integer.MAX_VALUE);
-		
+		addOptionsToOOMDPPlanner(planner, addOptions, addMAs);
+
 		long startTime = System.currentTimeMillis( );
 		
 		int bellmanUpdates = planner.planFromStateAndCount(initialState);
@@ -338,13 +335,14 @@ public class MinecraftBehavior {
 		return results;
 	}
 	
-	public double[] AffordanceVI(KnowledgeBase affKB){
+	public double[] AffordanceVI(KnowledgeBase affKB, boolean addOptions, boolean addMAs){
 		AffordancesController affController = affKB.getAffordancesController();
 		affController.setCurrentGoal(this.currentGoal); // Update goal to determine active affordances
 		
 		// Setup goal condition and planner
 		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
 		AffordanceValueIteration planner = new AffordanceValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, 0.01, Integer.MAX_VALUE, affController);
+		addOptionsToOOMDPPlanner(planner, addOptions, addMAs);
 		
 		// Time
 		long startTime = System.currentTimeMillis( );
@@ -375,12 +373,13 @@ public class MinecraftBehavior {
 		return results;
 	}
 	
-	public double[] AffordanceRTDP(KnowledgeBase affKB){
+	public double[] AffordanceRTDP(KnowledgeBase affKB, boolean addOptions, boolean addMAs){
 		AffordancesController affController = affKB.getAffordancesController();
 		affController.setCurrentGoal(this.currentGoal); // Update goal to determine active affordances
 		
 		AffordanceRTDP planner = new AffordanceRTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth, affController, numRolloutsWithSmallChangeToConverge);
-				
+		addOptionsToOOMDPPlanner(planner, addOptions, addMAs);
+		
 		long startTime = System.currentTimeMillis( );
 		
 		int bellmanUpdates = planner.planFromStateAndCount(initialState);
@@ -475,7 +474,6 @@ public class MinecraftBehavior {
 		// BFS
 //		mcBeh.BFSExample();
 
-
 		// VI
 //		double[] results = mcBeh.ValueIterationPlanner();
 
@@ -490,13 +488,12 @@ public class MinecraftBehavior {
 		// Affordance RTDP
 //		KnowledgeBase affKB = new KnowledgeBase();
 //		affKB.loadHard(mcBeh.getDomain(), "test50.kb");
-//		double[] results = mcBeh.AffordanceRTDP(affKB);
+//		double[] results = mcBeh.AffordanceRTDP(affKB, false, false);
 //		System.out.println("(minecraftBehavior) results: [affRTDP] " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
 		
 		// Subgoal Planner
 //		OOMDPPlanner lowLevelPlanner = new RTDP(mcBeh.domain, mcBeh.rewardFunction, mcBeh.terminalFunction, mcBeh.gamma, mcBeh.hashingFactory, mcBeh.vInit, mcBeh.numRollouts, mcBeh.minDelta, mcBeh.maxDepth);
 //		mcBeh.SubgoalPlanner(lowLevelPlanner);
-		
 		
 		//		SubgoalKnowledgeBase subgoalKB = new SubgoalKnowledgeBase(mapName, mcBeh.domain);
 //		List<Subgoal> highLevelPlan = subgoalKB.generateSubgoalKB(mapName);
@@ -506,7 +503,6 @@ public class MinecraftBehavior {
 		// RTDP
 		double[] results = mcBeh.RTDP(true, true);
 		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
-		
 		
 		// Collect results and write to file
 //		File resultsFile = new File("src/tests/results/mcBeh_results.txt");
