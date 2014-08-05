@@ -14,8 +14,7 @@ import minecraft.NameSpace;
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
 import minecraft.MinecraftDomain.MacroActions.MinecraftMacroActionWrapper;
 import minecraft.MinecraftDomain.MacroActions.SprintMacroActionWrapper;
-import minecraft.MinecraftDomain.Options.MinecraftOptionWrapper;
-import minecraft.MinecraftDomain.Options.TrenchBuildOptionWrapper;
+import minecraft.MinecraftDomain.Options.TrenchBuildOption;
 import affordances.KnowledgeBase;
 import burlap.behavior.affordances.AffordancesController;
 import burlap.behavior.singleagent.*;
@@ -245,8 +244,8 @@ public class MinecraftBehavior {
 		//OPTIONS
 		if (addOptions) {
 			//Trench build option
-			MinecraftOptionWrapper trenchWrapper = new TrenchBuildOptionWrapper(NameSpace.OPTBUILDTRENCH, this.domain, this.rewardFunction, this.gamma, this.hashingFactory);
-			toAddTo.addNonDomainReferencedAction(trenchWrapper.getOption());
+			toAddTo.addNonDomainReferencedAction(new TrenchBuildOption(NameSpace.OPTBUILDTRENCH, this.initialState, this.domain,
+					this.rewardFunction, this.gamma, this.hashingFactory));
 		}
 
 		
@@ -473,7 +472,7 @@ public class MinecraftBehavior {
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
 		// BFS
-		mcBeh.BFSExample(true, true);
+//		mcBeh.BFSExample(true, true);
 
 		// VI
 //		double[] results = mcBeh.ValueIterationPlanner();
