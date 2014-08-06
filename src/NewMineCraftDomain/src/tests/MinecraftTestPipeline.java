@@ -369,11 +369,11 @@ public class MinecraftTestPipeline {
 		
 		
 		// --- Learning Rate Results ---
-		boolean shouldLearn = true;
+		boolean shouldLearn = false;
 		int numMapsPerGoalTest = 1;
-		int maxKBSize = 25;
+		int maxKBSize = 20;
 		int kbSizeIncrement = 5;
-		runLearningRateTests("alpha", numMapsPerGoalTest, maxKBSize, kbSizeIncrement, shouldLearn);
+		runLearningRateTests("upto20", numMapsPerGoalTest, maxKBSize, kbSizeIncrement, shouldLearn);
 	}
 
 }

@@ -82,8 +82,10 @@ public class AffordanceLearner {
 		}
 
 		// Run learning on all the generated maps
+		int mapNum = 1;
 		for(MapIO map : maps) {
-			System.out.println("\n\nLearning with map: " + map);
+			System.out.println("\n\nLearning with map" + mapNum + ": " + map);
+			mapNum++;
 			int lgdInt = map.getHeaderHashMap().get("G");
 			affordanceKB.getAffordancesController().setCurrentGoal(this.lgds.get(lgdInt));
 			learnMap(map);
@@ -107,7 +109,7 @@ public class AffordanceLearner {
 		int numLavaBlocks = 1;
 		
 		System.out.println("Generating maps..." + this.numWorldsPerLGD);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 2, 3, 5);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
 		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 2, 4);
 		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
 		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
@@ -464,7 +466,7 @@ public class AffordanceLearner {
 
 	public static void main(String[] args) {
 		MinecraftBehavior mb = new MinecraftBehavior("src/minecraft/maps/template.map");
-		generateMinecraftKB(mb, 20, true);
+		generateMinecraftKB(mb, 25, true);
 		
 	}
 	
