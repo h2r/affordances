@@ -20,6 +20,7 @@ public class AffordanceRTDPPlanner extends MinecraftPlanner {
 	private int maxSteps;
 	private String kbPath;
 	private AffordancesController affController;
+	private KnowledgeBase affKB;
 
 	/**
 	 * 
@@ -29,16 +30,15 @@ public class AffordanceRTDPPlanner extends MinecraftPlanner {
 	 * @param kbPath
 	 */
 	public AffordanceRTDPPlanner(MinecraftBehavior mcBeh, boolean addOptions,
-			boolean addMacroActions, String kbPath) {
+			boolean addMacroActions, KnowledgeBase affKB) {
 		super(mcBeh, addOptions, addMacroActions);
 		this.vInit = mcBeh.vInit;
 		this.numRollouts = mcBeh.numRollouts;
 		this.minDelta = mcBeh.minDelta;
 		this.maxDepth = mcBeh.maxDepth;
 		this.maxSteps = mcBeh.maxSteps;
-		this.kbPath = kbPath;
-		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.loadHard(this.mcBeh.getDomain(), this.kbPath);
+		this.affKB = affKB;
+		
 		this.affController = affKB.getAffordancesController();
 		affController.setCurrentGoal(this.mcBeh.currentGoal); // Update goal to determine active affordances
 	}
@@ -46,7 +46,6 @@ public class AffordanceRTDPPlanner extends MinecraftPlanner {
 	@Override
 	protected OOMDPPlanner getPlanner() {
 
-		
 		AffordanceRTDP planner = new AffordanceRTDP(domain, this.rf, this.tf, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth, affController, numRolloutsWithSmallChangeToConverge);
 		
 		return planner;

@@ -15,6 +15,7 @@ import minecraft.MinecraftBehavior.MinecraftBehavior;
 public class AffordanceVIPlanner extends MinecraftPlanner {
 	private int maxSteps;
 	AffordancesController affController;
+	private KnowledgeBase affKB;
 	
 	/**
 	 * 
@@ -24,12 +25,11 @@ public class AffordanceVIPlanner extends MinecraftPlanner {
 	 * @param affKBString
 	 */
 	public AffordanceVIPlanner(MinecraftBehavior mcBeh, boolean addOptions,
-			boolean addMacroActions, String affKBString) {
+			boolean addMacroActions, KnowledgeBase affKB) {
 		super(mcBeh, addOptions, addMacroActions);
 		this.maxSteps = mcBeh.maxSteps;
-		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.loadHard(mcBeh.getDomain(), affKBString);
-		this.affController = affKB.getAffordancesController();
+		this.affKB = affKB;
+		this.affController = this.affKB.getAffordancesController();
 		this.affController.setCurrentGoal(this.mcBeh.currentGoal); // Update goal to determine active affordances
 
 	}
