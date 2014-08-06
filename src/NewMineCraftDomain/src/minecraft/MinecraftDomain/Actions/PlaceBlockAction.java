@@ -41,14 +41,14 @@ public class PlaceBlockAction extends AgentAction {
 			}
 		}
 		
-		int[] positionTwoAway = Helpers.positionInFrontOfAgent(2, state);
+		int[] positionTwoAway = Helpers.positionInFrontOfAgent(2, state, false);
 		//Or can place against edge of map
 		if (!Helpers.withinMapAt(positionTwoAway[0], positionTwoAway[1], positionTwoAway[2], cols, rows, height)) {
 			canPlace = true;
 		}
 		
 		
-		int[] whereWantToPlace = Helpers.positionInFrontOfAgent(1, state);
+		int[] whereWantToPlace = Helpers.positionInFrontOfAgent(1, state, false);
 		int toPlaceX = whereWantToPlace[0];
 		int toPlaceY = whereWantToPlace[1];
 		int toPlaceZ = whereWantToPlace[2];

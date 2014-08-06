@@ -42,7 +42,7 @@ public class WallInFrontOfAgentPF extends PropositionalFunction{
 			return false;
 		}
 		
-		int[]positionInFront = Helpers.positionInFrontOfAgent(1, state);
+		int[]positionInFront = Helpers.positionInFrontOfAgent(1, state, true);
 		List<ObjectInstance> objectsInFront = Helpers.objectsAt(positionInFront[0], positionInFront[1], positionInFront[2], state);
 		
 		for(ObjectInstance block: objectsInFront) {

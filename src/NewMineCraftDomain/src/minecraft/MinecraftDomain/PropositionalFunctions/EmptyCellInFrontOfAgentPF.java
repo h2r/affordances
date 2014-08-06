@@ -34,7 +34,7 @@ public class EmptyCellInFrontOfAgentPF extends PropositionalFunction {
 
 		int agentZ = agent.getDiscValForAttribute(NameSpace.ATZ);
 		
-		int[] posinInFront = Helpers.positionInFrontOfAgent(1, state);
+		int[] posinInFront = Helpers.positionInFrontOfAgent(1, state, false);
 		
 		int trenchX = posinInFront[0];
 		int trenchY = posinInFront[1];

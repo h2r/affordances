@@ -25,12 +25,13 @@ public class MovementAction extends StochasticAgentAction{
 		
 	}
 	
+	@Override
 	protected void doAction(State state){
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 		ObjectInstance agentFeet = state.getObjectsOfTrueClass(NameSpace.CLASSAGENTFEET).get(0);
 
 		int agentZ = agent.getDiscValForAttribute(NameSpace.ATZ);
-		int[] inFrontAgent = Helpers.positionInFrontOfAgent(1, state);
+		int[] inFrontAgent = Helpers.positionInFrontOfAgent(1, state, true);
 		
 		int newX = inFrontAgent[0];
 		int newY = inFrontAgent[1];

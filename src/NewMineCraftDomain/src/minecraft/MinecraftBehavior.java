@@ -91,7 +91,7 @@ public class MinecraftBehavior {
 	private double						minDelta = .01;
 	private int							maxSteps = 200;
 	private int 						numRollouts = 2500; // RTDP
-	private int							maxDepth = 70; // RTDP
+	private int							maxDepth = 40; // RTDP
 	private int 						vInit = 1; // RTDP
 	private int 						numRolloutsWithSmallChangeToConverge = 10; // RTDP
 	private double						boltzmannTemperature = 0.5;
@@ -482,7 +482,7 @@ public class MinecraftBehavior {
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
 		// BFS
-		mcBeh.BFSExample(true, true);
+//		mcBeh.BFSExample(true, false);
 
 
 		// VI
@@ -512,8 +512,8 @@ public class MinecraftBehavior {
 //		sgp.solve();
 		
 		// RTDP
-//		double[] results = mcBeh.RTDP(true, false);
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		double[] results = mcBeh.RTDP(true, true);
+		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		// Collect results and write to file
 //		File resultsFile = new File("src/tests/results/mcBeh_results.txt");
