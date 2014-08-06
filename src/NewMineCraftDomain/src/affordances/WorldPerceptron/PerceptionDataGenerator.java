@@ -11,7 +11,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.functions.Logistic;
 import weka.core.Instances;
 import minecraft.MapIO;
-import minecraft.MinecraftBehavior;
+import minecraft.MinecraftBehavior.MinecraftBehavior;
 import affordances.WorldClusterer.WorldClusterer;
 
 /**

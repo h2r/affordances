@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import minecraft.MinecraftBehavior.MinecraftBehavior;
 import affordances.WorldPerceptron.PerceptronHelpers;
 import affordances.WorldPerceptron.PerceptualData;
 import burlap.behavior.singleagent.EpisodeAnalysis;

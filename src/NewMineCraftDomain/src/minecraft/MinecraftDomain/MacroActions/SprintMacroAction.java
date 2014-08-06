@@ -35,11 +35,9 @@ public class SprintMacroAction extends MinecraftMacroAction {
 	@Override
 	public List<GroundedAction> getGroundedActions() {
 		List<GroundedAction> toReturn = new ArrayList<GroundedAction>();
-		
-		GroundedAction moveGroundedAction = this.domain.getAction(NameSpace.ACTIONMOVE).getAllApplicableGroundedActions(state).get(0);
-		
+				
 		for (int i = 0; i < this.numSprints; i++) {
-			toReturn.add(moveGroundedAction);
+			toReturn.add(this.getGAByActionName(NameSpace.ACTIONMOVE));
 		}
 		
 		return toReturn;

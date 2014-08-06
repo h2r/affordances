@@ -92,5 +92,10 @@ public abstract class MinecraftMacroAction extends Option{
 	public List<ActionProb> getActionDistributionForState(State s, String[] params) {
 		return this.getDeterministicPolicy(s, params);
 	}
+	
+	protected GroundedAction getGAByActionName(String name) {
+		GroundedAction toReturn = this.domain.getAction(name).getAllApplicableGroundedActions(state).get(0);
+		return toReturn;
+	}
 
 }
