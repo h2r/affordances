@@ -88,15 +88,15 @@ public class MinecraftBehavior {
 	public PropositionalFunction 		pfLavaFrontAgent;
 	
 	//Params for Planners
-	private double						gamma = 0.99;
-	private double						minDelta = .01;
-	private int							maxSteps = 200;
-	private int 						numRollouts = 2500; // RTDP
-	private int							maxDepth = 50; // RTDP
-	private int 						vInit = 1; // RTDP
-	private int 						numRolloutsWithSmallChangeToConverge = 10; // RTDP
-	private double						boltzmannTemperature = 0.5;
-	private double						lavaReward = -10.0;
+	public double						gamma = 0.99;
+	public double						minDelta = .01;
+	public int							maxSteps = 200;
+	public int 							numRollouts = 2500; // RTDP
+	public int							maxDepth = 50; // RTDP
+	public int 							vInit = 1; // RTDP
+	public int 							numRolloutsWithSmallChangeToConverge = 10; // RTDP
+	public double						boltzmannTemperature = 0.5;
+	public double						lavaReward = -10.0;
 
 	// ----- CLASS METHODS -----
 	/**

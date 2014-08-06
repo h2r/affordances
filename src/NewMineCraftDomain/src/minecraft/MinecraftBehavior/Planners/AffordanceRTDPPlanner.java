@@ -84,5 +84,11 @@ public class AffordanceRTDPPlanner extends MinecraftPlanner {
 		
 		return results;
 	}
+	
+	public void updateKB(KnowledgeBase affKB) {
+		this.affKB = affKB;
+		this.affController = affKB.getAffordancesController();
+		affController.setCurrentGoal(this.mcBeh.currentGoal); // Update goal to determine active affordances
+	}
 
 }

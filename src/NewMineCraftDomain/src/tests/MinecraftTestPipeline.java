@@ -11,6 +11,10 @@ import java.util.List;
 import minecraft.MapIO;
 import minecraft.NameSpace;
 import minecraft.MinecraftBehavior.MinecraftBehavior;
+import minecraft.MinecraftBehavior.Planners.AffordanceRTDPPlanner;
+import minecraft.MinecraftBehavior.Planners.AffordanceVIPlanner;
+import minecraft.MinecraftBehavior.Planners.RTDPPlanner;
+import minecraft.MinecraftBehavior.Planners.VIPlanner;
 import minecraft.WorldGenerator.MapFileGenerator;
 import minecraft.WorldGenerator.WorldTypes.DeepTrenchWorld;
 import minecraft.WorldGenerator.WorldTypes.PlaneGoalShelfWorld;
@@ -43,28 +47,41 @@ public class MinecraftTestPipeline {
 		
 		int numLavaBlocks = 1;
 		
-		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 3, 3, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 3, 3, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 3, 3, 4);
+		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 2, 3, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 2, 3, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 3, 4);
 		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks), 2, 3, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks) , 6, 6, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 5, 5, 4);
 		mapMaker.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 3, 3, 5);
 		
 	}
 	
 	/**
-	 * Run tests on all world types, for each of the 3 planners and record results
-	 * @param numIterations: the number of times to perform testing
-	 * @param nametag: a flag for the name of the results file
+	 * Run tests on all world types, for each of the planners and record results
+	 * @param numMapsPerGoal
+	 * @param nametag: name to indicate which results file corresponds to these tests
+	 * @param shouldLearn: flag indicating whether or not to learn a new KB
+	 * @param planners: a list of strings indicating which planners to run
+	 * @param addOptions: a boolean indicating whether or not to add options to planners
+	 * @param addMacroActions: a boolean indicating whether or not to add macroactions to planners
 	 */
 	public static void runMinecraftTests(int numMapsPerGoal, String nametag, boolean shouldLearn, List<String> planners, boolean addOptions, boolean addMacroActions) {
 		
-		// Create behavior and test maps
+		// Create behavior, planners, result objects, test maps
 		MinecraftBehavior mcBeh = new MinecraftBehavior("src/minecraft/maps/template.map");
 		String testMapDir = "src/minecraft/maps/test/";
 		generateTestMaps(mcBeh, testMapDir, numMapsPerGoal);
 		File testDir = new File(testMapDir);
 		String[] testMaps = testDir.list();
+		
+		// Result objects
+		Result rtdpResults = new Result(NameSpace.RTDP);
+		Result expertRTDPResults = new Result(NameSpace.ExpertRTDP);
+		Result learnedHardRTDPResults = new Result(NameSpace.LearnedHardRTDP);
+		Result learnedSoftRTDPResults = new Result(NameSpace.LearnedSoftRTDP);
+		Result viResults = new Result(NameSpace.VI);
+		Result expertVIResults = new Result(NameSpace.ExpertVI);
+		Result learnedHardVIResults = new Result(NameSpace.LearnedHardVI);
 		
 		// --- Create Knowledge Bases ---
 		
@@ -119,14 +136,7 @@ public class MinecraftTestPipeline {
 			statusFW = new FileWriter(statusFile.getAbsoluteFile());
 			statusBW = new BufferedWriter(statusFW);
 			int mapCounter = 0;
-			Result rtdpResults = new Result(NameSpace.RTDP);
-			Result expertRTDPResults = new Result(NameSpace.ExpertRTDP);
-			Result learnedHardRTDPResults = new Result(NameSpace.LearnedHardRTDP);
-			Result learnedSoftRTDPResults = new Result(NameSpace.LearnedSoftRTDP);
-			Result viResults = new Result(NameSpace.VI);
-			Result expertVIResults = new Result(NameSpace.ExpertVI);
-			Result learnedHardVIResults = new Result(NameSpace.LearnedHardVI);
-			
+
 			// --- PLANNING ---
 			
 			// Loop over each map and solve for each planner given
@@ -134,16 +144,19 @@ public class MinecraftTestPipeline {
 				System.out.println("Starting new map: " + map);
 				statusBW.write("Running on map: " + map + "\n");
 				statusBW.flush();
-				// Update behavior with new map
+				
+				// Update planners with new map
 				MapIO mapIO = new MapIO(testMapDir + map);
 				mcBeh.updateMap(mapIO);
+				
 				// --- Plan for each planner given ---
 				
 				// RTDP
 				if(planners.contains(NameSpace.RTDP)) {
 					statusBW.write("\t...RTDP");
 					statusBW.flush();
-					rtdpResults.addTrial(mcBeh.RTDP(addOptions, addMacroActions));
+					RTDPPlanner rtdp = new RTDPPlanner(mcBeh, addOptions, addMacroActions);
+					rtdpResults.addTrial(rtdp.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
 				}
@@ -152,7 +165,9 @@ public class MinecraftTestPipeline {
 				if(planners.contains(NameSpace.ExpertRTDP)) {
 					statusBW.write("\t...Expert RTDP");
 					statusBW.flush();
-					expertRTDPResults.addTrial(mcBeh.AffordanceRTDP(expertAffKB, addOptions, addMacroActions));
+					AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, addOptions, addMacroActions, expertAffKB);
+					affRTDP.updateKB(expertAffKB);
+					expertRTDPResults.addTrial(affRTDP.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
 				}
@@ -161,7 +176,9 @@ public class MinecraftTestPipeline {
 				if(planners.contains(NameSpace.LearnedHardRTDP)) {
 					statusBW.write("\t...LearnedHard RTDP");
 					statusBW.flush();
-					learnedHardRTDPResults.addTrial(mcBeh.AffordanceRTDP(learnedHardAffKB, addOptions, addMacroActions));
+					AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, addOptions, addMacroActions, learnedHardAffKB);
+					affRTDP.updateKB(learnedHardAffKB);
+					learnedHardRTDPResults.addTrial(affRTDP.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
 				}
@@ -170,7 +187,9 @@ public class MinecraftTestPipeline {
 				if(planners.contains(NameSpace.LearnedSoftRTDP)) {
 					statusBW.write("\t...Learned Soft RTDP");
 					statusBW.flush();
-					learnedSoftRTDPResults.addTrial(mcBeh.AffordanceRTDP(learnedSoftAffKB, addOptions, addMacroActions));
+					AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, addOptions, addMacroActions, learnedSoftAffKB);
+					affRTDP.updateKB(learnedSoftAffKB);
+					learnedSoftRTDPResults.addTrial(affRTDP.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
 				}
@@ -179,7 +198,8 @@ public class MinecraftTestPipeline {
 				if(planners.contains(NameSpace.VI)) {
 					statusBW.write("\t...VI");
 					statusBW.flush();
-					viResults.addTrial(mcBeh.ValueIterationPlanner(addOptions, addMacroActions));
+					VIPlanner vi = new VIPlanner(mcBeh, addOptions, addMacroActions);
+					viResults.addTrial(vi.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
 				}
@@ -188,7 +208,9 @@ public class MinecraftTestPipeline {
 				if(planners.contains(NameSpace.ExpertVI)) {
 					statusBW.write("\t...Expert VI");
 					statusBW.flush();
-					expertVIResults.addTrial(mcBeh.AffordanceVI(expertAffKB, addOptions, addMacroActions));
+					AffordanceVIPlanner affVI = new AffordanceVIPlanner(mcBeh, addOptions, addMacroActions, expertAffKB);
+					affVI.updateKB(expertAffKB);
+					expertVIResults.addTrial(affVI.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
 				}
@@ -197,7 +219,9 @@ public class MinecraftTestPipeline {
 				if(planners.contains(NameSpace.LearnedHardVI)) {
 					statusBW.write("\t...Learned Hard VI");
 					statusBW.flush();
-					learnedHardVIResults.addTrial(mcBeh.AffordanceVI(learnedHardAffKB, addOptions, addMacroActions));
+					AffordanceVIPlanner affVI = new AffordanceVIPlanner(mcBeh, addOptions, addMacroActions, learnedHardAffKB);
+					affVI.updateKB(learnedHardAffKB);
+					learnedHardVIResults.addTrial(affVI.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
 				}
@@ -288,6 +312,17 @@ public class MinecraftTestPipeline {
 		LearningRateResult learnedHardRTDPResults = new LearningRateResult(NameSpace.LearnedHardRTDP);
 		LearningRateResult learnedSoftRTDPResults = new LearningRateResult(NameSpace.LearnedSoftRTDP);
 		
+		// For keeping track of the status (writes to status file)
+//		BufferedWriter statusBW = new BufferedWriter(null);
+//		try {
+//			File statusFile = new File("src/tests/results/learning_rate/status_lr.txt");
+//			FileWriter statusFW = new FileWriter(statusFile.getAbsoluteFile());
+//			statusBW = new BufferedWriter(statusFW);
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+		
 		// Run Expert and Vanilla planners
 		for (String map : testMaps) {
 			for(int i = 0; i < numMapsPerGoal; i++) {
@@ -295,28 +330,47 @@ public class MinecraftTestPipeline {
 				mcBeh.updateMap(mapIO);
 				
 				// Vanilla
-				rtdpResults.addTrial(mcBeh.RTDP(false, false));
-				
+				RTDPPlanner rtdp = new RTDPPlanner(mcBeh, false, false);
+				rtdpResults.addTrial(rtdp.runPlanner());
+
 				// Expert
 				affKB.loadHard(mcBeh.getDomain(), "expert.kb");
-				expertRTDPResults.addTrial(mcBeh.AffordanceRTDP(affKB, false, false));
+				AffordanceRTDPPlanner affExpertRTDP = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
+				expertRTDPResults.addTrial(affExpertRTDP.runPlanner());
+//				try {
+//					statusBW.write("Done with vanilla/expert on map: " + map);
+//					statusBW.flush();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
 		}
 		
 		// Run learning planners with varied size KBs
 		for(String kbName : kbNames) {
-			
 			for (String map : testMaps) {
 				MapIO mapIO = new MapIO(testMapDir + map);
 				mcBeh.updateMap(mapIO);
 				
 				// Hard
-				affKB.loadHard(mcBeh.getDomain(), kbName);
-				learnedHardRTDPResults.addTrialForKB(kbName, mcBeh.AffordanceRTDP(affKB, false, false));
+				affKB.loadHard(mcBeh.getDomain(), "learning_rate/"  + kbName);
+				AffordanceRTDPPlanner affHardRTDP = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
+				learnedHardRTDPResults.addTrialForKB(kbName, affHardRTDP.runPlanner());
 				
 				// Soft
-				affKB.loadSoft(mcBeh.getDomain(), kbName);
-				learnedSoftRTDPResults.addTrialForKB(kbName, mcBeh.AffordanceRTDP(affKB, false, false));
+				AffordanceRTDPPlanner affSoftRTDP = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
+				affKB.loadSoft(mcBeh.getDomain(), "learning_rate/" + kbName);
+				learnedSoftRTDPResults.addTrialForKB(kbName, affSoftRTDP.runPlanner());
+//				try {
+//					statusBW.write("Done with learned on map: " + map + ", with kb: " + kbName);
+//					statusBW.flush();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+
+				
 			}
 		}
 		
@@ -355,17 +409,17 @@ public class MinecraftTestPipeline {
 		boolean learningFlag = false;
 		// Choose which planners to collect results for
 		List<String> planners = new ArrayList<String>();
-		planners.add(NameSpace.RTDP);
-		planners.add(NameSpace.ExpertRTDP);
-		planners.add(NameSpace.LearnedHardRTDP);
-		planners.add(NameSpace.LearnedSoftRTDP);
-		planners.add(NameSpace.VI);
+//		planners.add(NameSpace.RTDP);
+//		planners.add(NameSpace.ExpertRTDP);
+//		planners.add(NameSpace.LearnedHardRTDP);
+//		planners.add(NameSpace.LearnedSoftRTDP);
+//		planners.add(NameSpace.VI);
 		planners.add(NameSpace.ExpertVI);
-		planners.add(NameSpace.LearnedHardVI);
+//		planners.add(NameSpace.LearnedHardVI);
 		
 		boolean addOptions = false;
 		boolean addMacroActions = false;
-//		runMinecraftTests(3, "3", learningFlag, planners, addOptions, addMacroActions);
+//		runMinecraftTests(1, "1", learningFlag, planners, addOptions, addMacroActions);
 		
 		
 		// --- Learning Rate Results ---
