@@ -13,7 +13,7 @@ public class TrenchBuildOption extends MinecraftOption {
 	
 	private PropositionalFunction endOfMapPF;
 	private PropositionalFunction trenchPF;
-	private int counter;
+	public int counter;
 	private final int terminateAfter = 2;
 	private boolean justPlacedBlock;
 
@@ -35,7 +35,7 @@ public class TrenchBuildOption extends MinecraftOption {
 
 	@Override
 	public GroundedAction getGroundedAction(State state) {
-		System.out.println("Getting action");
+//		System.out.println("Getting action");
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 		int vertDir = agent.getDiscValForAttribute(NameSpace.ATVERTDIR);
 		//Place Block
@@ -47,14 +47,15 @@ public class TrenchBuildOption extends MinecraftOption {
 		else if (trenchPF.isTrue(state, "") && vertDir > 1) {
 			return domain.getAction(NameSpace.ACTIONLOOKDOWN).getAllApplicableGroundedActions(state).get(0);
 		}
-		System.out.println(this.counter++);
+//		System.out.println(this.counter++);
+		this.counter++;
 		//Default is to move (up to  times)
 		return domain.getAction(NameSpace.ACTIONMOVE).getAllApplicableGroundedActions(state).get(0);
 	}
 
 	@Override
 	public boolean shouldTerminate(State state) {
-		System.out.println("Checking termination");
+//		System.out.println("Checking termination");
 		if (this.endOfMapPF.isTrue(state, new String[]{NameSpace.CLASSAGENT})) return true;
 		else if (this.counter > this.terminateAfter) {
 			return true;
@@ -65,20 +66,20 @@ public class TrenchBuildOption extends MinecraftOption {
 	
 	@Override
 	public boolean shouldInitiate(State state) {
-		System.out.println("Checking initiation conditions");
+//		System.out.println("Checking initiation conditions");
 		return true;
 	}
 
 	@Override
 	public void initiateOptionVariables() {		
-		System.out.println("Initializing option variables");
+//		System.out.println("Initializing option variables");
 		this.justPlacedBlock = false;
 		this.counter = 0;
 	}
 
 	@Override
 	public void updateVariablesAfterOneAction() {	
-		System.out.println("Updating option variables");
+//		System.out.println("Updating option variables");
 //		this.counter++;
 	}
 

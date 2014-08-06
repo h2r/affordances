@@ -6,7 +6,7 @@ import java.util.List;
 import minecraft.MinecraftStateParser;
 import minecraft.NameSpace;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentAdjacentToTrenchPF;
-import minecraft.MinecraftDomain.PropositionalFunctions.AgentLookForwardAndWalkablePF;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentCanWalkPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptyCellInFrontOfAgentPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EndOfMapInFrontOfAgentPF;
 import burlap.behavior.singleagent.Policy.ActionProb;
@@ -21,7 +21,7 @@ import burlap.oomdp.singleagent.GroundedAction;
 
 public class TrenchBuildDetOption extends Option {
 	EmptyCellInFrontOfAgentPF trenchPF;
-	AgentLookForwardAndWalkablePF canWalkPF;
+	AgentCanWalkPF canWalkPF;
 	EndOfMapInFrontOfAgentPF endOfMapPF;
 	boolean justPlacedBlock;
 	int counter;
@@ -30,7 +30,7 @@ public class TrenchBuildDetOption extends Option {
 	public TrenchBuildDetOption(String name, Domain domain, StateHashFactory shf) {
 		super(name, domain, new String[]{});
 		this.trenchPF = (EmptyCellInFrontOfAgentPF) this.domain.getPropFunction(NameSpace.PFEMPTYCELLINFRONT);
-		this.canWalkPF = (AgentLookForwardAndWalkablePF) this.domain.getPropFunction(NameSpace.PFAGENTLOOKFORWARDWALK);
+		this.canWalkPF = (AgentCanWalkPF) this.domain.getPropFunction(NameSpace.PFAGENTLOOKFORWARDWALK);
 		this.endOfMapPF = (EndOfMapInFrontOfAgentPF) this.domain.getPropFunction(NameSpace.PFENDOFMAPINFRONT);
 		this.setExpectationHashingFactory(shf);
 		

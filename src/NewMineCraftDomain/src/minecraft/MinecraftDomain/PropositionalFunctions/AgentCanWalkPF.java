@@ -9,7 +9,7 @@ import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.PropositionalFunction;
 import burlap.oomdp.core.State;
 
-public class AgentLookForwardAndWalkablePF extends PropositionalFunction{
+public class AgentCanWalkPF extends PropositionalFunction{
 	
 
 	
@@ -21,7 +21,7 @@ public class AgentLookForwardAndWalkablePF extends PropositionalFunction{
 	 * @param parameterClasses
 	 * @param object
 	 */
-	public AgentLookForwardAndWalkablePF(String name, Domain domain, String[] parameterClasses) {
+	public AgentCanWalkPF(String name, Domain domain, String[] parameterClasses) {
 		super(name, domain, parameterClasses);
 	}
 

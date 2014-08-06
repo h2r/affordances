@@ -48,7 +48,7 @@ public abstract class MinecraftOption extends Option {
 
 	@Override
 	public GroundedAction oneStepActionSelection(State state, String[] arg1) {
-		System.out.println("One step action selection");
+//		System.out.println("One step action selection");
 		updateVariablesAfterOneAction();
 		return getGroundedAction(state);
 	}
