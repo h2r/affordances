@@ -485,7 +485,8 @@ number of Bellman updates that were executed by each planning
 algorithm, as well as the CPU time taken to find a plan. Value Iteration was terminated when the maximum change in
 the value function was less than 0.01. RTDP terminated when the
 maximum change in the value function was less than 0.01 for ten
-consecutive policy rollouts. We set the reward function to $-1$ for all transitions, except
+consecutive policy rollouts, or the planner failed to converge after 1000 rollouts.
+We set the reward function to $-1$ for all transitions, except
 transitions to states in which the agent was on lava, which returned 
 $-10$. The goal was set to be terminal. The discount
 factor was set to $\lambda = 0.99$. For all experiments, movement actions
