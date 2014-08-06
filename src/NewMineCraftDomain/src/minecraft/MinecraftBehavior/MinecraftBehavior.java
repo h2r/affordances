@@ -58,7 +58,7 @@ public class MinecraftBehavior {
 	private TerminalFunction			terminalFunction;
 	private State						initialState;
 	private DiscreteStateHashFactory	hashingFactory;
-	private LogicalExpression 			currentGoal;
+	public LogicalExpression 			currentGoal;
 	
 	//Propositional Functions
 	public PropositionalFunction		pfAgentAtGoal;
@@ -84,16 +84,16 @@ public class MinecraftBehavior {
 	public PropositionalFunction 		pfLavaFrontAgent;
 	
 	//Params for Planners
-	private double						gamma = 0.99;
-	private double						minDelta = .01;
-	private int							maxSteps = 200;
-	private int 						numRollouts = 2500; // RTDP
-	private int							maxDepth = 40; // RTDP
+	public double						gamma = 0.99;
+	public double						minDelta = .01;
+	public int							maxSteps = 200;
+	public int 						numRollouts = 2500; // RTDP
+	public int							maxDepth = 40; // RTDP
 
-	private int 						vInit = 1; // RTDP
-	private int 						numRolloutsWithSmallChangeToConverge = 10; // RTDP
-	private double						boltzmannTemperature = 0.5;
-	private double						lavaReward = -10.0;
+	public int 						vInit = 1; // RTDP
+	public int 						numRolloutsWithSmallChangeToConverge = 10; // RTDP
+	public double						boltzmannTemperature = 0.5;
+	public double						lavaReward = -10.0;
 
 	// ----- CLASS METHODS -----
 	/**
@@ -388,7 +388,7 @@ public class MinecraftBehavior {
 	public double[] RTDP(boolean addOptions, boolean addMAs) {
 
 		RTDP planner = new RTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth);
-				
+		addOptionsToOOMDPPlanner(planner, addOptions, addMAs);
 		planner.setMinNumRolloutsWithSmallValueChange(numRolloutsWithSmallChangeToConverge);
 		
 		long startTime = System.currentTimeMillis( );
@@ -433,6 +433,34 @@ public class MinecraftBehavior {
 		return null;
 	}
 	
+	private void addOptionsToOOMDPPlanner(OOMDPPlanner toAddTo, boolean addOptions, boolean addMAs) {
+		//OPTIONS
+		if (addOptions) {
+			//Trench build option
+			toAddTo.addNonDomainReferencedAction(new TrenchBuildOption(NameSpace.OPTBUILDTRENCH, this.initialState, this.domain,
+					getRewardFunction(), this.gamma, this.hashingFactory));
+			//Walk until can't option
+			toAddTo.addNonDomainReferencedAction(new WalkUntilCantOption(NameSpace.OPTWALKUNTILCANT, this.initialState, this.domain,
+					this.rewardFunction, this.gamma, this.hashingFactory));
+		}
+
+		//MACROACTIONS
+		if (addMAs) {
+			//Sprint macro-action(2)
+			toAddTo.addNonDomainReferencedAction(new SprintMacroAction(NameSpace.MACROACTIONSPRINT, this.rewardFunction, 
+					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));	
+			//Turn around macro-action
+			toAddTo.addNonDomainReferencedAction(new TurnAroundMacroAction(NameSpace.MACROACTIONTURNAROUND, this.rewardFunction, 
+					this.gamma, this.hashingFactory, this.domain, this.initialState));	
+			//Look down alot macro-action(2)
+			toAddTo.addNonDomainReferencedAction(new LookDownAlotMacroAction(NameSpace.MACROACTIONLOOKDOWNALOT, this.rewardFunction, 
+					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));	
+			//Trench build macro-action
+			toAddTo.addNonDomainReferencedAction(new BuildTrenchMacroAction(NameSpace.MACROACTIONBUILDTRENCH, this.rewardFunction, 
+					this.gamma, this.hashingFactory, this.domain, this.initialState));
+		}	
+	}
+	
 	public static void main(String[] args) {
 		String mapsPath = "src/minecraft/maps/";
 		String outputPath = "src/minecraft/planningOutput/";
@@ -444,8 +472,7 @@ public class MinecraftBehavior {
 		// BFS
 //		mcBeh.BFSExample(false, true);
 
-		MinecraftPlanner rtdpPlanner = new RTDPPlanner(mcBeh, true, true, mcBeh.vInit, mcBeh.numRollouts,
-				mcBeh.minDelta, mcBeh.maxDepth, mcBeh.maxSteps);
+		MinecraftPlanner rtdpPlanner = new RTDPPlanner(mcBeh, true, true);
 		double [] results = rtdpPlanner.runPlanner();
 		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
