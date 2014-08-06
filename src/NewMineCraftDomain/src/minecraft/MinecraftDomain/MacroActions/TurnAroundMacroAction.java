@@ -10,19 +10,25 @@ import burlap.oomdp.core.State;
 import burlap.oomdp.singleagent.GroundedAction;
 import burlap.oomdp.singleagent.RewardFunction;
 
-public class TurnAroundMacroActionWrapper extends MinecraftMacroActionWrapper{
-
-	public TurnAroundMacroActionWrapper(String name, State state,
-			Domain domain, StateHashFactory hashingFactory, RewardFunction rf,
-			double gamma) {
-		super(name, state, domain, hashingFactory, rf, gamma);
+public class TurnAroundMacroAction extends MinecraftMacroAction{
+	/**
+	 * 
+	 * @param name
+	 * @param rf
+	 * @param gamma
+	 * @param hashFactory
+	 * @param domain
+	 * @param state
+	 */
+	public TurnAroundMacroAction(String name, RewardFunction rf, double gamma,
+			StateHashFactory hashFactory, Domain domain, State state) {
+		super(name, rf, gamma, hashFactory, domain, state);
 	}
 
 	@Override
 	public List<GroundedAction> getGroundedActions() {
 		GroundedAction rotateCGroundedAction = this.domain.getAction(NameSpace.ACTIONROTATEC).getAllApplicableGroundedActions(state).get(0);
 
-		
 		List<GroundedAction> toReturn = new ArrayList<GroundedAction>();
 		toReturn.add(rotateCGroundedAction);
 		toReturn.add(rotateCGroundedAction);

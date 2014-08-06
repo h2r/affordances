@@ -83,9 +83,12 @@ public class NameSpace {
 	
 	//-------------MACRO-ACTIONS STRINGS-------------
 	public static final String						MACROACTIONSPRINT = "sprintMacroAction";
+	public static final String						MACROACTIONTURNAROUND = "turnAroundMacroAction";
+	public static final String						MACROACTIONLOOKDOWNALOT = "lookDownAlotMacroAction";
 	
 	//-------------OPTIONS STRINGS-------------
-	public static final String						OPTIONTRENCHBUILD = "trenchBuildOption";
+	public static final String						OPTBUILDTRENCH = "trenchBuildOption";
+	public static final String						OPTWALKUNTILCANT = "walkUntilCantOption";
 	
 	//-------------PROPOSITIONAL FUNCTION STRINGS-------------
 	public static final String				PFATGOAL = "AtGoal";
@@ -119,8 +122,6 @@ public class NameSpace {
 	public static final String				LearnedHardVI = "LHVI";
 	public static final String				LearnedSoftVI = "LSVI";
 
-	//-------------OPTIONS+MACRO ACTIONS STRINGS-------------
-	public static final String				OPTBUILDTRENCH = "build trench option";
 	
 	//-------------ENUMS-------------
 	public enum RotDirection {

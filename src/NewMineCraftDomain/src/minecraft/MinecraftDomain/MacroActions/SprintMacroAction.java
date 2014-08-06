@@ -10,26 +10,29 @@ import burlap.oomdp.core.State;
 import burlap.oomdp.singleagent.GroundedAction;
 import burlap.oomdp.singleagent.RewardFunction;
 
-public class SprintMacroActionWrapper extends MinecraftMacroActionWrapper {
+public class SprintMacroAction extends MinecraftMacroAction {
 
-	private int numSprints = 2;
+	private int numSprints;
 	
 	/**
 	 * 
 	 * @param name
-	 * @param state
-	 * @param domain
-	 * @param hashingFactory
 	 * @param rf
 	 * @param gamma
+	 * @param hashFactory
+	 * @param domain
+	 * @param state
 	 * @param numSprints
 	 */
-	public SprintMacroActionWrapper(String name, State state, Domain domain, StateHashFactory hashingFactory, RewardFunction rf, double gamma, int numSprints) {
-		super(name, state, domain, hashingFactory, rf, gamma);
+	public SprintMacroAction(String name, RewardFunction rf, double gamma, StateHashFactory hashFactory, Domain domain, State state, int numSprints) {
+		super(name, rf, gamma, hashFactory, domain, state);
 		this.numSprints = numSprints;
+		if (this.numSprints < 1) throw new IllegalArgumentException();
 		this.name = this.name + numSprints;
+		
 	}
 	
+	@Override
 	public List<GroundedAction> getGroundedActions() {
 		List<GroundedAction> toReturn = new ArrayList<GroundedAction>();
 		

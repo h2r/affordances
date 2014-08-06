@@ -36,7 +36,7 @@ public abstract class AgentAction extends Action {
 	 * @param causesAgentToFall 
 	 */
 	public AgentAction(String name, Domain domain, int rows, int cols, int height, boolean causesAgentToFall){
-		super(name, domain, new String[]{NameSpace.CLASSAGENT});
+		super(name, domain, "");
 		this.rows = rows;
 		this.cols = cols;
 		this.height = height;

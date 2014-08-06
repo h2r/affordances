@@ -12,9 +12,11 @@ import minecraft.MapIO;
 import minecraft.MinecraftStateParser;
 import minecraft.NameSpace;
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
-import minecraft.MinecraftDomain.MacroActions.MinecraftMacroActionWrapper;
-import minecraft.MinecraftDomain.MacroActions.SprintMacroActionWrapper;
+import minecraft.MinecraftDomain.MacroActions.LookDownAlotMacroAction;
+import minecraft.MinecraftDomain.MacroActions.SprintMacroAction;
+import minecraft.MinecraftDomain.MacroActions.TurnAroundMacroAction;
 import minecraft.MinecraftDomain.Options.TrenchBuildOption;
+import minecraft.MinecraftDomain.Options.WalkUntilCantOption;
 import affordances.KnowledgeBase;
 import burlap.behavior.affordances.AffordancesController;
 import burlap.behavior.singleagent.*;
@@ -246,13 +248,22 @@ public class MinecraftBehavior {
 			//Trench build option
 			toAddTo.addNonDomainReferencedAction(new TrenchBuildOption(NameSpace.OPTBUILDTRENCH, this.initialState, this.domain,
 					this.rewardFunction, this.gamma, this.hashingFactory));
+			//Walk until can't option
+			toAddTo.addNonDomainReferencedAction(new WalkUntilCantOption(NameSpace.OPTWALKUNTILCANT, this.initialState, this.domain,
+					this.rewardFunction, this.gamma, this.hashingFactory));
 		}
 
 		//MACROACTIONS
 		if (addMAs) {
-			//Sprint macro-action
-			MinecraftMacroActionWrapper sprintWrapper = new SprintMacroActionWrapper(NameSpace.MACROACTIONSPRINT,this.initialState, this.domain, this.hashingFactory, this.rewardFunction, this.gamma, 2);
-			toAddTo.addNonDomainReferencedAction(sprintWrapper.getMacroAction());	
+			//Sprint macro-action(2)
+			toAddTo.addNonDomainReferencedAction(new SprintMacroAction(NameSpace.MACROACTIONSPRINT, this.rewardFunction, 
+					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));	
+			//Turn around macro-action
+			toAddTo.addNonDomainReferencedAction(new TurnAroundMacroAction(NameSpace.MACROACTIONTURNAROUND, this.rewardFunction, 
+					this.gamma, this.hashingFactory, this.domain, this.initialState));	
+			//Look down alot macro-action(2)
+			toAddTo.addNonDomainReferencedAction(new LookDownAlotMacroAction(NameSpace.MACROACTIONLOOKDOWNALOT, this.rewardFunction, 
+					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));	
 		}	
 	}
 	
@@ -466,12 +477,12 @@ public class MinecraftBehavior {
 		String mapsPath = "src/minecraft/maps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-		String mapName = "learning/DeepTrenchWorld0.map";
+		String mapName = "bigPlane.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
 		// BFS
-//		mcBeh.BFSExample(true, true);
+		mcBeh.BFSExample(true, true);
 
 
 		// VI
@@ -501,8 +512,8 @@ public class MinecraftBehavior {
 //		sgp.solve();
 		
 		// RTDP
-		double[] results = mcBeh.RTDP(true, true);
-		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+//		double[] results = mcBeh.RTDP(true, false);
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		// Collect results and write to file
 //		File resultsFile = new File("src/tests/results/mcBeh_results.txt");
