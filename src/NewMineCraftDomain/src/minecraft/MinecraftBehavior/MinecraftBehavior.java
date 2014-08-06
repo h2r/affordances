@@ -449,6 +449,7 @@ public class MinecraftBehavior {
 		double [] results = rtdpPlanner.runPlanner();
 		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
+
 		// VI
 //		double[] results = mcBeh.ValueIterationPlanner();
 
