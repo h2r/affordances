@@ -51,7 +51,9 @@ public abstract class AgentAction extends Action {
 	@Override
 	protected State performActionHelper(State state, String[] params) {
 		AgentAction toPerform = getAction();
+		
 		toPerform.doAction(state);
+		
 		performPostActionUpdates(state);
 		return state;
 	}

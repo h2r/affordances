@@ -484,7 +484,6 @@ public class MinecraftBehavior {
 		// BFS
 		mcBeh.BFSExample(true, true);
 
-
 		// VI
 //		double[] results = mcBeh.ValueIterationPlanner();
 

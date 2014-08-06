@@ -26,6 +26,7 @@ public class MovementAction extends StochasticAgentAction{
 	}
 	
 	protected void doAction(State state){
+		
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 		ObjectInstance agentFeet = state.getObjectsOfTrueClass(NameSpace.CLASSAGENTFEET).get(0);
 
