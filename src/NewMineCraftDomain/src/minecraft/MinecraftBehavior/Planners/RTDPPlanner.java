@@ -22,20 +22,15 @@ public class RTDPPlanner extends MinecraftPlanner{
 	 * @param mcBeh
 	 * @param addOptions
 	 * @param addMacroActions
-	 * @param vInit
-	 * @param numRollouts
-	 * @param minDelta
-	 * @param maxDepth
-	 * @param maxSteps
 	 */
 	public RTDPPlanner(MinecraftBehavior mcBeh, boolean addOptions,
-			boolean addMacroActions, int vInit, int numRollouts, double minDelta, int maxDepth, int maxSteps) {
+			boolean addMacroActions) {
 		super(mcBeh, addOptions, addMacroActions);
-		this.vInit = vInit;
-		this.numRollouts = numRollouts;
-		this.minDelta = minDelta;
-		this.maxDepth = maxDepth;
-		this.maxSteps = maxSteps;
+		this.vInit = mcBeh.vInit;
+		this.numRollouts = mcBeh.numRollouts;
+		this.minDelta = mcBeh.minDelta;
+		this.maxDepth = mcBeh.maxDepth;
+		this.maxSteps = mcBeh.maxSteps;
 	}
 
 	@Override
