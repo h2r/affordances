@@ -26,11 +26,6 @@ public class AffordanceRTDPPlanner extends MinecraftPlanner {
 	 * @param mcBeh
 	 * @param addOptions
 	 * @param addMacroActions
-	 * @param vInit
-	 * @param numRollouts
-	 * @param minDelta
-	 * @param maxDepth
-	 * @param maxSteps
 	 * @param kbPath
 	 */
 	public AffordanceRTDPPlanner(MinecraftBehavior mcBeh, boolean addOptions,

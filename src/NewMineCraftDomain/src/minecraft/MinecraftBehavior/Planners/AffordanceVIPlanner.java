@@ -12,7 +12,7 @@ import burlap.behavior.singleagent.planning.stochastic.valueiteration.Affordance
 import burlap.oomdp.core.State;
 import minecraft.MinecraftBehavior.MinecraftBehavior;
 
-public class AffordanceValueIterationPlanner extends MinecraftPlanner {
+public class AffordanceVIPlanner extends MinecraftPlanner {
 	private int maxSteps;
 	AffordancesController affController;
 	
@@ -21,10 +21,9 @@ public class AffordanceValueIterationPlanner extends MinecraftPlanner {
 	 * @param mcBeh
 	 * @param addOptions
 	 * @param addMacroActions
-	 * @param maxSteps
 	 * @param affKBString
 	 */
-	public AffordanceValueIterationPlanner(MinecraftBehavior mcBeh, boolean addOptions,
+	public AffordanceVIPlanner(MinecraftBehavior mcBeh, boolean addOptions,
 			boolean addMacroActions, String affKBString) {
 		super(mcBeh, addOptions, addMacroActions);
 		this.maxSteps = mcBeh.maxSteps;

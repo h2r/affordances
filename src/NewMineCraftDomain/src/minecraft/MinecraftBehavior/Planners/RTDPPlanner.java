@@ -22,11 +22,6 @@ public class RTDPPlanner extends MinecraftPlanner{
 	 * @param mcBeh
 	 * @param addOptions
 	 * @param addMacroActions
-	 * @param vInit
-	 * @param numRollouts
-	 * @param minDelta
-	 * @param maxDepth
-	 * @param maxSteps
 	 */
 	public RTDPPlanner(MinecraftBehavior mcBeh, boolean addOptions,
 			boolean addMacroActions) {

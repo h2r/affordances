@@ -3,8 +3,6 @@ package minecraft.MinecraftBehavior.Planners;
 import burlap.behavior.singleagent.EpisodeAnalysis;
 import burlap.behavior.singleagent.Policy;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
-import burlap.behavior.singleagent.planning.QComputablePlanner;
-import burlap.behavior.singleagent.planning.commonpolicies.GreedyQPolicy;
 import burlap.behavior.singleagent.planning.deterministic.DeterministicPlanner;
 import burlap.behavior.singleagent.planning.deterministic.SDPlannerPolicy;
 import burlap.behavior.singleagent.planning.deterministic.TFGoalCondition;
@@ -60,8 +58,6 @@ public class BFSPlanner extends MinecraftPlanner{
 		State finalState = ea.getState(ea.stateSequence.size() - 1);
 		double completed = this.tf.isTerminal(finalState) ? 1.0 : 0.0;
 		
-		System.out.println(ea.getActionSequenceString());
-
 		double[] results = {0, totalReward, completed, totalPlanningTime};
 
 		return results;

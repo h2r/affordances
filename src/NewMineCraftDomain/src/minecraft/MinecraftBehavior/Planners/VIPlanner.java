@@ -10,7 +10,7 @@ import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueItera
 import burlap.oomdp.core.State;
 import minecraft.MinecraftBehavior.MinecraftBehavior;
 
-public class ValueIterationPlanner extends MinecraftPlanner{
+public class VIPlanner extends MinecraftPlanner{
 	private int maxSteps;
 	
 	/**
@@ -18,9 +18,8 @@ public class ValueIterationPlanner extends MinecraftPlanner{
 	 * @param mcBeh
 	 * @param addOptions
 	 * @param addMacroActions
-	 * @param maxSteps
 	 */
-	public ValueIterationPlanner(MinecraftBehavior mcBeh, boolean addOptions,
+	public VIPlanner(MinecraftBehavior mcBeh, boolean addOptions,
 			boolean addMacroActions) {
 		super(mcBeh, addOptions, addMacroActions);
 		this.maxSteps = mcBeh.maxSteps;

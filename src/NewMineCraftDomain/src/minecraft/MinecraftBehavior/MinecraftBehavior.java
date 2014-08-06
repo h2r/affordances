@@ -7,8 +7,12 @@ import java.util.List;
 import minecraft.MapIO;
 import minecraft.MinecraftStateParser;
 import minecraft.NameSpace;
+import minecraft.MinecraftBehavior.Planners.AffordanceRTDPPlanner;
+import minecraft.MinecraftBehavior.Planners.AffordanceVIPlanner;
+import minecraft.MinecraftBehavior.Planners.BFSPlanner;
 import minecraft.MinecraftBehavior.Planners.MinecraftPlanner;
 import minecraft.MinecraftBehavior.Planners.RTDPPlanner;
+import minecraft.MinecraftBehavior.Planners.VIPlanner;
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
 import minecraft.MinecraftDomain.MacroActions.BuildTrenchMacroAction;
 import minecraft.MinecraftDomain.MacroActions.LookDownAlotMacroAction;
@@ -468,31 +472,34 @@ public class MinecraftBehavior {
 		String mapName = "bigPlane.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
+		double [] results;
+		
+		//BFS
+//		BFSPlanner bfsPlanner = new BFSPlanner(mcBeh, true, true);
+//		results = bfsPlanner.runPlanner();
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
-		// BFS
-//		mcBeh.BFSExample(false, true);
+		//RTDP
+//		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, true, true);
+//		results = rtdpPlanner.runPlanner();
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		
+		//AFFRTDP
+//		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, true, true, "someknowledgebase.kb");
+//		results = affRTDPPlanner.runPlanner();
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
-		MinecraftPlanner rtdpPlanner = new RTDPPlanner(mcBeh, true, true);
-		double [] results = rtdpPlanner.runPlanner();
+		
+		//VI
+		VIPlanner viPlan = new VIPlanner(mcBeh, true, true);
+		results = viPlan.runPlanner();
 		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
-
-		// VI
-//		double[] results = mcBeh.ValueIterationPlanner();
-
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
-		
 		// Affordance VI
-//		KnowledgeBase affKB = new KnowledgeBase();
-//		affKB.loadHard(mcBeh.getDomain(), "expert.kb");
-//		results = mcBeh.AffordanceVI(affKB);
+//		AffordanceVIPlanner affVIPlan = new AffordanceVIPlanner(mcBeh, true, true, "somekb.kb");
+//		results = affVIPlan.runPlanner();
 //		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
-		
-		// Affordance RTDP
-//		KnowledgeBase affKB = new KnowledgeBase();
-//		affKB.loadHard(mcBeh.getDomain(), "test50.kb");
-//		double[] results = mcBeh.AffordanceRTDP(affKB, false, false);
-//		System.out.println("(minecraftBehavior) results: [affRTDP] " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
+
 		
 		// Subgoal Planner
 //		OOMDPPlanner lowLevelPlanner = new RTDP(mcBeh.domain, mcBeh.rewardFunction, mcBeh.terminalFunction, mcBeh.gamma, mcBeh.hashingFactory, mcBeh.vInit, mcBeh.numRollouts, mcBeh.minDelta, mcBeh.maxDepth);
@@ -502,10 +509,6 @@ public class MinecraftBehavior {
 //		List<Subgoal> highLevelPlan = subgoalKB.generateSubgoalKB(mapName);
 //		SubgoalPlanner sgp = new SubgoalPlanner(mcBeh.domain, mcBeh.getInitialState(), mcBeh.rewardFunction, mcBeh.terminalFunction, lowLevelPlanner, highLevelPlan);
 //		sgp.solve();
-		
-		// RTDP
-//		double[] results = mcBeh.RTDP(true, true);
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		// Collect results and write to file
 //		File resultsFile = new File("src/tests/results/mcBeh_results.txt");
