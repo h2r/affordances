@@ -19,7 +19,7 @@ import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldBarP
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldOrePF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentInLavaPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentInMidAirPF;
-import minecraft.MinecraftDomain.PropositionalFunctions.AgentLookForwardAndWalkablePF;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentCanWalkPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AtGoalPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockAtAgentsFeetHeadClearPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockAtPF;
@@ -275,7 +275,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		
 		// Dave's jenky hard coded prop funcs
 		new AgentAdjacentToTrenchPF(NameSpace.PFAGENTADJTRENCH, domain, new String[]{NameSpace.CLASSAGENT, NameSpace.CLASSTRENCH});
-		new AgentLookForwardAndWalkablePF(NameSpace.PFAGENTLOOKFORWARDWALK, domain, new String[]{NameSpace.CLASSAGENT});
+		new AgentCanWalkPF(NameSpace.PFAGENTLOOKFORWARDWALK, domain, new String[]{NameSpace.CLASSAGENT});
 		new EmptyCellInAgentWalkDir(NameSpace.PFEMPTYCELLINWALK, domain, new String[]{NameSpace.CLASSAGENT});
 		new BlockInFrontOfAgentPF(NameSpace.PFGOLDFRONTAGENTONE, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOLDBLOCK);
 		new BlockInFrontOfAgentPF(NameSpace.PFFURNACEINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSFURNACE);

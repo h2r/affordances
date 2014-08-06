@@ -34,6 +34,7 @@ public class TrenchBuildOption extends MinecraftOption {
 
 	@Override
 	public GroundedAction getGroundedAction(State state) {
+
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 		int vertDir = agent.getDiscValForAttribute(NameSpace.ATVERTDIR);
 		//Place Block
@@ -45,6 +46,7 @@ public class TrenchBuildOption extends MinecraftOption {
 		else if (trenchPF.isTrue(state, "") && vertDir > 1) {
 			return domain.getAction(NameSpace.ACTIONLOOKDOWN).getAllApplicableGroundedActions(state).get(0);
 		}
+
 		//Default is to move (up to  times)
 		this.justMoved = true;
 		return domain.getAction(NameSpace.ACTIONMOVE).getAllApplicableGroundedActions(state).get(0);
@@ -53,6 +55,7 @@ public class TrenchBuildOption extends MinecraftOption {
 	@Override
 	public boolean shouldTerminate(State state) {
 		if ((this.justMoved && this.justPlacedBlock) || this.endOfMapPF.isTrue(state, "")) return true;
+
 		else return false;
 	}
 	
@@ -63,6 +66,7 @@ public class TrenchBuildOption extends MinecraftOption {
 
 	@Override
 	public void initiateOptionVariables() {		
+
 		this.justPlacedBlock = false;
 		this.justMoved = false;
 	}

@@ -69,7 +69,7 @@ public class PlaceBlockAction extends AgentAction {
 			int index = rand.nextInt(999999);
 			//int numberOfObjects = state.getAllObjects().toArray().length + 1000000;
 			//Update state
-			ObjectInstance toAdd = MinecraftStateGenerator.createNotPickupableDirtBlock(this.domain, toPlaceX, toPlaceY, toPlaceZ, index);
+			ObjectInstance toAdd = MinecraftStateGenerator.createIndWall(this.domain, toPlaceX, toPlaceY, toPlaceZ, index);//createNotPickupableDirtBlock(this.domain, toPlaceX, toPlaceY, toPlaceZ, index);
 			state.addObject(toAdd);
 			
 			//Update agent's number of blocks

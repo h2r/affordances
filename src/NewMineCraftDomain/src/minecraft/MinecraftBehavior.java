@@ -92,6 +92,7 @@ public class MinecraftBehavior {
 	private int							maxSteps = 200;
 	private int 						numRollouts = 2500; // RTDP
 	private int							maxDepth = 40; // RTDP
+
 	private int 						vInit = 1; // RTDP
 	private int 						numRolloutsWithSmallChangeToConverge = 10; // RTDP
 	private double						boltzmannTemperature = 0.5;
