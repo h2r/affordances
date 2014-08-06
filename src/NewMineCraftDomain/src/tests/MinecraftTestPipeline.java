@@ -9,8 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import minecraft.MapIO;
-import minecraft.MinecraftBehavior;
 import minecraft.NameSpace;
+import minecraft.MinecraftBehavior.MinecraftBehavior;
 import minecraft.WorldGenerator.MapFileGenerator;
 import minecraft.WorldGenerator.WorldTypes.DeepTrenchWorld;
 import minecraft.WorldGenerator.WorldTypes.PlaneGoalShelfWorld;

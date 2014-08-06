@@ -27,7 +27,7 @@ public class LookDownAlotMacroAction extends MinecraftMacroAction {
 	public List<GroundedAction> getGroundedActions() {
 		List<GroundedAction> toReturn = new ArrayList<GroundedAction>();
 		
-		GroundedAction moveGroundedAction = this.domain.getAction(NameSpace.ACTIONLOOKDOWN).getAllApplicableGroundedActions(state).get(0);
+		GroundedAction moveGroundedAction = this.getGAByActionName(NameSpace.ACTIONLOOKDOWN);
 		
 		for (int i = 0; i < this.numLookDowns; i++) {
 			toReturn.add(moveGroundedAction);

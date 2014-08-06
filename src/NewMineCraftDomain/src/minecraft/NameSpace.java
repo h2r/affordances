@@ -85,6 +85,7 @@ public class NameSpace {
 	public static final String						MACROACTIONSPRINT = "sprintMacroAction";
 	public static final String						MACROACTIONTURNAROUND = "turnAroundMacroAction";
 	public static final String						MACROACTIONLOOKDOWNALOT = "lookDownAlotMacroAction";
+	public static final String						MACROACTIONBUILDTRENCH = "buildTrenchMacroAction";
 	
 	//-------------OPTIONS STRINGS-------------
 	public static final String						OPTBUILDTRENCH = "trenchBuildOption";

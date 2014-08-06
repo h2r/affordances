@@ -1,9 +1,5 @@
-package minecraft;
+package minecraft.MinecraftBehavior;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +7,10 @@ import java.util.List;
 import minecraft.MapIO;
 import minecraft.MinecraftStateParser;
 import minecraft.NameSpace;
+import minecraft.MinecraftBehavior.Planners.MinecraftPlanner;
+import minecraft.MinecraftBehavior.Planners.RTDPPlanner;
 import minecraft.MinecraftDomain.MinecraftDomainGenerator;
+import minecraft.MinecraftDomain.MacroActions.BuildTrenchMacroAction;
 import minecraft.MinecraftDomain.MacroActions.LookDownAlotMacroAction;
 import minecraft.MinecraftDomain.MacroActions.SprintMacroAction;
 import minecraft.MinecraftDomain.MacroActions.TurnAroundMacroAction;
@@ -38,11 +37,9 @@ import burlap.oomdp.core.*;
 import burlap.oomdp.logicalexpressions.LogicalExpression;
 import burlap.oomdp.logicalexpressions.PFAtom;
 import burlap.oomdp.singleagent.*;
-import burlap.oomdp.singleagent.common.SingleGoalLERF;
 import burlap.oomdp.singleagent.common.SingleGoalMultipleLERF;
 import burlap.oomdp.singleagent.common.SingleLETF;
 import burlap.behavior.statehashing.DiscreteStateHashFactory;
-import burlap.behavior.statehashing.StateHashFactory;
 import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
 import minecraft.MinecraftStateGenerator.Exceptions.StateCreationException;
 import subgoals.*;
@@ -243,30 +240,7 @@ public class MinecraftBehavior {
 		return this.MCDomainGenerator;
 	}
 	
-	private void addOptionsToOOMDPPlanner(OOMDPPlanner toAddTo, boolean addOptions, boolean addMAs) {
-		//OPTIONS
-		if (addOptions) {
-			//Trench build option
-			toAddTo.addNonDomainReferencedAction(new TrenchBuildOption(NameSpace.OPTBUILDTRENCH, this.initialState, this.domain,
-					this.rewardFunction, this.gamma, this.hashingFactory));
-			//Walk until can't option
-			toAddTo.addNonDomainReferencedAction(new WalkUntilCantOption(NameSpace.OPTWALKUNTILCANT, this.initialState, this.domain,
-					this.rewardFunction, this.gamma, this.hashingFactory));
-		}
 
-		//MACROACTIONS
-		if (addMAs) {
-			//Sprint macro-action(2)
-			toAddTo.addNonDomainReferencedAction(new SprintMacroAction(NameSpace.MACROACTIONSPRINT, this.rewardFunction, 
-					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));	
-			//Turn around macro-action
-			toAddTo.addNonDomainReferencedAction(new TurnAroundMacroAction(NameSpace.MACROACTIONTURNAROUND, this.rewardFunction, 
-					this.gamma, this.hashingFactory, this.domain, this.initialState));	
-			//Look down alot macro-action(2)
-			toAddTo.addNonDomainReferencedAction(new LookDownAlotMacroAction(NameSpace.MACROACTIONLOOKDOWNALOT, this.rewardFunction, 
-					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));	
-		}	
-	}
 	
 	// ---------- PLANNERS ---------- 
 	
@@ -294,9 +268,7 @@ public class MinecraftBehavior {
 		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
 		
 		DeterministicPlanner planner = new BFS(this.domain, goalCondition, this.hashingFactory);
-		
-		addOptionsToOOMDPPlanner(planner, addOptions, addMAs);
-		
+				
 		planner.planFromState(initialState);
 		
 		Policy p = new SDPlannerPolicy(planner);
@@ -307,19 +279,10 @@ public class MinecraftBehavior {
 		System.out.println(ea.getActionSequenceString());
 	}
 	
-	private double sumReward(List<Double> rewardSeq) {
-		double total = 0;
-		for (double d : rewardSeq) {
-			total += d;
-		}
-		return total;
-	}
-	
 	public double[] ValueIterationPlanner(boolean addOptions, boolean addMAs){
 		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
 
 		ValueIteration planner = new ValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, 0.01, Integer.MAX_VALUE);
-		addOptionsToOOMDPPlanner(planner, addOptions, addMAs);
 
 		long startTime = System.currentTimeMillis( );
 		
@@ -353,7 +316,6 @@ public class MinecraftBehavior {
 		// Setup goal condition and planner
 		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
 		AffordanceValueIteration planner = new AffordanceValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, 0.01, Integer.MAX_VALUE, affController);
-		addOptionsToOOMDPPlanner(planner, addOptions, addMAs);
 		
 		// Time
 		long startTime = System.currentTimeMillis( );
@@ -389,7 +351,6 @@ public class MinecraftBehavior {
 		affController.setCurrentGoal(this.currentGoal); // Update goal to determine active affordances
 		
 		AffordanceRTDP planner = new AffordanceRTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth, affController, numRolloutsWithSmallChangeToConverge);
-		addOptionsToOOMDPPlanner(planner, addOptions, addMAs);
 		
 		long startTime = System.currentTimeMillis( );
 		
@@ -427,9 +388,7 @@ public class MinecraftBehavior {
 	public double[] RTDP(boolean addOptions, boolean addMAs) {
 
 		RTDP planner = new RTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth);
-		
-		addOptionsToOOMDPPlanner(planner, addOptions, addMAs);
-		
+				
 		planner.setMinNumRolloutsWithSmallValueChange(numRolloutsWithSmallChangeToConverge);
 		
 		long startTime = System.currentTimeMillis( );
@@ -483,7 +442,13 @@ public class MinecraftBehavior {
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 
 		// BFS
-//		mcBeh.BFSExample(true, false);
+//		mcBeh.BFSExample(false, true);
+
+		MinecraftPlanner rtdpPlanner = new RTDPPlanner(mcBeh, true, true, mcBeh.vInit, mcBeh.numRollouts,
+				mcBeh.minDelta, mcBeh.maxDepth, mcBeh.maxSteps);
+		double [] results = rtdpPlanner.runPlanner();
+		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+
 
 		// VI
 //		double[] results = mcBeh.ValueIterationPlanner();
@@ -512,8 +477,8 @@ public class MinecraftBehavior {
 //		sgp.solve();
 		
 		// RTDP
-		double[] results = mcBeh.RTDP(true, true);
-		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+//		double[] results = mcBeh.RTDP(true, true);
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		// Collect results and write to file
 //		File resultsFile = new File("src/tests/results/mcBeh_results.txt");

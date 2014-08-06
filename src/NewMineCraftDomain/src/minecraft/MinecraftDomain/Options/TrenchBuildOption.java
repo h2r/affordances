@@ -40,16 +40,16 @@ public class TrenchBuildOption extends MinecraftOption {
 		//Place Block
 		if (trenchPF.isTrue(state, "") && vertDir == 1 && !this.justPlacedBlock) {
 			this.justPlacedBlock = true;
-			return domain.getAction(NameSpace.ACTIONPLACEBLOCK).getAllApplicableGroundedActions(state).get(0);
+			return this.getGAByActionName(NameSpace.ACTIONPLACEBLOCK);
 		}
 		//Look down
 		else if (trenchPF.isTrue(state, "") && vertDir > 1) {
-			return domain.getAction(NameSpace.ACTIONLOOKDOWN).getAllApplicableGroundedActions(state).get(0);
+			return this.getGAByActionName(NameSpace.ACTIONLOOKDOWN);
 		}
 
 		//Default is to move (up to  times)
 		this.justMoved = true;
-		return domain.getAction(NameSpace.ACTIONMOVE).getAllApplicableGroundedActions(state).get(0);
+		return this.getGAByActionName(NameSpace.ACTIONMOVE);
 	}
 
 	@Override

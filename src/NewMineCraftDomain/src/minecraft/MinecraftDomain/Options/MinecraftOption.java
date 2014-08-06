@@ -75,5 +75,10 @@ public abstract class MinecraftOption extends Option {
 	public boolean applicableInState(State state, String[] params) {
 		return shouldInitiate(state);
 	}
+	
+	protected GroundedAction getGAByActionName(String name) {
+		GroundedAction toReturn = this.domain.getAction(name).getAllApplicableGroundedActions(state).get(0);
+		return toReturn;
+	}
 
 }

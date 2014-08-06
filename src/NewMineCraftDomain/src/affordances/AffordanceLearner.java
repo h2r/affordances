@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import minecraft.MapIO;
-import minecraft.MinecraftBehavior;
 import minecraft.NameSpace;
+import minecraft.MinecraftBehavior.MinecraftBehavior;
 import minecraft.WorldGenerator.LearningWorldGenerator;
 import minecraft.WorldGenerator.MapFileGenerator;
 import minecraft.WorldGenerator.WorldTypes.DeepTrenchWorld;

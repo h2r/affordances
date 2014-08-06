@@ -23,7 +23,7 @@ public class WalkUntilCantOption extends MinecraftOption{
 
 	@Override
 	public GroundedAction getGroundedAction(State state) {		
-		return domain.getAction(NameSpace.ACTIONMOVE).getAllApplicableGroundedActions(state).get(0);
+		return this.getGAByActionName(NameSpace.ACTIONMOVE);
 	}
 
 	@Override
