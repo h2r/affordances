@@ -104,7 +104,7 @@ public class Helpers {
 	 * @param state
 	 * @return a 3 element array of ints of the position in front of the agents (x,y,z ordered)
 	 */
-	public static int[] positionInFrontOfAgent(int distanceFromAgent, State state) {
+	public static int[] positionInFrontOfAgent(int distanceFromAgent, State state, boolean toWalkTo) {
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 		
 		int oldX = agent.getDiscValForAttribute(NameSpace.ATX);
@@ -149,8 +149,11 @@ public class Helpers {
 			zChange = -2;
 			break;
 		case DOWNTHREE://All the way down
-			xChange = 0;
-			yChange = 0;
+			if (!toWalkTo) {
+				xChange = 0;
+				yChange = 0;
+			}
+
 			zChange = -1 - distanceFromAgent;
 			break;
 		default:
@@ -205,7 +208,7 @@ public class Helpers {
 	public static List<ObjectInstance> getBlocksInfrontOfAgent(int distanceFromAgent, State state) {
 		assert(distanceFromAgent <= 2);
 		
-		int[] positionInfrontAgent = positionInFrontOfAgent(distanceFromAgent, state);
+		int[] positionInfrontAgent = positionInFrontOfAgent(distanceFromAgent, state, false);
 		assert(positionInfrontAgent.length == 3);
 		int newX = positionInfrontAgent[0];
 		int newY = positionInfrontAgent[1];

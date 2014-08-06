@@ -26,7 +26,7 @@ import minecraft.MinecraftDomain.PropositionalFunctions.BlockAtPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockInFrontOfAgentPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptyCellInAgentWalkDir;
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptySpacePF;
-import minecraft.MinecraftDomain.PropositionalFunctions.EndOfMapInFrontOfAgentPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentWalkIntoEndOfMapPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptyCellInFrontOfAgentPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.WallInFrontOfAgentPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.TowerInMapPF;
@@ -267,7 +267,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new AgentHasAtLeastXGoldOrePF(NameSpace.PFATLEASTXGOLDORE, domain, new String[]{NameSpace.CLASSAGENT}, 1);
 		new AgentHasAtLeastXGoldBarPF(NameSpace.PFATLEASTXGOLDBAR, domain, new String[]{NameSpace.CLASSAGENT}, 1);
 		new BlockInFrontOfAgentPF(NameSpace.PFBLOCKINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOAL);
-		new EndOfMapInFrontOfAgentPF(NameSpace.PFENDOFMAPINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
+		new AgentWalkIntoEndOfMapPF(NameSpace.PFENDOFMAPINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new EmptyCellInFrontOfAgentPF(NameSpace.PFEMPTYCELLINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new AgentInMidAirPF(NameSpace.PFAGENTINMIDAIR, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new TowerInMapPF(NameSpace.PFTOWER, domain, new String[]{NameSpace.CLASSAGENT}, 2, NameSpace.CHARDIRTBLOCKNOTPICKUPABLE, rows, cols, height);

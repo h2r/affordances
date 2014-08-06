@@ -27,7 +27,7 @@ public class BlockInFrontOfAgentPF extends PropositionalFunction{
 
 	@Override
 	public boolean isTrue(State state, String[] params) {
-		int[]positionInFront = Helpers.positionInFrontOfAgent(1, state);
+		int[]positionInFront = Helpers.positionInFrontOfAgent(1, state, false);
 		List<ObjectInstance> objectsInFront = Helpers.objectsAt(positionInFront[0], positionInFront[1], positionInFront[2], state);
 		
 		for(ObjectInstance block: objectsInFront) {

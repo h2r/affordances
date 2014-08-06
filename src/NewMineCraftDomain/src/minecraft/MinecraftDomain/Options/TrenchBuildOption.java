@@ -13,9 +13,8 @@ public class TrenchBuildOption extends MinecraftOption {
 	
 	private PropositionalFunction endOfMapPF;
 	private PropositionalFunction trenchPF;
-	public int counter;
-	private final int terminateAfter = 1;
 	private boolean justPlacedBlock;
+	private boolean justMoved;
 
 	/**
 	 * 
@@ -39,7 +38,7 @@ public class TrenchBuildOption extends MinecraftOption {
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 		int vertDir = agent.getDiscValForAttribute(NameSpace.ATVERTDIR);
 		//Place Block
-		if (trenchPF.isTrue(state, "") && vertDir == 1) {
+		if (trenchPF.isTrue(state, "") && vertDir == 1 && !this.justPlacedBlock) {
 			this.justPlacedBlock = true;
 			return domain.getAction(NameSpace.ACTIONPLACEBLOCK).getAllApplicableGroundedActions(state).get(0);
 		}
@@ -49,14 +48,14 @@ public class TrenchBuildOption extends MinecraftOption {
 		}
 
 		//Default is to move (up to  times)
+		this.justMoved = true;
 		return domain.getAction(NameSpace.ACTIONMOVE).getAllApplicableGroundedActions(state).get(0);
 	}
 
 	@Override
 	public boolean shouldTerminate(State state) {
+		if ((this.justMoved && this.justPlacedBlock) || this.endOfMapPF.isTrue(state, "")) return true;
 
-		if (this.endOfMapPF.isTrue(state, new String[]{NameSpace.CLASSAGENT})) return true;
-		else if (this.counter >= this.terminateAfter) return true;
 		else return false;
 	}
 	
@@ -69,12 +68,11 @@ public class TrenchBuildOption extends MinecraftOption {
 	public void initiateOptionVariables() {		
 
 		this.justPlacedBlock = false;
-		this.counter = 0;
+		this.justMoved = false;
 	}
 
 	@Override
 	public void updateVariablesAfterOneAction() {	
-		if (this.justPlacedBlock) this.counter++;
 	}
 
 
