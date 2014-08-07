@@ -10,27 +10,37 @@ import burlap.oomdp.core.State;
 import burlap.oomdp.singleagent.GroundedAction;
 import burlap.oomdp.singleagent.RewardFunction;
 
-public class LookDownAlotMacroAction extends MinecraftMacroAction {
+public class LookUpAlotMacroAction extends MinecraftMacroAction {
 
-	private int numLookDowns;
+	private int numLookUps;
 
-	public LookDownAlotMacroAction(String name, RewardFunction rf,
+	/**
+	 * 
+	 * @param name
+	 * @param rf
+	 * @param gamma
+	 * @param hashFactory
+	 * @param domain
+	 * @param state
+	 * @param numLookUps
+	 */
+	public LookUpAlotMacroAction(String name, RewardFunction rf,
 			double gamma, StateHashFactory hashFactory, Domain domain,
 			State state, int numLookDowns) {
 		
 		super(name + numLookDowns, rf, gamma, hashFactory, domain, state);
-		this.numLookDowns = numLookDowns;
-		if (this.numLookDowns < 1) throw new IllegalArgumentException();
+		this.numLookUps = numLookDowns;
+		if (this.numLookUps < 1) throw new IllegalArgumentException();
 	}
 	
 	@Override
 	public List<GroundedAction> getGroundedActions() {
 		List<GroundedAction> toReturn = new ArrayList<GroundedAction>();
 		
-		GroundedAction lookDownGroundedAction = this.getGAByActionName(NameSpace.ACTIONLOOKDOWN);
+		GroundedAction lookUpGA = this.getGAByActionName(NameSpace.ACTIONLOOKUP);
 		
-		for (int i = 0; i < this.numLookDowns; i++) {
-			toReturn.add(lookDownGroundedAction);
+		for (int i = 0; i < this.numLookUps; i++) {
+			toReturn.add(lookUpGA);
 		}
 		
 		return toReturn;

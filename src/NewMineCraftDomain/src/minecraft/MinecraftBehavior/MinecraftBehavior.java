@@ -59,7 +59,7 @@ import subgoals.*;
  */
 public class MinecraftBehavior {
     // ----- CLASS variable -----
-	private MinecraftDomainGenerator	MCDomainGenerator;
+	public MinecraftDomainGenerator	MCDomainGenerator;
 	private Domain						domain;
 	private StateParser					MCStateParser;
 	private RewardFunction				rewardFunction;
@@ -95,10 +95,11 @@ public class MinecraftBehavior {
 	public double						gamma = 0.99;
 	public double						minDelta = .01;
 	public int							maxSteps = 200;
+
 	public int 							numRollouts = 2500; // RTDP
 	public int							maxDepth = 25; // RTDP
 	public int 							vInit = 1; // RTDP
-	public int 							numRolloutsWithSmallChangeToConverge = 10; // RTDP
+	public int 							numRolloutsWithSmallChangeToConverge = 30; // RTDP
 	public double						boltzmannTemperature = 0.5;
 	public double						lavaReward = -10.0;
 
@@ -270,203 +271,203 @@ public class MinecraftBehavior {
 
 		return p;
 	}
-	
-	public void BFSExample(boolean addOptions, boolean addMAs) {
-		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
-		
-		DeterministicPlanner planner = new BFS(this.domain, goalCondition, this.hashingFactory);
-				
-		planner.planFromState(initialState);
-		
-		Policy p = new SDPlannerPolicy(planner);
-		
-		p.evaluateBehavior(initialState, this.rewardFunction, this.terminalFunction);
-		
-		EpisodeAnalysis ea = p.evaluateBehavior(initialState, this.rewardFunction, this.terminalFunction);
-		System.out.println(ea.getActionSequenceString());
-	}
-	
-	public double[] ValueIterationPlanner(boolean addOptions, boolean addMAs){
-		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
-
-		ValueIteration planner = new ValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, 0.01, Integer.MAX_VALUE);
-
-		long startTime = System.currentTimeMillis( );
-		
-		int bellmanUpdates = planner.planFromStateAndCount(initialState);
-		
-		// Create a Q-greedy policy from the planner
-		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
-		
-		// Record the plan results to a file
-		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
-
-		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
-		System.out.println(ea.getActionSequenceString());
-		// Count reward.
-		double totalReward = 0.;
-		for(Double d : ea.rewardSequence){
-			totalReward = totalReward + d;
-		}
-		
-		State finalState = ea.stateSequence.get(ea.stateSequence.size()-1);
-		double completed = goalCondition.satisfies(finalState) ? 1.0 : 0.0;
-		
-		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
-		return results;
-	}
-	
-	public double[] AffordanceVI(KnowledgeBase affKB, boolean addOptions, boolean addMAs){
-		AffordancesController affController = affKB.getAffordancesController();
-		affController.setCurrentGoal(this.currentGoal); // Update goal to determine active affordances
-		
-		// Setup goal condition and planner
-		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
-		AffordanceValueIteration planner = new AffordanceValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, 0.01, Integer.MAX_VALUE, affController);
-		
-		// Time
-		long startTime = System.currentTimeMillis( );
-		
-		// Plan and record bellmanUpdates
-		int bellmanUpdates = planner.planFromStateAndCount(initialState);
-		
-		// Create a Q-greedy policy from the planner
-		Policy p = new AffordanceGreedyQPolicy(affController, (QComputablePlanner)planner);
-		
-		// Record the plan results to a file
-		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
-		
-		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
-		
-		// Count reward.
-		double totalReward = 0.;
-		for(Double d : ea.rewardSequence){
-			totalReward = totalReward + d;
-		}
-		
-		// Check to see if the planner found the goal
-		State finalState = ea.stateSequence.get(ea.stateSequence.size()-1);
-		double completed = goalCondition.satisfies(finalState) ? 1.0 : 0.0;
-		
-		
-		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
-		return results;
-	}
-	
-	public double[] AffordanceRTDP(KnowledgeBase affKB, boolean addOptions, boolean addMAs){
-		AffordancesController affController = affKB.getAffordancesController();
-		affController.setCurrentGoal(this.currentGoal); // Update goal to determine active affordances
-		
-		AffordanceRTDP planner = new AffordanceRTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth, affController, numRolloutsWithSmallChangeToConverge);
-		
-		long startTime = System.currentTimeMillis( );
-		
-		int bellmanUpdates = planner.planFromStateAndCount(initialState);
-
-		// Create a Policy from the planner
-//		Policy p = new AffordanceBoltzmannQPolicy((QComputablePlanner)planner, boltzmannTemperature, affController);
-		Policy p = new AffordanceGreedyQPolicy(affController, (QComputablePlanner)planner);
-		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
-		
-		// Compute CPU time
-		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
-		
-		// Count reward.
-		double totalReward = 0.;
-		for(Double d : ea.rewardSequence){
-			totalReward = totalReward + d;
-		}
-		
-		// Check if task completed
-		State finalState = ea.getState(ea.stateSequence.size() - 1);
-		double completed = terminalFunction.isTerminal(finalState) ? 1.0 : 0.0;
-		
+//	
+//	public void BFSExample(boolean addOptions, boolean addMAs) {
+//		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
+//		
+//		DeterministicPlanner planner = new BFS(this.domain, goalCondition, this.hashingFactory);
+//				
+//		planner.planFromState(initialState);
+//		
+//		Policy p = new SDPlannerPolicy(planner);
+//		
+//		p.evaluateBehavior(initialState, this.rewardFunction, this.terminalFunction);
+//		
+//		EpisodeAnalysis ea = p.evaluateBehavior(initialState, this.rewardFunction, this.terminalFunction);
 //		System.out.println(ea.getActionSequenceString());
-
-		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
-		
-		return results;
-	}
-	
-	/**
-	 * Solves the current OO-MDP using Real Time Dynamic Programming
-	 * @return: The number of bellman updates performed during planning
-	 */
-	public double[] RTDP(boolean addOptions, boolean addMAs) {
-
-		RTDP planner = new RTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth);
-		addOptionsToOOMDPPlanner(planner, addOptions, addMAs);
-		planner.setMinNumRolloutsWithSmallValueChange(numRolloutsWithSmallChangeToConverge);
-		
-		long startTime = System.currentTimeMillis( );
-		
-		int bellmanUpdates = planner.planFromStateAndCount(initialState);
-		// Create a Q-greedy policy from the planner
-		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
-		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
-		
-		// Compute CPU time
-		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
-		
-		// Count reward
-		double totalReward = 0.;
-		for(Double d : ea.rewardSequence){
-			totalReward = totalReward + d;
-		}
-		
-		// Check if task completed
-		State finalState = ea.getState(ea.stateSequence.size() - 1);
-		double completed = terminalFunction.isTerminal(finalState) ? 1.0 : 0.0;
-		
-		System.out.println(ea.getActionSequenceString());
-
-		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
-
-		return results;
-	}
-	
-	public double[] SubgoalPlanner(OOMDPPlanner planner) {
-		
-		List<Subgoal> subgoalKB = new ArrayList<Subgoal>();
-		
-		LogicalExpression hasOreLE = new PFAtom(this.pfAgentHasAtLeastXGoldOre.getAllGroundedPropsForState(this.initialState).get(0));
-		LogicalExpression hasGoldLE = new PFAtom(this.pfAgentHasAtLeastXGoldBar.getAllGroundedPropsForState(this.initialState).get(0));
-		Subgoal hasOreSG = new Subgoal(hasOreLE, hasGoldLE);
-		subgoalKB.add(hasOreSG);
-		
-		SubgoalPlanner sgPlanner = new SubgoalPlanner(domain, initialState, rewardFunction, terminalFunction, planner, subgoalKB);
-		sgPlanner.solve();
-		
-		return null;
-	}
-	
-	private void addOptionsToOOMDPPlanner(OOMDPPlanner toAddTo, boolean addOptions, boolean addMAs) {
-		//OPTIONS
-		if (addOptions) {
-			//Trench build option
-			toAddTo.addNonDomainReferencedAction(new TrenchBuildOption(NameSpace.OPTBUILDTRENCH, this.initialState, this.domain,
-					getRewardFunction(), this.gamma, this.hashingFactory));
-			//Walk until can't option
-			toAddTo.addNonDomainReferencedAction(new WalkUntilCantOption(NameSpace.OPTWALKUNTILCANT, this.initialState, this.domain,
-					this.rewardFunction, this.gamma, this.hashingFactory));
-		}
-
-		//MACROACTIONS
-		if (addMAs) {
-			//Sprint macro-action(2)
-			toAddTo.addNonDomainReferencedAction(new SprintMacroAction(NameSpace.MACROACTIONSPRINT, this.rewardFunction, 
-					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));	
-			//Turn around macro-action
-			toAddTo.addNonDomainReferencedAction(new TurnAroundMacroAction(NameSpace.MACROACTIONTURNAROUND, this.rewardFunction, 
-					this.gamma, this.hashingFactory, this.domain, this.initialState));	
-			//Look down alot macro-action(2)
-			toAddTo.addNonDomainReferencedAction(new LookDownAlotMacroAction(NameSpace.MACROACTIONLOOKDOWNALOT, this.rewardFunction, 
-					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));	
-			//Trench build macro-action
-			toAddTo.addNonDomainReferencedAction(new BuildTrenchMacroAction(NameSpace.MACROACTIONBUILDTRENCH, this.rewardFunction, 
-					this.gamma, this.hashingFactory, this.domain, this.initialState));
-		}	
-	}
+//	}
+//	
+//	public double[] ValueIterationPlanner(boolean addOptions, boolean addMAs){
+//		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
+//
+//		ValueIteration planner = new ValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, 0.01, Integer.MAX_VALUE);
+//
+//		long startTime = System.currentTimeMillis( );
+//		
+//		int bellmanUpdates = planner.planFromStateAndCount(initialState);
+//		
+//		// Create a Q-greedy policy from the planner
+//		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
+//		
+//		// Record the plan results to a file
+//		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
+//
+//		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
+//		System.out.println(ea.getActionSequenceString());
+//		// Count reward.
+//		double totalReward = 0.;
+//		for(Double d : ea.rewardSequence){
+//			totalReward = totalReward + d;
+//		}
+//		
+//		State finalState = ea.stateSequence.get(ea.stateSequence.size()-1);
+//		double completed = goalCondition.satisfies(finalState) ? 1.0 : 0.0;
+//		
+//		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
+//		return results;
+//	}
+//	
+//	public double[] AffordanceVI(KnowledgeBase affKB, boolean addOptions, boolean addMAs){
+//		AffordancesController affController = affKB.getAffordancesController();
+//		affController.setCurrentGoal(this.currentGoal); // Update goal to determine active affordances
+//		
+//		// Setup goal condition and planner
+//		TFGoalCondition goalCondition = new TFGoalCondition(this.terminalFunction);
+//		AffordanceValueIteration planner = new AffordanceValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, 0.01, Integer.MAX_VALUE, affController);
+//		
+//		// Time
+//		long startTime = System.currentTimeMillis( );
+//		
+//		// Plan and record bellmanUpdates
+//		int bellmanUpdates = planner.planFromStateAndCount(initialState);
+//		
+//		// Create a Q-greedy policy from the planner
+//		Policy p = new AffordanceGreedyQPolicy(affController, (QComputablePlanner)planner);
+//		
+//		// Record the plan results to a file
+//		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
+//		
+//		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
+//		
+//		// Count reward.
+//		double totalReward = 0.;
+//		for(Double d : ea.rewardSequence){
+//			totalReward = totalReward + d;
+//		}
+//		
+//		// Check to see if the planner found the goal
+//		State finalState = ea.stateSequence.get(ea.stateSequence.size()-1);
+//		double completed = goalCondition.satisfies(finalState) ? 1.0 : 0.0;
+//		
+//		
+//		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
+//		return results;
+//	}
+//	
+//	public double[] AffordanceRTDP(KnowledgeBase affKB, boolean addOptions, boolean addMAs){
+//		AffordancesController affController = affKB.getAffordancesController();
+//		affController.setCurrentGoal(this.currentGoal); // Update goal to determine active affordances
+//		
+//		AffordanceRTDP planner = new AffordanceRTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth, affController, numRolloutsWithSmallChangeToConverge);
+//		
+//		long startTime = System.currentTimeMillis( );
+//		
+//		int bellmanUpdates = planner.planFromStateAndCount(initialState);
+//
+//		// Create a Policy from the planner
+////		Policy p = new AffordanceBoltzmannQPolicy((QComputablePlanner)planner, boltzmannTemperature, affController);
+//		Policy p = new AffordanceGreedyQPolicy(affController, (QComputablePlanner)planner);
+//		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
+//		
+//		// Compute CPU time
+//		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
+//		
+//		// Count reward.
+//		double totalReward = 0.;
+//		for(Double d : ea.rewardSequence){
+//			totalReward = totalReward + d;
+//		}
+//		
+//		// Check if task completed
+//		State finalState = ea.getState(ea.stateSequence.size() - 1);
+//		double completed = terminalFunction.isTerminal(finalState) ? 1.0 : 0.0;
+//		
+////		System.out.println(ea.getActionSequenceString());
+//
+//		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
+//		
+//		return results;
+//	}
+//	
+//	/**
+//	 * Solves the current OO-MDP using Real Time Dynamic Programming
+//	 * @return: The number of bellman updates performed during planning
+//	 */
+//	public double[] RTDP(boolean addOptions, boolean addMAs) {
+//
+//		RTDP planner = new RTDP(domain, rewardFunction, terminalFunction, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth);
+//		addOptionsToOOMDPPlanner(planner, addOptions, addMAs);
+//		planner.setMinNumRolloutsWithSmallValueChange(numRolloutsWithSmallChangeToConverge);
+//		
+//		long startTime = System.currentTimeMillis( );
+//		
+//		int bellmanUpdates = planner.planFromStateAndCount(initialState);
+//		// Create a Q-greedy policy from the planner
+//		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
+//		EpisodeAnalysis ea = p.evaluateBehavior(initialState, rewardFunction, terminalFunction, maxSteps);
+//		
+//		// Compute CPU time
+//		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
+//		
+//		// Count reward
+//		double totalReward = 0.;
+//		for(Double d : ea.rewardSequence){
+//			totalReward = totalReward + d;
+//		}
+//		
+//		// Check if task completed
+//		State finalState = ea.getState(ea.stateSequence.size() - 1);
+//		double completed = terminalFunction.isTerminal(finalState) ? 1.0 : 0.0;
+//		
+//		System.out.println(ea.getActionSequenceString());
+//
+//		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
+//
+//		return results;
+//	}
+//	
+//	public double[] SubgoalPlanner(OOMDPPlanner planner) {
+//		
+//		List<Subgoal> subgoalKB = new ArrayList<Subgoal>();
+//		
+//		LogicalExpression hasOreLE = new PFAtom(this.pfAgentHasAtLeastXGoldOre.getAllGroundedPropsForState(this.initialState).get(0));
+//		LogicalExpression hasGoldLE = new PFAtom(this.pfAgentHasAtLeastXGoldBar.getAllGroundedPropsForState(this.initialState).get(0));
+//		Subgoal hasOreSG = new Subgoal(hasOreLE, hasGoldLE);
+//		subgoalKB.add(hasOreSG);
+//		
+//		SubgoalPlanner sgPlanner = new SubgoalPlanner(domain, initialState, rewardFunction, terminalFunction, planner, subgoalKB);
+//		sgPlanner.solve();
+//		
+//		return null;
+//	}
+//	
+//	private void addOptionsToOOMDPPlanner(OOMDPPlanner toAddTo, boolean addOptions, boolean addMAs) {
+//		//OPTIONS
+//		if (addOptions) {
+//			//Trench build option
+//			toAddTo.addNonDomainReferencedAction(new TrenchBuildOption(NameSpace.OPTBUILDTRENCH, this.initialState, this.domain,
+//					getRewardFunction(), this.gamma, this.hashingFactory));
+//			//Walk until can't option
+//			toAddTo.addNonDomainReferencedAction(new WalkUntilCantOption(NameSpace.OPTWALKUNTILCANT, this.initialState, this.domain,
+//					this.rewardFunction, this.gamma, this.hashingFactory));
+//		}
+//
+//		//MACROACTIONS
+//		if (addMAs) {
+//			//Sprint macro-action(2)
+//			toAddTo.addNonDomainReferencedAction(new SprintMacroAction(NameSpace.MACROACTIONSPRINT, this.rewardFunction, 
+//					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));	
+//			//Turn around macro-action
+//			toAddTo.addNonDomainReferencedAction(new TurnAroundMacroAction(NameSpace.MACROACTIONTURNAROUND, this.rewardFunction, 
+//					this.gamma, this.hashingFactory, this.domain, this.initialState));	
+//			//Look down alot macro-action(2)
+//			toAddTo.addNonDomainReferencedAction(new LookDownAlotMacroAction(NameSpace.MACROACTIONLOOKDOWNALOT, this.rewardFunction, 
+//					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));	
+//			//Trench build macro-action
+//			toAddTo.addNonDomainReferencedAction(new BuildTrenchMacroAction(NameSpace.MACROACTIONBUILDTRENCH, this.rewardFunction, 
+//					this.gamma, this.hashingFactory, this.domain, this.initialState));
+//		}	
+//	}
 	
 	public int countReachableStates() {
 		OOMDPPlanner vi = new ValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, boltzmannTemperature, maxDepth);
@@ -476,7 +477,7 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-		String mapsPath = "src/minecraft/maps/";
+		String mapsPath = "src/minecraft/maps/randomMaps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
 		String mapName = "/learningRateTest/DeepTrenchWorld0.map";
@@ -485,9 +486,9 @@ public class MinecraftBehavior {
 		double [] results;
 		
 		//BFS
-//		BFSPlanner bfsPlanner = new BFSPlanner(mcBeh, true, true);
-//		results = bfsPlanner.runPlanner();
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		BFSPlanner bfsPlanner = new BFSPlanner(mcBeh, true, true);
+		results = bfsPlanner.runPlanner();
+		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//RTDP
 //		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, false, false);

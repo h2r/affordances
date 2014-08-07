@@ -10,9 +10,17 @@ import minecraft.MapIO;
 import minecraft.NameSpace;
 import minecraft.MinecraftBehavior.MinecraftBehavior;
 import minecraft.MinecraftDomain.MacroActions.BuildTrenchMacroAction;
+import minecraft.MinecraftDomain.MacroActions.DestroyWallMacroAction;
+import minecraft.MinecraftDomain.MacroActions.DigDownMacroAction;
+import minecraft.MinecraftDomain.MacroActions.JumpBlockMacroAction;
 import minecraft.MinecraftDomain.MacroActions.LookDownAlotMacroAction;
+import minecraft.MinecraftDomain.MacroActions.LookUpAlotMacroAction;
 import minecraft.MinecraftDomain.MacroActions.SprintMacroAction;
 import minecraft.MinecraftDomain.MacroActions.TurnAroundMacroAction;
+import minecraft.MinecraftDomain.Options.DestroyWallOption;
+import minecraft.MinecraftDomain.Options.DigDownOption;
+import minecraft.MinecraftDomain.Options.JumpBlockOption;
+import minecraft.MinecraftDomain.Options.LookAllTheWayDownOption;
 import minecraft.MinecraftDomain.Options.TrenchBuildOption;
 import minecraft.MinecraftDomain.Options.WalkUntilCantOption;
 
@@ -56,8 +64,25 @@ public abstract class MinecraftPlanner {
 			//Trench build option
 			toAddTo.addNonDomainReferencedAction(new TrenchBuildOption(NameSpace.OPTBUILDTRENCH, this.initialState, this.domain,
 					this.mcBeh.getRewardFunction(), this.gamma, this.hashingFactory));
+			
 			//Walk until can't option
 			toAddTo.addNonDomainReferencedAction(new WalkUntilCantOption(NameSpace.OPTWALKUNTILCANT, this.initialState, this.domain,
+					this.rf, this.gamma, this.hashingFactory));
+			
+			//Look all the way down option
+			toAddTo.addNonDomainReferencedAction(new LookAllTheWayDownOption(NameSpace.OPTLOOKALLTHEWAYDOWN, this.initialState, this.domain,
+					this.rf, this.gamma, this.hashingFactory));
+			
+			//Destroy wall option
+			toAddTo.addNonDomainReferencedAction(new DestroyWallOption(NameSpace.OPTDESTROYWALL, this.initialState, this.domain,
+					this.rf, this.gamma, this.hashingFactory));
+//			
+//			//Jump block option
+			toAddTo.addNonDomainReferencedAction(new JumpBlockOption(NameSpace.OPTJUMPBLOCK, this.initialState, this.domain,
+					this.rf, this.gamma, this.hashingFactory, this.mcBeh));
+//			
+//			//Dig down option
+			toAddTo.addNonDomainReferencedAction(new DigDownOption(NameSpace.OPTDIGDOWN, this.initialState, this.domain,
 					this.rf, this.gamma, this.hashingFactory));
 		}
 
@@ -69,12 +94,25 @@ public abstract class MinecraftPlanner {
 			//Turn around macro-action
 			toAddTo.addNonDomainReferencedAction(new TurnAroundMacroAction(NameSpace.MACROACTIONTURNAROUND, this.rf, 
 					this.gamma, this.hashingFactory, this.domain, this.initialState));	
-			//Look down alot macro-action(2)
+			//Look down a lot macro-action(2)
 			toAddTo.addNonDomainReferencedAction(new LookDownAlotMacroAction(NameSpace.MACROACTIONLOOKDOWNALOT, this.rf, 
 					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));	
+			//Look up a lot macro-action(2)
+			toAddTo.addNonDomainReferencedAction(new LookUpAlotMacroAction(NameSpace.MACROACTIONLOOKUPALOT, this.rf, 
+					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));
 			//Trench build macro-action
 			toAddTo.addNonDomainReferencedAction(new BuildTrenchMacroAction(NameSpace.MACROACTIONBUILDTRENCH, this.rf, 
 					this.gamma, this.hashingFactory, this.domain, this.initialState));
+			//Jump block macro-action
+			toAddTo.addNonDomainReferencedAction(new JumpBlockMacroAction(NameSpace.MACROACTIONJUMPBLOCK, this.rf, 
+					this.gamma, this.hashingFactory, this.domain, this.initialState));
+			//Dig down macro-action(2)
+			toAddTo.addNonDomainReferencedAction(new DigDownMacroAction(NameSpace.MACROACTIONDIGDOWN, this.rf, 
+					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));	
+			//Destroy wall macro-action
+			toAddTo.addNonDomainReferencedAction(new DestroyWallMacroAction(NameSpace.MACROACTIONDESTROYWALL, this.rf, 
+					this.gamma, this.hashingFactory, this.domain, this.initialState));			
+			
 		}	
 	}
 	
