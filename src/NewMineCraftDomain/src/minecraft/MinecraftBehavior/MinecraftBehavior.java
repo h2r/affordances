@@ -95,7 +95,7 @@ public class MinecraftBehavior {
 	public int 							numRollouts = 2500; // RTDP
 	public int							maxDepth = 50; // RTDP
 	public int 							vInit = 1; // RTDP
-	public int 							numRolloutsWithSmallChangeToConverge = 10; // RTDP
+	public int 							numRolloutsWithSmallChangeToConverge = 30; // RTDP
 	public double						boltzmannTemperature = 0.5;
 	public double						lavaReward = -10.0;
 
@@ -469,20 +469,20 @@ public class MinecraftBehavior {
 		String mapsPath = "src/minecraft/maps/randomMaps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-		String mapName = "PlaneWallWorld0.map";
+		String mapName = "PlaneWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 		double [] results;
 		
 		//BFS
-		BFSPlanner bfsPlanner = new BFSPlanner(mcBeh, true, false);
+		BFSPlanner bfsPlanner = new BFSPlanner(mcBeh, true, true);
 		results = bfsPlanner.runPlanner();
 		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//RTDP
-//		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, true, true);
-//		results = rtdpPlanner.runPlanner();
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, true, true);
+		results = rtdpPlanner.runPlanner();
+		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		//AFFRTDP
 //		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, true, true, "someknowledgebase.kb");
