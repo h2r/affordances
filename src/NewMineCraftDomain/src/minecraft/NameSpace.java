@@ -85,11 +85,19 @@ public class NameSpace {
 	public static final String						MACROACTIONSPRINT = "sprintMacroAction";
 	public static final String						MACROACTIONTURNAROUND = "turnAroundMacroAction";
 	public static final String						MACROACTIONLOOKDOWNALOT = "lookDownAlotMacroAction";
+	public static final String						MACROACTIONLOOKUPALOT = "lookUpAlotMacroAction";
 	public static final String						MACROACTIONBUILDTRENCH = "buildTrenchMacroAction";
+	public static final String						MACROACTIONJUMPBLOCK = "jumpThenPlaceBlockMacroAction";
+	public static final String						MACROACTIONDESTROYWALL = "destroyWallMacroAction";
+	public static final String						MACROACTIONDIGDOWN = "digDownMacroAction";
 	
 	//-------------OPTIONS STRINGS-------------
 	public static final String						OPTBUILDTRENCH = "trenchBuildOption";
 	public static final String						OPTWALKUNTILCANT = "walkUntilCantOption";
+	public static final String						OPTLOOKALLTHEWAYDOWN = "lookAllTheWayDownOption";
+	public static final String						OPTDESTROYWALL = "destroyWallOption";
+	public static final String						OPTJUMPBLOCK = "jumpThenPlaceBlockOption";
+	public static final String						OPTDIGDOWN = "digDownOption";
 	
 	//-------------PROPOSITIONAL FUNCTION STRINGS-------------
 	public static final String				PFATGOAL = "AtGoal";

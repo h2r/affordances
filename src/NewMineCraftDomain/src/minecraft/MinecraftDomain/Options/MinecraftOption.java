@@ -31,9 +31,9 @@ public abstract class MinecraftOption extends Option {
 	
 	@Override
 	public List<ActionProb> getActionDistributionForState(State state, String[] params) {
-		updateVariablesAfterOneAction();
 		List<ActionProb> actionProbs = new ArrayList<ActionProb>();
 		actionProbs.add(new ActionProb(this.getGroundedAction(state), 1.0));
+		updateVariablesAfterOneAction();
 		return actionProbs;
 	}
 
