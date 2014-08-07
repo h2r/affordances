@@ -1,5 +1,9 @@
 package minecraft.MinecraftBehavior;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,7 +96,7 @@ public class MinecraftBehavior {
 	public double						minDelta = .01;
 	public int							maxSteps = 200;
 	public int 							numRollouts = 2500; // RTDP
-	public int							maxDepth = 50; // RTDP
+	public int							maxDepth = 25; // RTDP
 	public int 							vInit = 1; // RTDP
 	public int 							numRolloutsWithSmallChangeToConverge = 10; // RTDP
 	public double						boltzmannTemperature = 0.5;
@@ -464,11 +468,18 @@ public class MinecraftBehavior {
 		}	
 	}
 	
+	public int countReachableStates() {
+		OOMDPPlanner vi = new ValueIteration(domain, rewardFunction, terminalFunction, gamma, hashingFactory, boltzmannTemperature, maxDepth);
+		
+		((ValueIteration)vi).performReachabilityFrom(initialState);
+		return vi.getMapToStateIndex().size();
+	}
+	
 	public static void main(String[] args) {
 		String mapsPath = "src/minecraft/maps/";
 		String outputPath = "src/minecraft/planningOutput/";
 		
-		String mapName = "bigPlane.map";
+		String mapName = "/learningRateTest/DeepTrenchWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
 		double [] results;
@@ -479,20 +490,22 @@ public class MinecraftBehavior {
 //		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//RTDP
-//		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, true, true);
+//		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, false, false);
 //		results = rtdpPlanner.runPlanner();
 //		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		//AFFRTDP
-//		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, true, true, "someknowledgebase.kb");
-//		results = affRTDPPlanner.runPlanner();
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
-
-		
-		//VI
-		VIPlanner viPlan = new VIPlanner(mcBeh, true, true);
-		results = viPlan.runPlanner();
+		KnowledgeBase affKB = new KnowledgeBase();
+		affKB.loadHard(mcBeh.getDomain(), "/learning_rate/lr_0.kb");
+//		affKB.loadHard(mcBeh.getDomain(), "/expert.kb");
+		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
+		results = affRTDPPlanner.runPlanner();
 		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+
+		//VI
+//		VIPlanner viPlan = new VIPlanner(mcBeh, true, true);
+//		results = viPlan.runPlanner();
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		// Affordance VI
 //		AffordanceVIPlanner affVIPlan = new AffordanceVIPlanner(mcBeh, true, true, "somekb.kb");
@@ -510,18 +523,18 @@ public class MinecraftBehavior {
 //		sgp.solve();
 		
 		// Collect results and write to file
-//		File resultsFile = new File("src/tests/results/mcBeh_results.txt");
-//		BufferedWriter bw;
-//		FileWriter fw;
-//		try {
-//			fw = new FileWriter(resultsFile.getAbsoluteFile());
-//			bw = new BufferedWriter(fw);
-//			bw.write("(minecraftBehavior) results: VI " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
-//			bw.flush();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		File resultsFile = new File("src/tests/results/mcBeh_results.txt");
+		BufferedWriter bw;
+		FileWriter fw;
+		try {
+			fw = new FileWriter(resultsFile.getAbsoluteFile());
+			bw = new BufferedWriter(fw);
+			bw.write("(minecraftBehavior) results: RTDP " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
+			bw.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	

@@ -14,5 +14,5 @@ minecraft_api/world_the_end/
 *.out
 *.map
 *.classpath
-
+*.kb
 src/NewMineCraftDomain/src/minecraft/MinecraftDomain/Options/TrenchBuildDetOption.java
