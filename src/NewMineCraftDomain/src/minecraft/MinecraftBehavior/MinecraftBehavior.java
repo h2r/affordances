@@ -91,10 +91,11 @@ public class MinecraftBehavior {
 	public double						gamma = 0.99;
 	public double						minDelta = .01;
 	public int							maxSteps = 200;
-	public int 						numRollouts = 2500; // RTDP
+
+	public int 							numRollouts = 2500; // RTDP
 	public int							maxDepth = 50; // RTDP
-	public int 						vInit = 1; // RTDP
-	public int 						numRolloutsWithSmallChangeToConverge = 10; // RTDP
+	public int 							vInit = 1; // RTDP
+	public int 							numRolloutsWithSmallChangeToConverge = 10; // RTDP
 	public double						boltzmannTemperature = 0.5;
 	public double						lavaReward = -10.0;
 

@@ -72,9 +72,16 @@ public class AffordanceVIPlanner extends MinecraftPlanner {
 		State finalState = ea.stateSequence.get(ea.stateSequence.size()-1);
 		double completed = goalCondition.satisfies(finalState) ? 1.0 : 0.0;
 		
+		System.out.println(ea.getActionSequenceString());
 		
 		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
 		return results;
+	}
+	
+	public void updateKB(KnowledgeBase affKB) {
+		this.affKB = affKB;
+		this.affController = affKB.getAffordancesController();
+		affController.setCurrentGoal(this.mcBeh.currentGoal); // Update goal to determine active affordances
 	}
 	
 }

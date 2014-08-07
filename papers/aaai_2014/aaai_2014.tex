@@ -99,7 +99,7 @@ to the agent, which {\em increases} the size of the state-action space
 space).  The resulting augmented space is even larger, which can have
 the paradoxical effect of increasing the search time for a good
 policy~\cite{Jong:2008zr}.  In deterministic domains, hierarchical
-task networks (HTNs) add knowledge that greatly increases planning
+task networks (HTNs) add knowledge that greatly increases planning\dnote{need a citation}
 speed~\citep{}, but HTNs do not apply to nondeterministic domains and
 learning this knowledge remains difficult.
 
@@ -114,13 +114,13 @@ approach enables an agent to focus on aspects of the environment that
 are most relevant toward solving its current goal and avoids
 exploration of irrelevant parts of the state-action space, which leads
 to dramatic speedups in planning.  Affordances generalize across
-specific tasks, so a single Agents can autonomously learn affordances
+specific tasks, so a single Agent can autonomously learn affordances
 through experience, lessening the agent's dependence on expert
 knowledge. Affordances are not specific to a particular reward
 function or state space, and provide the agent with transferable
 knowledge that is effective in a wide variety of problems. We call any
 planner that uses affordances an {\it affordance-aware} planner.  We
-demonstrate that affordance provide dramatic speedupds for a variety
+demonstrate that affordance provide dramatic speedups for a variety
 of planning tasks compared to baselines, can be learned from
 experience, and can transfer across different tasks.  Our approach
 works in classic blocks world, in the game Minecraft, as well as on a
@@ -199,7 +199,6 @@ robotic cooking assistant.
 \section{Affordances}
 \label{sec:affordances}
 
-
 Our definition of affordances builds on the Object-Oriented Markov
 Decision Process (OO-MDP)~\citep{diuk08}.  OO-MDPs are an extension of
 the classic Markov Decision Process (MDP).  A classic MDP is a
@@ -267,7 +266,8 @@ We call any planner that
 uses affordances an {\it affordance-aware} planner. For a given state, 
 our goal is to solve for the probability of getting a particular action set $\mathcal{A}^*$, and place a Dirichlet Multinomial
 prior on the action selection for a given state to maximize this probability.
-This ensures that in the limit, it is possible to apply each action in each state. $\mathcal{A}^*$ represents
+This ensures that in the limit, it is possible to apply each action in each state, retaining
+any optimality guarantees provided by the planner. $\mathcal{A}^*$ represents
 a drawn action subset from the OO-MDP action set that is likely to contain the optimal action(s) for a given state,
 but not suboptimal actions.
 \begin{equation}
@@ -281,6 +281,8 @@ We approximate this term assuming the sets $\mathcal{A}_i'$ are disjoint:
 \begin{align}
 \sum_i^K \text{Pr}(\mathcal{A}'_i \mid s, \Delta_i)
 \end{align}
+\dnote{What do you think about the indicator function I mentioned here? It makes things a bit more complicated but to be really precise
+I think we need it.}
 
 Given a set of $K$ domain affordances $Z = \{\Delta_1, ..., \Delta_K\}$ and a current 
 agent goal condition defined with an OO-MDP predicate $G$, the action set that a 
@@ -322,8 +324,7 @@ over actions ($\lambda$), and a Dirichlet distribution over the size ($N$) of ea
 \begin{equation}
 \text{Pr}(\mathcal{A}_i' \mid s,\Delta_i) = \text{Pr}(\mathcal{A}_i' \mid N_i, \lambda_i) = \text{Pr}(\lambda_i \mid \alpha_i) \text{Pr}(N_i \mid \beta_i)
 \end{equation}
-%\gnote{I changed $\text{Pr}(\mathcal{A}_i \mid s,\Delta_i)$ to $\text{Pr}(\mathcal{A}_i' \mid s,\Delta_i)$, just wanted to make sure that is right.}
-%JM - that seems like a correct change to me.
+
 For a given affordance $\Delta_i$, first we sample from our distribution over action set size to get a candidate action set size (lines 1-2). We then
 take that many samples from our distribution over actions to get a candidate action set $\mathcal{A}'$ (lines 3-5).
 \begin{align}
@@ -355,7 +356,7 @@ experiments.
 
 \subsection{Learning Affordances}
 
-To learn affordances, we take as input the set of predicates
+To learn affordances, we require that a domain expert supply a set of predicates
 $\mathcal{P}$ and possible goals $\mathcal{G} \subset \mathcal{P}$.
 The agent forms a set of candidate affordances $\Delta$ with every
 combination of $\langle p, g \rangle$, for $p \in \mathcal{P}$ and $g
@@ -365,11 +366,57 @@ $\alpha$ and $\beta$ from the solved policy of $m$ goal-annotated
 OO-MDPs that have small state spaces, but still present similar sorts
 of features to the state spaces the agent might expect to see in more
 complex environments.  For example, the agent learns to build towers
-of blocks in small 4x4 grid worlds that can be solved exactly, but
+of blocks in small 3x3 grid worlds that can be solved exactly, but
 then generalizes its knowledge to 10x10 worlds that are too large to
 solve with exact algorithms.
 
 \stnote{Can you say this formally, in math?}
+\dnote{Good idea - I made some pseudo code as a guide, but I'll likely just do this in math (tomorrow)}
+
+\begin{algorithm}
+  \caption{$generateAffordances(\mathcal{P}, \mathcal{G})$}
+  \begin{algorithmic}[1]
+    \For {$p \in P$}
+    \For {$g \in G$}
+    \State $knowledgeBase.add(\Delta(p,g))$
+    \EndFor
+    \EndFor
+  \end{algorithmic}
+  \label{alg:gen_affs}
+\end{algorithm}
+
+\begin{algorithm}
+  \caption{$learn(\mathcal{P}, \mathcal{G})$}
+
+  \begin{algorithmic}[1]
+    \State $knowledgeBase = generateAffordances(\mathcal{P}, \mathcal{G})$
+    \For {$g \in \mathcal{G}$}
+    \State $w_i = createTestWorld(g)$
+    \State $\pi_i = planner.solve(w_i)$
+    \EndFor
+    \State $knowledgeBase.updateParameters(\pi_1, \ldots, \pi_k)$
+  \end{algorithmic}
+  \label{alg:learn}
+\end{algorithm}
+
+\begin{algorithm}
+  \caption{$updateParameters(\pi_1, \ldots, \pi_k)$}
+  \begin{algorithmic}[1]
+    \For {$i = 1 to k$}
+    \For {$\Delta \in knowledgeBase$}
+    \For {$s \in \pi_i.plan$}
+    \If	{$\Delta.p(s) \wedge \Delta.g == s.g$}
+    \State 
+    \EndIf
+    \EndFor
+    \EndFor
+    \EndFor
+    \State $knowledgeBase.updateParameters(\pi_1, \ldots, \pi_k)$
+  \end{algorithmic}
+  \label{alg:learn}
+\end{algorithm}
+
+
 For each optimal policy, we count the number of policies that used
 each action when each affordance was activated. $\alpha$ is set to
 this count. Additionally, we define $\beta$ as a vector of the
@@ -377,19 +424,23 @@ integers $1$ to $|\mathcal{A}|$.  Then, for each optimal policy, we
 count the number of different actions that were optimal for each
 activated affordance $\Delta_i$, and increment that value for
 $\Delta_i.\beta$. This captures how large or small optimal action sets
-are expected to be for each affordance. Additionally, we provide two
-types of affordances that may be learned through this process.
+are expected to be for each affordance.
 
-The first prunes actions in a probabilistic way, maintaining the
-optimality guarantees of each planner in the limit, while the other
-prunes actions in a deterministic way, sacrificing the optimality
-guarantees for a boost in planning time. We call the probabilistic
-affordances {\em soft}, and the deterministic affordances, {\em hard}.
-Hard affordances define their action set by pruning away actions
-provided by the learning process whose probability mass given by the
-prior was lower than $1\%$, meaning that the action was optimal less
-than $1\%$ of the time. All expert affordances were defined to be
-`hard'.
+For experiments, we introduce a simplified version of the affordance where
+the action set $\mathcal{A}$ associated with each affordance is defined
+as the set of actions whose probability of being optimal was greater than $1\%$
+of the probability mass of the sampled multinomial.
+
+%The first prunes actions in a probabilistic way, maintaining the
+%optimality guarantees of each planner in the limit, while the other
+%prunes actions in a deterministic way, sacrificing the optimality
+%guarantees for a boost in planning time. We call the probabilistic
+%affordances {\em soft}, and the deterministic affordances, {\em hard}.
+%Hard affordances define their action set by pruning away actions
+%provided by the learning process whose probability mass given by the
+%prior was lower than $1\%$, meaning that the action was optimal less
+%than $1\%$ of the time. All expert affordances were defined to be
+%`hard'.
 
 % ====== Section: Experiments ======
 \section{Experiments}
@@ -397,26 +448,36 @@ than $1\%$ of the time. All expert affordances were defined to be
 
 \stnote{Need to introduce minecraft, robot, and other baselines.}
 
+We use Minecraft as our planning and evaluation domain. Minecraft is a
+ 3-D blocks world game in which the user can place and destroy blocks
+ of different types. It serves as a model for a variety of robotic tasks involving 
+ assembly and construction.  Minecraft's physics and action space are expressive
+ enough to allow very complex systems to be created by users, including logic gates and 
+ functional scientific graphing calculators\footnote{https://www.youtube.com/watch?v=wgJfVRhotlQ}.
+% simple scenes from a Minecraft world appear in Figure~\ref{fig:epicworld} - a video demonstration of
+% an early iteration of an affordance-aware planner solving this task may be seen online\footnote{Watch at: https://vimeo.com/88689171}.
+ Minecraft serves as a model for robotic tasks such as cooking assistance, assembling items in a factory, 
+ and object retrieval.  As in these tasks, the agent operates in a very large state-action space in an uncertain environment.
+
 We conducted a series of experiments in the Minecraft domain that
 compared the performance of several OO-MDP solvers without affordances
 to their affordance-aware counterparts. We selected a set of expert
-affordances from our background knowledge of the domain. Each expert
-affordances was defined to be hard. Additionally, we ran our full
-learning process and learned soft and hard affordances for each
+affordances from our background knowledge of the domain. Additionally, we ran our full
+learning process and learned affordances for each
 task. We compared standard paradigm planners (Real Time Dynamic
 Programming and Value Iteration) with their expert-affordance-aware
 counterparts and with their learned-affordance-aware counterparts.
 
 For the expert affordances, we gave the agent a knowledge base of 17 affordances,
 which are listed in Figure \ref{fig:afford_kb_exp}.  Our experiments
-consisted of a variety of common tasks (state spaces 1-5 in Table \ref{table:hard-results}) in Minecraft, ranging from
+consisted of a variety of common tasks (state spaces 1-6 in Table \ref{table:hard-results}) in Minecraft, ranging from
 constructing bridges over trenches, to smelting gold, to tunneling
 through walls, and constructing towers.  We also tested each planner on worlds of varying size
 and difficulty to demonstrate the scalability and flexibility of the
 affordance formalism.
 
-For the learning process, the training data consisted of 125 simple state
-spaces, each a $2\times3\times4$ world with randomized features that mirrored the agent's actual state space. The same training data was used
+For the learning process, the training data consisted of 150 simple state
+spaces, each approximately a $2\times3\times4$ world with randomized features that mirrored the agent's actual state space. The same training data was used
 for each test state space.
 
 The evaluation metric for each trial was the
@@ -424,44 +485,26 @@ number of Bellman updates that were executed by each planning
 algorithm, as well as the CPU time taken to find a plan. Value Iteration was terminated when the maximum change in
 the value function was less than 0.01. RTDP terminated when the
 maximum change in the value function was less than 0.01 for ten
-consecutive policy rollouts. We set the reward function to $-1$ for all transitions, except
+consecutive policy rollouts, or the planner failed to converge after 1000 rollouts.
+We set the reward function to $-1$ for all transitions, except
 transitions to states in which the agent was on lava, which returned 
 $-10$. The goal was set to be terminal. The discount
-factor was set to $\lambda = 0.99$. For all experiments, actions associated with
-a direction (e.g. movement, block placement, block destruction, etc.), had a small 
-probability ($0.3$) of applying in another random direction.
+factor was set to $\lambda = 0.99$. For all experiments, movement actions
+(move, rotate, jump) had a small probability of incorrectly applying a different action.
 
-Further, we conducted experiments in which we varied the number of training worlds
-used in the learning process from 0-1000 to demonstrate that planning
-performance improves as the agent learns more. As in Table \ref{table:learned-results}, we generated 0 to 1000 simple state
+We conducted experiments in which we varied the number of training worlds
+used in the learning process from 0-100. As in Table \ref{table:learned-results}, we generated 0 to 100 simple state
 spaces, each a $3\times3\times3$ world with randomized features that mirrored the agent's actual state space. We then solved
-the OO-MDP with training data of 0 to 1000 simple state spaces to demonstrate the effectiveness of added training data.
+the OO-MDP with training data of 0 to 100 simple state spaces to demonstrate the effectiveness of added training data.
 
-Lastly, we compared our approach to Temporally Extended Actions: Macroactions and Options. We tested RTDP and VI with just expert affordances,
+Additionally, we compared our approach to Temporally Extended Actions: Macroactions and Options. We tested RTDP with just expert affordances,
 expert Macroactions, and expert Options, as well as the combination of affordance, macro actions, and options. We conducted these experiments in a variety of domains, both in randomly generated grid-worlds, and in randomly generated Minecraft problems similar to those problem types discussed above (path planning, bridge building, gold smelting, etc.). The option policies and macro actions provided were hand coded by domain experts.
+
+Finally, we deployed an affordance-aware planner onto Baxter for use in an assistive cooking task. \dnote{Need to fill in more details here}
 
 % ==== Section: Results ====
 \section{Results}
 \label{sec:results}
-
-% --- HTN/TLPlan ---
-\subsection{HTN/TLPlan Comparison}
-
-
-\begin{table}[H]
-\centering
-\begin{tabular}{ l || c c }
-  State Space 			& JSHOP2 	& Affordances \\ \hline
-  \texttt{10 blocks}  		& 	-		&	-	\\
-  \texttt{100 blocks}  		& 	-		&	-	\\
-  \texttt{200 blocks}  		& 	-		&	-	\\
-  \texttt{300 blocks}  		& 	-		&	-	\\
-  \texttt{400 blocks}  		& 	-		&	-	\\
-  \texttt{500 blocks}  		& 	-		&	-	\\
-\end{tabular}
-\caption{Blocksworld Results: Number of states explored to find optimal plan}
-\label{table:minecraft_results_bellman}
-\end{table}
 
 % --- Baxter ---
 \subsection{Baxter}
@@ -472,23 +515,6 @@ expert Macroactions, and expert Options, as well as the combination of affordanc
   \caption{Placeholder for baxter results/image}
   \label{fig:baxter_results}
 \end{figure}
-
-% --- Options ---
-\subsection{Options}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{ l || c c c c }
-  State Space 		& None & Options & Affordances & Both 	 	\\ \hline
-  \texttt{4rooms}  	& 	-		&	-	&	-	&	-	\\
-  \texttt{Doors}  		& 	-		&	-	&	-	&	-	\\
-  \texttt{Small}  		& 	-		&	-	&	-	&	-	\\
-  \texttt{Medium}  	& 	-		&	-	&	-	&	-	\\
-  \texttt{Large}  		& 	-		&	-	&	-	&	-	\\
-\end{tabular}
-\caption{Options vs. Affordances: CPU time per converged policy}
-\label{table:minecraft_results_cpu}
-\end{table}
 
 % --- Minecraft ---
 \subsection{Minecraft: Expert vs Learned vs None}
@@ -533,6 +559,24 @@ expert Macroactions, and expert Options, as well as the combination of affordanc
   \caption{Placeholder - will recollect this data given recent updates}
   \label{fig:training_results}
 \end{figure}
+
+% --- Options ---
+\subsection{Options}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ l || c c c c }
+  State Space 		& None & Options & Affordances & Both 	 	\\ \hline
+  \texttt{4rooms}  	& 	-		&	-	&	-	&	-	\\
+  \texttt{Doors}  		& 	-		&	-	&	-	&	-	\\
+  \texttt{Small}  		& 	-		&	-	&	-	&	-	\\
+  \texttt{Medium}  	& 	-		&	-	&	-	&	-	\\
+  \texttt{Large}  		& 	-		&	-	&	-	&	-	\\
+\end{tabular}
+\caption{Options vs. Affordances: CPU time per converged policy}
+\label{table:minecraft_results_cpu}
+\end{table}
+
 
 \section{Related Work}
 \label{sec:related-work}

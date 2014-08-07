@@ -37,6 +37,7 @@ public class AffordanceRTDPPlanner extends MinecraftPlanner {
 		this.minDelta = mcBeh.minDelta;
 		this.maxDepth = mcBeh.maxDepth;
 		this.maxSteps = mcBeh.maxSteps;
+		this.numRolloutsWithSmallChangeToConverge = mcBeh.numRolloutsWithSmallChangeToConverge;
 		this.affKB = affKB;
 		
 		this.affController = affKB.getAffordancesController();
@@ -83,6 +84,12 @@ public class AffordanceRTDPPlanner extends MinecraftPlanner {
 		double[] results = {bellmanUpdates, totalReward, completed, totalPlanningTime};
 		
 		return results;
+	}
+	
+	public void updateKB(KnowledgeBase affKB) {
+		this.affKB = affKB;
+		this.affController = affKB.getAffordancesController();
+		affController.setCurrentGoal(this.mcBeh.currentGoal); // Update goal to determine active affordances
 	}
 
 }

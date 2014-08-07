@@ -130,6 +130,8 @@ public class SubgoalPlanner {
 			currState = ea.getState(ea.stateSequence.size() - 1);
 			this.root = this.root.getParent();
 			
+			
+			highLevelPlan = highLevelPlan.getParent();
 		}
 		
 		return actionSequence; 	

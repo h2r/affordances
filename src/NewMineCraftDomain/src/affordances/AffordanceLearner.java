@@ -117,7 +117,10 @@ public class AffordanceLearner {
 		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 1, 2, 5);
 	}
 	
-	
+	/**
+	 * Run the learning algorithm on a given map
+	 * @param map: the MapIO object to learn on
+	 */
 	private void learnMap(MapIO map) {
 		// Update behavior with new map
 		this.mcb.updateMap(map);
@@ -199,6 +202,9 @@ public class AffordanceLearner {
 		}
 	}
 	
+	/**
+	 * Computes the entropy of each affordance and removes low-information (high entropy) affordances
+	 */
 	public void removeLowInfoAffordances() {
 		List<AffordanceDelegate> toRemove = new ArrayList<AffordanceDelegate>();
 		// Get counts for each affordance and queue zero count affs for removal

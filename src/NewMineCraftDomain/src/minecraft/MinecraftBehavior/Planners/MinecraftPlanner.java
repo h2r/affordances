@@ -6,6 +6,7 @@ import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.State;
 import burlap.oomdp.core.TerminalFunction;
 import burlap.oomdp.singleagent.RewardFunction;
+import minecraft.MapIO;
 import minecraft.NameSpace;
 import minecraft.MinecraftBehavior.MinecraftBehavior;
 import minecraft.MinecraftDomain.MacroActions.BuildTrenchMacroAction;
@@ -112,6 +113,10 @@ public abstract class MinecraftPlanner {
 					this.gamma, this.hashingFactory, this.domain, this.initialState));			
 			
 		}	
+	}
+	
+	public void updateMap(MapIO map) {
+		this.mcBeh.updateMap(map);
 	}
 	
 	
