@@ -37,6 +37,7 @@ public class AffordanceRTDPPlanner extends MinecraftPlanner {
 		this.minDelta = mcBeh.minDelta;
 		this.maxDepth = mcBeh.maxDepth;
 		this.maxSteps = mcBeh.maxSteps;
+		this.numRolloutsWithSmallChangeToConverge = mcBeh.numRolloutsWithSmallChangeToConverge;
 		this.affKB = affKB;
 		
 		this.affController = affKB.getAffordancesController();

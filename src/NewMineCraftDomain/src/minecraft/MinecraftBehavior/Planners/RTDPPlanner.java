@@ -31,6 +31,7 @@ public class RTDPPlanner extends MinecraftPlanner{
 		this.minDelta = mcBeh.minDelta;
 		this.maxDepth = mcBeh.maxDepth;
 		this.maxSteps = mcBeh.maxSteps;
+		this.numRolloutsWithSmallChangeToConverge = mcBeh.numRolloutsWithSmallChangeToConverge;
 	}
 
 	@Override
