@@ -29,7 +29,7 @@ public class KnowledgeBase {
 	private AffordancesController		affController;
 //	private String						basePath = System.getProperty("user.dir") + "/minecraft/kb/";
 	private String						basePath = "minecraft/kb/";
-	
+	private final static ResourceLoader	resLoader = new ResourceLoader();
 	
 	public KnowledgeBase() {
 		this.affDelegateList = new ArrayList<AffordanceDelegate>();
@@ -80,7 +80,6 @@ public class KnowledgeBase {
 	public void load(Domain d, String filename, boolean softFlag) {
 		AffordanceDelegate aff = null;
 		try {
-			ResourceLoader resLoader = new ResourceLoader();
 			BufferedReader reader = resLoader.getBufferedReader(basePath + filename);
 			
 			StringBuilder sBuilder = new StringBuilder();
@@ -110,6 +109,7 @@ public class KnowledgeBase {
 					aff = AffordanceDelegate.loadHard(d, slicedString);
 				}
 				this.affDelegateList.add(aff);
+				reader.close();
 			}
 			
 		} catch (IOException e) {

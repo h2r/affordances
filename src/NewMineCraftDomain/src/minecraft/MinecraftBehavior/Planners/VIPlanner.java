@@ -42,7 +42,7 @@ public class VIPlanner extends MinecraftPlanner{
 		long startTime = System.currentTimeMillis( );
 		
 		int bellmanUpdates = planner.planFromStateAndCount(initialState);
-		
+		System.out.println("(VIPlanner) finished planning");
 		// Create a Q-greedy policy from the planner
 		Policy p = new GreedyQPolicy((QComputablePlanner)planner);
 		

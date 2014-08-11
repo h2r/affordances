@@ -131,6 +131,10 @@ public class NameSpace {
 	public static final String				LearnedHardVI = "LHVI";
 	public static final String				LearnedSoftVI = "LSVI";
 
+	//----------DIRECTORIES---------
+	public static final String				mapsDir = "src/minecraft/maps/";
+	public static final String				kbDir = "src/minecraft/kb/";
+	public static final String				templateMapPath = "minecraft/maps/template.map";
 	
 	//-------------ENUMS-------------
 	public enum RotDirection {

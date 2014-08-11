@@ -1,1 +1,10 @@
-Running on map: PlaneWorld0.map
+Running on map: DeepTrenchWorld0.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+mapCounter: 1
+Running on map: PlaneGoalShelfWorld0.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP

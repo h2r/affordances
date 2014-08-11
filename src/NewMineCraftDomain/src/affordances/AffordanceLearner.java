@@ -518,7 +518,7 @@ public class AffordanceLearner {
 //		MinecraftBehavior mb = new MinecraftBehavior(br);
 		
 		// Non-Grid
-		MinecraftBehavior mb = new MinecraftBehavior("minecraft/maps/template.map");
+		MinecraftBehavior mb = new MinecraftBehavior();
 		generateMinecraftKB(mb, 100, true);
 		
 	}

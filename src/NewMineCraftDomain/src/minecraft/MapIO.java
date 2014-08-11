@@ -80,6 +80,7 @@ public class MapIO {
 			while ((line = reader.readLine()) != null) {
 			    sb.append(line + "\n");
 			}
+			reader.close();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

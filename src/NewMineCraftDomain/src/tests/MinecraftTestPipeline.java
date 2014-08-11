@@ -47,18 +47,20 @@ public class MinecraftTestPipeline {
 		
 		int numLavaBlocks = 1;
 		
-//		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
-//		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 2, 2, 4);
-//		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
-//		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
-//		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 2, 2, 4);
-//		mapMaker.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
+		// Small
+		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
+		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 2, 2, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 2, 2, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
 		
+		// Big
 //		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 5, 5, 6);
 //		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 5, 5, 4);
 //		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 5, 5, 4);
 //		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks), 5, 5, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 5, 5, 4);
+//		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 5, 5, 4);
 //		mapMaker.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 5, 5, 5);
 		
 	}
@@ -72,12 +74,13 @@ public class MinecraftTestPipeline {
 	 * @param addOptions: a boolean indicating whether or not to add options to planners
 	 * @param addMacroActions: a boolean indicating whether or not to add macroactions to planners
 	 * @param countStateSpaceSize: a boolean indicating whether or not to count the reachable state space size of each map
+	 * @throws IOException 
 	 */
-	public static void runMinecraftTests(int numMapsPerGoal, String nametag, boolean shouldLearn, List<String> planners, boolean addOptions, boolean addMacroActions, boolean countStateSpaceSize) {
+	public static void runMinecraftTests(int numMapsPerGoal, String nametag, boolean shouldLearn, List<String> planners, boolean addOptions, boolean addMacroActions, boolean countStateSpaceSize) throws IOException {
 		
 		// Create behavior, planners, result objects, test maps
-		MinecraftBehavior mcBeh = new MinecraftBehavior("minecraft/maps/template.map");
-		String testMapDir = "minecraft/maps/test/";
+		MinecraftBehavior mcBeh = new MinecraftBehavior();
+		String testMapDir = NameSpace.mapsDir + "test/";
 		generateTestMaps(mcBeh, testMapDir, numMapsPerGoal);
 		File testDir = new File(testMapDir);
 		String[] testMaps = testDir.list();
@@ -130,177 +133,175 @@ public class MinecraftTestPipeline {
 			outputFileName = outputFileName + "_ma";
 		}
 		outputFileName = outputFileName + "_results.txt";
-//		File resultsFile = new File(outputFileName);
-//		BufferedWriter resultsBW;
-//		FileWriter resultsFW;
+		File resultsFile = new File(outputFileName);
+		BufferedWriter resultsBW;
+		FileWriter resultsFW;
 		
-//		File statusFile = new File("src/tests/results/status.txt");
-//		BufferedWriter statusBW;
-//		FileWriter statusFW;
+		File statusFile = new File("src/tests/results/status.txt");
+		BufferedWriter statusBW;
+		FileWriter statusFW;
 		List<Integer> stateSpaceSizes = new ArrayList<Integer>();
-		try {
-			// Initialize Result objects and file writing objects
-//			resultsFW = new FileWriter(resultsFile.getAbsoluteFile());
-//			resultsBW = new BufferedWriter(resultsFW);
-//			statusFW = new FileWriter(statusFile.getAbsoluteFile());
-//			statusBW = new BufferedWriter(statusFW);
-			int mapCounter = 0;
+		// Initialize Result objects and file writing objects
+			resultsFW = new FileWriter(resultsFile.getAbsoluteFile());
+			resultsBW = new BufferedWriter(resultsFW);
+			statusFW = new FileWriter(statusFile.getAbsoluteFile());
+			statusBW = new BufferedWriter(statusFW);
+		int mapCounter = 1;
 
-			// --- PLANNING ---
+		// --- PLANNING ---
+		
+		// Loop over each map and solve for each planner given
+		for(String map : testMaps) {
 			
-			// Loop over each map and solve for each planner given
-			for(String map : testMaps) {
-				System.out.println("Starting new map: " + map);
+			System.out.println("Starting new map: " + map);
 				statusBW.write("Running on map: " + map + "\n");
 				statusBW.flush();
-				
-				// Update planners with new map
-				MapIO mapIO = new MapIO(testMapDir + map);
-				mcBeh.updateMap(mapIO);
-				
-				if(countStateSpaceSize && mapCounter == 0) {
-					// Count Reachable State Size
-					stateSpaceSizes.add(mcBeh.countReachableStates());
-				}
-				
-				// --- Plan for each planner given ---
-				
-				// RTDP
-				if(planners.contains(NameSpace.RTDP)) {
+			
+			// Update planners with new map
+			MapIO mapIO = new MapIO("minecraft/maps/test/" + map);
+			mcBeh.updateMap(mapIO);
+			
+			if(countStateSpaceSize && mapCounter == 0) {
+				// Count Reachable State Size
+				stateSpaceSizes.add(mcBeh.countReachableStates());
+			}
+			
+			// --- Plan for each planner given ---
+			
+			// RTDP
+			if(planners.contains(NameSpace.RTDP)) {
 					statusBW.write("\t...RTDP");
 					statusBW.flush();
-					RTDPPlanner rtdp = new RTDPPlanner(mcBeh, addOptions, addMacroActions);
-					rtdpResults.addTrial(rtdp.runPlanner());
+				RTDPPlanner rtdp = new RTDPPlanner(mcBeh, addOptions, addMacroActions);
+				rtdpResults.addTrial(rtdp.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
-				}
-				
-				// Expert RTDP
-				if(planners.contains(NameSpace.ExpertRTDP)) {
+			}
+			
+			// Expert RTDP
+			if(planners.contains(NameSpace.ExpertRTDP)) {
 					statusBW.write("\t...Expert RTDP");
 					statusBW.flush();
-					AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, addOptions, addMacroActions, expertAffKB);
-					affRTDP.updateKB(expertAffKB);
-					expertRTDPResults.addTrial(affRTDP.runPlanner());
+				AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, addOptions, addMacroActions, expertAffKB);
+				affRTDP.updateKB(expertAffKB);
+				expertRTDPResults.addTrial(affRTDP.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
-				}
-				
-				// Learned Hard RTDP
-				if(planners.contains(NameSpace.LearnedHardRTDP)) {
+			}
+			
+			// Learned Hard RTDP
+			if(planners.contains(NameSpace.LearnedHardRTDP)) {
 					statusBW.write("\t...LearnedHard RTDP");
 					statusBW.flush();
-					AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, addOptions, addMacroActions, learnedHardAffKB);
-					affRTDP.updateKB(learnedHardAffKB);
-					learnedHardRTDPResults.addTrial(affRTDP.runPlanner());
+				AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, addOptions, addMacroActions, learnedHardAffKB);
+				affRTDP.updateKB(learnedHardAffKB);
+				learnedHardRTDPResults.addTrial(affRTDP.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
-				}
-				
-				// Learned Soft RTDP
-				if(planners.contains(NameSpace.LearnedSoftRTDP)) {
+			}
+			
+			// Learned Soft RTDP
+			if(planners.contains(NameSpace.LearnedSoftRTDP)) {
 					statusBW.write("\t...Learned Soft RTDP");
 					statusBW.flush();
-					AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, addOptions, addMacroActions, learnedSoftAffKB);
-					affRTDP.updateKB(learnedSoftAffKB);
-					learnedSoftRTDPResults.addTrial(affRTDP.runPlanner());
+				AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, addOptions, addMacroActions, learnedSoftAffKB);
+				affRTDP.updateKB(learnedSoftAffKB);
+				learnedSoftRTDPResults.addTrial(affRTDP.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
-				}
-				
-				// VI
-				if(planners.contains(NameSpace.VI)) {
+			}
+			
+			// VI
+			if(planners.contains(NameSpace.VI)) {
 					statusBW.write("\t...VI");
 					statusBW.flush();
-					VIPlanner vi = new VIPlanner(mcBeh, addOptions, addMacroActions);
-					viResults.addTrial(vi.runPlanner());
+				VIPlanner vi = new VIPlanner(mcBeh, addOptions, addMacroActions);
+				viResults.addTrial(vi.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
-				}
-				
-				// Expert VI
-				if(planners.contains(NameSpace.ExpertVI)) {
+			}
+			
+			// Expert VI
+			if(planners.contains(NameSpace.ExpertVI)) {
 					statusBW.write("\t...Expert VI");
 					statusBW.flush();
-					AffordanceVIPlanner affVI = new AffordanceVIPlanner(mcBeh, addOptions, addMacroActions, expertAffKB);
-					affVI.updateKB(expertAffKB);
-					expertVIResults.addTrial(affVI.runPlanner());
+				AffordanceVIPlanner affVI = new AffordanceVIPlanner(mcBeh, addOptions, addMacroActions, expertAffKB);
+				affVI.updateKB(expertAffKB);
+				expertVIResults.addTrial(affVI.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
-				}
-				
-				// Learned Hard VI
-				if(planners.contains(NameSpace.LearnedHardVI)) {
+			}
+			
+			// Learned Hard VI
+			if(planners.contains(NameSpace.LearnedHardVI)) {
 					statusBW.write("\t...Learned Hard VI");
 					statusBW.flush();
-					AffordanceVIPlanner affVI = new AffordanceVIPlanner(mcBeh, addOptions, addMacroActions, learnedHardAffKB);
-					affVI.updateKB(learnedHardAffKB);
-					learnedHardVIResults.addTrial(affVI.runPlanner());
+				AffordanceVIPlanner affVI = new AffordanceVIPlanner(mcBeh, addOptions, addMacroActions, learnedHardAffKB);
+				affVI.updateKB(learnedHardAffKB);
+				learnedHardVIResults.addTrial(affVI.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
-				}
+			}
 				statusBW.write("mapCounter: " + mapCounter + "\n");
-//				statusBW.flush();
-				// --- RECORD RESULTS TO FILE ---
-				if(mapCounter == numMapsPerGoal - 1) {
-					System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-					double avgStateSpaceSize = 0;
-					if(countStateSpaceSize) {
-						int total = 0;
-						for(Integer size : stateSpaceSizes) {
-							total += size;
-						}
-						avgStateSpaceSize = ((double)total) / mapCounter;
+				statusBW.flush();
+				
+			// --- RECORD RESULTS TO FILE ---
+			if(mapCounter == numMapsPerGoal) {
+				System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+				double avgStateSpaceSize = 0;
+				if(countStateSpaceSize) {
+					int total = 0;
+					for(Integer size : stateSpaceSizes) {
+						total += size;
 					}
-					
-					resultsBW.write("map: " + map.substring(0, map.length() - 5) + "stateSpace=" + avgStateSpaceSize + "\n");
-					if(planners.contains(NameSpace.RTDP)) {
-//						resultsBW.write("\t" + rtdpResults.toString() + "\n");
-						System.out.println(rtdpResults.toString());
-						rtdpResults.clear();
-					}
-					if(planners.contains(NameSpace.ExpertRTDP)) {
-//						resultsBW.write("\t" + expertRTDPResults.toString() + "\n");
-						System.out.println(expertRTDPResults.toString());
-						expertRTDPResults.clear();
-					}
-					if(planners.contains(NameSpace.LearnedHardRTDP)) {
-//						resultsBW.write("\t" + learnedHardRTDPResults.toString() + "\n");
-						System.out.println(learnedHardRTDPResults.toString());
-						learnedHardRTDPResults.clear();
-					}
-					if(planners.contains(NameSpace.LearnedSoftRTDP)) {
-//						resultsBW.write("\t" + learnedSoftRTDPResults.toString() + "\n");
-						System.out.println(learnedSoftRTDPResults.toString());
-						learnedSoftRTDPResults.clear();
-					}
-					if(planners.contains(NameSpace.VI)) {
-//						resultsBW.write("\t" + viResults.toString() + "\n");
-						System.out.println(viResults.toString());
-						viResults.clear();
-					}
-					if(planners.contains(NameSpace.ExpertVI)) {
-//						resultsBW.write("\t" + expertVIResults.toString() + "\n");
-						System.out.println(expertVIResults.toString());
-						expertVIResults.clear();
-					}
-					if(planners.contains(NameSpace.LearnedHardVI)) {
-//						resultsBW.write("\t" + learnedHardVIResults.toString() + "\n");
-						System.out.println(learnedHardVIResults.toString());
-						learnedHardVIResults.clear();
-					}
-					System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-//					resultsBW.flush();
-					
-					// Reset
-					mapCounter = 0;
-					continue;
+					avgStateSpaceSize = ((double)total) / mapCounter;
 				}
 				
-				mapCounter++;
+					resultsBW.write("map: " + map.substring(0, map.length() - 5) + "stateSpace=" + avgStateSpaceSize + "\n");
+				if(planners.contains(NameSpace.RTDP)) {
+						resultsBW.write("\t" + rtdpResults.toString() + "\n");
+					System.out.println(rtdpResults.toString());
+					rtdpResults.clear();
+				}
+				if(planners.contains(NameSpace.ExpertRTDP)) {
+						resultsBW.write("\t" + expertRTDPResults.toString() + "\n");
+					System.out.println(expertRTDPResults.toString());
+					expertRTDPResults.clear();
+				}
+				if(planners.contains(NameSpace.LearnedHardRTDP)) {
+						resultsBW.write("\t" + learnedHardRTDPResults.toString() + "\n");
+					System.out.println(learnedHardRTDPResults.toString());
+					learnedHardRTDPResults.clear();
+				}
+				if(planners.contains(NameSpace.LearnedSoftRTDP)) {
+						resultsBW.write("\t" + learnedSoftRTDPResults.toString() + "\n");
+					System.out.println(learnedSoftRTDPResults.toString());
+					learnedSoftRTDPResults.clear();
+				}
+				if(planners.contains(NameSpace.VI)) {
+						resultsBW.write("\t" + viResults.toString() + "\n");
+					System.out.println(viResults.toString());
+					viResults.clear();
+				}
+				if(planners.contains(NameSpace.ExpertVI)) {
+						resultsBW.write("\t" + expertVIResults.toString() + "\n");
+					System.out.println(expertVIResults.toString());
+					expertVIResults.clear();
+				}
+				if(planners.contains(NameSpace.LearnedHardVI)) {
+						resultsBW.write("\t" + learnedHardVIResults.toString() + "\n");
+					System.out.println(learnedHardVIResults.toString());
+					learnedHardVIResults.clear();
+				}
+				System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+					resultsBW.flush();
+				
+				// Reset
+				mapCounter = 0;
+				continue;
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+			
+			mapCounter++;
 		}
 		
 	}
@@ -313,8 +314,8 @@ public class MinecraftTestPipeline {
 	 */
 	public static void runLearningRateTests(String nametag, int numMapsPerGoal, int maxNumLearningWorlds, int learningIncrement, boolean shouldLearn, boolean countStateSpaceSize) throws IOException {
 		// Generate Behavior and test maps
-		MinecraftBehavior mcBeh = new MinecraftBehavior("src/minecraft/maps/template.map");
-		String testMapDir = "src/minecraft/maps/learningRateTest/";
+		MinecraftBehavior mcBeh = new MinecraftBehavior();
+		String testMapDir = NameSpace.mapsDir;
 		generateTestMaps(mcBeh, testMapDir, numMapsPerGoal);
 		System.out.println("------------after generation");
 		
@@ -462,7 +463,13 @@ public class MinecraftTestPipeline {
 		boolean addOptions = false;
 		boolean addMacroActions = false;
 		boolean countStateSpaceSize = true;
-		runMinecraftTests(3, "3gridtest", learningFlag, planners, addOptions, addMacroActions, countStateSpaceSize);
+		
+		try {
+			runMinecraftTests(1, "1", learningFlag, planners, addOptions, addMacroActions, countStateSpaceSize);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		// --- Learning Rate Results ---
 //		boolean shouldLearn = false;
@@ -479,3 +486,4 @@ public class MinecraftTestPipeline {
 	}
 
 }
+//
