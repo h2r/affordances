@@ -393,8 +393,8 @@ public class MapIO {
 	}
 	
 	public static void main(String[] args) {
-		String filePath = "src/minecraft/maps/";
-		MapIO myIO = new MapIO(filePath + "jumpworld.map");
-		myIO.printHeaderAndMapToFile(filePath + "TESTING.map");
+		String filePath = "minecraft/maps/";
+		MapIO myIO = new MapIO(filePath + "bigPlane.map");
+		System.out.println(myIO.toString());
 	}
 }
