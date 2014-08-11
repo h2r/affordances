@@ -1,6 +1,12 @@
 package affordances;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,16 +76,33 @@ public class AffordanceLearner {
 		
 		List<MapIO> maps = new ArrayList<MapIO>();
 		
-		String learningMapDir = "src/minecraft/maps/learning/";
-		createLearningMaps(learningMapDir);
+		String learningMapDir = "minecraft/maps/learning/";
+//		createLearningMaps(learningMapDir);
 		
-		File testDir = new File(learningMapDir);
-		String[] learningMaps = testDir.list();
 		
-		for(String map : learningMaps) {
+		// For grid
+		List<String> mapNames = new ArrayList<String>();
+		for(int i = 0; i < this.numWorldsPerLGD; i++) {
+			mapNames.add("DeepTrenchWorld" + i + ".map");
+		}
+		
+//		File testDir = new File(learningMapDir);
+		
+		for(String map : mapNames) {
+//			InputStream testDir = getClass().getResourceAsStream("/" + learningMapDir + map);
 			MapIO learningMap = new MapIO(learningMapDir + map);
 			maps.add(learningMap);
 		}
+		
+		
+//		String[] learningMaps = testDir.
+		
+		
+				
+//		for(String map : learningMaps) {
+//			MapIO learningMap = new MapIO(learningMapDir + map);
+//			maps.add(learningMap);
+//		}
 
 		// Run learning on all the generated maps
 		int mapNum = 1;
@@ -109,12 +132,16 @@ public class AffordanceLearner {
 		int numLavaBlocks = 1;
 		
 		System.out.println("Generating maps..." + this.numWorldsPerLGD);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 2, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 2, 3, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 1, 2, 5);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 3, 3, 5);
+
+		
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 2, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 2, 3, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 1, 2, 5);
+		
+
 	}
 	
 	/**
@@ -457,7 +484,7 @@ public class AffordanceLearner {
 		
 		String kbName;
 		if(learningRate) {
-			kbName = "learning_rate/tests" + affLearn.numWorldsPerLGD + ".kb";
+			kbName = "learning_rate/lr_" + affLearn.numWorldsPerLGD + ".kb";
 		}
 		else {
 			kbName = "learned" + affLearn.numWorldsPerLGD + ".kb";
@@ -471,8 +498,28 @@ public class AffordanceLearner {
 	}
 
 	public static void main(String[] args) {
-		MinecraftBehavior mb = new MinecraftBehavior("src/minecraft/maps/template.map");
-		generateMinecraftKB(mb, 25, true);
+//		String templatePath = Test.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+//		System.out.println(new File(".").getAbsolutePath());
+//		List<Integer> l = new ArrayList<Integer>();
+//		
+//		File input;
+//		try {
+//			input = new File(l.getClass().getResource("/src/minecraft/maps/learning/DeepTrenchWorld0.map").toURI());
+//			System.out.println("INPUT: " + input);
+//		} catch (URISyntaxException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+//		InputStream is = o.getClass.getResourceAsStream("/DeepTrenchWorld0.map");
+//		InputStreamReader isr = new InputStreamReader(input);
+//		BufferedReader br = new BufferedReader(isr);
+		
+//		MinecraftBehavior mb = new MinecraftBehavior(br);
+		
+		// Non-Grid
+		MinecraftBehavior mb = new MinecraftBehavior("minecraft/maps/template.map");
+		generateMinecraftKB(mb, 100, true);
 		
 	}
 	

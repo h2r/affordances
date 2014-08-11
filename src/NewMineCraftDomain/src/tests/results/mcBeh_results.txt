@@ -1,1 +1,1 @@
-(minecraftBehavior) results: VI 10206.0,-14.0,1.0,18.60s
+(minecraftBehavior) results: RTDP 3086.0,-6.0,1.0,4.89s

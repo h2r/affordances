@@ -1,5 +1,6 @@
 package minecraft.MinecraftBehavior;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -110,6 +111,11 @@ public class MinecraftBehavior {
 	 */
 	public MinecraftBehavior(String filePath) {
 		MapIO mapIO = new MapIO(filePath);
+		this.updateMap(mapIO);	
+	}
+	
+	public MinecraftBehavior(BufferedReader reader) {
+		MapIO mapIO = new MapIO(reader);
 		this.updateMap(mapIO);	
 	}
 	
@@ -477,18 +483,17 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-		String mapsPath = "src/minecraft/maps/randomMaps/";
-		String outputPath = "src/minecraft/planningOutput/";
+//		String mapsPath = System.getProperty("user.dir") + "/maps/";
 		
-		String mapName = "/learningRateTest/DeepTrenchWorld0.map";
+		String mapName = "maps/PlaneWorld0.map";
 		
-		MinecraftBehavior mcBeh = new MinecraftBehavior(mapsPath + mapName);
+		MinecraftBehavior mcBeh = new MinecraftBehavior(mapName);
 		double [] results;
 		
 		//BFS
-		BFSPlanner bfsPlanner = new BFSPlanner(mcBeh, true, true);
-		results = bfsPlanner.runPlanner();
-		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+//		BFSPlanner bfsPlanner = new BFSPlanner(mcBeh, true, true);
+//		results = bfsPlanner.runPlanner();
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//RTDP
 //		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, false, false);
@@ -497,8 +502,12 @@ public class MinecraftBehavior {
 		
 		//AFFRTDP
 		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.loadHard(mcBeh.getDomain(), "/learning_rate/lr_0.kb");
-//		affKB.loadHard(mcBeh.getDomain(), "/expert.kb");
+		
+		// Hard
+		affKB.load(mcBeh.getDomain(), "expert.kb", false);
+		// Soft
+//		affKB.load(mcBeh.getDomain(), "/learning_rate/lr_100.kb", true);
+		
 		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
 		results = affRTDPPlanner.runPlanner();
 		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
@@ -524,18 +533,18 @@ public class MinecraftBehavior {
 //		sgp.solve();
 		
 		// Collect results and write to file
-		File resultsFile = new File("src/tests/results/mcBeh_results.txt");
-		BufferedWriter bw;
-		FileWriter fw;
-		try {
-			fw = new FileWriter(resultsFile.getAbsoluteFile());
-			bw = new BufferedWriter(fw);
-			bw.write("(minecraftBehavior) results: RTDP " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
-			bw.flush();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		File resultsFile = new File("tests/results/mcBeh_results.txt");
+//		BufferedWriter bw;
+//		FileWriter fw;
+//		try {
+//			fw = new FileWriter(resultsFile.getAbsoluteFile());
+//			bw = new BufferedWriter(fw);
+//			bw.write("(minecraftBehavior) results: RTDP " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
+//			bw.flush();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 	}
 	

@@ -10,7 +10,7 @@ public class DeepTrenchWorld extends MinecraftWorld {
 	 */
 	public DeepTrenchWorld(int numTrenches, int numLava) {
 		this.numTrenches = numTrenches;
-		this.floorDepth = 2;
+		this.floorDepth = 3;
 		this.numPlaceBlocks = numTrenches;
 		this.numLava = numLava;
 	}

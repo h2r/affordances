@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import tests.ResourceLoader;
 import minecraft.MinecraftBehavior.MinecraftBehavior;
 import affordances.WorldPerceptron.PerceptronHelpers;
 import affordances.WorldPerceptron.PerceptualData;
@@ -57,12 +58,42 @@ public class MapIO {
 	//-----CLASS METHODS-----
 	public MapIO(String filePath) {
 		//Open file
-		BufferedReader reader = null;
+	
+		// NOTE: old stuff
+//		BufferedReader reader = null;
+//		try {
+//		reader = new BufferedReader(new FileReader(filePath));
+//	} catch (FileNotFoundException e1) {
+//		System.out.println("Couldn't open map file: " + filePath);
+//	}
+		
+		ResourceLoader resLoader = new ResourceLoader();
+		BufferedReader reader = resLoader.getBufferedReader(filePath);
+		
+		StringBuilder sb = new StringBuilder();
+		
+		//Build header string and map string
+		String line = "";
+		String stateInfoAsString = "";
 		try {
-			reader = new BufferedReader(new FileReader(filePath));
-		} catch (FileNotFoundException e1) {
-			System.out.println("Couldn't open map file: " + filePath);
+			stateInfoAsString = reader.readLine();//String to store things like number of placeable blocks
+			while ((line = reader.readLine()) != null) {
+			    sb.append(line + "\n");
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
+		
+		String mapAsString = sb.toString();
+				
+		this.headerMap = processHeader(stateInfoAsString);
+		this.mapAsCharArray = processMapString(mapAsString);
+		this.rows = this.mapAsCharArray.length;
+		this.cols = this.mapAsCharArray[0].length;
+		this.height = this.mapAsCharArray[0][0].length;
+	}
+	
+	public MapIO(BufferedReader reader) {
 		
 		StringBuilder sb = new StringBuilder();
 		

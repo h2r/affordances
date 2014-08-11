@@ -1,14 +1,17 @@
 package affordances;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import tests.ResourceLoader;
 import burlap.behavior.affordances.AffordanceDelegate;
 import burlap.behavior.affordances.AffordancesController;
 import burlap.behavior.affordances.SoftAffordance;
@@ -24,7 +27,9 @@ import burlap.oomdp.core.Domain;
 public class KnowledgeBase {
 	private List<AffordanceDelegate>	affDelegateList;
 	private AffordancesController		affController;
-	private String						basePath = System.getProperty("user.dir") + "/src/minecraft/kb/";
+//	private String						basePath = System.getProperty("user.dir") + "/minecraft/kb/";
+	private String						basePath = "minecraft/kb/";
+	
 	
 	public KnowledgeBase() {
 		this.affDelegateList = new ArrayList<AffordanceDelegate>();
@@ -56,7 +61,10 @@ public class KnowledgeBase {
 		String fpath = basePath + "/" + filename;
 		
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(fpath)));
+//			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(fpath)));
+			
+			// For grid
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 			
 			for (AffordanceDelegate aff: this.affDelegateList) {
 				bw.write(((SoftAffordance)aff.getAffordance()).toFile());
@@ -69,38 +77,41 @@ public class KnowledgeBase {
 		}
 	}
 	
-	public void loadSoft(Domain d, String filename) {
-
+	public void load(Domain d, String filename, boolean softFlag) {
 		AffordanceDelegate aff = null;
 		try {
-			Scanner scnr = new Scanner(new File(basePath + "/" + filename));
-			while (scnr.hasNextLine()) {
-				aff = AffordanceDelegate.loadSoft(d, scnr);
-				
+			ResourceLoader resLoader = new ResourceLoader();
+			BufferedReader reader = resLoader.getBufferedReader(basePath + filename);
+			
+			StringBuilder sBuilder = new StringBuilder();
+			String nextLine = reader.readLine();
+			
+			while(nextLine != null) {
+				sBuilder.append(nextLine + "\n");
+				nextLine = reader.readLine();
+			}
+			
+			String[] kbStrings = sBuilder.toString().split("===");
+			
+			String[] processedStrings = new String[kbStrings.length - 1];
+			
+			// Remove the last element from KBString (closing equals signs)
+			for(int i = 0; i < processedStrings.length; i++) {
+				processedStrings[i] = kbStrings[i];
+			}
+			
+			for(String affString : processedStrings) {
+				// Remove the final newline character from the affordance
+				String slicedString = affString.substring(0, affString.length() - 1);
+				if(softFlag) {
+					aff = AffordanceDelegate.loadSoft(d, slicedString);
+				}
+				else {
+					aff = AffordanceDelegate.loadHard(d, slicedString);
+				}
 				this.affDelegateList.add(aff);
 			}
-
-			scnr.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		this.affController = new AffordancesController(this.affDelegateList);
-	}
-	
-	public void loadHard(Domain d, String filename) {
-
-		AffordanceDelegate aff = null;
-		try {
-			Scanner scnr = new Scanner(new File(basePath + "/" + filename));
-			while (scnr.hasNextLine()) {
-				aff = AffordanceDelegate.loadHard(d, scnr);
-				
-				this.affDelegateList.add(aff);
-			}
-
-			scnr.close();
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -17,6 +17,10 @@ public class Result {
 	private int numTrials;
 	
 	private String plannerName;
+	private double bellmanDeviation;
+	private double rewardDeviation;
+	private double completedDeviation;
+	private double cpuDeviation;
 	
 	public Result(String plannerName) {
 		this.plannerName = plannerName;
@@ -26,21 +30,25 @@ public class Result {
 	 * Computes the average values given data across this.numTrials.
 	 */
 	private void computeAverages() {
+		// Bellman Updates
 		int totalBellmanUpdates = 0;
 		for (Double bu : bellmanUpdateTrials) {
 			totalBellmanUpdates = (int) (totalBellmanUpdates + bu);
 		}
 		
+		// Reward
 		double totalReward = 0.0;
 		for (Double r : accumulatedRewardTrials) {
 			totalReward = totalReward + r;
 		}
 		
+		// Task completion rate
 		double totalFinishedTrials = 0.0;
 		for (Double df : didFinishTrials) {
 			totalFinishedTrials = totalFinishedTrials + df;
 		}
 		
+		// CPU time
 		double totalCpuTime = 0.0;
 		for (Integer cput : cpuTrials) {
 			totalCpuTime = totalCpuTime + cput;
@@ -51,21 +59,38 @@ public class Result {
 		this.taskCompletedRate = totalFinishedTrials / this.numTrials;
 		this.avgCpuTime = (totalCpuTime / this.numTrials) / 1000.0; //convert from milliseconds to seconds
 	}
-
-	public int getAvgBellmanUpdates() {
-		return this.avgBellmanUpdates;
-	}
 	
-	public double getAccumulatedReward() {
-		return this.avgAccumulatedReward;
-	}
-	
-	public double getCompletionRate() {
-		return this.taskCompletedRate;
-	}
-	
-	public double getAvgCpuTime() {
-		return this.avgCpuTime;
+	/**
+	 * Computes the standard deviation of each data type
+	 */
+	private void computeDeviations() {
+		// Bellman updates
+		int sumOfAvgDiffBellmanSqd = 0;
+		for (Double bu : bellmanUpdateTrials) {
+			sumOfAvgDiffBellmanSqd += Math.pow((bu - this.avgBellmanUpdates),2);
+		}
+		this.bellmanDeviation = Math.sqrt(((double)sumOfAvgDiffBellmanSqd) / this.numTrials);
+		
+		// Reward
+		double sumOfAvgDiffRewardSqd = 0.0;
+		for (Double r : accumulatedRewardTrials) {
+			sumOfAvgDiffRewardSqd = Math.pow((r - this.avgAccumulatedReward),2);
+		}
+		this.rewardDeviation = Math.sqrt(((double)sumOfAvgDiffRewardSqd) / this.numTrials);
+		
+		// Task completion rate
+		double sumOfAvgDiffCompeletedSqd = 0.0;
+		for (Double df : didFinishTrials) {
+			sumOfAvgDiffCompeletedSqd = Math.pow((df - this.taskCompletedRate),2);
+		}
+		this.completedDeviation = Math.sqrt(((double)sumOfAvgDiffCompeletedSqd) / this.numTrials);
+		
+		// CPU time
+		double sumOfAvgDiffCPUSqd = 0.0;
+		for (Integer cput : cpuTrials) {
+			sumOfAvgDiffCPUSqd = Math.pow((cput - this.avgCpuTime),2);
+		}
+		this.cpuDeviation = Math.sqrt(((double)sumOfAvgDiffCPUSqd) / this.numTrials) / 1000.0; // Divide by 1000 to convert from ms to seconds
 	}
 	
 	/**
@@ -79,6 +104,7 @@ public class Result {
 		this.cpuTrials.add((int) trial[3]);
 		++this.numTrials;
 		computeAverages();
+		computeDeviations();
 	}
 	
 	/**
@@ -97,12 +123,48 @@ public class Result {
 		this.avgCpuTime = 0;
 	}
 	
-	/**
-	 * Converts to string for use in writing results to file.
-	 */
+	// --- ACCESSORS ---
+	
+	public int getAvgBellmanUpdates() {
+		return this.avgBellmanUpdates;
+	}
+	
+	public double getAccumulatedReward() {
+		return this.avgAccumulatedReward;
+	}
+	
+	public double getCompletionRate() {
+		return this.taskCompletedRate;
+	}
+	
+	public double getAvgCpuTime() {
+		return this.avgCpuTime;
+	}
+	
+	public double getBellmanDeviation() {
+		return this.bellmanDeviation;
+	}
+	
+	public double getRewardDeviation() {
+		return this.rewardDeviation;
+	}
+	
+	public double getCompletedDeviation() {
+		return this.completedDeviation;
+	}
+	
+	public double getCPUDeviation() {
+		return this.cpuDeviation;
+	}
+	
 	public String toString() {
 		computeAverages();
-		String result = plannerName + " " + this.avgBellmanUpdates + ", " + String.format("%.2f", this.avgAccumulatedReward) + ", " + String.format("%.2f", this.taskCompletedRate) + ", " + String.format("%.2f", this.avgCpuTime) + "s"; 
+		String result = plannerName + " " 
+		+ this.avgBellmanUpdates + ".(" + String.format("%.2f", this.bellmanDeviation) + ") , " 
+		+ String.format("%.2f", this.avgAccumulatedReward) + ".(" + String.format("%.2f", this.rewardDeviation) + ") , " 
+		+ String.format("%.2f", this.taskCompletedRate) + ".(" + String.format("%.2f", this.completedDeviation) + ") , " 
+		+ String.format("%.2f", this.avgCpuTime) + "s.(" + String.format("%.2f", this.cpuDeviation) + ")"; 
+		
 		return result;
 	}
 
