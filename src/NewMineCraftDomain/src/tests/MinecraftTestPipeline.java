@@ -48,20 +48,20 @@ public class MinecraftTestPipeline {
 		int numLavaBlocks = 1;
 		
 		// Small
-		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
-		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 2, 2, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 2, 2, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
+//		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
+//		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 2, 2, 4);
+//		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
+//		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
+//		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 2, 2, 4);
+//		mapMaker.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
 		
 		// Big
-//		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 5, 5, 6);
-//		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 5, 5, 4);
-//		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 5, 5, 4);
-//		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks), 5, 5, 4);
-//		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 5, 5, 4);
-//		mapMaker.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 5, 5, 5);
+		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 5, 5, 6);
+		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 5, 5, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 5, 5, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks), 5, 5, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 5, 5, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 5, 5, 5);
 		
 	}
 	
@@ -80,7 +80,7 @@ public class MinecraftTestPipeline {
 		
 		// Create behavior, planners, result objects, test maps
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
-		String testMapDir = NameSpace.mapsDir + "test/";
+		String testMapDir = NameSpace.PATHMAPS + "test/";
 		generateTestMaps(mcBeh, testMapDir, numMapsPerGoal);
 		File testDir = new File(testMapDir);
 		String[] testMaps = testDir.list();
@@ -125,7 +125,7 @@ public class MinecraftTestPipeline {
 		}
 		
 		// --- FILE WRITER SETUP ---
-		String outputFileName= "src/tests/results/" + nametag;
+		String outputFileName= NameSpace.PATHRESULTS + nametag;
 		if(addOptions){
 			outputFileName = outputFileName + "_opt";
 		}
@@ -137,7 +137,7 @@ public class MinecraftTestPipeline {
 		BufferedWriter resultsBW;
 		FileWriter resultsFW;
 		
-		File statusFile = new File("src/tests/results/status.txt");
+		File statusFile = new File(NameSpace.PATHRESULTS + "status.txt");
 		BufferedWriter statusBW;
 		FileWriter statusFW;
 		List<Integer> stateSpaceSizes = new ArrayList<Integer>();
@@ -161,7 +161,7 @@ public class MinecraftTestPipeline {
 			MapIO mapIO = new MapIO("minecraft/maps/test/" + map);
 			mcBeh.updateMap(mapIO);
 			
-			if(countStateSpaceSize && mapCounter == 0) {
+			if(countStateSpaceSize && mapCounter == 1) {
 				// Count Reachable State Size
 				stateSpaceSizes.add(mcBeh.countReachableStates());
 			}
@@ -247,7 +247,6 @@ public class MinecraftTestPipeline {
 				
 			// --- RECORD RESULTS TO FILE ---
 			if(mapCounter == numMapsPerGoal) {
-				System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 				double avgStateSpaceSize = 0;
 				if(countStateSpaceSize) {
 					int total = 0;
@@ -290,14 +289,13 @@ public class MinecraftTestPipeline {
 				}
 				if(planners.contains(NameSpace.LearnedHardVI)) {
 						resultsBW.write("\t" + learnedHardVIResults.toString() + "\n");
-					System.out.println(learnedHardVIResults.toString());
+//					System.out.println(learnedHardVIResults.toString());
 					learnedHardVIResults.clear();
 				}
-				System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 					resultsBW.flush();
 				
 				// Reset
-				mapCounter = 0;
+				mapCounter = 1;
 				continue;
 			}
 			
@@ -315,7 +313,7 @@ public class MinecraftTestPipeline {
 	public static void runLearningRateTests(String nametag, int numMapsPerGoal, int maxNumLearningWorlds, int learningIncrement, boolean shouldLearn, boolean countStateSpaceSize) throws IOException {
 		// Generate Behavior and test maps
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
-		String testMapDir = NameSpace.mapsDir;
+		String testMapDir = NameSpace.PATHMAPS;
 		generateTestMaps(mcBeh, testMapDir, numMapsPerGoal);
 		System.out.println("------------after generation");
 		
@@ -462,7 +460,7 @@ public class MinecraftTestPipeline {
 		
 		boolean addOptions = false;
 		boolean addMacroActions = false;
-		boolean countStateSpaceSize = true;
+		boolean countStateSpaceSize = false;
 		
 		try {
 			runMinecraftTests(1, "1", learningFlag, planners, addOptions, addMacroActions, countStateSpaceSize);

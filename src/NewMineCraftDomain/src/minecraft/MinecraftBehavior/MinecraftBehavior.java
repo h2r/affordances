@@ -97,7 +97,7 @@ public class MinecraftBehavior {
 	public double						minDelta = .01;
 	public int							maxSteps = 200;
 
-	public int 							numRollouts = 2500; // RTDP
+	public int 							numRollouts = 1500; // RTDP
 	public int							maxDepth = 25; // RTDP
 	public int 							vInit = 1; // RTDP
 	public int 							numRolloutsWithSmallChangeToConverge = 30; // RTDP
@@ -110,7 +110,7 @@ public class MinecraftBehavior {
 	 * Blank constructor to instantiate behavior. Reads in the template map.
 	 */
 	public MinecraftBehavior() {
-		MapIO mapIO = new MapIO(NameSpace.templateMapPath);
+		MapIO mapIO = new MapIO(NameSpace.PATHTEMPLATEMAP);
 		this.updateMap(mapIO);	
 	}
 	
