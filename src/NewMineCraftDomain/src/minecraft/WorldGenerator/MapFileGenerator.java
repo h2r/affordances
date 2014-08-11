@@ -166,7 +166,7 @@ public class MapFileGenerator {
 	 * Deletes all of the map files in the current directoryPath (used in test pipeline)
 	 */
 	public void clearMapsInDirectory() {
-		File mapDir = new File(this.directoryPath);       
+		File mapDir = new File(this.directoryPath);
 		String[] mapsToDelete = mapDir.list();
 	    if(mapsToDelete != null){
 	    	for (int i = 0; i < mapsToDelete.length; i++) {  
@@ -191,8 +191,6 @@ public class MapFileGenerator {
 		test.generateNMaps(numMaps, new PlaneWallWorld(1, numLava));
 		test.generateNMaps(numMaps, new PlaneWorld(numLava));
 		test.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLava));
-
-
 	}
 
 }
