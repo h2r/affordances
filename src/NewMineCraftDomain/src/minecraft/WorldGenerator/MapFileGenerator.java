@@ -76,30 +76,7 @@ public class MapFileGenerator {
 	 * @param minecraftWorld
 	 */
 	public void generateNMaps(int numMaps, MinecraftWorld minecraftWorld) {
-		String baseFileName = minecraftWorld.getName();
-		
-		System.out.println("Generating " + baseFileName + " maps...");
-		List<MapIO> toWriteToFile = new ArrayList<MapIO>();
-		
-		for (int i = 0; i < numMaps; i++) {
-						
-			try {
-				this.worldGenerator.randomizeMap(minecraftWorld.getGoal(), minecraftWorld.getFloorOf(), minecraftWorld.getNumTrenches(),
-						minecraftWorld.getTrenchStraightAndBetweenAgentAndGoal(), minecraftWorld.getNumWalls(),
-						minecraftWorld.getWallOf(), minecraftWorld.getwallsStraightAndBetweenAgentAndGoal(), minecraftWorld.getDepthOfGoldOre(),
-						minecraftWorld.getFloorDepth(), minecraftWorld.getNumPlaceBlocks(), minecraftWorld.getGoalShelfHeight(), minecraftWorld.getNumLava());
-			} catch (RandomMapGenerationException e) {
-				System.out.println("\tCouldn't make one of the maps: " + e.toString());
-			}
-			MapIO currIO = this.worldGenerator.getCurrMapIO();
-			toWriteToFile.add(currIO);
-		}
-		
-		int i = 0;
-		for (MapIO currIO : toWriteToFile) {
-			currIO.printHeaderAndMapToFile(this.directoryPath + baseFileName + i++ + ".map");
-		}
-			
+		generateNMapsHelpers(numMaps, minecraftWorld, this.worldGenerator);
 	}
 	
 	/**
@@ -111,14 +88,18 @@ public class MapFileGenerator {
 	 * @param height: dimensions
 	 */
 	public void generateNMaps(int numMaps, MinecraftWorld minecraftWorld, int rows, int cols, int height) {
-		String baseFileName = minecraftWorld.getName();
-		
-		System.out.println("Generating " + baseFileName + " maps...");
-		List<MapIO> toWriteToFile = new ArrayList<MapIO>();
 		WorldGenerator worldGen = new WorldGenerator(rows, cols, height);
+		generateNMapsHelpers(numMaps, minecraftWorld, worldGen);
+			
+	}
+	
+	public void generateNMapsHelpers(int numMaps, MinecraftWorld minecraftWorld, WorldGenerator worldGen) {
+		
+		List<MapIO> toWriteToFile = new ArrayList<MapIO>();
+		String baseFileName = minecraftWorld.getName();
+		System.out.println("Generating " + baseFileName + " maps...");
 		for (int i = 0; i < numMaps; i++) {		
 			try {
-				
 				worldGen.randomizeMap(minecraftWorld.getGoal(), minecraftWorld.getFloorOf(), minecraftWorld.getNumTrenches(),
 						minecraftWorld.getTrenchStraightAndBetweenAgentAndGoal(), minecraftWorld.getNumWalls(),
 						minecraftWorld.getWallOf(), minecraftWorld.getwallsStraightAndBetweenAgentAndGoal(), minecraftWorld.getDepthOfGoldOre(),
@@ -135,8 +116,7 @@ public class MapFileGenerator {
 		for (MapIO currIO : toWriteToFile) {
 			currIO.printHeaderAndMapToFile(this.directoryPath + baseFileName + i++ + ".map");
 		}
-			
-	}
+	} 
 	
 	/**
 	 * Maps a logical expression representing this map's goal to the int that represents that goal type.
@@ -178,19 +158,19 @@ public class MapFileGenerator {
 	
 	public static void main(String[] args) {
 		String filePath = "src/minecraft/maps/randomMaps/";
-		MapFileGenerator test = new MapFileGenerator(3,3,5,filePath);
+		MapFileGenerator mapMaker = new MapFileGenerator(3,3,5,filePath);
 		
 		// Constant map parameters
-		int numMaps = 1;
-		int numLava = 0;
+		int numMaps = 100;
+		int numLava = 1;
+
+		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLava), 5, 5, 6);
+		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLava), 5, 5, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLava), 5, 5, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLava), 5, 5, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLava), 5, 5, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLava), 5, 5, 5);
 		
-		test.generateNMaps(numMaps, new DeepTrenchWorld(1, numLava));
-		test.generateNMaps(numMaps, new PlaneGoldMineWorld(numLava));
-		test.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLava));
-		test.generateNMaps(numMaps, new PlaneTowerWorld(2, numLava));
-		test.generateNMaps(numMaps, new PlaneWallWorld(1, numLava));
-		test.generateNMaps(numMaps, new PlaneWorld(numLava));
-		test.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLava));
 	}
 
 }
