@@ -92,6 +92,9 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfWallInFrontOfAgent;
 	public PropositionalFunction		pfFeetBlockedHeadClear;
 	public PropositionalFunction 		pfLavaFrontAgent;
+	public PropositionalFunction 		pfAgentLookBlock;
+	public PropositionalFunction 		pfAgentLookWall;
+	public PropositionalFunction 		pfAgentLookLava;
 	
 	//Params for Planners
 	public double						gamma = 0.99;
@@ -184,7 +187,9 @@ public class MinecraftBehavior {
 		this.pfFeetBlockedHeadClear = domain.getPropFunction(NameSpace.PFFEETBLOCKHEADCLEAR);
 		this.pfAgentInLava = domain.getPropFunction(NameSpace.PFAGENTINLAVA);
 		this.pfLavaFrontAgent = domain.getPropFunction(NameSpace.PFLAVAFRONTAGENT);
-		
+		this.pfAgentLookWall = domain.getPropFunction(NameSpace.PFAGENTLOOKWALL);
+		this.pfAgentLookBlock = domain.getPropFunction(NameSpace.PFAGENTLOOKBLOCK);
+		this.pfAgentLookLava = domain.getPropFunction(NameSpace.PFAGENTLOOKLAVA);
 		// Set up goal LE and lava LE for use in reward function
 		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
 		this.currentGoal = new PFAtom(pfToUse.getAllGroundedPropsForState(this.initialState).get(0)); 
