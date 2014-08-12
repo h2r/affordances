@@ -76,11 +76,11 @@ public abstract class MinecraftPlanner {
 			//Destroy wall option
 			toAddTo.addNonDomainReferencedAction(new DestroyWallOption(NameSpace.OPTDESTROYWALL, this.initialState, this.domain,
 					this.rf, this.gamma, this.hashingFactory));
-//			
+			
 //			//Jump block option
 			toAddTo.addNonDomainReferencedAction(new JumpBlockOption(NameSpace.OPTJUMPBLOCK, this.initialState, this.domain,
 					this.rf, this.gamma, this.hashingFactory, this.mcBeh));
-//			
+			
 //			//Dig down option
 			toAddTo.addNonDomainReferencedAction(new DigDownOption(NameSpace.OPTDIGDOWN, this.initialState, this.domain,
 					this.rf, this.gamma, this.hashingFactory));
