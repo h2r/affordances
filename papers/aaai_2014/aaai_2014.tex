@@ -21,7 +21,7 @@
 \newcommand{\enote}[1]{\textcolor{Red}{\textbf{E: #1}}}
 
 \pdfinfo{
-   /Author (David Abel , Ellis Herskowitz, Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex)
+   /Author (David Abel, Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex)
    /Title  (Toward Affordance-Aware Planning)
    /CreationDate (D:20101201120000)
    /Subject (Planning, Affordances, Sequential Decision Making)
@@ -34,7 +34,7 @@
 \title{Affordance-Aware Planning}
 
 % Author info:
-\author{\authorblockN{David Abel, Ellis Herskowitz, Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex}
+\author{\authorblockN{David Abel, Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex}
 \authorblockA{Department of Computer Science, Brown University \\
 \texttt{\{dabel,gabrielbm,jmacglashan,stefie10\}@cs.brown.edu}}}
 
@@ -52,16 +52,12 @@ reward- general way, which we term {\em affordances}.  This pruning
 reduces the number of state-action pairs the agent needs to evaluate
 in order to behave in a near optimal way.  Further, we show that an
 agent can learn affordances through experience, and that learned
-affordance knowledge can equal or surparpass the performance of
+affordance knowledge can equal or surpass the performance of
 expert-provided affordances.  We demonstrate our approach in the
 Minecraft domain as a model for robotic tasks, showing significant
 increase in speed and reduction in state-space exploration during
 planning, as well as applying it to the problem of a real-world
 robotic cooking assistant. 
-
-%% We compare our approach with several
-%% existing knowledge engineering methods, and deploy an affordance-aware
-%% planner on ReThink's Baxter as part of a cooperative cooking task.
 
 \end{abstract}
 
@@ -85,8 +81,6 @@ particularly relevant when manipulating objects in an environment;
 when an object can be placed anywhere in a large set of locations, the
 state space expands exponentially with the number of objects and
 possible locations, rapidly leading to intractable problems.
-
-
 %~\cite{grounds05}.
 
 To address this state-space explosion, prior work has explored adding
@@ -122,9 +116,9 @@ knowledge that is effective in a wide variety of problems. We call any
 planner that uses affordances an {\it affordance-aware} planner.  We
 demonstrate that affordance provide dramatic speedups for a variety
 of planning tasks compared to baselines, can be learned from
-experience, and can transfer across different tasks.  Our approach
-works in classic blocks world, in the game Minecraft, as well as on a
-robotic cooking assistant.
+experience, and can transfer across different tasks.  We conduct experiments
+in the game Minecraft, as well as on a robotic cooking assistant. 
+\dnote{We have no plans to deploy affordances on blocks world for our experiments, currently, so I took that bit out.}
 
 %% Because affordances define the {\em kind} of goals for which actions
 %% are useful, affordances also enable high-level reasoning that can be
@@ -254,7 +248,7 @@ where:
 \item[] $g$ is an ungrounded predicate on states representing a {\it lifted goal description}.
 \end{itemize}
 The precondition and goal description refer to predicates that are defined in the OO-MDP definition.
-An affordance is {\it activated} when its predicate is true and its lifted goal description $g$ matches the agent's current goal. 
+An affordance is {\it activated} when its predicate is true in a given state and its lifted goal description $g$ matches the agent's current goal. 
 Using OO-MDP predicates for affordance preconditions and goal descriptions 
 allows for state space independence. Thus, a planner equipped with
 affordances can be used in any number of different environments. For instance, the affordances defined for 
@@ -265,7 +259,8 @@ number of objects in the world, and specific goal the agent is trying to satisfy
 We call any planner that
 uses affordances an {\it affordance-aware} planner. For a given state, 
 our goal is to solve for the probability of getting a particular action set $\mathcal{A}^*$, and place a Dirichlet Multinomial
-prior on the action selection for a given state to maximize this probability.
+prior on the action selection for a given state to maximize this probability. \dnote{Should we put a note about what the Dirichlet Multinomial is?}
+
 This ensures that in the limit, it is possible to apply each action in each state, retaining
 any optimality guarantees provided by the planner. $\mathcal{A}^*$ represents
 a drawn action subset from the OO-MDP action set that is likely to contain the optimal action(s) for a given state,
