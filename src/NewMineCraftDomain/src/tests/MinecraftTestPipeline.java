@@ -158,7 +158,7 @@ public class MinecraftTestPipeline {
 				statusBW.flush();
 			
 			// Update planners with new map
-			MapIO mapIO = new MapIO("minecraft/maps/test/" + map);
+			MapIO mapIO = new MapIO(NameSpace.PATHMAPS + "test/" + map);
 			mcBeh.updateMap(mapIO);
 			
 			if(countStateSpaceSize && mapCounter == 1) {
@@ -452,13 +452,13 @@ public class MinecraftTestPipeline {
 		List<String> planners = new ArrayList<String>();
 		planners.add(NameSpace.RTDP);
 		planners.add(NameSpace.ExpertRTDP);
-		planners.add(NameSpace.LearnedHardRTDP);
-		planners.add(NameSpace.LearnedSoftRTDP);
+//		planners.add(NameSpace.LearnedHardRTDP);
+//		planners.add(NameSpace.LearnedSoftRTDP);
 //		planners.add(NameSpace.VI);
 //		planners.add(NameSpace.ExpertVI);
 //		planners.add(NameSpace.LearnedHardVI);
 		
-		boolean addOptions = false;
+		boolean addOptions = true;
 		boolean addMacroActions = false;
 		boolean countStateSpaceSize = false;
 		

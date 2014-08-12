@@ -208,7 +208,7 @@ useBlock,0
 7,0
 8,0
 ===
-AgentLookForwardWalk,AgentHasXGoldOre
+AgentLookAtFurnace,AgentHasXGoldOre
 moveAction,100
 rotateClockwise,100
 rotateCounterClockwise,100
@@ -292,7 +292,7 @@ useBlock,0
 7,0
 8,0
 ===
-FurnaceInFront,AgentHasXGoldBlock
+AgentLookAtFurnace,AgentHasXGoldBlock
 moveAction,0
 rotateClockwise,0
 rotateCounterClockwise,0
