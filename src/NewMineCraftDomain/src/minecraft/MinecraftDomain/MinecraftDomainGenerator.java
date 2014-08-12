@@ -240,7 +240,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		actions.add(lookDown);
 		actions.add(lookUp);
 		
-		if(stochasticActions) { 
+		if(!stochasticActions) { 
 			// Stochastic
 			move.addResultingActionsWithWeights(actions, new double[]{1, 0 , 0, 0, 0});
 			turnRight.addResultingActionsWithWeights(actions, new double[]{0, 1 , 0, 0, 0});
