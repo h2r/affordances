@@ -76,33 +76,29 @@ public class AffordanceLearner {
 		
 		List<MapIO> maps = new ArrayList<MapIO>();
 		
-		String learningMapDir = "minecraft/maps/learning/";
-//		createLearningMaps(learningMapDir);
+		String learningMapDir = NameSpace.PATHMAPS + "learning/";
 		
+		System.out.println("(affLearner) learningMapDir: " + learningMapDir);
+		createLearningMaps(learningMapDir);
 		
 		// For grid
-		List<String> mapNames = new ArrayList<String>();
-		for(int i = 0; i < this.numWorldsPerLGD; i++) {
-			mapNames.add("DeepTrenchWorld" + i + ".map");
-		}
+//		List<String> mapNames = new ArrayList<String>();
+//		for(int i = 0; i < this.numWorldsPerLGD; i++) {
+//			mapNames.add("DeepTrenchWorld" + i + ".map");
+//		}
+//		for(String map : mapNames) {
+////	InputStream testDir = getClass().getResourceAsStream("/" + learningMapDir + map);
+//	MapIO learningMap = new MapIO(learningMapDir + map);
+//	maps.add(learningMap);
+//}
 		
-//		File testDir = new File(learningMapDir);
-		
-		for(String map : mapNames) {
-//			InputStream testDir = getClass().getResourceAsStream("/" + learningMapDir + map);
+		File testDir = new File(learningMapDir);
+		String[] learningMaps = testDir.list();
+				
+		for(String map : learningMaps) {
 			MapIO learningMap = new MapIO(learningMapDir + map);
 			maps.add(learningMap);
 		}
-		
-		
-//		String[] learningMaps = testDir.
-		
-		
-				
-//		for(String map : learningMaps) {
-//			MapIO learningMap = new MapIO(learningMapDir + map);
-//			maps.add(learningMap);
-//		}
 
 		// Run learning on all the generated maps
 		int mapNum = 1;
@@ -133,15 +129,13 @@ public class AffordanceLearner {
 		
 		System.out.println("Generating maps..." + this.numWorldsPerLGD);
 		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 3, 3, 5);
-
 		
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 2, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 2, 3, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 1, 2, 5);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 3, 3, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 3, 3, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 3, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 3, 3, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 3, 3, 5);
 		
-
 	}
 	
 	/**
@@ -453,9 +447,6 @@ public class AffordanceLearner {
 		PropositionalFunction goldFrontAgent = mb.pfGoldBlockFrontOfAgent;
 		LogicalExpression goldFrontAgentLE = pfAtomFromPropFunc(goldFrontAgent);
 		
-		PropositionalFunction furnaceFrontAgent = mb.pfFurnaceInFrontOfAgent;
-		LogicalExpression furnaceFrontAgentLE = pfAtomFromPropFunc(furnaceFrontAgent);
-		
 		PropositionalFunction wallFrontAgent = mb.pfWallInFrontOfAgent;
 		LogicalExpression wallFrontAgentLE = pfAtomFromPropFunc(wallFrontAgent);
 		
@@ -465,18 +456,34 @@ public class AffordanceLearner {
 		PropositionalFunction lavaFrontAgent = mb.pfLavaFrontAgent;
 		LogicalExpression lavaFrontAgentLE = pfAtomFromPropFunc(lavaFrontAgent);
 		
+		PropositionalFunction agentLookLava = mb.pfAgentLookLava;
+		LogicalExpression agentLookLavaLE = pfAtomFromPropFunc(agentLookLava);
+		
+		PropositionalFunction agentLookBlock = mb.pfAgentLookBlock;
+		LogicalExpression agentLookBlockLE = pfAtomFromPropFunc(agentLookBlock);
+		
+		PropositionalFunction agentLookWall = mb.pfAgentLookWall;
+		LogicalExpression agentLookWallLE = pfAtomFromPropFunc(agentLookWall);
+		
+		PropositionalFunction agentInLava = mb.pfAgentInLava;
+		LogicalExpression agentInLavaLE = pfAtomFromPropFunc(agentInLava);
+		
 		// Add LEs to list
 		predicates.add(agentInAirLE);
 		predicates.add(endOfMapLE);
 		predicates.add(trenchLE);
 		predicates.add(forwardWalkableLE);
 		predicates.add(goldFrontAgentLE);
-		predicates.add(furnaceFrontAgentLE);
 		predicates.add(wallFrontAgentLE);
 		predicates.add(feetBlockHeadClearLE);
 		predicates.add(lavaFrontAgentLE);
+		predicates.add(agentLookLavaLE);
+		predicates.add(agentLookBlockLE);
+		predicates.add(agentLookWallLE);
+		predicates.add(agentInLavaLE);
 		
 		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions, true);
+		
 		// Initialize Learner
 		boolean countTotalActions = true;
 		
@@ -491,7 +498,6 @@ public class AffordanceLearner {
 		}
 		
 		affLearn.learn();
-		
 		affKnowledgeBase.save(kbName);
 		
 		return kbName;
@@ -519,7 +525,7 @@ public class AffordanceLearner {
 		
 		// Non-Grid
 		MinecraftBehavior mb = new MinecraftBehavior();
-		generateMinecraftKB(mb, 100, true);
+		generateMinecraftKB(mb, 1, true);
 		
 	}
 	

@@ -60,15 +60,15 @@ public class MapIO {
 		//Open file
 	
 		// NOTE: old stuff
-//		BufferedReader reader = null;
-//		try {
-//		reader = new BufferedReader(new FileReader(filePath));
-//	} catch (FileNotFoundException e1) {
-//		System.out.println("Couldn't open map file: " + filePath);
-//	}
+		BufferedReader reader = null;
+		try {
+		reader = new BufferedReader(new FileReader(filePath));
+		} catch (FileNotFoundException e1) {
+			System.out.println("Couldn't open map file: " + filePath);
+		}
 		
-		ResourceLoader resLoader = new ResourceLoader();
-		BufferedReader reader = resLoader.getBufferedReader(filePath);
+//		ResourceLoader resLoader = new ResourceLoader();
+//		BufferedReader reader = resLoader.getBufferedReader(filePath);
 		
 		StringBuilder sb = new StringBuilder();
 		

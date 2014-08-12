@@ -20,6 +20,7 @@ import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldOreP
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentInLavaPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentInMidAirPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentCanWalkPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentLookingAtBlockPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AtGoalPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockAtAgentsFeetHeadClearPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockAtPF;
@@ -240,7 +241,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		actions.add(lookDown);
 		actions.add(lookUp);
 		
-		if(!stochasticActions) { 
+		if(stochasticActions) { 
 			// Stochastic
 			move.addResultingActionsWithWeights(actions, new double[]{1, 0 , 0, 0, 0});
 			turnRight.addResultingActionsWithWeights(actions, new double[]{0, 1 , 0, 0, 0});
@@ -274,15 +275,17 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new AgentInLavaPF(NameSpace.PFAGENTINLAVA, domain, new String[]{NameSpace.CLASSAGENT});
 		
 		// Dave's jenky hard coded prop funcs
-		new AgentAdjacentToTrenchPF(NameSpace.PFAGENTADJTRENCH, domain, new String[]{NameSpace.CLASSAGENT, NameSpace.CLASSTRENCH});
+//		new AgentAdjacentToTrenchPF(NameSpace.PFAGENTADJTRENCH, domain, new String[]{NameSpace.CLASSAGENT, NameSpace.CLASSTRENCH});
 		new AgentCanWalkPF(NameSpace.PFAGENTLOOKFORWARDWALK, domain, new String[]{NameSpace.CLASSAGENT});
 		new EmptyCellInAgentWalkDir(NameSpace.PFEMPTYCELLINWALK, domain, new String[]{NameSpace.CLASSAGENT});
-		new BlockInFrontOfAgentPF(NameSpace.PFGOLDFRONTAGENTONE, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOLDBLOCK);
-		new BlockInFrontOfAgentPF(NameSpace.PFFURNACEINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSFURNACE);
-		new WallInFrontOfAgentPF(NameSpace.PFWALLINFRONT, domain,  new String[]{NameSpace.CLASSAGENT}, 1);
 		new BlockAtAgentsFeetHeadClearPF(NameSpace.PFFEETBLOCKHEADCLEAR, domain, new String[]{NameSpace.CLASSAGENT});
-		new BlockInFrontOfAgentPF(NameSpace.PFLAVAFRONTAGENT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSLAVA);
-		
+		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKLAVA, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSLAVA);
+		new AgentLookingAtBlockPF(NameSpace.PFGOLDFRONTAGENTONE, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOLDBLOCK);
+		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKFURNACE, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSFURNACE);
+		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKWALL, domain,  new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSINDWALL);
+		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKBLOCK, domain,  new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSDIRTBLOCKNOTPICKUPABLE);
+		new BlockInFrontOfAgentPF(NameSpace.PFLAVAFRONTAGENT, domain,  new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSLAVA);
+		new BlockInFrontOfAgentPF(NameSpace.PFWALLINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSINDWALL);
 		return domain;
 	}
 	

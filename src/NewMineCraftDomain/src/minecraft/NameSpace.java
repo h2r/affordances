@@ -120,6 +120,10 @@ public class NameSpace {
 	public static final String				PFFEETBLOCKHEADCLEAR = "FeetBlockedHeadClear";
 	public static final String				PFAGENTINLAVA = "AgentInLava";
 	public static final String				PFLAVAFRONTAGENT = "LavaFrontOfAgent";
+	public static final String				PFAGENTLOOKLAVA = "AgentLookAtLava";
+	public static final String				PFAGENTLOOKWALL = "AgentLookAtWall";
+	public static final String				PFAGENTLOOKBLOCK = "AgentLookAtBlock";
+	public static final String				PFAGENTLOOKFURNACE = "AgentLookAtFurnace";
 	
 	//-----------PLANNERS-------------
 	public static final String				RTDP = "RTDP";
@@ -134,8 +138,9 @@ public class NameSpace {
 	//----------DIRECTORIES---------
 	public static final String				PATHMAPS = "src/minecraft/maps/";
 	public static final String				PATHKB = "src/minecraft/kb/";
-	public static final String				PATHTEMPLATEMAP = "minecraft/maps/template.map";
+	public static final String				PATHTEMPLATEMAP = "src/minecraft/maps/template.map";
 	public static final String				PATHRESULTS = "src/tests/results/";
+	
 	//-------------ENUMS-------------
 	public enum RotDirection {
 		NORTH(0), EAST(1), SOUTH(2), WEST(3);
