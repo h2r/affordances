@@ -100,7 +100,7 @@ public class MinecraftBehavior {
 	public int 							numRollouts = 1500; // RTDP
 	public int							maxDepth = 25; // RTDP
 	public int 							vInit = 1; // RTDP
-	public int 							numRolloutsWithSmallChangeToConverge = 30; // RTDP
+	public int 							numRolloutsWithSmallChangeToConverge = 3700; // RTDP
 	public double						boltzmannTemperature = 0.5;
 	public double						lavaReward = -10.0;
 
@@ -505,9 +505,9 @@ public class MinecraftBehavior {
 //		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//RTDP
-//		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, false, false);
-//		results = rtdpPlanner.runPlanner();
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, false, false);
+		results = rtdpPlanner.runPlanner();
+		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		//AFFRTDP
 //		KnowledgeBase affKB = new KnowledgeBase();
@@ -522,9 +522,9 @@ public class MinecraftBehavior {
 //		System.out.println("(minecraftBehavior) results [expertRTDP]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//VI
-		VIPlanner viPlan = new VIPlanner(mcBeh, false, false);
-		results = viPlan.runPlanner();
-		System.out.println("(minecraftBehavior) results [VI]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+//		VIPlanner viPlan = new VIPlanner(mcBeh, false, false);
+//		results = viPlan.runPlanner();
+//		System.out.println("(minecraftBehavior) results [VI]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		// Affordance VI
 //		AffordanceVIPlanner affVIPlan = new AffordanceVIPlanner(mcBeh, true, true, "somekb.kb");
