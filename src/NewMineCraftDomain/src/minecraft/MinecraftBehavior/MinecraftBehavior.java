@@ -15,6 +15,7 @@ import minecraft.NameSpace;
 import minecraft.MinecraftBehavior.Planners.AffordanceRTDPPlanner;
 import minecraft.MinecraftBehavior.Planners.AffordanceVIPlanner;
 import minecraft.MinecraftBehavior.Planners.BFSPlanner;
+import minecraft.MinecraftBehavior.Planners.BFSRTDPPlanner;
 import minecraft.MinecraftBehavior.Planners.MinecraftPlanner;
 import minecraft.MinecraftBehavior.Planners.RTDPPlanner;
 import minecraft.MinecraftBehavior.Planners.VIPlanner;
@@ -505,10 +506,14 @@ public class MinecraftBehavior {
 //		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//RTDP
-//		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, false, false);
+//		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, false, true);
 //		results = rtdpPlanner.runPlanner();
 //		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
+		//BFSRTDP
+		BFSRTDPPlanner BFSRTDPPlanner = new BFSRTDPPlanner(mcBeh, false, false);
+		results = BFSRTDPPlanner.runPlanner();
+		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		//AFFRTDP
 //		KnowledgeBase affKB = new KnowledgeBase();
 		
@@ -522,9 +527,10 @@ public class MinecraftBehavior {
 //		System.out.println("(minecraftBehavior) results [expertRTDP]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//VI
-		VIPlanner viPlan = new VIPlanner(mcBeh, false, false);
-		results = viPlan.runPlanner();
-		System.out.println("(minecraftBehavior) results [VI]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+//		VIPlanner viPlan = new VIPlanner(mcBeh, false, false);
+//		results = viPlan.runPlanner();
+//		System.out.println("(minecraftBehavior) results [VI]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		
 
 		// Affordance VI
 //		AffordanceVIPlanner affVIPlan = new AffordanceVIPlanner(mcBeh, true, true, "somekb.kb");
