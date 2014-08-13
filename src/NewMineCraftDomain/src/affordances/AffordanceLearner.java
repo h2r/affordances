@@ -164,13 +164,13 @@ public class AffordanceLearner {
 		
 		// Synthesize a policy on the given map
 		Policy p = mcb.solve(planner);
-		Map<AffordanceDelegate,List<AbstractGroundedAction>> seen = new HashMap<AffordanceDelegate,List<AbstractGroundedAction>>();  // Makes sure we don't count an action more than once per affordance (per map)
+//		Map<AffordanceDelegate,List<AbstractGroundedAction>> seen = new HashMap<AffordanceDelegate,List<AbstractGroundedAction>>();  // Makes sure we don't count an action more than once per affordance (per map)
 		
 		// Updates the action counts (alpha)
-		updateActionCounts(planner, p, seen, true);
+//		updateActionCounts(planner, p, seen, true);
 		
 		// Updates the action set size counts (beta)
-		updateActionSetSizeCounts(seen);
+//		updateActionSetSizeCounts(seen);
 	}
 	
 	/**
@@ -205,7 +205,6 @@ public class AffordanceLearner {
 
 			// Get the optimal action for that state and update affordance counts
 			GroundedAction ga = (GroundedAction) policy.getAction(st);
-			System.out.println("optimal GA:" + ga.toString());
 			QValue qv = ((ValueFunctionPlanner)planner).getQ(st, ga);
 
 			for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
@@ -581,6 +580,7 @@ public class AffordanceLearner {
 		// Non-Grid
 		boolean addOptions = false;
 		boolean addMAs = false;
+		
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
 		generateMinecraftKB(mcBeh, 10, false, addOptions, addMAs);
 		

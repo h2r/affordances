@@ -143,18 +143,21 @@ public class Helpers {
 		case AHEAD:
 			break;
 		case DOWNONE:
-			zChange = -1;
+			if (!toWalkTo) {
+				zChange = -1;
+			}
 			break;
 		case DOWNTWO:
-			zChange = -2;
+			if (!toWalkTo) {
+				zChange = -2;
+			}
 			break;
 		case DOWNTHREE://All the way down
 			if (!toWalkTo) {
 				xChange = 0;
 				yChange = 0;
+				zChange = -1 - distanceFromAgent;
 			}
-
-			zChange = -1 - distanceFromAgent;
 			break;
 		default:
 			System.out.println("Couldn't find this vert direction for value: " + vertDirectionInt);

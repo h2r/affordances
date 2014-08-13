@@ -225,6 +225,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		
 		//Set up actions
 		StochasticAgentAction move = new MovementAction(NameSpace.ACTIONMOVE, domain, rows, cols, height);
+		
 		StochasticAgentAction turnRight = new RotateAction(NameSpace.ACTIONROTATEC, domain, 1, rows, cols, height);
 		StochasticAgentAction turnLeft = new RotateAction(NameSpace.ACTIONROTATECC, domain, NameSpace.RotDirection.size-1, rows, cols, height); 
 		StochasticAgentAction lookDown = new RotateVertAction(NameSpace.ACTIONLOOKDOWN, domain, rows, cols, height, -1);

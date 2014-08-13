@@ -26,7 +26,7 @@ public class KnowledgeBase {
 	private List<AffordanceDelegate>	affDelegateList;
 	private AffordancesController		affController;
 //	private String						basePath = System.getProperty("user.dir") + "/minecraft/kb/";
-	private String						basePath = "src/minecraft/kb/";
+	private String						basePath = "minecraft/kb/";
 	private final static ResourceLoader	resLoader = new ResourceLoader();
 	
 	public KnowledgeBase() {
