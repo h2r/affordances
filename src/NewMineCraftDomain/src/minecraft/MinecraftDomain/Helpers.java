@@ -335,7 +335,18 @@ public class Helpers {
 		int agentZ = agent.getDiscValForAttribute(NameSpace.ATZ);
 		
 		return !emptySpaceAt(agentX, agentY, agentZ-2, state);
+	}
+	
+	public static boolean agentCanJump(State state, int rows, int cols, int height) {
+		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
 		
+		int agentX = agent.getDiscValForAttribute(NameSpace.ATX);
+		int agentY = agent.getDiscValForAttribute(NameSpace.ATY);
+		int agentZ = agent.getDiscValForAttribute(NameSpace.ATZ);
+		
+		boolean canJumpOff = blockBelowAgent(state) || agentZ - 2 < 0;
+		boolean wontHitHead = emptySpaceAt(agentX, agentY, agentZ+1, state) && withinMapAt(agentX, agentY, agentZ+1, cols, rows, height);
+		return canJumpOff && wontHitHead;
 	}
 	
 	public static boolean agentLookingInDirectionOfBlock(State state, String objectLookingToward) {

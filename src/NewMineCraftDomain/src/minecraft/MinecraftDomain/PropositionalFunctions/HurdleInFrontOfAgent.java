@@ -9,9 +9,13 @@ import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.PropositionalFunction;
 import burlap.oomdp.core.State;
 
-public class BlockAtAgentsFeetHeadClearPF extends PropositionalFunction{
+public class HurdleInFrontOfAgent extends PropositionalFunction{
 	
 	String objectStringToCheckAgainst; 
+	private int rows;
+	private int cols;
+	private int height;
+	
 	
 	/**
 	 * @param name
@@ -19,8 +23,11 @@ public class BlockAtAgentsFeetHeadClearPF extends PropositionalFunction{
 	 * @param parameterClasses
 	 * @param object
 	 */
-	public BlockAtAgentsFeetHeadClearPF(String name, Domain domain, String[] parameterClasses) {
+	public HurdleInFrontOfAgent(String name, Domain domain, String[] parameterClasses, int rows, int cols, int height) {
 		super(name, domain, parameterClasses);
+		this.rows = rows;
+		this.cols = cols;
+		this.height = height;
 	}
 
 	@Override
@@ -65,7 +72,7 @@ public class BlockAtAgentsFeetHeadClearPF extends PropositionalFunction{
 		// Is a block blocking at the feet?
 		for(ObjectInstance block: objectsInFrontFeet) {
 			if (block.getBooleanValue(NameSpace.ATCOLLIDES)) {
-				return true;
+				return true && Helpers.agentCanJump(state, this.rows, this.cols, this.height);
 			}
 		}
 		
