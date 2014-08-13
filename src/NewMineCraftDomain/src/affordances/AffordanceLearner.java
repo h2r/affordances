@@ -18,6 +18,8 @@ import java.util.Map;
 import minecraft.MapIO;
 import minecraft.NameSpace;
 import minecraft.MinecraftBehavior.MinecraftBehavior;
+import minecraft.MinecraftBehavior.Planners.MinecraftPlanner;
+import minecraft.MinecraftBehavior.Planners.VIPlanner;
 import minecraft.WorldGenerator.LearningWorldGenerator;
 import minecraft.WorldGenerator.MapFileGenerator;
 import minecraft.WorldGenerator.WorldTypes.DeepTrenchWorld;
@@ -53,20 +55,26 @@ public class AffordanceLearner {
 	private int 					numWorldsPerLGD = 5;
 	private boolean					countTotalActions = true;
 	private Double 					lowInformationThreshold = 1.55; // Threshold for what is considered high entropy/low information
+	private boolean					useOptions;
+	private boolean					useMAs;
 	
-	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions) {
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, boolean useOptions, boolean useMAs) {
 		this.lgds = lgds;
 		this.mcb = mcb;
 		this.affordanceKB = kb;
 		this.countTotalActions = countTotalActions;
+		this.useMAs = useMAs;
+		this.useOptions = useOptions;
 	}
 	
-	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorldsPerLGD) {
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorldsPerLGD, boolean useOptions, boolean useMAs) {
 		this.lgds = lgds;
 		this.mcb = mcb;
 		this.affordanceKB = kb;
 		this.countTotalActions = countTotalActions;
 		this.numWorldsPerLGD = numWorldsPerLGD;
+		this.useMAs = useMAs;
+		this.useOptions = useOptions;
 	}
 	
 	/**
@@ -147,7 +155,9 @@ public class AffordanceLearner {
 		this.mcb.updateMap(map);
 
 		// Initialize behavior and planner
-		OOMDPPlanner planner = new ValueIteration(mcb.getDomain(), mcb.getRewardFunction(), mcb.getTerminalFunction(), mcb.getGamma(), mcb.getHashFactory(), mcb.getMinDelta(), Integer.MAX_VALUE);
+		MinecraftPlanner myVIPlanner = new VIPlanner(mcb, this.useOptions, this.useMAs);
+		OOMDPPlanner planner = myVIPlanner.getPlanner();
+		
 		/**
 		 * We iterate through each state in the formed policy and get its "optimal" action. For each affordance,
 		 * if that affordance is applicable in the state we increment its action count for the "optimal" action.
@@ -196,6 +206,7 @@ public class AffordanceLearner {
 
 			// Get the optimal action for that state and update affordance counts
 			GroundedAction ga = (GroundedAction) policy.getAction(st);
+			System.out.println("(AffLearner) optimal GA: " + ga.toString());
 			QValue qv = ((ValueFunctionPlanner)planner).getQ(st, ga);
 
 			for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
@@ -486,8 +497,10 @@ public class AffordanceLearner {
 		
 		// Initialize Learner
 		boolean countTotalActions = true;
+		boolean useOptions = false;
+		boolean useMAs = true;
 		
-		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions, numWorlds);
+		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions, numWorlds, useOptions, useMAs);
 		
 		String kbName;
 		if(learningRate) {

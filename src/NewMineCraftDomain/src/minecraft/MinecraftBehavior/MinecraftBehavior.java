@@ -297,7 +297,7 @@ public class MinecraftBehavior {
 		planner.planFromState(initialState);
 
 		// Create a Q-greedy policy from the planner
-		GreedyDeterministicQPolicy p = new GreedyDeterministicQPolicy((QComputablePlanner)planner);
+		GreedyQPolicy p = new GreedyQPolicy((QComputablePlanner)planner);
 		
 		// Print out some infos
 		EpisodeAnalysis ea = p.evaluateBehavior(initialState, this.rewardFunction, this.terminalFunction, maxSteps);

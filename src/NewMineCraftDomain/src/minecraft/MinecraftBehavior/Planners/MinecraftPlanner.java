@@ -36,7 +36,7 @@ public abstract class MinecraftPlanner {
 	TerminalFunction tf;
 	Domain domain;
 	
-	protected abstract OOMDPPlanner getPlanner();
+	public abstract OOMDPPlanner getPlanner();
 	protected abstract double[] runPlannerHelper(OOMDPPlanner planner);
 	
 	public MinecraftPlanner(MinecraftBehavior mcBeh, boolean addOptions, boolean addMacroActions) {

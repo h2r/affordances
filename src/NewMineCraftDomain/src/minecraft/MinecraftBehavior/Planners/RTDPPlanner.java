@@ -35,7 +35,7 @@ public class RTDPPlanner extends MinecraftPlanner{
 	}
 
 	@Override
-	protected OOMDPPlanner getPlanner() {
+	public OOMDPPlanner getPlanner() {
 		RTDP planner = new RTDP(domain, this.rf, this.tf, this.gamma, this.hashingFactory,
 				this.vInit, this.numRollouts, this.minDelta, this.maxDepth);
 		return planner;
