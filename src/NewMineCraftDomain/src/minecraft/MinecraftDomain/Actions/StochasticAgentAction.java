@@ -33,7 +33,6 @@ public abstract class StochasticAgentAction extends AgentAction {
 	public StochasticAgentAction(String name, Domain domain, int rows, int cols, int height, boolean causesAgentToFall){
 		super(name, domain, rows, cols, height, causesAgentToFall);
 		this.rand = RandomFactory.getMapped(0);
-		
 		this.actionToProb = new HashMap<StochasticAgentAction, Double>();
 	}
 	

@@ -260,7 +260,6 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		lookDown.addResultingActionsWithWeights(actions, new double[]{0, 0, 0, 1, 0});
 		lookUp.addResultingActionsWithWeights(actions, new double[]{0, 0, 0, 0, 1});
 		
-
 		//PROPOSITIONAL FUNCTIONS
 		
 		//Set up propositional functions

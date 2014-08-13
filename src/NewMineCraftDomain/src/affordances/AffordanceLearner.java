@@ -58,23 +58,23 @@ public class AffordanceLearner {
 	private Double 					lowInformationThreshold = 1.55; // Threshold for what is considered high entropy/low information
 	private boolean					useOptions;
 	private boolean					useMAs;
-	private MinecraftPlanner mcPlanner;
+//	private OOMDPPlanner planner;
 	
-	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, MinecraftPlanner planner) {
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions) {
 		this.lgds = lgds;
 		this.mcb = mcb;
 		this.affordanceKB = kb;
 		this.countTotalActions = countTotalActions;
-		this.mcPlanner = planner;
+//		this.planner = planner;
 	}
 	
-	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorldsPerLGD, MinecraftPlanner planner) {
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorldsPerLGD) {
 		this.lgds = lgds;
 		this.mcb = mcb;
 		this.affordanceKB = kb;
 		this.countTotalActions = countTotalActions;
 		this.numWorldsPerLGD = numWorldsPerLGD;
-		this.mcPlanner = planner;
+//		this.planner = planner;
 	}
 	
 	/**
@@ -87,7 +87,7 @@ public class AffordanceLearner {
 		String learningMapDir = NameSpace.PATHMAPS + "learning/";
 		
 		System.out.println("(affLearner) learningMapDir: " + learningMapDir);
-		createLearningMaps(learningMapDir);
+//		createLearningMaps(learningMapDir);
 		
 		// For grid
 //		List<String> mapNames = new ArrayList<String>();
@@ -136,12 +136,12 @@ public class AffordanceLearner {
 		int numLavaBlocks = 1;
 		
 		System.out.println("Generating maps..." + this.numWorldsPerLGD);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 4, 4, 5);
 		
 //		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 2, 2, 4);
 //		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 3, 3, 4);
 //		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 2, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 2, 2, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 3, 3, 4);
 //		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
 		
 	}
@@ -153,14 +153,14 @@ public class AffordanceLearner {
 	private void learnMap(MapIO map) {
 		// Update behavior with new map
 		this.mcb.updateMap(map);
-
-		// Initialize behavior and planner
-		OOMDPPlanner planner = this.mcPlanner.retrievePlanner();
 		
 		/**
 		 * We iterate through each state in the formed policy and get its "optimal" action. For each affordance,
 		 * if that affordance is applicable in the state we increment its action count for the "optimal" action.
 		 */
+		
+		MinecraftPlanner mcPlanner = new VIPlanner(mcb, this.useOptions, this.useMAs);
+		OOMDPPlanner planner = mcPlanner.retrievePlanner();
 		
 		// Synthesize a policy on the given map
 		Policy p = mcb.solve(planner);
@@ -397,20 +397,23 @@ public class AffordanceLearner {
 	}
 	
 	/**
-	 * Creates a Minecraft specific KnowledgeBase
+	 * Learns a Minecraft specific KnowledgeBase
 	 * @param mb: MinecraftBehavior instance
 	 * @return
 	 */
 	public static String generateMinecraftKB(MinecraftBehavior mcBeh, int numWorlds, boolean learningRate, boolean useOptions, boolean useMAs) {
 		
-		MinecraftPlanner planner = new VIPlanner(mcBeh, useOptions, useMAs);
+//		MinecraftPlanner planner = new VIPlanner(mcBeh, useOptions, useMAs);
+//		OOMDPPlanner planner = new ValueIteration(mcBeh.getDomain(), mcBeh.getRewardFunction(), mcBeh.getTerminalFunction(), mcBeh.getGamma(), mcBeh.getHashFactory(), mcBeh.getMinDelta(), Integer.MAX_VALUE);
 		
 		// Create actions
-		List<Action> allActions = planner.retrievePlanner().actions;
+		List<Action> primitiveActions = mcBeh.getDomain().getActions();
+		
+//		List<Action> allActions = planner.retrievePlanner().actions;
 		List<AbstractGroundedAction> allGroundedActions = new ArrayList<AbstractGroundedAction>();
 		
 		// Create Grounded Action instances for each action
-		for(Action a : allActions) {
+		for(Action a : primitiveActions) {
 			String[] freeParams = makeFreeVarListFromObjectClasses(a.getParameterClasses());
 			GroundedAction ga = new GroundedAction(a, freeParams);
 			allGroundedActions.add(ga);
@@ -422,7 +425,7 @@ public class AffordanceLearner {
 		
 		// Initialize Learner
 		boolean countTotalActions = true;
-		AffordanceLearner affLearn = new AffordanceLearner(mcBeh, affKnowledgeBase, lgds, countTotalActions, numWorlds, planner);
+		AffordanceLearner affLearn = new AffordanceLearner(mcBeh, affKnowledgeBase, lgds, countTotalActions, numWorlds);
 		
 		String kbName;
 		if(learningRate) {
@@ -439,6 +442,11 @@ public class AffordanceLearner {
 		return kbName;
 	}
 	
+	/**
+	 * Retrieves the list of minecraft lifted goal descriptions
+	 * @param mcBeh
+	 * @return a Map<Integer, LogicalExpression>
+	 */
 	private static Map<Integer,LogicalExpression> getMinecraftGoals(MinecraftBehavior mcBeh) {
 		// Set up goal description list
 		Map<Integer,LogicalExpression> lgds = new HashMap<Integer,LogicalExpression>();
@@ -571,10 +579,10 @@ public class AffordanceLearner {
 //		MinecraftBehavior mb = new MinecraftBehavior(br);
 		
 		// Non-Grid
-		boolean addOptions = true;
-		boolean addMAs = true;
+		boolean addOptions = false;
+		boolean addMAs = false;
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
-		generateMinecraftKB(mcBeh, 1, false, addOptions, addMAs);
+		generateMinecraftKB(mcBeh, 10, false, addOptions, addMAs);
 		
 	}
 	

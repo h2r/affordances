@@ -38,7 +38,7 @@ public class MovementAction extends StochasticAgentAction{
 		int newY = inFrontAgent[1];
 		
 		//Update position if nothing in agent's way and new position is within map
-		if (Helpers.withinMapAt(newX, newY, agentZ, cols, rows, height) && Helpers.withinMapAt(newX, newY, agentZ-1, cols, rows, height) &&
+		if (Helpers.withinMapAt(newX, newY, agentZ, cols, rows, this.height) && Helpers.withinMapAt(newX, newY, agentZ-1, cols, rows, height) &&
 				emptySpaceForAgentAt(newX, newY, agentZ, state)) {
 			agent.setValue(NameSpace.ATX, newX);
 			agent.setValue(NameSpace.ATY, newY);

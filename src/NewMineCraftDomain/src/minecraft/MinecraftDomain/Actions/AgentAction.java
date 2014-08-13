@@ -21,7 +21,7 @@ public abstract class AgentAction extends Action {
 	
 	protected int rows;
 	protected int cols;
-	protected int height;
+	protected final int height;
 	protected boolean causesAgentToFall;
 	
 	abstract void doAction(State state);
@@ -51,7 +51,6 @@ public abstract class AgentAction extends Action {
 	@Override
 	protected State performActionHelper(State state, String[] params) {
 		AgentAction toPerform = getAction();
-		
 		toPerform.doAction(state);
 		
 		performPostActionUpdates(state);
