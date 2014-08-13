@@ -205,7 +205,7 @@ public class MinecraftBehavior {
 		this.pfAgentNotLookTowardFurnace = domain.getPropFunction(NameSpace.PFAGENTNOTLOOKTOWARDFURNACE);
 		
 		// Set up goal LE and lava LE for use in reward function
-		PropositionalFunction pfToUse = this.pfAgentLookTowardGoal;//getPFFromHeader(headerInfo);
+		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
 		this.currentGoal = new PFAtom(pfToUse.getAllGroundedPropsForState(this.initialState).get(0)); 
 		LogicalExpression lavaLE = new PFAtom(this.pfAgentInLava.getAllGroundedPropsForState(this.initialState).get(0));
 		
