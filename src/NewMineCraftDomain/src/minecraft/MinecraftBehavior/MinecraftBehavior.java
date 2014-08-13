@@ -181,7 +181,6 @@ public class MinecraftBehavior {
 		this.pfAgentHasAtLeastXGoldBar = domain.getPropFunction(NameSpace.PFATLEASTXGOLDBAR);
 		this.pfBlockInFrontOfAgent = domain.getPropFunction(NameSpace.PFBLOCKINFRONT);
 		this.pfEndOfMapInFrontOfAgent = domain.getPropFunction(NameSpace.PFENDOFMAPINFRONT);
-		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFEMPTYCELLINFRONT);
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
 		this.pfAgentLookForwardAndWalkable = domain.getPropFunction(NameSpace.PFAGENTCANWALK);
 		this.pfEmptyCellFrontAgentWalk = domain.getPropFunction(NameSpace.PFEMPTYCELLINWALK);
@@ -201,6 +200,7 @@ public class MinecraftBehavior {
 		this.pfAgentNotLookTowardGoal = domain.getPropFunction(NameSpace.PFAGENTNOTLOOKTOWARDGOAL);
 		this.pfAgentNotLookTowardGold = domain.getPropFunction(NameSpace.PFAGENTNOTLOOKTOWARDGOLD);
 		this.pfAgentNotLookTowardFurnace = domain.getPropFunction(NameSpace.PFAGENTNOTLOOKTOWARDFURNACE);
+		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFTRENCHINFRONTAGENT);
 		
 		// Set up goal LE and lava LE for use in reward function
 		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);

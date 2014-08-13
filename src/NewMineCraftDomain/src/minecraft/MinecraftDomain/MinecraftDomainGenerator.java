@@ -31,6 +31,7 @@ import minecraft.MinecraftDomain.PropositionalFunctions.EmptyCellInAgentWalkDir;
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptySpacePF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentWalkIntoEndOfMapPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.EmptyCellInFrontOfAgentPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.TrenchInFrontOfAgent;
 import minecraft.MinecraftDomain.PropositionalFunctions.WallInFrontOfAgentPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.TowerInMapPF;
 import minecraft.MinecraftStateGenerator.MinecraftStateGenerator;
@@ -282,6 +283,8 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new AgentNotLookingInDirectionOfBlock(NameSpace.PFAGENTNOTLOOKTOWARDGOAL, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOAL);
 		new AgentNotLookingInDirectionOfBlock(NameSpace.PFAGENTNOTLOOKTOWARDGOLD, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOLDBLOCK);
 		new AgentNotLookingInDirectionOfBlock(NameSpace.PFAGENTNOTLOOKTOWARDFURNACE, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSFURNACE);
+		
+		new TrenchInFrontOfAgent(NameSpace.PFTRENCHINFRONTAGENT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		
 		// Dave's jenky hard coded prop funcs
 //		new AgentAdjacentToTrenchPF(NameSpace.PFAGENTADJTRENCH, domain, new String[]{NameSpace.CLASSAGENT, NameSpace.CLASSTRENCH});

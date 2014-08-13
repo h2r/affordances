@@ -109,7 +109,6 @@ public class NameSpace {
 	public static final String				PFENDOFMAPINFRONT = "EndMapFrontOfAgent";
 	public static final String				PFEMPTYCELLINFRONT = "TrenchFrontOfAgent";
 	public static final String				PFAGENTINMIDAIR = "AgentInAir";
-	public static final String				PFAGENTADJTRENCH = "AgentAdjacentToTrench";
 	public static final String				PFAGENTCANWALK = "AgentCanWalk";
 	public static final String				PFEMPTYCELLINWALK = "EmptyCellInWalk";
 	public static final String				PFTOWER = "TowerInWorld";
@@ -130,7 +129,8 @@ public class NameSpace {
 	public static final String				PFAGENTNOTLOOKTOWARDGOAL = "AgentNotLookingInDirectionOfGoal";
 	public static final String				PFAGENTNOTLOOKTOWARDGOLD = "AgentNotLookingInDirectionOfGold";
 	public static final String				PFAGENTNOTLOOKTOWARDFURNACE = "AgentNotLookingInDirectionOfFurnace";
-	
+	public static final String				PFTRENCHINFRONTAGENT = "TrenchIsInFrontOfAgent";
+
 	//-----------PLANNERS-------------
 	public static final String				RTDP = "RTDP";
 	public static final String				ExpertRTDP = "ERTDP";
