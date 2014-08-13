@@ -21,6 +21,8 @@ import minecraft.MinecraftDomain.PropositionalFunctions.AgentInLavaPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentInMidAirPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentCanWalkPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentLookingAtBlockPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentLookingInDirectionOfBlock;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentNotLookingInDirectionOfBlock;
 import minecraft.MinecraftDomain.PropositionalFunctions.AtGoalPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockAtAgentsFeetHeadClearPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockAtPF;
@@ -273,6 +275,13 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new AgentInMidAirPF(NameSpace.PFAGENTINMIDAIR, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new TowerInMapPF(NameSpace.PFTOWER, domain, new String[]{NameSpace.CLASSAGENT}, 2, NameSpace.CHARDIRTBLOCKNOTPICKUPABLE, rows, cols, height);
 		new AgentInLavaPF(NameSpace.PFAGENTINLAVA, domain, new String[]{NameSpace.CLASSAGENT});
+		
+		new AgentLookingInDirectionOfBlock(NameSpace.PFAGENTLOOKTOWARDGOAL, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOAL);
+		new AgentLookingInDirectionOfBlock(NameSpace.PFAGENTLOOKTOWARDGOLD, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOLDBLOCK);
+		new AgentLookingInDirectionOfBlock(NameSpace.PFAGENTLOOKTOWARDFURNACE, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSFURNACE);
+		new AgentNotLookingInDirectionOfBlock(NameSpace.PFAGENTNOTLOOKTOWARDGOAL, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOAL);
+		new AgentNotLookingInDirectionOfBlock(NameSpace.PFAGENTNOTLOOKTOWARDGOLD, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOLDBLOCK);
+		new AgentNotLookingInDirectionOfBlock(NameSpace.PFAGENTNOTLOOKTOWARDFURNACE, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSFURNACE);
 		
 		// Dave's jenky hard coded prop funcs
 //		new AgentAdjacentToTrenchPF(NameSpace.PFAGENTADJTRENCH, domain, new String[]{NameSpace.CLASSAGENT, NameSpace.CLASSTRENCH});
