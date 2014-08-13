@@ -517,9 +517,9 @@ public class MinecraftBehavior {
 		double [] results;
 		
 		//BFS
-//		BFSPlanner bfsPlanner = new BFSPlanner(mcBeh, true, true);
-//		results = bfsPlanner.runPlanner();
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		BFSPlanner bfsPlanner = new BFSPlanner(mcBeh, true, true);
+		results = bfsPlanner.runPlanner();
+		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//RTDP
 //		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, false, true);
@@ -531,23 +531,22 @@ public class MinecraftBehavior {
 //		results = BFSRTDPPlanner.runPlanner();
 //		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		//AFFRTDP
-		KnowledgeBase affKB = new KnowledgeBase();
+//		KnowledgeBase affKB = new KnowledgeBase();
 		
 		// Hard
-		affKB.load(mcBeh.getDomain(), "expert.kb", false);
+//		affKB.load(mcBeh.getDomain(), "expert.kb", false);
 		// Soft
 //		affKB.load(mcBeh.getDomain(), "/learning_rate/lr_100.kb", true);
+
 		
-		mcBeh.updateMap(new MapIO(mapName));
-		
-		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
-		results = affRTDPPlanner.runPlanner();
-		System.out.println("(minecraftBehavior) results [expertRTDP]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+//		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
+//		results = affRTDPPlanner.runPlanner();
+//		System.out.println("(minecraftBehavior) results [expertRTDP]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//VI
-		VIPlanner viPlan = new VIPlanner(mcBeh, false, false);
-		results = viPlan.runPlanner();
-		System.out.println("(minecraftBehavior) results [VI]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+//		VIPlanner viPlan = new VIPlanner(mcBeh, false, false);
+//		results = viPlan.runPlanner();
+//		System.out.println("(minecraftBehavior) results [VI]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		// Affordance VI
 //		AffordanceVIPlanner affVIPlan = new AffordanceVIPlanner(mcBeh, true, true, "somekb.kb");
