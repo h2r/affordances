@@ -43,9 +43,7 @@ public class AgentLookingAtWallPF extends PropositionalFunction{
 		List<ObjectInstance> objectsInFront = Helpers.objectsAt(positionInFront[0], positionInFront[1], positionInFront[2], state);
 		
 		for(ObjectInstance block: objectsInFront) {
-			if (block.getTrueClassName().equals(NameSpace.CLASSDIRTBLOCKPICKUPABLE) || block.getTrueClassName().equals(NameSpace.CLASSDIRTBLOCKNOTPICKUPABLE)) {
-//				System.out.println("AgentLookForwarDAndWalk) afx,ay,az:arot,avert " + ax + "," + ay + "," + az + ":" + arot + "," + avert);
-				
+			if (block.getTrueClassName().equals(NameSpace.CLASSDIRTBLOCKPICKUPABLE) || block.getTrueClassName().equals(NameSpace.CLASSDIRTBLOCKNOTPICKUPABLE)) {				
 				return true;
 			}
 		}
