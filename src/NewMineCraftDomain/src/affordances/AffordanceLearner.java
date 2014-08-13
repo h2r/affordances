@@ -136,13 +136,13 @@ public class AffordanceLearner {
 		int numLavaBlocks = 1;
 		
 		System.out.println("Generating maps..." + this.numWorldsPerLGD);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 2, 3, 5);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
 		
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 2, 2, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 3, 3, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 2, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 2, 2, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 2, 2, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 3, 3, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 2, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 2, 2, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
 		
 	}
 	
@@ -537,7 +537,7 @@ public class AffordanceLearner {
 		
 		affLearn.learn();
 		affKnowledgeBase.save(kbName);
-		
+
 		return kbName;
 	}
 
@@ -563,7 +563,7 @@ public class AffordanceLearner {
 		
 		// Non-Grid
 		MinecraftBehavior mb = new MinecraftBehavior();
-		generateMinecraftKB(mb, 1, true);
+		generateMinecraftKB(mb, 1, false);
 		
 	}
 	

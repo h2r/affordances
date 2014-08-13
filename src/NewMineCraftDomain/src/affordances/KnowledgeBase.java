@@ -61,10 +61,10 @@ public class KnowledgeBase {
 		String fpath = basePath + "/" + filename;
 		
 		try {
-//			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(fpath)));
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(fpath)));
 			
 			// For grid
-			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 			
 			for (AffordanceDelegate aff: this.affDelegateList) {
 				bw.write(((SoftAffordance)aff.getAffordance()).toFile());
