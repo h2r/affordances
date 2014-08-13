@@ -116,7 +116,7 @@ public class NameSpace {
 	public static final String				PFGOLDFRONTAGENTTWO = "GoldFrontOfAgent2";
 	public static final String				PFFURNACEINFRONT = "FurnaceInFront";
 	public static final String				PFWALLINFRONT = "WallInFront";
-	public static final String				PFFEETBLOCKHEADCLEAR = "FeetBlockedHeadClear";
+	public static final String				PFHURDLEINFRONTAGENT = "HurdleInFrontOfAgent";
 	public static final String				PFAGENTINLAVA = "AgentInLava";
 	public static final String				PFLAVAFRONTAGENT = "LavaFrontOfAgent";
 	public static final String				PFAGENTLOOKLAVA = "AgentLookAtLava";
@@ -130,6 +130,8 @@ public class NameSpace {
 	public static final String				PFAGENTNOTLOOKTOWARDGOLD = "AgentNotLookingInDirectionOfGold";
 	public static final String				PFAGENTNOTLOOKTOWARDFURNACE = "AgentNotLookingInDirectionOfFurnace";
 	public static final String				PFTRENCHINFRONTAGENT = "TrenchIsInFrontOfAgent";
+	public static final String				PFAGENTCANJUMP = "AgentCanJump";
+
 
 	//-----------PLANNERS-------------
 	public static final String				RTDP = "RTDP";

@@ -1,4 +1,4 @@
-package minecraft.MinecraftDomain.PropositionalFunctions;
+package minecraft.MinecraftDomain.PropositionalFunctions.ThisIsDumbDontLookAtThisThing;
 
 import minecraft.NameSpace;
 import minecraft.MinecraftDomain.Helpers;

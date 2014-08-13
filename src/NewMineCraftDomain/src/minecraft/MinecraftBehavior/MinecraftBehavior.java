@@ -88,6 +88,7 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfAgentNotLookTowardGoal;
 	public PropositionalFunction		pfAgentNotLookTowardGold;
 	public PropositionalFunction		pfAgentNotLookTowardFurnace;
+	public PropositionalFunction		pfAgentCanJump;
 	
 	// Dave's jenky hard coded prop funcs
 	public PropositionalFunction		pfAgentLookForwardAndWalkable;
@@ -96,7 +97,7 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfGoldBlockFrontOfAgent;
 	public PropositionalFunction		pfFurnaceInFrontOfAgent;
 	public PropositionalFunction		pfWallInFrontOfAgent;
-	public PropositionalFunction		pfFeetBlockedHeadClear;
+	public PropositionalFunction		pfHurdleInFrontOfAgent;
 	public PropositionalFunction 		pfLavaFrontAgent;
 	public PropositionalFunction 		pfAgentLookBlock;
 	public PropositionalFunction 		pfAgentLookWall;
@@ -188,7 +189,7 @@ public class MinecraftBehavior {
 		this.pfGoldBlockFrontOfAgent = domain.getPropFunction(NameSpace.PFGOLDFRONTAGENTONE);
 		this.pfFurnaceInFrontOfAgent = domain.getPropFunction(NameSpace.PFFURNACEINFRONT);
 		this.pfWallInFrontOfAgent = domain.getPropFunction(NameSpace.PFWALLINFRONT);
-		this.pfFeetBlockedHeadClear = domain.getPropFunction(NameSpace.PFFEETBLOCKHEADCLEAR);
+		this.pfHurdleInFrontOfAgent = domain.getPropFunction(NameSpace.PFHURDLEINFRONTAGENT);
 		this.pfAgentInLava = domain.getPropFunction(NameSpace.PFAGENTINLAVA);
 		this.pfLavaFrontAgent = domain.getPropFunction(NameSpace.PFLAVAFRONTAGENT);
 		this.pfAgentLookWall = domain.getPropFunction(NameSpace.PFAGENTLOOKWALL);
@@ -201,6 +202,7 @@ public class MinecraftBehavior {
 		this.pfAgentNotLookTowardGold = domain.getPropFunction(NameSpace.PFAGENTNOTLOOKTOWARDGOLD);
 		this.pfAgentNotLookTowardFurnace = domain.getPropFunction(NameSpace.PFAGENTNOTLOOKTOWARDFURNACE);
 		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFTRENCHINFRONTAGENT);
+		this.pfAgentCanJump = domain.getPropFunction(NameSpace.PFAGENTCANJUMP);
 		
 		// Set up goal LE and lava LE for use in reward function
 		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);

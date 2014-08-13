@@ -10,7 +10,7 @@ import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.PropositionalFunction;
 import burlap.oomdp.core.State;
 
-public class WallInFrontOfAgentPF extends PropositionalFunction{
+public class AgentLookingAtWall extends PropositionalFunction{
 	
 	private int distance;
 
@@ -20,7 +20,7 @@ public class WallInFrontOfAgentPF extends PropositionalFunction{
 	 * @param parameterClasses
 	 * @param object
 	 */
-	public WallInFrontOfAgentPF(String name, Domain domain, String[] parameterClasses, int distance) {
+	public AgentLookingAtWall(String name, Domain domain, String[] parameterClasses, int distance) {
 		super(name, domain, parameterClasses);
 		this.distance = distance;
 	}
@@ -35,8 +35,7 @@ public class WallInFrontOfAgentPF extends PropositionalFunction{
 		int az = agent.getDiscValForAttribute(NameSpace.ATZ);
 		
 		int arot = agent.getDiscValForAttribute(NameSpace.ATROTDIR);
-		
-		
+				
 		// If agent looking down, then it's not looking at a wall.
 		if(avert < 2) {
 			return false;
