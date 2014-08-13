@@ -58,24 +58,23 @@ public class AffordanceLearner {
 	private Double 					lowInformationThreshold = 1.55; // Threshold for what is considered high entropy/low information
 	private boolean					useOptions;
 	private boolean					useMAs;
+	private MinecraftPlanner mcPlanner;
 	
-	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, boolean useOptions, boolean useMAs) {
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, MinecraftPlanner planner) {
 		this.lgds = lgds;
 		this.mcb = mcb;
 		this.affordanceKB = kb;
 		this.countTotalActions = countTotalActions;
-		this.useMAs = useMAs;
-		this.useOptions = useOptions;
+		this.mcPlanner = planner;
 	}
 	
-	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorldsPerLGD, boolean useOptions, boolean useMAs) {
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorldsPerLGD, MinecraftPlanner planner) {
 		this.lgds = lgds;
 		this.mcb = mcb;
 		this.affordanceKB = kb;
 		this.countTotalActions = countTotalActions;
 		this.numWorldsPerLGD = numWorldsPerLGD;
-		this.useMAs = useMAs;
-		this.useOptions = useOptions;
+		this.mcPlanner = planner;
 	}
 	
 	/**
@@ -156,8 +155,7 @@ public class AffordanceLearner {
 		this.mcb.updateMap(map);
 
 		// Initialize behavior and planner
-		MinecraftPlanner myVIPlanner = new VIPlanner(mcb, this.useOptions, this.useMAs);
-		OOMDPPlanner planner = myVIPlanner.retrievePlanner();
+		OOMDPPlanner planner = this.mcPlanner.retrievePlanner();
 		
 		/**
 		 * We iterate through each state in the formed policy and get its "optimal" action. For each affordance,
@@ -403,11 +401,14 @@ public class AffordanceLearner {
 	 * @param mb: MinecraftBehavior instance
 	 * @return
 	 */
-	public static String generateMinecraftKB(MinecraftBehavior mb, int numWorlds, boolean learningRate) {
+	public static String generateMinecraftKB(MinecraftBehavior mcBeh, int numWorlds, boolean learningRate, boolean useOptions, boolean useMAs) {
 		
-		List<Action> allActions = mb.getDomain().getActions();
+		MinecraftPlanner planner = new VIPlanner(mcBeh, useOptions, useMAs);
+		
+		// Create actions
+		List<Action> allActions = planner.retrievePlanner().actions;
 		List<AbstractGroundedAction> allGroundedActions = new ArrayList<AbstractGroundedAction>();
-
+		
 		// Create Grounded Action instances for each action
 		for(Action a : allActions) {
 			String[] freeParams = makeFreeVarListFromObjectClasses(a.getParameterClasses());
@@ -415,19 +416,43 @@ public class AffordanceLearner {
 			allGroundedActions.add(ga);
 		}
 		
+		// Create lgd list, predicate list, and knowledge base template.
+		Map<Integer, LogicalExpression> lgds = getMinecraftGoals(mcBeh);
+		KnowledgeBase affKnowledgeBase = generateAffordanceKB(getMinecraftPredicates(mcBeh), lgds, allGroundedActions, true);
+		
+		// Initialize Learner
+		boolean countTotalActions = true;
+		AffordanceLearner affLearn = new AffordanceLearner(mcBeh, affKnowledgeBase, lgds, countTotalActions, numWorlds, planner);
+		
+		String kbName;
+		if(learningRate) {
+			kbName = "learning_rate/lr_" + affLearn.numWorldsPerLGD + ".kb";
+		}
+		else {
+			kbName = "learned" + affLearn.numWorldsPerLGD + ".kb";
+		}
+		
+		// Learn
+		affLearn.learn();
+		affKnowledgeBase.save(kbName);
+
+		return kbName;
+	}
+	
+	private static Map<Integer,LogicalExpression> getMinecraftGoals(MinecraftBehavior mcBeh) {
 		// Set up goal description list
 		Map<Integer,LogicalExpression> lgds = new HashMap<Integer,LogicalExpression>();
 		
-		PropositionalFunction atGoal = mb.pfAgentAtGoal;
+		PropositionalFunction atGoal = mcBeh.pfAgentAtGoal;
 		LogicalExpression atGoalLE = pfAtomFromPropFunc(atGoal);
 		
-		PropositionalFunction hasGoldOre = mb.pfAgentHasAtLeastXGoldOre;
+		PropositionalFunction hasGoldOre = mcBeh.pfAgentHasAtLeastXGoldOre;
 		LogicalExpression goldOreLE = pfAtomFromPropFunc(hasGoldOre);
 		
-		PropositionalFunction hasGoldBlock = mb.pfAgentHasAtLeastXGoldBar;
+		PropositionalFunction hasGoldBlock = mcBeh.pfAgentHasAtLeastXGoldBar;
 		LogicalExpression goldBlockLE = pfAtomFromPropFunc(hasGoldBlock);
 		
-		PropositionalFunction towerBuilt = mb.pfTower;
+		PropositionalFunction towerBuilt = mcBeh.pfTower;
 		LogicalExpression towerBuiltLE = pfAtomFromPropFunc(towerBuilt);
 		
 		// Add goals
@@ -436,66 +461,70 @@ public class AffordanceLearner {
 		lgds.put(2,goldBlockLE);
 		lgds.put(3,towerBuiltLE);
 		
+		return lgds;
+	}
+	
+	private static List<LogicalExpression> getMinecraftPredicates(MinecraftBehavior mcBeh) {
 		// Set up precondition list
 		List<LogicalExpression> predicates = new ArrayList<LogicalExpression>();
 		
 		// AgentInAir PFAtom
-		PropositionalFunction agentInAir = mb.pfAgentInMidAir;
+		PropositionalFunction agentInAir = mcBeh.pfAgentInMidAir;
 		LogicalExpression agentInAirLE = pfAtomFromPropFunc(agentInAir);
 		
 		// EndOfMapInFrontOfAgent PFAtom
-		PropositionalFunction endOfMapInFrontOfAgent = mb.pfEndOfMapInFrontOfAgent;
+		PropositionalFunction endOfMapInFrontOfAgent = mcBeh.pfEndOfMapInFrontOfAgent;
 		LogicalExpression endOfMapLE = pfAtomFromPropFunc(endOfMapInFrontOfAgent);
 		
 		// Trench in front of the agent PFAtom
-		PropositionalFunction trenchInFrontOf = mb.pfTrenchInFrontOfAgent;
+		PropositionalFunction trenchInFrontOf = mcBeh.pfTrenchInFrontOfAgent;
 		LogicalExpression trenchLE = pfAtomFromPropFunc(trenchInFrontOf);
 		
 		// Area in front of agent is clear PFAtom
-		PropositionalFunction forwardWalkable = mb.pfAgentLookForwardAndWalkable;
+		PropositionalFunction forwardWalkable = mcBeh.pfAgentLookForwardAndWalkable;
 		LogicalExpression forwardWalkableLE = pfAtomFromPropFunc(forwardWalkable);
 
 		// Gold is in front of the agent
-		PropositionalFunction goldFrontAgent = mb.pfGoldBlockFrontOfAgent;
+		PropositionalFunction goldFrontAgent = mcBeh.pfGoldBlockFrontOfAgent;
 		LogicalExpression goldFrontAgentLE = pfAtomFromPropFunc(goldFrontAgent);
 		
-		PropositionalFunction wallFrontAgent = mb.pfWallInFrontOfAgent;
+		PropositionalFunction wallFrontAgent = mcBeh.pfWallInFrontOfAgent;
 		LogicalExpression wallFrontAgentLE = pfAtomFromPropFunc(wallFrontAgent);
 		
-		PropositionalFunction feetBlockHeadClear = mb.pfFeetBlockedHeadClear;
+		PropositionalFunction feetBlockHeadClear = mcBeh.pfFeetBlockedHeadClear;
 		LogicalExpression feetBlockHeadClearLE = pfAtomFromPropFunc(feetBlockHeadClear);
 		
-		PropositionalFunction lavaFrontAgent = mb.pfLavaFrontAgent;
+		PropositionalFunction lavaFrontAgent = mcBeh.pfLavaFrontAgent;
 		LogicalExpression lavaFrontAgentLE = pfAtomFromPropFunc(lavaFrontAgent);
 		
-		PropositionalFunction agentLookLava = mb.pfAgentLookLava;
+		PropositionalFunction agentLookLava = mcBeh.pfAgentLookLava;
 		LogicalExpression agentLookLavaLE = pfAtomFromPropFunc(agentLookLava);
 		
-		PropositionalFunction agentLookBlock = mb.pfAgentLookBlock;
+		PropositionalFunction agentLookBlock = mcBeh.pfAgentLookBlock;
 		LogicalExpression agentLookBlockLE = pfAtomFromPropFunc(agentLookBlock);
 		
-		PropositionalFunction agentLookWall = mb.pfAgentLookWall;
+		PropositionalFunction agentLookWall = mcBeh.pfAgentLookWall;
 		LogicalExpression agentLookWallLE = pfAtomFromPropFunc(agentLookWall);
 		
-		PropositionalFunction agentInLava = mb.pfAgentInLava;
+		PropositionalFunction agentInLava = mcBeh.pfAgentInLava;
 		LogicalExpression agentInLavaLE = pfAtomFromPropFunc(agentInLava);
 		
-		PropositionalFunction agentLookTowardGoal = mb.pfAgentLookTowardGoal;
+		PropositionalFunction agentLookTowardGoal = mcBeh.pfAgentLookTowardGoal;
 		LogicalExpression agentLookTowardGoalLE = pfAtomFromPropFunc(agentLookTowardGoal);
 		
-		PropositionalFunction agentLookTowardGold = mb.pfAgentLookTowardGold;
+		PropositionalFunction agentLookTowardGold = mcBeh.pfAgentLookTowardGold;
 		LogicalExpression agentLookTowardGoldLE = pfAtomFromPropFunc(agentLookTowardGold);
 		
-		PropositionalFunction agentLookTowardFurnace = mb.pfAgentLookTowardFurnace;
+		PropositionalFunction agentLookTowardFurnace = mcBeh.pfAgentLookTowardFurnace;
 		LogicalExpression agentLookTowardFurnaceLE = pfAtomFromPropFunc(agentLookTowardFurnace);
 		
-		PropositionalFunction notAgentLookTowardGoal = mb.pfAgentNotLookTowardGoal;
+		PropositionalFunction notAgentLookTowardGoal = mcBeh.pfAgentNotLookTowardGoal;
 		LogicalExpression notAgentLookTowardGoalLE = pfAtomFromPropFunc(notAgentLookTowardGoal);
 		
-		PropositionalFunction notAgentLookTowardGold = mb.pfAgentNotLookTowardGold;
+		PropositionalFunction notAgentLookTowardGold = mcBeh.pfAgentNotLookTowardGold;
 		LogicalExpression notAgentLookTowardGoldLE = pfAtomFromPropFunc(notAgentLookTowardGold);
 		
-		PropositionalFunction notAgentLookTowardFurnace = mb.pfAgentNotLookTowardFurnace;
+		PropositionalFunction notAgentLookTowardFurnace = mcBeh.pfAgentNotLookTowardFurnace;
 		LogicalExpression notAgentLookTowardFurnaceLE = pfAtomFromPropFunc(notAgentLookTowardFurnace);
 		
 		// Add LEs to list
@@ -518,28 +547,7 @@ public class AffordanceLearner {
 		predicates.add(notAgentLookTowardGoldLE);
 		predicates.add(notAgentLookTowardFurnaceLE);
 		
-		
-		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions, true);
-		
-		// Initialize Learner
-		boolean countTotalActions = true;
-		boolean useOptions = true;
-		boolean useMAs = true;
-		
-		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions, numWorlds, useOptions, useMAs);
-		
-		String kbName;
-		if(learningRate) {
-			kbName = "learning_rate/lr_" + affLearn.numWorldsPerLGD + ".kb";
-		}
-		else {
-			kbName = "learned" + affLearn.numWorldsPerLGD + ".kb";
-		}
-		
-		affLearn.learn();
-		affKnowledgeBase.save(kbName);
-
-		return kbName;
+		return predicates;
 	}
 
 	public static void main(String[] args) {
@@ -563,8 +571,10 @@ public class AffordanceLearner {
 //		MinecraftBehavior mb = new MinecraftBehavior(br);
 		
 		// Non-Grid
-		MinecraftBehavior mb = new MinecraftBehavior();
-		generateMinecraftKB(mb, 1, false);
+		boolean addOptions = true;
+		boolean addMAs = true;
+		MinecraftBehavior mcBeh = new MinecraftBehavior();
+		generateMinecraftKB(mcBeh, 1, false, addOptions, addMAs);
 		
 	}
 	

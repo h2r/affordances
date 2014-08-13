@@ -76,7 +76,7 @@ public class MinecraftTestPipeline {
 	 * @param countStateSpaceSize: a boolean indicating whether or not to count the reachable state space size of each map
 	 * @throws IOException 
 	 */
-	public static void runMinecraftTests(int numMapsPerGoal, String nametag, boolean shouldLearn, List<String> planners, boolean addOptions, boolean addMacroActions, boolean countStateSpaceSize) throws IOException {
+	public static void runMinecraftTests(int numMapsPerGoal, String nametag, boolean shouldLearn, List<String> planners, boolean addOptions, boolean addMAs, boolean countStateSpaceSize) throws IOException {
 		
 		// Create behavior, planners, result objects, test maps
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
@@ -108,7 +108,7 @@ public class MinecraftTestPipeline {
 		String learnedKBName;
 		if(shouldLearn) {
 			// TODO: improve method of selecting number of worlds to learn with (currently set to 5)
-			learnedKBName = AffordanceLearner.generateMinecraftKB(mcBeh, 5, false);
+			learnedKBName = AffordanceLearner.generateMinecraftKB(mcBeh, 5, false, addOptions, addMAs);
 		}
 		else {
 			learnedKBName = "test50.kb";
@@ -131,7 +131,7 @@ public class MinecraftTestPipeline {
 		if(addOptions){
 			outputFileName = outputFileName + "_opt";
 		}
-		if(addMacroActions){
+		if(addMAs){
 			outputFileName = outputFileName + "_ma";
 		}
 		outputFileName = outputFileName + "_results.txt";
@@ -179,7 +179,7 @@ public class MinecraftTestPipeline {
 				statusBW.flush();
 			}
 			
-			if(addMacroActions) {
+			if(addMAs) {
 				statusBW.write("\t...macro actions RTDP");
 				statusBW.flush();
 			RTDPPlanner rtdp = new RTDPPlanner(mcBeh, false, true);
@@ -202,7 +202,7 @@ public class MinecraftTestPipeline {
 			if(planners.contains(NameSpace.ExpertRTDP)) {
 					statusBW.write("\t...Expert RTDP");
 					statusBW.flush();
-				AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, addOptions, addMacroActions, expertAffKB);
+				AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, addOptions, addMAs, expertAffKB);
 				affRTDP.updateKB(expertAffKB);
 				expertRTDPResults.addTrial(affRTDP.runPlanner());
 					statusBW.write(" Finished\n");
@@ -213,7 +213,7 @@ public class MinecraftTestPipeline {
 			if(planners.contains(NameSpace.LearnedHardRTDP)) {
 					statusBW.write("\t...LearnedHard RTDP");
 					statusBW.flush();
-				AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, addOptions, addMacroActions, learnedHardAffKB);
+				AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, addOptions, addMAs, learnedHardAffKB);
 				affRTDP.updateKB(learnedHardAffKB);
 				learnedHardRTDPResults.addTrial(affRTDP.runPlanner());
 					statusBW.write(" Finished\n");
@@ -224,7 +224,7 @@ public class MinecraftTestPipeline {
 			if(planners.contains(NameSpace.LearnedSoftRTDP)) {
 					statusBW.write("\t...Learned Soft RTDP");
 					statusBW.flush();
-				AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, addOptions, addMacroActions, learnedSoftAffKB);
+				AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, addOptions, addMAs, learnedSoftAffKB);
 				affRTDP.updateKB(learnedSoftAffKB);
 				learnedSoftRTDPResults.addTrial(affRTDP.runPlanner());
 					statusBW.write(" Finished\n");
@@ -235,7 +235,7 @@ public class MinecraftTestPipeline {
 			if(planners.contains(NameSpace.VI)) {
 					statusBW.write("\t...VI");
 					statusBW.flush();
-				VIPlanner vi = new VIPlanner(mcBeh, addOptions, addMacroActions);
+				VIPlanner vi = new VIPlanner(mcBeh, addOptions, addMAs);
 				viResults.addTrial(vi.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
@@ -245,7 +245,7 @@ public class MinecraftTestPipeline {
 			if(planners.contains(NameSpace.ExpertVI)) {
 					statusBW.write("\t...Expert VI");
 					statusBW.flush();
-				AffordanceVIPlanner affVI = new AffordanceVIPlanner(mcBeh, addOptions, addMacroActions, expertAffKB);
+				AffordanceVIPlanner affVI = new AffordanceVIPlanner(mcBeh, addOptions, addMAs, expertAffKB);
 				affVI.updateKB(expertAffKB);
 				expertVIResults.addTrial(affVI.runPlanner());
 					statusBW.write(" Finished\n");
@@ -256,7 +256,7 @@ public class MinecraftTestPipeline {
 			if(planners.contains(NameSpace.LearnedHardVI)) {
 					statusBW.write("\t...Learned Hard VI");
 					statusBW.flush();
-				AffordanceVIPlanner affVI = new AffordanceVIPlanner(mcBeh, addOptions, addMacroActions, learnedHardAffKB);
+				AffordanceVIPlanner affVI = new AffordanceVIPlanner(mcBeh, addOptions, addMAs, learnedHardAffKB);
 				affVI.updateKB(learnedHardAffKB);
 				learnedHardVIResults.addTrial(affVI.runPlanner());
 					statusBW.write(" Finished\n");
@@ -346,7 +346,7 @@ public class MinecraftTestPipeline {
 			// --- Create Knowledge Bases ---
 			for(int numWorldsToLearn = 0; numWorldsToLearn <= maxNumLearningWorlds; numWorldsToLearn = numWorldsToLearn + learningIncrement) {
 				// Learn if we're supposed to learn a new KB
-				String learnedKBName = AffordanceLearner.generateMinecraftKB(mcBeh, numWorldsToLearn, true);
+				String learnedKBName = AffordanceLearner.generateMinecraftKB(mcBeh, numWorldsToLearn, true, false, false);
 				kbNames.add(learnedKBName);
 			}
 		}
