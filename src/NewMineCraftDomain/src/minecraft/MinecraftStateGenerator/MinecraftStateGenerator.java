@@ -202,8 +202,10 @@ public class MinecraftStateGenerator {
 		String objectName = NameSpace.CLASSAGENT;
 		Random rand = new Random();
 		ObjectInstance agent = new ObjectInstance(d.getObjectClass(objectName), objectName + objectIndex);
-		agent.setValue(NameSpace.ATROTDIR, rand.nextInt(4));//Facing north by default
-		agent.setValue(NameSpace.ATVERTDIR, rand.nextInt(4));//Facing ahead by default
+//		agent.setValue(NameSpace.ATROTDIR, 0);//Facing north by default
+//		agent.setValue(NameSpace.ATVERTDIR, 3);//Facing ahead by default
+		agent.setValue(NameSpace.ATROTDIR, rand.nextInt(4));
+		agent.setValue(NameSpace.ATVERTDIR, rand.nextInt(4));
 		setObjectLocation(agent, x, y, z, false, false, false, false);
 		return agent;
 	}

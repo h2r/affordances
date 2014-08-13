@@ -62,7 +62,6 @@ public abstract class MinecraftPlanner {
 	}
 	
 	private void addOptionsToOOMDPPlanner(OOMDPPlanner toAddTo) {
-		
 		//OPTIONS
 		if (this.addOptions) {
 			//Trench build option

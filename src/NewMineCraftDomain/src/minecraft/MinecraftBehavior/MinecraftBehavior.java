@@ -514,7 +514,7 @@ public class MinecraftBehavior {
 	public static void main(String[] args) {
 //		String mapsPath = System.getProperty("user.dir") + "/maps/";
 		
-		String mapName = "src/minecraft/maps/randomMaps/DeepTrenchWorld0.map";
+		String mapName = "src/minecraft/maps/learning/DeepTrenchWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapName);
 		double [] results;
@@ -530,9 +530,9 @@ public class MinecraftBehavior {
 //		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		//BFSRTDP
-		BFSRTDPPlanner BFSRTDPPlanner = new BFSRTDPPlanner(mcBeh, false, false);
-		results = BFSRTDPPlanner.runPlanner();
-		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+//		BFSRTDPPlanner BFSRTDPPlanner = new BFSRTDPPlanner(mcBeh, false, false);
+//		results = BFSRTDPPlanner.runPlanner();
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		//AFFRTDP
 //		KnowledgeBase affKB = new KnowledgeBase();
 		
@@ -546,9 +546,9 @@ public class MinecraftBehavior {
 //		System.out.println("(minecraftBehavior) results [expertRTDP]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//VI
-//		VIPlanner viPlan = new VIPlanner(mcBeh, false, false);
-//		results = viPlan.runPlanner();
-//		System.out.println("(minecraftBehavior) results [VI]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		VIPlanner viPlan = new VIPlanner(mcBeh, false, false);
+		results = viPlan.runPlanner();
+		System.out.println("(minecraftBehavior) results [VI]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		// Affordance VI
 //		AffordanceVIPlanner affVIPlan = new AffordanceVIPlanner(mcBeh, true, true, "somekb.kb");

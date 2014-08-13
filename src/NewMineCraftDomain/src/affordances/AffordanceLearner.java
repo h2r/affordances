@@ -136,7 +136,7 @@ public class AffordanceLearner {
 		int numLavaBlocks = 1;
 		
 		System.out.println("Generating maps..." + this.numWorldsPerLGD);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 4, 4, 5);
 		
 //		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 2, 2, 4);
 //		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 3, 3, 4);
@@ -164,13 +164,13 @@ public class AffordanceLearner {
 		
 		// Synthesize a policy on the given map
 		Policy p = mcb.solve(planner);
-		Map<AffordanceDelegate,List<AbstractGroundedAction>> seen = new HashMap<AffordanceDelegate,List<AbstractGroundedAction>>();  // Makes sure we don't count an action more than once per affordance (per map)
+//		Map<AffordanceDelegate,List<AbstractGroundedAction>> seen = new HashMap<AffordanceDelegate,List<AbstractGroundedAction>>();  // Makes sure we don't count an action more than once per affordance (per map)
 		
 		// Updates the action counts (alpha)
-		updateActionCounts(planner, p, seen, true);
+//		updateActionCounts(planner, p, seen, true);
 		
 		// Updates the action set size counts (beta)
-		updateActionSetSizeCounts(seen);
+//		updateActionSetSizeCounts(seen);
 	}
 	
 	/**
@@ -205,7 +205,6 @@ public class AffordanceLearner {
 
 			// Get the optimal action for that state and update affordance counts
 			GroundedAction ga = (GroundedAction) policy.getAction(st);
-			System.out.println("optimal GA:" + ga.toString());
 			QValue qv = ((ValueFunctionPlanner)planner).getQ(st, ga);
 
 			for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
@@ -571,7 +570,7 @@ public class AffordanceLearner {
 //		MinecraftBehavior mb = new MinecraftBehavior(br);
 		
 		// Non-Grid
-		boolean addOptions = true;
+		boolean addOptions = false;
 		boolean addMAs = true;
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
 		generateMinecraftKB(mcBeh, 1, false, addOptions, addMAs);
