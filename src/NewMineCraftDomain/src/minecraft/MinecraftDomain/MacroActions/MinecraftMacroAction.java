@@ -32,7 +32,6 @@ public abstract class MinecraftMacroAction extends Option{
 
 	private List<GroundedAction> getGroundedActionWrapper() {
 		if (this.actionSequence == null) {
-			System.out.println("reinitializing GAs");
 			this.actionSequence = getGroundedActions();
 		}
 		return this.actionSequence;
@@ -53,7 +52,6 @@ public abstract class MinecraftMacroAction extends Option{
 		this.state = state;
 		this.keepTrackOfRewardWith(rf, gamma);
 		this.setExpectationHashingFactory(hashFactory);
-		System.out.println("Instantiating MA");
 	}
 
 	@Override
@@ -99,7 +97,6 @@ public abstract class MinecraftMacroAction extends Option{
 	}
 	
 	protected GroundedAction getGAByActionName(String name) {
-		System.out.println("gettingGA");
 		GroundedAction toReturn = this.domain.getAction(name).getAllApplicableGroundedActions(state).get(0);
 		return toReturn;
 	}
