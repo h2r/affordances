@@ -55,7 +55,7 @@ public class AffordanceLearner {
 	private MinecraftBehavior 		mcb;
 	private int 					numWorldsPerLGD = 5;
 	private boolean					countTotalActions = true;
-	private Double 					lowInformationThreshold = 0.05; // Threshold for what is considered high entropy/low information
+	private Double 					lowVarianceThreshold = 2.0; // Threshold for what is considered high entropy/low information
 	private boolean					useOptions;
 	private boolean					useMAs;
 	private int						totalNumActions;
@@ -297,20 +297,30 @@ public class AffordanceLearner {
 	 * @return
 	 */
 	private boolean isLowInformationAffordance(double[] multinomial) {
-		double[] uniform = new double[multinomial.length];
-		Arrays.fill(uniform, 1.0/multinomial.length);
-		double uniformEntropy = computeEntropy(uniform);
-		double multinomialEntropy = computeEntropy(multinomial);
-		System.out.println("(AffordanceLearner) uniform entropy: " + uniformEntropy);
-		System.out.println("(AffordanceLearner) multinom entropy: " + multinomialEntropy);
 
-		// High entropy, return false.
-		if(uniformEntropy - multinomialEntropy > this.lowInformationThreshold) {
+		// If there is a low variance, low information.
+		Double variance = computeVariance(multinomial);
+		if(variance < this.lowVarianceThreshold) {
+			System.out.println("(AffordanceLearner) throwing out aff with variance: " + variance);
 			return true;
 		}
 		return false;
+	}
+	
+	private static double computeVariance(double[] multinomial) {
+		// Compute mean
+		Double total = 0.0;
+		for(int i = 0; i < multinomial.length; i++) {
+			total += multinomial[i];
+		}
+		Double mean = total / multinomial.length;
 		
-		// 
+		// Compute variance
+		Double sumOfDifference = 0.0;
+		for(int i = 0; i < multinomial.length; i++) {
+			sumOfDifference += Math.pow((mean - multinomial[i]),2);
+		}
+		return sumOfDifference / (multinomial.length - 1);
 	}
 	
 	private double computeEntropy(double[] multinomial) {
@@ -607,7 +617,6 @@ public class AffordanceLearner {
 		
 //		MinecraftBehavior mb = new MinecraftBehavior(br);
 		
-		// Non-Grid
 		boolean addOptions = true;
 		boolean addMAs = true;
 		
