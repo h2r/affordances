@@ -21,14 +21,12 @@ import burlap.oomdp.core.Domain;
  * The knowledge-base is a wrapper around a collection of objects of type T that are used
  * to encode knowledge in the minecraft world (ie. affordances, subgoals, etc...)
  * @author dabel
- *
- * @param <T> The type of knowledge (affordance, subgoal, etc...)
  */
 public class KnowledgeBase {
 	private List<AffordanceDelegate>	affDelegateList;
 	private AffordancesController		affController;
 //	private String						basePath = System.getProperty("user.dir") + "/minecraft/kb/";
-	private String						basePath = "minecraft/kb/";
+	private String						basePath = "src/minecraft/kb/";
 	private final static ResourceLoader	resLoader = new ResourceLoader();
 	
 	public KnowledgeBase() {

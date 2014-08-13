@@ -65,7 +65,7 @@ public class Result {
 	}
 	
 	/**
-	 * Computes the standard deviation of each data type
+	 * Computes the (sample) standard deviation of each data type
 	 */
 	private void computeDeviations() {
 		
