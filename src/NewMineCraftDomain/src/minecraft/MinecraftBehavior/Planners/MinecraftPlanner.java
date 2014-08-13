@@ -75,6 +75,13 @@ public abstract class MinecraftPlanner {
 			
 	}
 	
+	/**
+	 * 
+	 * @param mcBeh
+	 * @param useOptions
+	 * @param useMAs
+	 * @return
+	 */
 	public static List<Action> getListOfMAsAndOptions(MinecraftBehavior mcBeh, boolean useOptions, boolean useMAs) {
 
 		double gamma = mcBeh.getGamma();
