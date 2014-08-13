@@ -110,7 +110,7 @@ public class NameSpace {
 	public static final String				PFEMPTYCELLINFRONT = "TrenchFrontOfAgent";
 	public static final String				PFAGENTINMIDAIR = "AgentInAir";
 	public static final String				PFAGENTADJTRENCH = "AgentAdjacentToTrench";
-	public static final String				PFAGENTLOOKFORWARDWALK = "AgentLookForwardWalk";
+	public static final String				PFAGENTCANWALK = "AgentCanWalk";
 	public static final String				PFEMPTYCELLINWALK = "EmptyCellInWalk";
 	public static final String				PFTOWER = "TowerInWorld";
 	public static final String				PFGOLDFRONTAGENTONE = "GoldFrontOfAgent1";

@@ -17,7 +17,7 @@ public class WalkUntilCantOption extends MinecraftOption{
 	public WalkUntilCantOption(String name, State state, Domain domain,
 			RewardFunction rf, double gamma, StateHashFactory hashFactory) {
 		super(name, state, domain, rf, gamma, hashFactory);
-		this.canWalkPF = domain.getPropFunction(NameSpace.PFAGENTLOOKFORWARDWALK);
+		this.canWalkPF = domain.getPropFunction(NameSpace.PFAGENTCANWALK);
 		this.endOfMapPF = domain.getPropFunction(NameSpace.PFENDOFMAPINFRONT);
 	}
 
