@@ -299,7 +299,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKWALL, domain,  new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSINDWALL);
 		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKBLOCK, domain,  new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSDIRTBLOCKNOTPICKUPABLE);
 		new BlockInFrontOfAgentPF(NameSpace.PFLAVAFRONTAGENT, domain,  new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSLAVA);
-		new AgentLookingAtWallPF(NameSpace.PFWALLINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, 1);
+		new AgentLookingAtWallPF(NameSpace.PFWALLINFRONT, domain, new String[]{NameSpace.CLASSAGENT});
 		return domain;
 	}
 	

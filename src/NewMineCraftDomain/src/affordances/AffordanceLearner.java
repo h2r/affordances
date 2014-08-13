@@ -55,7 +55,7 @@ public class AffordanceLearner {
 	private MinecraftBehavior 		mcb;
 	private int 					numWorldsPerLGD = 5;
 	private boolean					countTotalActions = true;
-	private Double 					lowInformationThreshold = 1.55; // Threshold for what is considered high entropy/low information
+	private Double 					lowInformationThreshold = 0.05; // Threshold for what is considered high entropy/low information
 	private boolean					useOptions;
 	private boolean					useMAs;
 //	private OOMDPPlanner planner;
@@ -87,17 +87,17 @@ public class AffordanceLearner {
 		String learningMapDir = NameSpace.PATHMAPS + "learning/";
 		
 		System.out.println("(affLearner) learningMapDir: " + learningMapDir);
-//		createLearningMaps(learningMapDir);
+		createLearningMaps(learningMapDir);
 		
 		// For grid
 //		List<String> mapNames = new ArrayList<String>();
 //		for(int i = 0; i < this.numWorldsPerLGD; i++) {
 //			mapNames.add("DeepTrenchWorld" + i + ".map");
 //		}
-//		for(String map : mapNames) {
-////	InputStream testDir = getClass().getResourceAsStream("/" + learningMapDir + map);
-//	MapIO learningMap = new MapIO(learningMapDir + map);
-//	maps.add(learningMap);
+//		for(String map : maps) {
+//			MapIO learningMap = new MapIO(learningMapDir + map);
+//			maps.add(learningMap);
+//		}
 //}
 		
 		File testDir = new File(learningMapDir);
@@ -136,12 +136,12 @@ public class AffordanceLearner {
 		int numLavaBlocks = 1;
 		
 		System.out.println("Generating maps..." + this.numWorldsPerLGD);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 4, 4, 5);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
 		
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 2, 2, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 3, 3, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 2, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 3, 3, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 3, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 1, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 2, 2, 4);
 //		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
 		
 	}
@@ -164,13 +164,13 @@ public class AffordanceLearner {
 		
 		// Synthesize a policy on the given map
 		Policy p = mcb.solve(planner);
-//		Map<AffordanceDelegate,List<AbstractGroundedAction>> seen = new HashMap<AffordanceDelegate,List<AbstractGroundedAction>>();  // Makes sure we don't count an action more than once per affordance (per map)
+		Map<AffordanceDelegate,List<AbstractGroundedAction>> seen = new HashMap<AffordanceDelegate,List<AbstractGroundedAction>>();  // Makes sure we don't count an action more than once per affordance (per map)
 		
 		// Updates the action counts (alpha)
-//		updateActionCounts(planner, p, seen, true);
+		updateActionCounts(planner, p, seen, true);
 		
 		// Updates the action set size counts (beta)
-//		updateActionSetSizeCounts(seen);
+		updateActionSetSizeCounts(seen);
 	}
 	
 	/**
@@ -254,6 +254,7 @@ public class AffordanceLearner {
 			
 			// Remove if entropy is close to as high as uniform
 			double[] multinomial = normalizeCounts(counts);
+
 			if(isLowInformationAffordance(multinomial)) {
 				toRemove.add(aff);
 			}
@@ -290,21 +291,29 @@ public class AffordanceLearner {
 	 * @return
 	 */
 	private boolean isLowInformationAffordance(double[] multinomial) {
-		
 		double[] uniform = new double[multinomial.length];
 		Arrays.fill(uniform, 1.0/multinomial.length);
+		double uniformEntropy = computeEntropy(uniform);
+		double multinomialEntropy = computeEntropy(multinomial);
+		
+		// High entropy, return false.
+		if(uniformEntropy - multinomialEntropy > this.lowInformationThreshold) {
+			return true;
+		}
+		System.out.println("(AffordanceLearner) uniform entropy: " + uniformEntropy);
+		return false;
+		
+		// 
+	}
+	
+	private double computeEntropy(double[] multinomial) {
 		Double result = 0.0;
 		for(int i = 0; i < multinomial.length; i++) {
 			if (multinomial[i] != 0.0) {
 				result -= multinomial[i] * Math.log(multinomial[i]);
 			}
 		}
-		
-		// High entropy, return false.
-		if(result > this.lowInformationThreshold) {
-			return true;
-		}
-		return false;
+		return result;
 	}
 	
 	/**
@@ -405,18 +414,8 @@ public class AffordanceLearner {
 //		MinecraftPlanner planner = new VIPlanner(mcBeh, useOptions, useMAs);
 //		OOMDPPlanner planner = new ValueIteration(mcBeh.getDomain(), mcBeh.getRewardFunction(), mcBeh.getTerminalFunction(), mcBeh.getGamma(), mcBeh.getHashFactory(), mcBeh.getMinDelta(), Integer.MAX_VALUE);
 		
-		// Create actions
-		List<Action> primitiveActions = mcBeh.getDomain().getActions();
-		
-//		List<Action> allActions = planner.retrievePlanner().actions;
-		List<AbstractGroundedAction> allGroundedActions = new ArrayList<AbstractGroundedAction>();
-		
-		// Create Grounded Action instances for each action
-		for(Action a : primitiveActions) {
-			String[] freeParams = makeFreeVarListFromObjectClasses(a.getParameterClasses());
-			GroundedAction ga = new GroundedAction(a, freeParams);
-			allGroundedActions.add(ga);
-		}
+		// Get Actions
+		List<AbstractGroundedAction> allGroundedActions = getAllActions(mcBeh, useOptions, useMAs);
 		
 		// Create lgd list, predicate list, and knowledge base template.
 		Map<Integer, LogicalExpression> lgds = getMinecraftGoals(mcBeh);
@@ -439,6 +438,30 @@ public class AffordanceLearner {
 		affKnowledgeBase.save(kbName);
 
 		return kbName;
+	}
+	
+	private static List<AbstractGroundedAction> getAllActions(MinecraftBehavior mcBeh, boolean useOptions, boolean useMAs) {
+		
+		List<AbstractGroundedAction> allGroundedActions = new ArrayList<AbstractGroundedAction>();
+		
+		// Create Grounded Action instances for each primitive action
+		List<Action> primitiveActions = mcBeh.getDomain().getActions();
+		for(Action a : primitiveActions) {
+			String[] freeParams = makeFreeVarListFromObjectClasses(a.getParameterClasses());
+			GroundedAction ga = new GroundedAction(a, freeParams);
+			allGroundedActions.add(ga);
+		}
+		
+		// Create Grounded Action instances for each temporally extended action
+		List<Action> temporallyExtendedActions = MinecraftPlanner.getListOfMAsAndOptions(mcBeh, useOptions, useMAs);
+		for(Action a : temporallyExtendedActions) {
+			String[] freeParams = makeFreeVarListFromObjectClasses(a.getParameterClasses());
+			GroundedAction ga = new GroundedAction(a, freeParams);
+			allGroundedActions.add(ga);
+		}
+		
+		return allGroundedActions;
+		
 	}
 	
 	/**
@@ -498,7 +521,7 @@ public class AffordanceLearner {
 		PropositionalFunction wallFrontAgent = mcBeh.pfWallInFrontOfAgent;
 		LogicalExpression wallFrontAgentLE = pfAtomFromPropFunc(wallFrontAgent);
 		
-		PropositionalFunction feetBlockHeadClear = mcBeh.pfFeetBlockedHeadClear;
+		PropositionalFunction feetBlockHeadClear = mcBeh.pfHurdleInFrontOfAgent;
 		LogicalExpression feetBlockHeadClearLE = pfAtomFromPropFunc(feetBlockHeadClear);
 		
 		PropositionalFunction lavaFrontAgent = mcBeh.pfLavaFrontAgent;
@@ -533,6 +556,7 @@ public class AffordanceLearner {
 		
 		PropositionalFunction notAgentLookTowardFurnace = mcBeh.pfAgentNotLookTowardFurnace;
 		LogicalExpression notAgentLookTowardFurnaceLE = pfAtomFromPropFunc(notAgentLookTowardFurnace);
+		
 		
 		// Add LEs to list
 		predicates.add(agentInAirLE);
@@ -578,11 +602,11 @@ public class AffordanceLearner {
 //		MinecraftBehavior mb = new MinecraftBehavior(br);
 		
 		// Non-Grid
-		boolean addOptions = false;
-		boolean addMAs = false;
+		boolean addOptions = true;
+		boolean addMAs = true;
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
-		generateMinecraftKB(mcBeh, 10, false, addOptions, addMAs);
+		generateMinecraftKB(mcBeh, 1, false, addOptions, addMAs);
 		
 	}
 	

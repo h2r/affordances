@@ -3,6 +3,7 @@ package affordances;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import minecraft.NameSpace;
 import tests.ResourceLoader;
 import burlap.behavior.affordances.AffordanceDelegate;
 import burlap.behavior.affordances.AffordancesController;
@@ -26,7 +28,6 @@ public class KnowledgeBase {
 	private List<AffordanceDelegate>	affDelegateList;
 	private AffordancesController		affController;
 //	private String						basePath = System.getProperty("user.dir") + "/minecraft/kb/";
-	private String						basePath = "minecraft/kb/";
 	private final static ResourceLoader	resLoader = new ResourceLoader();
 	
 	public KnowledgeBase() {
@@ -56,7 +57,7 @@ public class KnowledgeBase {
 	}
 	
 	public void save(String filename) {
-		String fpath = basePath + "/" + filename;
+		String fpath = NameSpace.PATHKB + "/" + filename;
 		
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(fpath)));
@@ -78,7 +79,8 @@ public class KnowledgeBase {
 	public void load(Domain d, String filename, boolean softFlag) {
 		AffordanceDelegate aff = null;
 		try {
-			BufferedReader reader = resLoader.getBufferedReader(basePath + filename);
+			BufferedReader reader = new BufferedReader(new FileReader(NameSpace.PATHKB + filename));
+			//new BufferedReader( //resLoader.getBufferedReader(basePath + filename);
 			
 			StringBuilder sBuilder = new StringBuilder();
 			String nextLine = reader.readLine();
