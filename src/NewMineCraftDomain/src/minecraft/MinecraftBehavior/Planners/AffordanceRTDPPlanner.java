@@ -45,7 +45,7 @@ public class AffordanceRTDPPlanner extends MinecraftPlanner {
 	}
 
 	@Override
-	public OOMDPPlanner getPlanner() {
+	protected OOMDPPlanner getPlanner() {
 
 		AffordanceRTDP planner = new AffordanceRTDP(domain, this.rf, this.tf, gamma, hashingFactory, vInit, numRollouts, minDelta, maxDepth, affController, numRolloutsWithSmallChangeToConverge);
 		

@@ -36,7 +36,7 @@ public class BFSRTDPPlanner extends MinecraftPlanner {
 	}
 
 	@Override
-	public OOMDPPlanner getPlanner() {
+	protected OOMDPPlanner getPlanner() {
 		BFSRTDP planner = new BFSRTDP(domain, this.rf, this.tf, this.gamma, this.hashingFactory,
 				this.vInit, this.numRollouts, this.minDelta, this.maxDepth);
 		return planner;

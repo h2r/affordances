@@ -26,7 +26,7 @@ public class VIPlanner extends MinecraftPlanner{
 	}
 
 	@Override
-	public OOMDPPlanner getPlanner() {
+	protected OOMDPPlanner getPlanner() {
 		return new ValueIteration(domain, this.rf, this.tf, gamma, hashingFactory, 0.01, Integer.MAX_VALUE);
 
 	}

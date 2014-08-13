@@ -34,6 +34,7 @@ import burlap.behavior.affordances.AffordanceDelegate;
 import burlap.behavior.affordances.HardAffordance;
 import burlap.behavior.affordances.SoftAffordance;
 import burlap.behavior.singleagent.Policy;
+import burlap.behavior.singleagent.Policy.ActionProb;
 import burlap.behavior.singleagent.QValue;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
 import burlap.behavior.singleagent.planning.ValueFunctionPlanner;
@@ -156,7 +157,7 @@ public class AffordanceLearner {
 
 		// Initialize behavior and planner
 		MinecraftPlanner myVIPlanner = new VIPlanner(mcb, this.useOptions, this.useMAs);
-		OOMDPPlanner planner = myVIPlanner.getPlanner();
+		OOMDPPlanner planner = myVIPlanner.retrievePlanner();
 		
 		/**
 		 * We iterate through each state in the formed policy and get its "optimal" action. For each affordance,
@@ -206,7 +207,7 @@ public class AffordanceLearner {
 
 			// Get the optimal action for that state and update affordance counts
 			GroundedAction ga = (GroundedAction) policy.getAction(st);
-			System.out.println("(AffLearner) optimal GA: " + ga.toString());
+			System.out.println("optimal GA:" + ga.toString());
 			QValue qv = ((ValueFunctionPlanner)planner).getQ(st, ga);
 
 			for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
@@ -522,7 +523,7 @@ public class AffordanceLearner {
 		
 		// Initialize Learner
 		boolean countTotalActions = true;
-		boolean useOptions = false;
+		boolean useOptions = true;
 		boolean useMAs = true;
 		
 		AffordanceLearner affLearn = new AffordanceLearner(mb, affKnowledgeBase, lgds, countTotalActions, numWorlds, useOptions, useMAs);
