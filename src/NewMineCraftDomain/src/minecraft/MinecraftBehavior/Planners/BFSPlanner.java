@@ -24,7 +24,7 @@ public class BFSPlanner extends MinecraftPlanner{
 	}
 
 	@Override
-	public OOMDPPlanner getPlanner() {
+	protected OOMDPPlanner getPlanner() {
 		TFGoalCondition goalCondition = new TFGoalCondition(this.tf);
 		return new BFS(this.domain, goalCondition, this.hashingFactory);
 
