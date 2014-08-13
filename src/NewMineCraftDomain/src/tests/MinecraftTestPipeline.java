@@ -48,7 +48,7 @@ public class MinecraftTestPipeline {
 		int numLavaBlocks = 1;
 		
 		// Small
-//		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
+		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
 //		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 2, 2, 4);
 //		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
 //		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
@@ -56,12 +56,12 @@ public class MinecraftTestPipeline {
 //		mapMaker.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
 		
 		// Big
-		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 5, 5, 6);
-		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 5, 5, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 5, 5, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks), 5, 5, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 5, 5, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 5, 5, 5);
+//		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 5, 5, 6);
+//		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 5, 5, 4);
+//		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 5, 5, 4);
+//		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks), 5, 5, 4);
+//		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 5, 5, 4);
+//		mapMaker.generateNMaps(numMaps, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 5, 5, 5);
 		
 	}
 	
@@ -87,6 +87,8 @@ public class MinecraftTestPipeline {
 		
 		// Result objects
 		Result rtdpResults = new Result(NameSpace.RTDP);
+		Result optionResults = new Result("options" + NameSpace.RTDP);
+		Result macroActionResults = new Result("options" + NameSpace.RTDP);
 		Result expertRTDPResults = new Result(NameSpace.ExpertRTDP);
 		Result learnedHardRTDPResults = new Result(NameSpace.LearnedHardRTDP);
 		Result learnedSoftRTDPResults = new Result(NameSpace.LearnedSoftRTDP);
@@ -168,11 +170,29 @@ public class MinecraftTestPipeline {
 			
 			// --- Plan for each planner given ---
 			
+			if(addOptions) {
+				statusBW.write("\t...options RTDP");
+				statusBW.flush();
+			RTDPPlanner rtdp = new RTDPPlanner(mcBeh, true, false);
+			optionResults.addTrial(rtdp.runPlanner());
+				statusBW.write(" Finished\n");
+				statusBW.flush();
+			}
+			
+			if(addMacroActions) {
+				statusBW.write("\t...macro actions RTDP");
+				statusBW.flush();
+			RTDPPlanner rtdp = new RTDPPlanner(mcBeh, false, true);
+			macroActionResults.addTrial(rtdp.runPlanner());
+				statusBW.write(" Finished\n");
+				statusBW.flush();
+			}
+			
 			// RTDP
 			if(planners.contains(NameSpace.RTDP)) {
 					statusBW.write("\t...RTDP");
 					statusBW.flush();
-				RTDPPlanner rtdp = new RTDPPlanner(mcBeh, addOptions, addMacroActions);
+				RTDPPlanner rtdp = new RTDPPlanner(mcBeh, false, false);
 				rtdpResults.addTrial(rtdp.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
@@ -258,37 +278,37 @@ public class MinecraftTestPipeline {
 				
 					resultsBW.write("map: " + map.substring(0, map.length() - 5) + "stateSpace=" + avgStateSpaceSize + "\n");
 				if(planners.contains(NameSpace.RTDP)) {
-						resultsBW.write("\t" + rtdpResults.toString() + "\n");
+						resultsBW.write("\t" + rtdpResults.getAllResults() + "Avgs: " + rtdpResults + "\n");
 					System.out.println(rtdpResults.toString());
 					rtdpResults.clear();
 				}
 				if(planners.contains(NameSpace.ExpertRTDP)) {
-						resultsBW.write("\t" + expertRTDPResults.toString() + "\n");
+						resultsBW.write("\t" + expertRTDPResults.getAllResults() + "Avgs: " + expertRTDPResults + "\n");
 					System.out.println(expertRTDPResults.toString());
 					expertRTDPResults.clear();
 				}
 				if(planners.contains(NameSpace.LearnedHardRTDP)) {
-						resultsBW.write("\t" + learnedHardRTDPResults.toString() + "\n");
+						resultsBW.write("\t" + learnedHardRTDPResults.getAllResults() + "Avgs: " + learnedHardRTDPResults + "\n");
 					System.out.println(learnedHardRTDPResults.toString());
 					learnedHardRTDPResults.clear();
 				}
 				if(planners.contains(NameSpace.LearnedSoftRTDP)) {
-						resultsBW.write("\t" + learnedSoftRTDPResults.toString() + "\n");
+						resultsBW.write("\t" + learnedSoftRTDPResults.getAllResults() + "Avgs: " + learnedSoftRTDPResults + "\n");
 					System.out.println(learnedSoftRTDPResults.toString());
 					learnedSoftRTDPResults.clear();
 				}
 				if(planners.contains(NameSpace.VI)) {
-						resultsBW.write("\t" + viResults.toString() + "\n");
+						resultsBW.write("\t" + viResults.getAllResults() + "Avgs: " + viResults + "\n");
 					System.out.println(viResults.toString());
 					viResults.clear();
 				}
 				if(planners.contains(NameSpace.ExpertVI)) {
-						resultsBW.write("\t" + expertVIResults.toString() + "\n");
+						resultsBW.write("\t" + expertVIResults.getAllResults() + "Avgs: " + expertVIResults + "\n");
 					System.out.println(expertVIResults.toString());
 					expertVIResults.clear();
 				}
 				if(planners.contains(NameSpace.LearnedHardVI)) {
-						resultsBW.write("\t" + learnedHardVIResults.toString() + "\n");
+						resultsBW.write("\t" + learnedHardVIResults.toString() + "Avgs: " + learnedHardVIResults + "\n");
 //					System.out.println(learnedHardVIResults.toString());
 					learnedHardVIResults.clear();
 				}
@@ -458,12 +478,12 @@ public class MinecraftTestPipeline {
 //		planners.add(NameSpace.ExpertVI);
 //		planners.add(NameSpace.LearnedHardVI);
 		
-		boolean addOptions = true;
+		boolean addOptions = false;
 		boolean addMacroActions = false;
 		boolean countStateSpaceSize = false;
 		
 		try {
-			runMinecraftTests(1, "1", learningFlag, planners, addOptions, addMacroActions, countStateSpaceSize);
+			runMinecraftTests(3, "3", learningFlag, planners, addOptions, addMacroActions, countStateSpaceSize);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
