@@ -58,6 +58,7 @@ public class AffordanceLearner {
 	private Double 					lowInformationThreshold = 0.05; // Threshold for what is considered high entropy/low information
 	private boolean					useOptions;
 	private boolean					useMAs;
+	private int						totalNumActions;
 //	private OOMDPPlanner planner;
 	
 	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions) {
@@ -68,12 +69,13 @@ public class AffordanceLearner {
 //		this.planner = planner;
 	}
 	
-	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorldsPerLGD) {
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorldsPerLGD, int totalNumActions) {
 		this.lgds = lgds;
 		this.mcb = mcb;
 		this.affordanceKB = kb;
 		this.countTotalActions = countTotalActions;
 		this.numWorldsPerLGD = numWorldsPerLGD;
+		this.totalNumActions = totalNumActions;
 //		this.planner = planner;
 	}
 	
@@ -295,12 +297,13 @@ public class AffordanceLearner {
 		Arrays.fill(uniform, 1.0/multinomial.length);
 		double uniformEntropy = computeEntropy(uniform);
 		double multinomialEntropy = computeEntropy(multinomial);
-		
+		System.out.println("(AffordanceLearner) uniform entropy: " + uniformEntropy);
+		System.out.println("(AffordanceLearner) multinom entropy: " + multinomialEntropy);
+
 		// High entropy, return false.
 		if(uniformEntropy - multinomialEntropy > this.lowInformationThreshold) {
 			return true;
 		}
-		System.out.println("(AffordanceLearner) uniform entropy: " + uniformEntropy);
 		return false;
 		
 		// 
@@ -313,7 +316,7 @@ public class AffordanceLearner {
 				result -= multinomial[i] * Math.log(multinomial[i]);
 			}
 		}
-		return result;
+		return result / this.totalNumActions;
 	}
 	
 	/**
@@ -423,7 +426,7 @@ public class AffordanceLearner {
 		
 		// Initialize Learner
 		boolean countTotalActions = true;
-		AffordanceLearner affLearn = new AffordanceLearner(mcBeh, affKnowledgeBase, lgds, countTotalActions, numWorlds);
+		AffordanceLearner affLearn = new AffordanceLearner(mcBeh, affKnowledgeBase, lgds, countTotalActions, numWorlds, allGroundedActions.size());
 		
 		String kbName;
 		if(learningRate) {
@@ -557,7 +560,6 @@ public class AffordanceLearner {
 		PropositionalFunction notAgentLookTowardFurnace = mcBeh.pfAgentNotLookTowardFurnace;
 		LogicalExpression notAgentLookTowardFurnaceLE = pfAtomFromPropFunc(notAgentLookTowardFurnace);
 		
-		
 		// Add LEs to list
 		predicates.add(agentInAirLE);
 		predicates.add(endOfMapLE);
@@ -606,8 +608,7 @@ public class AffordanceLearner {
 		boolean addMAs = true;
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
-		generateMinecraftKB(mcBeh, 1, false, addOptions, addMAs);
-		
+		generateMinecraftKB(mcBeh, 3, false, addOptions, addMAs);
 	}
 	
 }
