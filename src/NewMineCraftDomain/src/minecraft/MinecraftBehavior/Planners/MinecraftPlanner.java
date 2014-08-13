@@ -1,10 +1,14 @@
 package minecraft.MinecraftBehavior.Planners;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
 import burlap.behavior.statehashing.StateHashFactory;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.State;
 import burlap.oomdp.core.TerminalFunction;
+import burlap.oomdp.singleagent.Action;
 import burlap.oomdp.singleagent.RewardFunction;
 import minecraft.MapIO;
 import minecraft.NameSpace;
@@ -28,13 +32,13 @@ public abstract class MinecraftPlanner {
 	MinecraftBehavior mcBeh;
 	boolean addOptions;
 	boolean addMacroActions;
-	
 	double gamma;
 	StateHashFactory hashingFactory;
 	State initialState;
 	RewardFunction rf;
 	TerminalFunction tf;
 	Domain domain;
+
 	
 	protected abstract OOMDPPlanner getPlanner();
 	protected abstract double[] runPlannerHelper(OOMDPPlanner planner);
@@ -49,6 +53,7 @@ public abstract class MinecraftPlanner {
 		this.rf = mcBeh.getRewardFunction();
 		this.tf = mcBeh.getTerminalFunction();
 		this.domain = mcBeh.getDomain();
+
 	}
 
 	public double[] runPlanner() {
@@ -62,61 +67,82 @@ public abstract class MinecraftPlanner {
 	}
 	
 	private void addOptionsToOOMDPPlanner(OOMDPPlanner toAddTo) {
-		//OPTIONS
-		if (this.addOptions) {
-			//Trench build option
-			toAddTo.addNonDomainReferencedAction(new TrenchBuildOption(NameSpace.OPTBUILDTRENCH, this.initialState, this.domain,
-					this.mcBeh.getRewardFunction(), this.gamma, this.hashingFactory));
+		List<Action> toAdd = getListOfMAsAndOptions(this.mcBeh, this.addOptions, this.addMacroActions);
+		
+		for(Action action : toAdd) {
+			toAddTo.addNonDomainReferencedAction(action);
+		}
 			
+	}
+	
+	public static List<Action> getListOfMAsAndOptions(MinecraftBehavior mcBeh, boolean useOptions, boolean useMAs) {
+
+		double gamma = mcBeh.getGamma();
+		StateHashFactory hashingFactory = mcBeh.getHashFactory();
+		State initialState = mcBeh.getInitialState();
+		RewardFunction rf = mcBeh.getRewardFunction();
+		Domain domain = mcBeh.getDomain();
+		
+		
+		List<Action> toReturn = new ArrayList<Action>();
+		if (useOptions) {
+			//Trench build option
+			toReturn.add(new TrenchBuildOption(NameSpace.OPTBUILDTRENCH, initialState, domain,
+					mcBeh.getRewardFunction(), gamma, hashingFactory));
+
 			//Walk until can't option
-			toAddTo.addNonDomainReferencedAction(new WalkUntilCantOption(NameSpace.OPTWALKUNTILCANT, this.initialState, this.domain,
-					this.rf, this.gamma, this.hashingFactory));
+			toReturn.add(new WalkUntilCantOption(NameSpace.OPTWALKUNTILCANT, initialState, domain,
+					rf, gamma, hashingFactory));
 			
 			//Look all the way down option
-			toAddTo.addNonDomainReferencedAction(new LookAllTheWayDownOption(NameSpace.OPTLOOKALLTHEWAYDOWN, this.initialState, this.domain,
-					this.rf, this.gamma, this.hashingFactory));
+			toReturn.add(new LookAllTheWayDownOption(NameSpace.OPTLOOKALLTHEWAYDOWN, initialState, domain,
+					rf, gamma, hashingFactory));
 			
 			//Destroy wall option
-			toAddTo.addNonDomainReferencedAction(new DestroyWallOption(NameSpace.OPTDESTROYWALL, this.initialState, this.domain,
-					this.rf, this.gamma, this.hashingFactory));
+			toReturn.add(new DestroyWallOption(NameSpace.OPTDESTROYWALL, initialState, domain,
+					rf, gamma, hashingFactory));
 			
-//			//Jump block option
-			toAddTo.addNonDomainReferencedAction(new JumpBlockOption(NameSpace.OPTJUMPBLOCK, this.initialState, this.domain,
-					this.rf, this.gamma, this.hashingFactory, this.mcBeh));
+			//Jump block option
+			toReturn.add(new JumpBlockOption(NameSpace.OPTJUMPBLOCK, initialState, domain,
+					rf, gamma, hashingFactory, mcBeh));
 			
-//			//Dig down option
-			toAddTo.addNonDomainReferencedAction(new DigDownOption(NameSpace.OPTDIGDOWN, this.initialState, this.domain,
-					this.rf, this.gamma, this.hashingFactory));
+			//Dig down option
+			toReturn.add(new DigDownOption(NameSpace.OPTDIGDOWN, initialState, domain,
+					rf, gamma, hashingFactory));
+			
 		}
-
+		
 		//MACROACTIONS
-		if (this.addMacroActions) {
+		if (useMAs) {
 			//Sprint macro-action(2)
-			toAddTo.addNonDomainReferencedAction(new SprintMacroAction(NameSpace.MACROACTIONSPRINT, this.rf, 
-					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));	
+			toReturn.add(new SprintMacroAction(NameSpace.MACROACTIONSPRINT, rf, 
+					gamma, hashingFactory, domain, initialState, 2));	
 			//Turn around macro-action
-			toAddTo.addNonDomainReferencedAction(new TurnAroundMacroAction(NameSpace.MACROACTIONTURNAROUND, this.rf, 
-					this.gamma, this.hashingFactory, this.domain, this.initialState));	
+			toReturn.add(new TurnAroundMacroAction(NameSpace.MACROACTIONTURNAROUND, rf, 
+					gamma, hashingFactory, domain, initialState));	
 			//Look down a lot macro-action(2)
-			toAddTo.addNonDomainReferencedAction(new LookDownAlotMacroAction(NameSpace.MACROACTIONLOOKDOWNALOT, this.rf, 
-					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));	
+			toReturn.add(new LookDownAlotMacroAction(NameSpace.MACROACTIONLOOKDOWNALOT, rf, 
+					gamma, hashingFactory, domain, initialState, 2));	
 			//Look up a lot macro-action(2)
-			toAddTo.addNonDomainReferencedAction(new LookUpAlotMacroAction(NameSpace.MACROACTIONLOOKUPALOT, this.rf, 
-					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));
+			toReturn.add(new LookUpAlotMacroAction(NameSpace.MACROACTIONLOOKUPALOT, rf, 
+					gamma, hashingFactory, domain, initialState, 2));
 			//Trench build macro-action
-			toAddTo.addNonDomainReferencedAction(new BuildTrenchMacroAction(NameSpace.MACROACTIONBUILDTRENCH, this.rf, 
-					this.gamma, this.hashingFactory, this.domain, this.initialState));
+			toReturn.add(new BuildTrenchMacroAction(NameSpace.MACROACTIONBUILDTRENCH, rf, 
+					gamma, hashingFactory, domain, initialState));
 			//Jump block macro-action
-			toAddTo.addNonDomainReferencedAction(new JumpBlockMacroAction(NameSpace.MACROACTIONJUMPBLOCK, this.rf, 
-					this.gamma, this.hashingFactory, this.domain, this.initialState));
+			toReturn.add(new JumpBlockMacroAction(NameSpace.MACROACTIONJUMPBLOCK, rf, 
+					gamma, hashingFactory, domain, initialState));
 			//Dig down macro-action(2)
-			toAddTo.addNonDomainReferencedAction(new DigDownMacroAction(NameSpace.MACROACTIONDIGDOWN, this.rf, 
-					this.gamma, this.hashingFactory, this.domain, this.initialState, 2));	
+			toReturn.add(new DigDownMacroAction(NameSpace.MACROACTIONDIGDOWN, rf, 
+					gamma, hashingFactory, domain, initialState, 2));	
 			//Destroy wall macro-action
-			toAddTo.addNonDomainReferencedAction(new DestroyWallMacroAction(NameSpace.MACROACTIONDESTROYWALL, this.rf, 
-					this.gamma, this.hashingFactory, this.domain, this.initialState));			
+			toReturn.add(new DestroyWallMacroAction(NameSpace.MACROACTIONDESTROYWALL, rf, 
+					gamma, hashingFactory, domain, initialState));			
 			
 		}	
+		
+		
+		return toReturn;
 	}
 	
 	public void updateMap(MapIO map) {
