@@ -61,21 +61,25 @@ public class AffordanceLearner {
 	private int						totalNumActions;
 //	private OOMDPPlanner planner;
 	
-	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions) {
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, boolean useOptions, boolean useMAs) {
 		this.lgds = lgds;
 		this.mcb = mcb;
 		this.affordanceKB = kb;
 		this.countTotalActions = countTotalActions;
+		this.useOptions = useOptions;
+		this.useMAs = useMAs;
 //		this.planner = planner;
 	}
 	
-	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorldsPerLGD, int totalNumActions) {
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorldsPerLGD, int totalNumActions, boolean useOptions, boolean useMAs) {
 		this.lgds = lgds;
 		this.mcb = mcb;
 		this.affordanceKB = kb;
 		this.countTotalActions = countTotalActions;
 		this.numWorldsPerLGD = numWorldsPerLGD;
 		this.totalNumActions = totalNumActions;
+		this.useOptions = useOptions;
+		this.useMAs = useMAs;
 //		this.planner = planner;
 	}
 	
@@ -426,7 +430,7 @@ public class AffordanceLearner {
 		
 		// Initialize Learner
 		boolean countTotalActions = true;
-		AffordanceLearner affLearn = new AffordanceLearner(mcBeh, affKnowledgeBase, lgds, countTotalActions, numWorlds, allGroundedActions.size());
+		AffordanceLearner affLearn = new AffordanceLearner(mcBeh, affKnowledgeBase, lgds, countTotalActions, numWorlds, allGroundedActions.size(), useOptions, useMAs);
 		
 		String kbName;
 		if(learningRate) {
