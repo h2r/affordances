@@ -128,13 +128,13 @@ public class AffordanceLearner {
 		int numLavaBlocks = 1;
 		
 		System.out.println("Generating maps..." + this.numWorldsPerLGD);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 2, 3, 5);
 		
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 3, 3, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 3, 3, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 3, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 3, 3, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 3, 3, 5);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 2, 2, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 3, 3, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 2, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 2, 2, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
 		
 	}
 	
@@ -468,6 +468,24 @@ public class AffordanceLearner {
 		PropositionalFunction agentInLava = mb.pfAgentInLava;
 		LogicalExpression agentInLavaLE = pfAtomFromPropFunc(agentInLava);
 		
+		PropositionalFunction agentLookTowardGoal = mb.pfAgentLookTowardGoal;
+		LogicalExpression agentLookTowardGoalLE = pfAtomFromPropFunc(agentLookTowardGoal);
+		
+		PropositionalFunction agentLookTowardGold = mb.pfAgentLookTowardGold;
+		LogicalExpression agentLookTowardGoldLE = pfAtomFromPropFunc(agentLookTowardGold);
+		
+		PropositionalFunction agentLookTowardFurnace = mb.pfAgentLookTowardFurnace;
+		LogicalExpression agentLookTowardFurnaceLE = pfAtomFromPropFunc(agentLookTowardFurnace);
+		
+		PropositionalFunction notAgentLookTowardGoal = mb.pfAgentNotLookTowardGoal;
+		LogicalExpression notAgentLookTowardGoalLE = pfAtomFromPropFunc(notAgentLookTowardGoal);
+		
+		PropositionalFunction notAgentLookTowardGold = mb.pfAgentNotLookTowardGold;
+		LogicalExpression notAgentLookTowardGoldLE = pfAtomFromPropFunc(notAgentLookTowardGold);
+		
+		PropositionalFunction notAgentLookTowardFurnace = mb.pfAgentNotLookTowardFurnace;
+		LogicalExpression notAgentLookTowardFurnaceLE = pfAtomFromPropFunc(notAgentLookTowardFurnace);
+		
 		// Add LEs to list
 		predicates.add(agentInAirLE);
 		predicates.add(endOfMapLE);
@@ -481,6 +499,13 @@ public class AffordanceLearner {
 		predicates.add(agentLookBlockLE);
 		predicates.add(agentLookWallLE);
 		predicates.add(agentInLavaLE);
+		predicates.add(agentLookTowardGoalLE);
+		predicates.add(agentLookTowardGoldLE);
+		predicates.add(agentLookTowardFurnaceLE);
+		predicates.add(notAgentLookTowardGoalLE);
+		predicates.add(notAgentLookTowardGoldLE);
+		predicates.add(notAgentLookTowardFurnaceLE);
+		
 		
 		KnowledgeBase affKnowledgeBase = generateAffordanceKB(predicates, lgds, allGroundedActions, true);
 		
