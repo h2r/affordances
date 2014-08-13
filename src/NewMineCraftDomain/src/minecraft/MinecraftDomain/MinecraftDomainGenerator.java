@@ -28,7 +28,7 @@ import minecraft.MinecraftDomain.PropositionalFunctions.HurdleInFrontOfAgent;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockInFrontOfAgentPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentWalkIntoEndOfMapPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.TrenchInFrontOfAgent;
-import minecraft.MinecraftDomain.PropositionalFunctions.AgentLookingAtWall;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentLookingAtWallPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.TowerInMapPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.ThisIsDumbDontLookAtThisThing.AgentAdjacentToTrenchPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.ThisIsDumbDontLookAtThisThing.BlockAtPF;
@@ -299,7 +299,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKWALL, domain,  new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSINDWALL);
 		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKBLOCK, domain,  new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSDIRTBLOCKNOTPICKUPABLE);
 		new BlockInFrontOfAgentPF(NameSpace.PFLAVAFRONTAGENT, domain,  new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSLAVA);
-		new BlockInFrontOfAgentPF(NameSpace.PFWALLINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSINDWALL);
+		new AgentLookingAtWallPF(NameSpace.PFWALLINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, 1);
 		return domain;
 	}
 	
