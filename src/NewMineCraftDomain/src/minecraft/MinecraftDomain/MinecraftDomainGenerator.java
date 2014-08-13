@@ -290,7 +290,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		
 		// Dave's jenky hard coded prop funcs
 //		new AgentAdjacentToTrenchPF(NameSpace.PFAGENTADJTRENCH, domain, new String[]{NameSpace.CLASSAGENT, NameSpace.CLASSTRENCH});
-		new AgentCanWalkPF(NameSpace.PFAGENTLOOKFORWARDWALK, domain, new String[]{NameSpace.CLASSAGENT});
+		new AgentCanWalkPF(NameSpace.PFAGENTCANWALK, domain, new String[]{NameSpace.CLASSAGENT});
 		new EmptyCellInAgentWalkDir(NameSpace.PFEMPTYCELLINWALK, domain, new String[]{NameSpace.CLASSAGENT});
 		new HurdleInFrontOfAgent(NameSpace.PFHURDLEINFRONTAGENT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKLAVA, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSLAVA);

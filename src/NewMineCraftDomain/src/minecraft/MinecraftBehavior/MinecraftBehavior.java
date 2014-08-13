@@ -183,7 +183,7 @@ public class MinecraftBehavior {
 		this.pfBlockInFrontOfAgent = domain.getPropFunction(NameSpace.PFBLOCKINFRONT);
 		this.pfEndOfMapInFrontOfAgent = domain.getPropFunction(NameSpace.PFENDOFMAPINFRONT);
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
-		this.pfAgentLookForwardAndWalkable = domain.getPropFunction(NameSpace.PFAGENTLOOKFORWARDWALK);
+		this.pfAgentLookForwardAndWalkable = domain.getPropFunction(NameSpace.PFAGENTCANWALK);
 		this.pfEmptyCellFrontAgentWalk = domain.getPropFunction(NameSpace.PFEMPTYCELLINWALK);
 		this.pfTower = domain.getPropFunction(NameSpace.PFTOWER);
 		this.pfGoldBlockFrontOfAgent = domain.getPropFunction(NameSpace.PFGOLDFRONTAGENTONE);
