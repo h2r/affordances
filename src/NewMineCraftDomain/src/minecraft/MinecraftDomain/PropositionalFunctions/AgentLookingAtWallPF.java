@@ -10,19 +10,16 @@ import burlap.oomdp.core.ObjectInstance;
 import burlap.oomdp.core.PropositionalFunction;
 import burlap.oomdp.core.State;
 
-public class AgentLookingAtWall extends PropositionalFunction{
+public class AgentLookingAtWallPF extends PropositionalFunction{
 	
-	private int distance;
-
 	/**
 	 * @param name
 	 * @param domain
 	 * @param parameterClasses
 	 * @param object
 	 */
-	public AgentLookingAtWall(String name, Domain domain, String[] parameterClasses, int distance) {
+	public AgentLookingAtWallPF(String name, Domain domain, String[] parameterClasses) {
 		super(name, domain, parameterClasses);
-		this.distance = distance;
 	}
 
 	@Override
