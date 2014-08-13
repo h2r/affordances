@@ -335,6 +335,46 @@ public class Helpers {
 		
 	}
 	
+	public static boolean agentLookingInDirectionOfBlock(State state, String objectLookingToward) {
+		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
+		
+		List<ObjectInstance> allObjectsOfInterest = state.getObjectsOfTrueClass(objectLookingToward);
+		
+		int agentRotDir = agent.getDiscValForAttribute(NameSpace.ATROTDIR);
+		
+		int agentX = agent.getDiscValForAttribute(NameSpace.ATX);
+		int agentY = agent.getDiscValForAttribute(NameSpace.ATY);
+		
+		
+		switch(agentRotDir){
+		case 0:
+			for (ObjectInstance object : allObjectsOfInterest){
+				int objectY = object.getDiscValForAttribute(NameSpace.ATY);
+				if (objectY < agentY) return true;
+			}
+			break;
+		case 1:
+			for (ObjectInstance object : allObjectsOfInterest){
+				int objectX = object.getDiscValForAttribute(NameSpace.ATX);
+				if (objectX > agentX) return true;
+			}
+			break;
+		case 2:
+			for (ObjectInstance object : allObjectsOfInterest){	
+				int objectY = object.getDiscValForAttribute(NameSpace.ATY);
+				if (objectY > agentY) return true;
+			}
+			break;
+		case 3:
+			for (ObjectInstance object : allObjectsOfInterest){
+				int objectX = object.getDiscValForAttribute(NameSpace.ATX);
+				if (objectX < agentX) return true;
+			}
+			break;
+		}		
+		return false;
+	}
+	
 	
 }
 

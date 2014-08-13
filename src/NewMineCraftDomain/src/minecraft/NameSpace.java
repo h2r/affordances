@@ -124,6 +124,12 @@ public class NameSpace {
 	public static final String				PFAGENTLOOKWALL = "AgentLookAtWall";
 	public static final String				PFAGENTLOOKBLOCK = "AgentLookAtBlock";
 	public static final String				PFAGENTLOOKFURNACE = "AgentLookAtFurnace";
+	public static final String				PFAGENTLOOKTOWARDGOAL = "AgentLookingInDirectionOfGoal";
+	public static final String				PFAGENTLOOKTOWARDGOLD = "AgentLookingInDirectionOfGold";
+	public static final String				PFAGENTLOOKTOWARDFURNACE = "AgentLookingInDirectionOfFurnace";
+	public static final String				PFAGENTNOTLOOKTOWARDGOAL = "AgentNotLookingInDirectionOfGoal";
+	public static final String				PFAGENTNOTLOOKTOWARDGOLD = "AgentNotLookingInDirectionOfGold";
+	public static final String				PFAGENTNOTLOOKTOWARDFURNACE = "AgentNotLookingInDirectionOfFurnace";
 	
 	//-----------PLANNERS-------------
 	public static final String				RTDP = "RTDP";

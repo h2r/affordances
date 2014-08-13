@@ -37,14 +37,14 @@ public class BFSRTDPPlanner extends MinecraftPlanner {
 
 	@Override
 	protected OOMDPPlanner getPlanner() {
-		RTDP planner = new BFSRTDP(domain, this.rf, this.tf, this.gamma, this.hashingFactory,
+		BFSRTDP planner = new BFSRTDP(domain, this.rf, this.tf, this.gamma, this.hashingFactory,
 				this.vInit, this.numRollouts, this.minDelta, this.maxDepth);
 		return planner;
 	}
 
 	@Override
 	protected double[] runPlannerHelper(OOMDPPlanner planner) {
-		RTDP rPlanner = (RTDP) planner;
+		BFSRTDP rPlanner = (BFSRTDP) planner;
 		rPlanner.setMinNumRolloutsWithSmallValueChange(this.numRolloutsWithSmallChangeToConverge);
 		
 		long startTime = System.currentTimeMillis( );

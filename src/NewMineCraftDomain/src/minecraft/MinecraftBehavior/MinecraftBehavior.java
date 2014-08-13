@@ -82,6 +82,12 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfAgentInMidAir;
 	public PropositionalFunction		pfTower;
 	public PropositionalFunction		pfAgentInLava;
+	public PropositionalFunction		pfAgentLookTowardGoal;
+	public PropositionalFunction		pfAgentLookTowardGold;
+	public PropositionalFunction		pfAgentLookTowardFurnace;
+	public PropositionalFunction		pfAgentNotLookTowardGoal;
+	public PropositionalFunction		pfAgentNotLookTowardGold;
+	public PropositionalFunction		pfAgentNotLookTowardFurnace;
 	
 	// Dave's jenky hard coded prop funcs
 	public PropositionalFunction		pfAgentLookForwardAndWalkable;
@@ -95,6 +101,7 @@ public class MinecraftBehavior {
 	public PropositionalFunction 		pfAgentLookBlock;
 	public PropositionalFunction 		pfAgentLookWall;
 	public PropositionalFunction 		pfAgentLookLava;
+	
 	
 	//Params for Planners
 	public double						gamma = 0.99;
@@ -190,6 +197,13 @@ public class MinecraftBehavior {
 		this.pfAgentLookWall = domain.getPropFunction(NameSpace.PFAGENTLOOKWALL);
 		this.pfAgentLookBlock = domain.getPropFunction(NameSpace.PFAGENTLOOKBLOCK);
 		this.pfAgentLookLava = domain.getPropFunction(NameSpace.PFAGENTLOOKLAVA);
+		this.pfAgentLookTowardGoal = domain.getPropFunction(NameSpace.PFAGENTLOOKTOWARDGOAL);
+		this.pfAgentLookTowardGold = domain.getPropFunction(NameSpace.PFAGENTLOOKTOWARDGOLD);
+		this.pfAgentLookTowardFurnace = domain.getPropFunction(NameSpace.PFAGENTLOOKTOWARDFURNACE);
+		this.pfAgentNotLookTowardGoal = domain.getPropFunction(NameSpace.PFAGENTNOTLOOKTOWARDGOAL);
+		this.pfAgentNotLookTowardGold = domain.getPropFunction(NameSpace.PFAGENTNOTLOOKTOWARDGOLD);
+		this.pfAgentNotLookTowardFurnace = domain.getPropFunction(NameSpace.PFAGENTNOTLOOKTOWARDFURNACE);
+		
 		// Set up goal LE and lava LE for use in reward function
 		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
 		this.currentGoal = new PFAtom(pfToUse.getAllGroundedPropsForState(this.initialState).get(0)); 
@@ -500,7 +514,7 @@ public class MinecraftBehavior {
 	public static void main(String[] args) {
 //		String mapsPath = System.getProperty("user.dir") + "/maps/";
 		
-		String mapName = "minecraft/maps/randomMaps/DeepTrenchWorld0.map";
+		String mapName = "src/minecraft/maps/randomMaps/DeepTrenchWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapName);
 		double [] results;
@@ -516,9 +530,9 @@ public class MinecraftBehavior {
 //		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		//BFSRTDP
-//		BFSRTDPPlanner BFSRTDPPlanner = new BFSRTDPPlanner(mcBeh, false, false);
-//		results = BFSRTDPPlanner.runPlanner();
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		BFSRTDPPlanner BFSRTDPPlanner = new BFSRTDPPlanner(mcBeh, false, false);
+		results = BFSRTDPPlanner.runPlanner();
+		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		//AFFRTDP
 //		KnowledgeBase affKB = new KnowledgeBase();
 		
