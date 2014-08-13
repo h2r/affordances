@@ -55,7 +55,7 @@ public class AffordanceLearner {
 	private MinecraftBehavior 		mcb;
 	private int 					numWorldsPerLGD = 5;
 	private boolean					countTotalActions = true;
-	private Double 					lowVarianceThreshold = 2.0; // Threshold for what is considered high entropy/low information
+	private Double 					lowVarianceThreshold = .004; // Threshold for what is considered high entropy/low information
 	private boolean					useOptions;
 	private boolean					useMAs;
 	private int						totalNumActions;
@@ -301,9 +301,10 @@ public class AffordanceLearner {
 		// If there is a low variance, low information.
 		Double variance = computeVariance(multinomial);
 		if(variance < this.lowVarianceThreshold) {
-			System.out.println("(AffordanceLearner) throwing out aff with variance: " + variance);
+//			System.out.println("(AffordanceLearner) throwing out aff with variance: " + variance);
 			return true;
 		}
+//		System.out.println("(AffordanceLearner) KEEEPING aff with variance: " + variance);
 		return false;
 	}
 	
@@ -574,6 +575,9 @@ public class AffordanceLearner {
 		PropositionalFunction notAgentLookTowardFurnace = mcBeh.pfAgentNotLookTowardFurnace;
 		LogicalExpression notAgentLookTowardFurnaceLE = pfAtomFromPropFunc(notAgentLookTowardFurnace);
 		
+		PropositionalFunction agentCanJump = mcBeh.pfAgentCanJump;
+		LogicalExpression agentCanJumpLE = pfAtomFromPropFunc(agentCanJump);
+		
 		// Add LEs to list
 		predicates.add(agentInAirLE);
 		predicates.add(endOfMapLE);
@@ -593,6 +597,7 @@ public class AffordanceLearner {
 		predicates.add(notAgentLookTowardGoalLE);
 		predicates.add(notAgentLookTowardGoldLE);
 		predicates.add(notAgentLookTowardFurnaceLE);
+		predicates.add(agentCanJumpLE);
 		
 		return predicates;
 	}
