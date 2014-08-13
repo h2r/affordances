@@ -104,7 +104,7 @@ public class MinecraftBehavior {
 	public int 							numRollouts = 1500; // RTDP
 	public int							maxDepth = 25; // RTDP
 	public int 							vInit = 1; // RTDP
-	public int 							numRolloutsWithSmallChangeToConverge = 3700; // RTDP
+	public int 							numRolloutsWithSmallChangeToConverge = 50; // RTDP
 	public double						boltzmannTemperature = 0.5;
 	public double						lavaReward = -10.0;
 

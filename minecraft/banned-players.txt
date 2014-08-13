@@ -1,6 +1,0 @@
-# Updated 4/20/14 10:46 AM by Minecraft 1.6.4
-# victim name | ban date | banned by | banned until | reason
-
-<<<<<<< HEAD|2013-11-24 18:19:21 -0500|(Unknown)|Forever|Banned by an operator.
-=======|2013-11-24 18:19:21 -0500|(Unknown)|Forever|Banned by an operator.
->>>>>>> dd707cbd6b1d7d76e7b706277b89aa632543273c|2013-11-24 18:19:21 -0500|(Unknown)|Forever|Banned by an operator.
