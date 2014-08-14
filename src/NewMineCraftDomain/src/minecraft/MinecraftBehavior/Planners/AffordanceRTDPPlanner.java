@@ -39,6 +39,7 @@ public class AffordanceRTDPPlanner extends MinecraftPlanner {
 		this.maxSteps = mcBeh.maxSteps;
 		this.numRolloutsWithSmallChangeToConverge = mcBeh.numRolloutsWithSmallChangeToConverge;
 		this.affKB = affKB;
+		this.addOptionsAndMAsToOOMDPPlanner(this.getPlanner());
 		
 		this.affController = affKB.getAffordancesController();
 		affController.setCurrentGoal(this.mcBeh.currentGoal); // Update goal to determine active affordances

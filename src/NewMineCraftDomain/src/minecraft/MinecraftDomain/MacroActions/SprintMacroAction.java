@@ -28,7 +28,7 @@ public class SprintMacroAction extends MinecraftMacroAction {
 		super(name, rf, gamma, hashFactory, domain, state);
 		this.numSprints = numSprints;
 		if (this.numSprints < 1) throw new IllegalArgumentException();
-		this.name = this.name + numSprints;
+//		this.name = this.name;// + numSprints;
 		
 	}
 	

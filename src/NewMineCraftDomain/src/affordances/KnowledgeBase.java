@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import minecraft.NameSpace;
@@ -17,7 +18,9 @@ import tests.ResourceLoader;
 import burlap.behavior.affordances.AffordanceDelegate;
 import burlap.behavior.affordances.AffordancesController;
 import burlap.behavior.affordances.SoftAffordance;
+import burlap.behavior.singleagent.planning.OOMDPPlanner;
 import burlap.oomdp.core.Domain;
+import burlap.oomdp.singleagent.Action;
 
 /**
  * The knowledge-base is a wrapper around a collection of objects of type T that are used
@@ -76,7 +79,9 @@ public class KnowledgeBase {
 		}
 	}
 	
-	public void load(Domain d, String filename, boolean softFlag) {
+	
+	
+	public void load(Domain d, Map<String,Action> temporallyExtActions, String filename, boolean softFlag) {
 		AffordanceDelegate aff = null;
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(NameSpace.PATHKB + filename));
@@ -84,7 +89,7 @@ public class KnowledgeBase {
 			
 			StringBuilder sBuilder = new StringBuilder();
 			String nextLine = reader.readLine();
-			
+
 			while(nextLine != null) {
 				sBuilder.append(nextLine + "\n");
 				nextLine = reader.readLine();
@@ -103,10 +108,10 @@ public class KnowledgeBase {
 				// Remove the final newline character from the affordance
 				String slicedString = affString.substring(0, affString.length() - 1);
 				if(softFlag) {
-					aff = AffordanceDelegate.loadSoft(d, slicedString);
+					aff = AffordanceDelegate.loadSoft(d, temporallyExtActions, slicedString);
 				}
 				else {
-					aff = AffordanceDelegate.loadHard(d, slicedString);
+					aff = AffordanceDelegate.loadHard(d, temporallyExtActions, slicedString);
 				}
 				this.affDelegateList.add(aff);
 				reader.close();

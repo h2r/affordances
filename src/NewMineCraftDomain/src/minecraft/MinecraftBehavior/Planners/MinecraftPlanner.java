@@ -1,8 +1,11 @@
 package minecraft.MinecraftBehavior.Planners;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import burlap.behavior.singleagent.options.Option;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
 import burlap.behavior.statehashing.StateHashFactory;
 import burlap.oomdp.core.Domain;
@@ -62,27 +65,28 @@ public abstract class MinecraftPlanner {
 	
 	public OOMDPPlanner retrievePlanner() {
 		OOMDPPlanner toReturn = getPlanner();
-		addOptionsToOOMDPPlanner(toReturn);
+		addOptionsAndMAsToOOMDPPlanner(toReturn);
 		return toReturn;
 	}
 	
-	private void addOptionsToOOMDPPlanner(OOMDPPlanner toAddTo) {
-		List<Action> toAdd = getListOfMAsAndOptions(this.mcBeh, this.addOptions, this.addMacroActions);
+	protected void addOptionsAndMAsToOOMDPPlanner(OOMDPPlanner toAddTo) {
+		List<Action> toAdd = new ArrayList<Action>(getMapOfMAsAndOptions(this.mcBeh, this.addOptions, this.addMacroActions).values());
 		
 		for(Action action : toAdd) {
 			toAddTo.addNonDomainReferencedAction(action);
+			// Add to domain for use in affordance loading.
 		}
 			
 	}
 	
 	/**
-	 * 
-	 * @param mcBeh
-	 * @param useOptions
-	 * @param useMAs
+	 * Returns a map of all applicable Macroactions and Options, where the key is the name of the action, and the value is the action object.
+	 * @param mcBeh: MinecraftBehavior associated with planning.
+	 * @param useOptions: boolean indicating whether or not to add options.
+	 * @param useMAs: boolean indicating whether or not to add macroactions.
 	 * @return
 	 */
-	public static List<Action> getListOfMAsAndOptions(MinecraftBehavior mcBeh, boolean useOptions, boolean useMAs) {
+	public static Map<String,Action> getMapOfMAsAndOptions(MinecraftBehavior mcBeh, boolean useOptions, boolean useMAs) {
 
 		double gamma = mcBeh.getGamma();
 		StateHashFactory hashingFactory = mcBeh.getHashFactory();
@@ -91,30 +95,30 @@ public abstract class MinecraftPlanner {
 		Domain domain = mcBeh.getDomain();
 		
 		
-		List<Action> toReturn = new ArrayList<Action>();
+		Map<String,Action> toReturn = new HashMap<String,Action>();
 		if (useOptions) {
 			//Trench build option
-			toReturn.add(new TrenchBuildOption(NameSpace.OPTBUILDTRENCH, initialState, domain,
+			toReturn.put(NameSpace.OPTBUILDTRENCH, new TrenchBuildOption(NameSpace.OPTBUILDTRENCH, initialState, domain,
 					mcBeh.getRewardFunction(), gamma, hashingFactory));
 
 			//Walk until can't option
-			toReturn.add(new WalkUntilCantOption(NameSpace.OPTWALKUNTILCANT, initialState, domain,
+			toReturn.put(NameSpace.OPTWALKUNTILCANT, new WalkUntilCantOption(NameSpace.OPTWALKUNTILCANT, initialState, domain,
 					rf, gamma, hashingFactory));
 			
 			//Look all the way down option
-			toReturn.add(new LookAllTheWayDownOption(NameSpace.OPTLOOKALLTHEWAYDOWN, initialState, domain,
+			toReturn.put(NameSpace.OPTLOOKALLTHEWAYDOWN, new LookAllTheWayDownOption(NameSpace.OPTLOOKALLTHEWAYDOWN, initialState, domain,
 					rf, gamma, hashingFactory));
 			
 			//Destroy wall option
-			toReturn.add(new DestroyWallOption(NameSpace.OPTDESTROYWALL, initialState, domain,
+			toReturn.put(NameSpace.OPTDESTROYWALL, new DestroyWallOption(NameSpace.OPTDESTROYWALL, initialState, domain,
 					rf, gamma, hashingFactory));
 			
 			//Jump block option
-			toReturn.add(new JumpBlockOption(NameSpace.OPTJUMPBLOCK, initialState, domain,
+			toReturn.put(NameSpace.OPTJUMPBLOCK, new JumpBlockOption(NameSpace.OPTJUMPBLOCK, initialState, domain,
 					rf, gamma, hashingFactory, mcBeh));
 			
 			//Dig down option
-			toReturn.add(new DigDownOption(NameSpace.OPTDIGDOWN, initialState, domain,
+			toReturn.put(NameSpace.OPTDIGDOWN, new DigDownOption(NameSpace.OPTDIGDOWN, initialState, domain,
 					rf, gamma, hashingFactory));
 			
 		}
@@ -122,33 +126,30 @@ public abstract class MinecraftPlanner {
 		//MACROACTIONS
 		if (useMAs) {
 			//Sprint macro-action(2)
-			toReturn.add(new SprintMacroAction(NameSpace.MACROACTIONSPRINT, rf, 
+			toReturn.put(NameSpace.MACROACTIONSPRINT, new SprintMacroAction(NameSpace.MACROACTIONSPRINT, rf, 
 					gamma, hashingFactory, domain, initialState, 2));	
 			//Turn around macro-action
-			toReturn.add(new TurnAroundMacroAction(NameSpace.MACROACTIONTURNAROUND, rf, 
+			toReturn.put(NameSpace.MACROACTIONTURNAROUND, new TurnAroundMacroAction(NameSpace.MACROACTIONTURNAROUND, rf, 
 					gamma, hashingFactory, domain, initialState));	
 			//Look down a lot macro-action(2)
-			toReturn.add(new LookDownAlotMacroAction(NameSpace.MACROACTIONLOOKDOWNALOT, rf, 
+			toReturn.put(NameSpace.MACROACTIONLOOKDOWNALOT, new LookDownAlotMacroAction(NameSpace.MACROACTIONLOOKDOWNALOT, rf, 
 					gamma, hashingFactory, domain, initialState, 2));	
 			//Look up a lot macro-action(2)
-			toReturn.add(new LookUpAlotMacroAction(NameSpace.MACROACTIONLOOKUPALOT, rf, 
+			toReturn.put(NameSpace.MACROACTIONLOOKUPALOT, new LookUpAlotMacroAction(NameSpace.MACROACTIONLOOKUPALOT, rf, 
 					gamma, hashingFactory, domain, initialState, 2));
 			//Trench build macro-action
-			toReturn.add(new BuildTrenchMacroAction(NameSpace.MACROACTIONBUILDTRENCH, rf, 
+			toReturn.put(NameSpace.MACROACTIONBUILDTRENCH, new BuildTrenchMacroAction(NameSpace.MACROACTIONBUILDTRENCH, rf, 
 					gamma, hashingFactory, domain, initialState));
 			//Jump block macro-action
-			toReturn.add(new JumpBlockMacroAction(NameSpace.MACROACTIONJUMPBLOCK, rf, 
+			toReturn.put(NameSpace.MACROACTIONJUMPBLOCK, new JumpBlockMacroAction(NameSpace.MACROACTIONJUMPBLOCK, rf, 
 					gamma, hashingFactory, domain, initialState));
 			//Dig down macro-action(2)
-			toReturn.add(new DigDownMacroAction(NameSpace.MACROACTIONDIGDOWN, rf, 
+			toReturn.put(NameSpace.MACROACTIONDIGDOWN, new DigDownMacroAction(NameSpace.MACROACTIONDIGDOWN, rf, 
 					gamma, hashingFactory, domain, initialState, 2));	
 			//Destroy wall macro-action
-			toReturn.add(new DestroyWallMacroAction(NameSpace.MACROACTIONDESTROYWALL, rf, 
+			toReturn.put(NameSpace.MACROACTIONDESTROYWALL, new DestroyWallMacroAction(NameSpace.MACROACTIONDESTROYWALL, rf, 
 					gamma, hashingFactory, domain, initialState));			
-			
 		}	
-		
-		
 		return toReturn;
 	}
 	

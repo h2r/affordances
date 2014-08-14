@@ -513,15 +513,15 @@ public class MinecraftBehavior {
 	public static void main(String[] args) {
 //		String mapsPath = System.getProperty("user.dir") + "/maps/";
 		
-		String mapName = "src/minecraft/maps/larger_than_template.map";
+		String mapName = "src/minecraft/maps/test/DeepTrenchWorld0.map";
 		
-		MinecraftBehavior mcBeh = new MinecraftBehavior();
+		MinecraftBehavior mcBeh = new MinecraftBehavior(mapName);
 		double [] results;
 		
 		//BFS
-		BFSPlanner bfsPlanner = new BFSPlanner(mcBeh, true, true);
-		results = bfsPlanner.runPlanner();
-		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+//		BFSPlanner bfsPlanner = new BFSPlanner(mcBeh, true, true);
+//		results = bfsPlanner.runPlanner();
+//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//RTDP
 //		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, false, true);
@@ -532,18 +532,18 @@ public class MinecraftBehavior {
 //		BFSRTDPPlanner BFSRTDPPlanner = new BFSRTDPPlanner(mcBeh, false, false);
 //		results = BFSRTDPPlanner.runPlanner();
 //		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		
 		//AFFRTDP
-//		KnowledgeBase affKB = new KnowledgeBase();
-		
-		// Hard
-//		affKB.load(mcBeh.getDomain(), "expert.kb", false);
-		// Soft
-//		affKB.load(mcBeh.getDomain(), "/learning_rate/lr_100.kb", true);
+		boolean useOptions = true;
+		boolean useMAs = true;
+		boolean softFlag = true;
+		// Load knowledge base
+		KnowledgeBase affKB = new KnowledgeBase();
+		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "3_learned_opt_ma.kb", false);
 
-		
-//		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
-//		results = affRTDPPlanner.runPlanner();
-//		System.out.println("(minecraftBehavior) results [expertRTDP]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, true, true, affKB);
+		results = affRTDPPlanner.runPlanner();
+		System.out.println("(minecraftBehavior) results [expertRTDP]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//VI
 //		VIPlanner viPlan = new VIPlanner(mcBeh, false, false);
@@ -566,7 +566,7 @@ public class MinecraftBehavior {
 //		sgp.solve();
 		
 		// Collect results and write to file
-//		File resultsFile = new File("tests/results/mcBeh_results.txt");
+//		File resultsFile = new File("tests/results/mcBeh_results.result");
 //		BufferedWriter bw;
 //		FileWriter fw;
 //		try {

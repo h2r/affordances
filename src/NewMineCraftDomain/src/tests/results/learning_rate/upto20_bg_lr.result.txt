@@ -1,0 +1,16 @@
+Learning Rate Results: 0-20
+RTDP 17836, -297.83, 0.33, 12.92s
+ERTDP 6531, -86.00, 0.67, 4.30s
+-- hard --
+	 [hard.tests0.kb]	LHRTDP.tests0.kb 7100, -72.67, 0.67, 4.70s
+	 [hard.tests5.kb]	LHRTDP.tests5.kb 18645, -451.00, 0.00, 46.25s
+	 [hard.tests10.kb]	LHRTDP.tests10.kb 18411, -388.33, 0.17, 18.22s
+	 [hard.tests15.kb]	LHRTDP.tests15.kb 19087, -137.67, 0.33, 28.07s
+	 [hard.tests20.kb]	LHRTDP.tests20.kb 19710, -135.17, 0.33, 38.02s
+	 
+-- soft --
+	 [soft.tests0.kb]	LSRTDP.tests0.kb 7136, -72.00, 0.67, 4.67s
+	 [soft.tests5.kb]	LSRTDP.tests5.kb 18224, -353.17, 0.17, 46.19s
+	 [soft.tests10.kb]	LSRTDP.tests10.kb 18906, -167.33, 0.17, 19.64s
+	 [soft.tests15.kb]	LSRTDP.tests15.kb 19444, -144.50, 0.33, 29.82s
+	 [soft.tests20.kb]	LSRTDP.tests20.kb 19214, -361.00, 0.00, 38.36s

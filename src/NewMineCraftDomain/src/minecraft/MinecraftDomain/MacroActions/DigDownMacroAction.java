@@ -16,7 +16,7 @@ public class DigDownMacroAction extends MinecraftMacroAction {
 	public DigDownMacroAction(String name, RewardFunction rf, double gamma,
 			StateHashFactory hashFactory, Domain domain, State state, int amtDig) {
 		super(name, rf, gamma, hashFactory, domain, state);
-		this.name = this.name + amtDig; 
+//		this.name = this.name + amtDig; 
 		this.amtDig = amtDig;
 		if (amtDig < 1) throw new IllegalArgumentException();
 	}

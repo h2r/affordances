@@ -149,6 +149,8 @@ public class NameSpace {
 	public static final String				PATHTEMPLATEMAP = "src/minecraft/maps/template.map";
 	public static final String				PATHRESULTS = "src/tests/results/";
 	
+	//-------------MISC-------------
+	public static final String				DOUBLEFORMAT = "%.3f";
 	//-------------ENUMS-------------
 	public enum RotDirection {
 		NORTH(0), EAST(1), SOUTH(2), WEST(3);

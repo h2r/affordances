@@ -11,9 +11,11 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import minecraft.MapIO;
 import minecraft.NameSpace;
@@ -59,56 +61,49 @@ public class AffordanceLearner {
 	private boolean					useOptions;
 	private boolean					useMAs;
 	private int						totalNumActions;
+	private double fractOfStatesToUse;
 //	private OOMDPPlanner planner;
 	
-	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, boolean useOptions, boolean useMAs) {
+	/**
+	 * An object that is responsible for learning affordances.
+	 * @param mcb: a MinecraftBehavior associated with the relevant domain and planners.
+	 * @param kb: a KnowledgeBase of affordances containing the proper lgds/predicates.
+	 * @param lgds: the list of goal descriptions to learn with
+	 * @param countTotalActions: a boolean indicating if the learner should count the total number of action applications or number of worlds in which an action was optimal
+	 * @param numWorlds: the number of worlds per task type to learn on
+	 * @param useOptions: a boolean indicating if we should learn with options
+	 * @param useMAs: a boolean indicating if we should learn with macroactions
+	 * @param fractOfStatesToUse: the fraction of the state space to learn with
+	 */
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorlds, boolean useOptions, boolean useMAs, double fractOfStatesToUse) {
 		this.lgds = lgds;
 		this.mcb = mcb;
 		this.affordanceKB = kb;
 		this.countTotalActions = countTotalActions;
 		this.useOptions = useOptions;
 		this.useMAs = useMAs;
-//		this.planner = planner;
-	}
-	
-	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorldsPerLGD, int totalNumActions, boolean useOptions, boolean useMAs) {
-		this.lgds = lgds;
-		this.mcb = mcb;
-		this.affordanceKB = kb;
-		this.countTotalActions = countTotalActions;
-		this.numWorldsPerLGD = numWorldsPerLGD;
-		this.totalNumActions = totalNumActions;
-		this.useOptions = useOptions;
-		this.useMAs = useMAs;
-//		this.planner = planner;
+		this.fractOfStatesToUse = fractOfStatesToUse;
+		this.numWorldsPerLGD = numWorlds;
 	}
 	
 	/**
 	 * Runs the full learning algorithm
+	 * @param createMaps: boolean to indicate if we should create new maps or use the existing ones
 	 */
-	public void learn() {
+	public void learn(boolean createMaps) {
 		
+		// Setup map objects and create maps if we need to
 		List<MapIO> maps = new ArrayList<MapIO>();
-		
 		String learningMapDir = NameSpace.PATHMAPS + "learning/";
-		
-		System.out.println("(affLearner) learningMapDir: " + learningMapDir);
-		createLearningMaps(learningMapDir);
-		
-		// For grid
-//		List<String> mapNames = new ArrayList<String>();
-//		for(int i = 0; i < this.numWorldsPerLGD; i++) {
-//			mapNames.add("DeepTrenchWorld" + i + ".map");
-//		}
-//		for(String map : maps) {
-//			MapIO learningMap = new MapIO(learningMapDir + map);
-//			maps.add(learningMap);
-//		}
-//}
+
+		if(createMaps) {
+			createLearningMaps(learningMapDir);
+		}
 		
 		File testDir = new File(learningMapDir);
 		String[] learningMaps = testDir.list();
 				
+		// Create the mapIO objects
 		for(String map : learningMaps) {
 			MapIO learningMap = new MapIO(learningMapDir + map);
 			maps.add(learningMap);
@@ -117,7 +112,7 @@ public class AffordanceLearner {
 		// Run learning on all the generated maps
 		int mapNum = 1;
 		for(MapIO map : maps) {
-			System.out.println("\n\nLearning with map" + mapNum + ": " + map);
+			System.out.println("\n\nLearning with map" + mapNum + ".(" + this.fractOfStatesToUse + ") : " + map);
 			mapNum++;
 			int lgdInt = map.getHeaderHashMap().get("G");
 			affordanceKB.getAffordancesController().setCurrentGoal(this.lgds.get(lgdInt));
@@ -133,7 +128,7 @@ public class AffordanceLearner {
 	 * @param learningMapDir: the number of maps to create for each goal type
 	 */
 	public void createLearningMaps(String learningMapDir) {
-		
+		System.out.println("(AffordanceLearner) numWorldsPERLEGD" + this.numWorldsPerLGD);
 		MapFileGenerator mapMaker = new MapFileGenerator(2, 3, 4, learningMapDir);
 		
 		// Get rid of old maps
@@ -188,15 +183,24 @@ public class AffordanceLearner {
 	 */
 	public void updateActionCounts(OOMDPPlanner planner, Policy policy, Map<AffordanceDelegate,List<AbstractGroundedAction>> seen, boolean countTotalActions) {
 		
-		// Get all states from the policy
+		// Get the fraction of states states from the policy that we're learning with
 		List<State> allStates = ((ValueFunctionPlanner)planner).getAllStates();
+		int numStates = allStates.size();
+		int numStatesToCount = (int) Math.floor(this.fractOfStatesToUse*numStates);
+		
+		// Randomize the states so the fraction we get is sampled randomly 
+		Collections.shuffle(allStates, new SecureRandom());
 		
 		// Generate several trajectories from the world
 		State initialState = mcb.getInitialState();
 		double initVal = ((ValueFunctionPlanner)planner).value(initialState);
 		 
 		// Loop over each state and count actions
-		for (State st: allStates) {
+		int numStatesCounted = 0;
+		for (State st : allStates) {
+			if (numStatesCounted >= numStatesToCount) {
+				break;
+			}
 			
 			// Check if we picked a bad state ("bad" = extremely low value)
 			double stateVal = ((ValueFunctionPlanner)planner).value(st); 
@@ -208,7 +212,10 @@ public class AffordanceLearner {
 			if (mcb.getTerminalFunction().isTerminal(st)) {
 				continue;
 			}
-
+			
+			// We're actually counting this state, so increment counter
+			++numStatesCounted;
+			
 			// Get the optimal action for that state and update affordance counts
 			GroundedAction ga = (GroundedAction) policy.getAction(st);
 			QValue qv = ((ValueFunctionPlanner)planner).getQ(st, ga);
@@ -236,6 +243,7 @@ public class AffordanceLearner {
 				}
 			}
 		}
+		System.out.println("(AffordanceLearner) [fract] numStatesCounted, totalStates: [" + this.fractOfStatesToUse + "] " + numStatesCounted + "," + numStates);
 	}
 	
 	/**
@@ -322,16 +330,6 @@ public class AffordanceLearner {
 			sumOfDifference += Math.pow((mean - multinomial[i]),2);
 		}
 		return sumOfDifference / (multinomial.length - 1);
-	}
-	
-	private double computeEntropy(double[] multinomial) {
-		Double result = 0.0;
-		for(int i = 0; i < multinomial.length; i++) {
-			if (multinomial[i] != 0.0) {
-				result -= multinomial[i] * Math.log(multinomial[i]);
-			}
-		}
-		return result / this.totalNumActions;
 	}
 	
 	/**
@@ -423,11 +421,16 @@ public class AffordanceLearner {
 	}
 	
 	/**
-	 * Learns a Minecraft specific KnowledgeBase
-	 * @param mb: MinecraftBehavior instance
+	 * Learns and returns a minecraft specific knowledge base of affordances
+	 * @param mcBeh: The MinecraftBehavior object to plan with.
+	 * @param numWorlds: The number of maps of each task type to learn on.
+	 * @param learningRate: A boolean indicating if this KB is for learning rate purposes (changes location of KB).
+	 * @param useOptions: A boolean indicating if we should learn with options
+	 * @param useMAs: A boolean indicating if we should learn with macroactions
+	 * @param fracOfStateSpace: The fraction of the state space to learn with.
 	 * @return
 	 */
-	public static String generateMinecraftKB(MinecraftBehavior mcBeh, int numWorlds, boolean learningRate, boolean useOptions, boolean useMAs) {
+	public static String generateMinecraftKB(MinecraftBehavior mcBeh, int numWorlds, boolean learningRate, boolean useOptions, boolean useMAs, double fracOfStateSpace) {
 		
 //		MinecraftPlanner planner = new VIPlanner(mcBeh, useOptions, useMAs);
 //		OOMDPPlanner planner = new ValueIteration(mcBeh.getDomain(), mcBeh.getRewardFunction(), mcBeh.getTerminalFunction(), mcBeh.getGamma(), mcBeh.getHashFactory(), mcBeh.getMinDelta(), Integer.MAX_VALUE);
@@ -441,18 +444,18 @@ public class AffordanceLearner {
 		
 		// Initialize Learner
 		boolean countTotalActions = true;
-		AffordanceLearner affLearn = new AffordanceLearner(mcBeh, affKnowledgeBase, lgds, countTotalActions, numWorlds, allGroundedActions.size(), useOptions, useMAs);
+		AffordanceLearner affLearn = new AffordanceLearner(mcBeh, affKnowledgeBase, lgds, countTotalActions, numWorlds, useOptions, useMAs, fracOfStateSpace);
 		
 		String kbName;
 		if(learningRate) {
-			kbName = "learning_rate/lr_" + affLearn.numWorldsPerLGD + ".kb";
+			kbName = "learning_rate/lr_" + String.format(NameSpace.DOUBLEFORMAT, affLearn.fractOfStatesToUse) + ".kb";
 		}
 		else {
 			kbName = "learned" + affLearn.numWorldsPerLGD + ".kb";
 		}
 		
 		// Learn
-		affLearn.learn();
+		affLearn.learn(true);
 		affKnowledgeBase.save(kbName);
 
 		return kbName;
@@ -471,7 +474,7 @@ public class AffordanceLearner {
 		}
 		
 		// Create Grounded Action instances for each temporally extended action
-		List<Action> temporallyExtendedActions = MinecraftPlanner.getListOfMAsAndOptions(mcBeh, useOptions, useMAs);
+		List<Action> temporallyExtendedActions = new ArrayList<Action>(MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs).values());
 		for(Action a : temporallyExtendedActions) {
 			String[] freeParams = makeFreeVarListFromObjectClasses(a.getParameterClasses());
 			GroundedAction ga = new GroundedAction(a, freeParams);
@@ -624,9 +627,10 @@ public class AffordanceLearner {
 		
 		boolean addOptions = true;
 		boolean addMAs = true;
+		double fractionOfStateSpaceToLearnWith = 0.1;
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
-		generateMinecraftKB(mcBeh, 3, false, addOptions, addMAs);
+		generateMinecraftKB(mcBeh, 3, false, addOptions, addMAs, fractionOfStateSpaceToLearnWith);
 	}
 	
 }
