@@ -128,7 +128,6 @@ public class AffordanceLearner {
 	 * @param learningMapDir: the number of maps to create for each goal type
 	 */
 	public void createLearningMaps(String learningMapDir) {
-		System.out.println("(AffordanceLearner) numWorldsPERLEGD" + this.numWorldsPerLGD);
 		MapFileGenerator mapMaker = new MapFileGenerator(2, 3, 4, learningMapDir);
 		
 		// Get rid of old maps
@@ -243,7 +242,7 @@ public class AffordanceLearner {
 				}
 			}
 		}
-		System.out.println("(AffordanceLearner) [fract] numStatesCounted, totalStates: [" + this.fractOfStatesToUse + "] " + numStatesCounted + "," + numStates);
+//		System.out.println("(AffordanceLearner) [fract] numStatesCounted, totalStates: [" + this.fractOfStatesToUse + "] " + numStatesCounted + "," + numStates);
 	}
 	
 	/**

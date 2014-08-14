@@ -416,13 +416,13 @@ public class MinecraftTestPipeline {
 				mcBeh.updateMap(mapIO);
 				
 				// Hard
-				affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "learning_rate/"  + kbName, false);
+				affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs),  kbName, false);
 				AffordanceRTDPPlanner affHardRTDP = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
 				learnedHardRTDPResults.addTrialForKB(kbName, affHardRTDP.runPlanner());
 				
 				// Soft
 				AffordanceRTDPPlanner affSoftRTDP = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
-				affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "learning_rate/" + kbName, true);
+				affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), kbName, true);
 				learnedSoftRTDPResults.addTrialForKB(kbName, affSoftRTDP.runPlanner());
 				try {
 					statusBW.write("Done with learned on map: " + map + ", with kb: " + kbName + "\n");
