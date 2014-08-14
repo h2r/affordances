@@ -3,6 +3,8 @@ package tests;
 import java.util.ArrayList;
 import java.util.List;
 
+import minecraft.NameSpace;
+
 public class Result {
 
 	private int avgBellmanUpdates;
@@ -229,11 +231,14 @@ public class Result {
 	public String toString() {
 		computeAverages();
 		computeDeviations();
-		String result = plannerName + " " 
-		+ this.avgBellmanUpdates + ".(" + String.format("%.2f", this.bellmanDeviation) + ") , " 
-		+ String.format("%.2f", this.avgAccumulatedReward) + ".(" + String.format("%.2f", this.rewardDeviation) + ") , " 
-		+ String.format("%.2f", this.taskCompletedRate) + ".(" + String.format("%.2f", this.completedDeviation) + ") , " 
-		+ String.format("%.2f", this.avgCpuTime) + "s.(" + String.format("%.2f", this.cpuDeviation) + ")"; 
+		String result = plannerName + " " + this.avgBellmanUpdates + ".(" 
+		+ String.format(NameSpace.DOUBLEFORMAT, this.bellmanDeviation) + ") , " 
+		+ String.format(NameSpace.DOUBLEFORMAT, this.avgAccumulatedReward) + ".(" 
+		+ String.format(NameSpace.DOUBLEFORMAT, this.rewardDeviation) + ") , " 
+		+ String.format(NameSpace.DOUBLEFORMAT, this.taskCompletedRate) + ".(" 
+		+ String.format(NameSpace.DOUBLEFORMAT, this.completedDeviation) + ") , " 
+		+ String.format(NameSpace.DOUBLEFORMAT, this.avgCpuTime) + "s.(" 
+		+ String.format(NameSpace.DOUBLEFORMAT, this.cpuDeviation) + ")"; 
 		
 		return result;
 	}

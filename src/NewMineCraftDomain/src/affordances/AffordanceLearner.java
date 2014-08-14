@@ -112,7 +112,7 @@ public class AffordanceLearner {
 		// Run learning on all the generated maps
 		int mapNum = 1;
 		for(MapIO map : maps) {
-			System.out.println("\n\nLearning with map" + mapNum + ".(" + this.fractOfStatesToUse + ") : " + map);
+			System.out.println("\n\nLearning with map" + mapNum + ".(" + String.format(NameSpace.DOUBLEFORMAT, this.fractOfStatesToUse) + ") : " + map);
 			mapNum++;
 			int lgdInt = map.getHeaderHashMap().get("G");
 			affordanceKB.getAffordancesController().setCurrentGoal(this.lgds.get(lgdInt));
@@ -446,8 +446,10 @@ public class AffordanceLearner {
 		AffordanceLearner affLearn = new AffordanceLearner(mcBeh, affKnowledgeBase, lgds, countTotalActions, numWorlds, useOptions, useMAs, fracOfStateSpace);
 		
 		String kbName;
+		String kbDir = "";
 		if(learningRate) {
-			kbName = "learning_rate/lr_" + String.format(NameSpace.DOUBLEFORMAT, affLearn.fractOfStatesToUse) + ".kb";
+			kbName = "lr_" + String.format(NameSpace.DOUBLEFORMAT, affLearn.fractOfStatesToUse) + ".kb";
+			kbDir = "learning_rate/";
 		}
 		else {
 			kbName = "learned" + affLearn.numWorldsPerLGD + ".kb";
@@ -455,7 +457,7 @@ public class AffordanceLearner {
 		
 		// Learn
 		affLearn.learn(true);
-		affKnowledgeBase.save(kbName);
+		affKnowledgeBase.save(kbDir + kbName);
 
 		return kbName;
 	}

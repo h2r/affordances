@@ -49,7 +49,7 @@ public class MinecraftTestPipeline {
 		int numLavaBlocks = 1;
 		
 		// Small
-		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
+		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 6, 6, 6);
 //		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 2, 2, 4);
 //		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
 //		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
@@ -336,7 +336,6 @@ public class MinecraftTestPipeline {
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
 		String testMapDir = NameSpace.PATHMAPS + "learningRateTest/";
 		generateTestMaps(mcBeh, testMapDir, numMapsPerGoal);
-		System.out.println("------------after generation");
 		
 		File testDir = new File(testMapDir);
 		String[] testMaps = testDir.list();
@@ -387,11 +386,10 @@ public class MinecraftTestPipeline {
 			RTDPPlanner rtdp = new RTDPPlanner(mcBeh, false, false);
 			rtdpResults.addTrial(rtdp.runPlanner());
 
-			// TODO: add expert back. Taken out to avoid prop func null errors
 			// Expert
-//				affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "expert.kb", false);
-//				AffordanceRTDPPlanner affExpertRTDP = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
-//				expertRTDPResults.addTrial(affExpertRTDP.runPlanner());
+			affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "pseudo_expert_replace.kb", false);
+			AffordanceRTDPPlanner affExpertRTDP = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
+			expertRTDPResults.addTrial(affExpertRTDP.runPlanner());
 			
 			int numStates = -1;
 			if(countStateSpaceSize) {
@@ -416,14 +414,16 @@ public class MinecraftTestPipeline {
 				mcBeh.updateMap(mapIO);
 				
 				// Hard
-				affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs),  kbName, false);
+				affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs),  "learning_rate/" + kbName, false);
 				AffordanceRTDPPlanner affHardRTDP = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
 				learnedHardRTDPResults.addTrialForKB(kbName, affHardRTDP.runPlanner());
-				
+				System.out.println("(MCTPipeline) done with hard");
 				// Soft
 				AffordanceRTDPPlanner affSoftRTDP = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
 				affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), kbName, true);
 				learnedSoftRTDPResults.addTrialForKB(kbName, affSoftRTDP.runPlanner());
+				System.out.println("(MCTPipeline) done planning soft");
+				
 				try {
 					statusBW.write("Done with learned on map: " + map + ", with kb: " + kbName + "\n");
 					statusBW.flush();
@@ -492,11 +492,11 @@ public class MinecraftTestPipeline {
 		
 		// --- Learning Rate Results ---
 		boolean shouldLearn = true;
-		boolean countStateSpaceSize = true;
-		int numMapsPerGoalTest = 1;
-		double minFractStateSpace = 0.25;
+		boolean countStateSpaceSize = false;
+		int numMapsPerGoalTest = 5;
+		double minFractStateSpace = 1.0;
 		double maxFractStateSpace = 1;
-		double increment = 0.25;
+		double increment = 0.1;
 		boolean useOptions = false;
 		boolean useMAs = false;
 		try {
