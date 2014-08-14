@@ -337,10 +337,8 @@ public class AffordanceLearner {
 	public void updateActionSetSizeCounts(Map<AffordanceDelegate,List<AbstractGroundedAction>> seen) {
 		// Count the action set size for each affordance for this world
 		double counted = 0.0;
-		System.out.println("(AffLearner) COUNTING ACTION SET SIZE");
 		for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
 			if (seen.get(affDelegate).size() > 0) {
-				System.out.println("(AffLearner) INCREMENETING COUNTER");
 				++counted;
 				((SoftAffordance)affDelegate.getAffordance()).updateActionSetSizeCount(seen.get(affDelegate).size());
 			}
