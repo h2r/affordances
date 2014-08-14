@@ -238,8 +238,6 @@ of all the object states: $s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$.
 %% of Robots that utilize ROS. Our group is also working to deploy affordances as a
 %% means of knowledge representation and reasoning for collaborative cooking with ReThink's Baxter.
 
-\stnote{Merge soft and hard affordances, as we discussed.}
-
 We define an affordance, $\Delta$,
 as the mapping $\langle p,g\rangle \longmapsto \mathcal{A}'$,
 where:
@@ -260,13 +258,12 @@ number of objects in the world, and specific goal the agent is trying to satisfy
 \subsection{Affordance-Aware Planning}
 We call any planner that
 uses affordances an {\it affordance-aware} planner. For a given state, 
-our goal is to solve for the probability of getting a particular action set $\mathcal{A}^*$, and place a Dirichlet Multinomial
-prior on the action selection for a given state to maximize this probability. \dnote{Should we put a note about what the Dirichlet Multinomial is?} \gnote{I don't think that's necessary, people who aren't familiar with it can look it up, right?}
+our goal is to solve for the probability of getting the optimal set of actions, $\mathcal{A}^*$, and place a Dirichlet Multinomial
+prior on the action selection for a given state to maximize this probability.
 
 This ensures that in the limit, it is possible to apply each action in each state, retaining
 any optimality guarantees of the planner. $\mathcal{A}^*$ represents
-an action subset from the OO-MDP action set that is likely to contain the optimal action(s) for a given state,
-but not suboptimal actions. \gnote{Isn't $\mathcal{A}^*$ the set of optimal actions? It also looks like the definition of $\mathcal{A}^*$ change from the previous paragraph, where it represents ``a particular action set".}
+the set of optimal actions for a given state.
 \begin{equation}
 \text{Pr}(\mathcal{A}^* \mid s, \Delta_1 \dots \Delta_K)
 \end{equation}
@@ -281,9 +278,9 @@ We approximate this term assuming the sets $\mathcal{A}_i'$ are disjoint:
 \end{align}
 
 Given a set of $K$ domain affordances $Z = \{\Delta_1, ..., \Delta_K\}$ and a current 
-goal condition defined with an OO-MDP predicate $g$, the action set that a 
+goal condition defined as an OO-MDP predicate $G$, the action set that a 
 planning algorithm considers is pruned on a state by state basis as shown in 
-Algorithm~\ref{alg:prune_actions}.  Each 
+Algorithm~\ref{alg:prune_actions}. Each 
 activated affordance contributes a suggested action set, determined by Algorithm \ref{alg:get_actions}. 
 
 \begin{algorithm}
@@ -297,7 +294,20 @@ activated affordance contributes a suggested action set, determined by Algorithm
     \EndFor \\
     \Return $\mathcal{A}^*$
   \end{algorithmic}
-  \label{alg:prune_actions}
+    \label{alg:prune_actions}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{$\Delta_i.$getActions($s$)}
+ \begin{algorithmic}[1]
+    \State $\lambda \leftarrow DirMult(\Delta_i.\alpha)$
+    \State $N \leftarrow Dir(\Delta_i.\beta)$
+    \For {$1$ to $N$}
+    \State $\Delta_i.\mathcal{A}' \leftarrow \lambda$
+    \EndFor \\
+    \Return $\Delta_i.\mathcal{A}'$
+  \end{algorithmic}
+  \label{alg:get_actions}
 \end{algorithm}
 
 Specifically, we prune actions on a state by state basis
@@ -316,7 +326,8 @@ as the current goal (line 3), then the actions associated with the affordance ($
 
 For each affordance, we get an action set $\mathcal{A}'$. This 
 process is outlined by Algorithm \ref{alg:get_actions}. To compute $\mathcal{A}'$, we form a Dirichlet-multinomial distribution
-over actions ($\lambda$), and a Dirichlet distribution over the size ($N$) of each action set. Therefore, the probability of getting an action set from affordance $i$ in state $s$ is: \stnote{Can you format Algorithm 1 and 2 so they are part of the same layout block?  Ideally at the top of the page.}
+over actions ($\lambda$), and a Dirichlet distribution over the size ($N$) of each action set. Therefore, the probability of getting an action set from affordance $i$ in state $s$ is: 
+%\stnote{Can you format Algorithm 1 and 2 so they are part of the same layout block?  Ideally at the top of the page.}
 \begin{equation}
 \text{Pr}(\mathcal{A}_i' \mid s,\Delta_i) = \text{Pr}(\mathcal{A}_i' \mid N_i, \lambda_i) = \text{Pr}(\lambda_i \mid \alpha_i) \text{Pr}(N_i \mid \beta_i)
 \end{equation}
@@ -327,19 +338,6 @@ take that many samples from our distribution over actions to get a candidate act
 \text{Pr}(\lambda \mid \alpha) = DirMult(\alpha) \\
 \text{Pr}(N \mid \beta) = Dir(\beta)
 \end{align}
-
-\begin{algorithm}
-  \caption{$\Delta_i.getActions(s)$}
-  \begin{algorithmic}[1]
-    \State $\lambda \leftarrow DirMult(\Delta_i.\alpha)$
-    \State $N \leftarrow Dir(\Delta_i.\beta)$
-    \For {$1$ to $N$}
-    \State $\Delta_i.\mathcal{A}' \leftarrow \lambda$
-    \EndFor \\
-    \Return $\Delta_i.\mathcal{A}'$
-  \end{algorithmic}
-  \label{alg:get_actions}
-\end{algorithm}
 
 Through the use of Algorithms \ref{alg:prune_actions} and \ref{alg:get_actions}, any OO-MDP solver can be made
 {\it affordance-aware}. For a planner to be made affordance-aware, we require that an expert provide a set $\mathcal{P}$ of predicates
