@@ -258,7 +258,7 @@ number of objects in the world, and specific goal the agent is trying to satisfy
 \subsection{Affordance-Aware Planning}
 We call any planner that
 uses affordances an {\it affordance-aware} planner. For a given state, 
-our goal is to solve for the probability of getting the optimal set of actions, $\mathcal{A}^*$, and place a Dirichlet Multinomial
+our goal is to solve for the probability of getting the optimal set of actions, $\mathcal{A}^*$, and place a Dirichlet-multinomial
 prior on the action selection for a given state to maximize this probability.
 
 This ensures that in the limit, it is possible to apply each action in each state, retaining
@@ -271,8 +271,7 @@ We let each affordance contribute a set $\mathcal{A}' \subseteq A^*$ in each sta
 \begin{align}
 \text{Pr}(\mathcal{A}'_1 \cup \ldots \cup \mathcal{A}'_K \mid s, \Delta_1 \dots \Delta_K)
 \end{align}
-We approximate this term assuming the sets $\mathcal{A}_i'$ are disjoint:
-\gnote{I think approximation should be changed for upper bound.}
+We approximate this term assuming the sets $\mathcal{A}_i'$ are independent:
 \begin{align}
 \sum_i^K \text{Pr}(\mathcal{A}'_i \mid s, \Delta_i)
 \end{align}
@@ -353,75 +352,59 @@ experiments.
 To learn affordances, we require that a domain expert supply a set of predicates
 $\mathcal{P}$ and possible goals $\mathcal{G} \subset \mathcal{P}$. Additionally,
 a domain expert must provide a means of generating candidate state spaces in which
-a given goal $g \in \mathcal{G}$ may be satisfied.
+each goal $g \in \mathcal{G}$ may be satisfied (i.e. the function $createTestWorld(g)$ at line 5 in Algorithm \ref{alg:learn}).
 
 The agent forms a set of candidate affordances $\Delta$ with every
 combination of $\langle p, g \rangle$, for $p \in \mathcal{P}$ and $g
-\in \mathcal{G}$.  To learn the action set for each of these candidate
-affordances, we created a scaffolded learning process that computes
+\in \mathcal{G}$, as seen in line 1-3 of Algorithm \ref{alg:learn}. To learn the action set for each of these candidate
+affordances, we developed a learning process that computes
 $\alpha$ and $\beta$ from the solved policy of $m$ goal-annotated
 OO-MDPs that have small state spaces, but still present similar sorts
 of features to the state spaces the agent might expect to see in more
-complex environments.  For example, the agent learns to build towers
-of blocks in small state spaces that can be solved exactly (state space of several thousand states), but
-then generalizes its knowledge to worlds that are too large  to
-solve with exact algorithms (state space of tens of thousand to one hundred thousand states).
+complex environments. For example, the agent learns to build towers
+of blocks in small state spaces that can be solved exactly (i.e. a state space of several thousand states), but
+generalizes its knowledge to worlds that are too large to
+solve with exact algorithms (state spaces of tens of thousand to hundreds of thousands of states).
 
-\stnote{Can you say this formally, in math?}
-\dnote{Good idea - I made some pseudo code as a placeholder. I'll replace with a few equations to save space next pass}
+\begin{algorithm}
+  \caption{$learn(\mathcal{P}, \mathcal{G})$}
+  \begin{algorithmic}[1]
+    \For {$(p, g) \in \mathcal{P} \times \mathcal{G}$}
+    \State $knowledgeBase.add(\Delta(p,g))$
+    \EndFor
+    \For {$g \in \mathcal{G}$}
+    \State $w_i = createTestWorld(g)$
+    \State $\pi_i = planner.solve(w_i, g)$
+    \State $updateParameters(knowledgeBase, \pi_i)$
+    \EndFor
+    \State $removeLowInfoAffordances(knowledgeBase)$
+  \end{algorithmic}
+  \label{alg:learn}
+\end{algorithm}
 
-%\begin{algorithm}
-%  \caption{$generateAffordances(\mathcal{P}, \mathcal{G})$}
-%  \begin{algorithmic}[1]
-%    \For {$p \in P$}
-%    \For {$g \in G$}
-%    \State $knowledgeBase.add(\Delta(p,g))$
-%    \EndFor
-%    \EndFor
-%  \end{algorithmic}
-%  \label{alg:gen_affs}
-%\end{algorithm}
-%
-%\begin{algorithm}
-%  \caption{$learn(\mathcal{P}, \mathcal{G})$}
-%
-%  \begin{algorithmic}[1]
-%    \State $knowledgeBase = generateAffordances(\mathcal{P}, \mathcal{G})$
-%    \For {$g \in \mathcal{G}$}
-%    \State $w_i = createTestWorld(g)$
-%    \State $\pi_i = planner.solve(w_i)$
-%    \EndFor
-%    \State $knowledgeBase.updateParameters(\pi_1, \ldots, \pi_k)$
-%  \end{algorithmic}
-%  \label{alg:learn}
-%\end{algorithm}
-%
-%\begin{algorithm}
-%  \caption{$updateParameters(\pi_1, \ldots, \pi_k)$}
-%  \begin{algorithmic}[1]
-%    \For {$i = 1 to k$}
-%    \For {$\Delta \in knowledgeBase$}
-%    \For {$s \in \pi_i.plan$}
-%    \If	{$\Delta.p(s) \wedge \Delta.g == s.g$}
-%    \State 
-%    \EndIf
-%    \EndFor
-%    \EndFor
-%    \EndFor
-%    \State $knowledgeBase.updateParameters(\pi_1, \ldots, \pi_k)$
-%  \end{algorithmic}
-%  \label{alg:learn}
-%\end{algorithm}
+\begin{algorithm}
+  \caption{$updateParameters(knowledgeBase, \pi)$}
+  \begin{algorithmic}[1]
+    \For {$state \in \pi.reachableStates()$}
+    \For {$\Delta \in knowledgeBase$}
+    \If	{$\Delta.p(s) \wedge \Delta.g \models s.g$}
+    \State $\Delta(\pi_i.getOptimalAction(s)).\alpha$++
+    \EndIf
+    \EndFor
+    \EndFor
+  \end{algorithmic}
+  \label{alg:update_params}
+\end{algorithm}
 
-
-For each optimal policy, we count the number of policies that used
-each action when each affordance was activated. $\alpha$ is set to
-this count. Additionally, we define $\beta$ as a vector of the
+For each optimal policy, we count the number of states in which an action was optimal,
+when each affordance was activated, as seen in Algorithm \ref{alg:update_params}. $\alpha$ is set to
+this count. Additionally, we define $\beta$ as a vector representing counts of
 integers $1$ to $|\mathcal{A}|$.  Then, for each optimal policy, we
 count the number of different actions that were optimal for each
 activated affordance $\Delta_i$, and increment that value for
 $\Delta_i.\beta$. This captures how large or small optimal action sets
-are expected to be for each affordance.
+are expected to be for each affordance. \dnote{Need to add beta 
+counts to algorithm \ref{alg:update_params}. (a bit tricky to do concisely so I'm taking a bit of time on it.}
 
 For experiments, we introduce a simplified version of the affordance where
 the action set $\mathcal{A}$ associated with each affordance is defined
