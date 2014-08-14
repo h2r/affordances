@@ -331,11 +331,11 @@ public class MinecraftTestPipeline {
 	 * @param nametag: a flag for the name of the results file
 	 * @throws IOException 
 	 */
-	public static void runLearningRateTests(String nametag, int numMapsPerGoal, double minFractOfStateSpace, double maxFractOfStateSpace, double increment, boolean shouldLearn, boolean countStateSpaceSize, boolean useOptions, boolean useMAs) throws IOException {
+	public static void runLearningRateTests(String nametag, int numLearningMapsPerLGD, int numTestingMaps, double minFractOfStateSpace, double maxFractOfStateSpace, double increment, boolean shouldLearn, boolean countStateSpaceSize, boolean useOptions, boolean useMAs) throws IOException {
 		// Generate Behavior and test maps
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
 		String testMapDir = NameSpace.PATHMAPS + "learningRateTest/";
-		generateTestMaps(mcBeh, testMapDir, numMapsPerGoal);
+		generateTestMaps(mcBeh, testMapDir, numTestingMaps);
 		
 		File testDir = new File(testMapDir);
 		String[] testMaps = testDir.list();
@@ -346,7 +346,7 @@ public class MinecraftTestPipeline {
 			// --- Create Knowledge Bases ---
 			for(double fractOfStateSpace = minFractOfStateSpace; fractOfStateSpace <= maxFractOfStateSpace; fractOfStateSpace = fractOfStateSpace + increment) {
 				// Learn if we're supposed to learn a new KB
-				String learnedKBName = AffordanceLearner.generateMinecraftKB(mcBeh, numMapsPerGoal, true, false, false, fractOfStateSpace);
+				String learnedKBName = AffordanceLearner.generateMinecraftKB(mcBeh, numLearningMapsPerLGD, true, false, false, fractOfStateSpace);
 				kbNames.add(learnedKBName);
 			}
 		}
@@ -417,12 +417,11 @@ public class MinecraftTestPipeline {
 				affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs),  "learning_rate/" + kbName, false);
 				AffordanceRTDPPlanner affHardRTDP = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
 				learnedHardRTDPResults.addTrialForKB(kbName, affHardRTDP.runPlanner());
-				System.out.println("(MCTPipeline) done with hard");
+				
 				// Soft
 				AffordanceRTDPPlanner affSoftRTDP = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
-				affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), kbName, true);
+				affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "learning_rate/" + kbName, true);
 				learnedSoftRTDPResults.addTrialForKB(kbName, affSoftRTDP.runPlanner());
-				System.out.println("(MCTPipeline) done planning soft");
 				
 				try {
 					statusBW.write("Done with learned on map: " + map + ", with kb: " + kbName + "\n");
@@ -493,14 +492,15 @@ public class MinecraftTestPipeline {
 		// --- Learning Rate Results ---
 		boolean shouldLearn = true;
 		boolean countStateSpaceSize = false;
-		int numMapsPerGoalTest = 5;
-		double minFractStateSpace = 1.0;
+		int numTestingMaps = 2;
+		int numLearningMapsPerLGD = 5;
+		double minFractStateSpace = 0.1;
 		double maxFractStateSpace = 1;
-		double increment = 0.1;
+		double increment = 0.25;
 		boolean useOptions = false;
 		boolean useMAs = false;
 		try {
-			runLearningRateTests("0.1-1.0", numMapsPerGoalTest, minFractStateSpace, maxFractStateSpace, increment, shouldLearn, countStateSpaceSize, useOptions, useMAs);
+			runLearningRateTests("0.1-1.0", numLearningMapsPerLGD, numTestingMaps, minFractStateSpace, maxFractStateSpace, increment, shouldLearn, countStateSpaceSize, useOptions, useMAs);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -539,7 +539,7 @@ public class MinecraftBehavior {
 		boolean softFlag = true;
 		// Load knowledge base
 		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "3_learned_opt_ma.kb", false);
+		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "learning_rate/lr_0.400.kb", true);
 
 		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, true, true, affKB);
 		results = affRTDPPlanner.runPlanner();

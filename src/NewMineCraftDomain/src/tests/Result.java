@@ -33,6 +33,11 @@ public class Result {
 	 * Computes the average values given data across this.numTrials.
 	 */
 	private void computeAverages() {
+		// If we haven't received any trials, return.
+		if(numTrials < 1) {
+			return;
+		}
+		
 		// Bellman Updates
 		int totalBellmanUpdates = 0;
 		for (Double bu : bellmanUpdateTrials) {
@@ -70,9 +75,13 @@ public class Result {
 	 * Computes the (sample) standard deviation of each data type
 	 */
 	private void computeDeviations() {
+		// If we haven't received any trials, return.
+		if(numTrials < 1) {
+			return;
+		}
 		
 		// If we only ran 1 trial, deviation is 0.
-		if(this.numTrials <= 1) {
+		if(this.numTrials == 1) {
 			this.bellmanDeviation = 0.0;
 			this.rewardDeviation = 0.0;
 			this.completedDeviation = 0.0;

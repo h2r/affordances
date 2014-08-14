@@ -112,7 +112,7 @@ public class AffordanceLearner {
 		// Run learning on all the generated maps
 		int mapNum = 1;
 		for(MapIO map : maps) {
-			System.out.println("\n\nLearning with map" + mapNum + ".(" + String.format(NameSpace.DOUBLEFORMAT, this.fractOfStatesToUse) + ") : " + map);
+			System.out.println("\n\nLearning with map" + mapNum + ".(frac=" + String.format(NameSpace.DOUBLEFORMAT, this.fractOfStatesToUse) + ") : " + map);
 			mapNum++;
 			int lgdInt = map.getHeaderHashMap().get("G");
 			affordanceKB.getAffordancesController().setCurrentGoal(this.lgds.get(lgdInt));
@@ -252,9 +252,8 @@ public class AffordanceLearner {
 		List<AffordanceDelegate> toRemove = new ArrayList<AffordanceDelegate>();
 		// Get counts for each affordance and queue zero count affs for removal
 		for(AffordanceDelegate aff : affordanceKB.getAffordances()) {
-			Collection<Integer> countsCol = ((SoftAffordance)aff.getAffordance()).getActionCounts().values();
-			List<Integer> counts = new ArrayList<Integer>(countsCol);
-			
+			List<Integer> counts = new ArrayList<Integer>(((SoftAffordance)aff.getAffordance()).getActionCounts().values());
+
 			// Remove if alpha counts are all 0
 			double total = 0.0;
 			for(Integer d : counts) {
@@ -338,8 +337,10 @@ public class AffordanceLearner {
 	public void updateActionSetSizeCounts(Map<AffordanceDelegate,List<AbstractGroundedAction>> seen) {
 		// Count the action set size for each affordance for this world
 		double counted = 0.0;
+		System.out.println("(AffLearner) COUNTING ACTION SET SIZE");
 		for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
 			if (seen.get(affDelegate).size() > 0) {
+				System.out.println("(AffLearner) INCREMENETING COUNTER");
 				++counted;
 				((SoftAffordance)affDelegate.getAffordance()).updateActionSetSizeCount(seen.get(affDelegate).size());
 			}
