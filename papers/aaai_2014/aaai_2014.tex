@@ -19,6 +19,7 @@
 \newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{ST: #1}}}
 \newcommand{\dnote}[1]{\textcolor{Green}{\textbf{D: #1}}}
 \newcommand{\enote}[1]{\textcolor{Red}{\textbf{E: #1}}}
+\newcommand{\gnote}[1]{\textcolor{Purple}{\textbf{G: #1}}}
 
 \pdfinfo{
    /Author (David Abel, Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex)
@@ -243,12 +244,12 @@ We define an affordance, $\Delta$,
 as the mapping $\langle p,g\rangle \longmapsto \mathcal{A}'$,
 where:
 \begin{itemize}
-\item[] $\mathcal{A}' \subseteq \mathcal{A}$, a subset of the action space, representing the relevant {\it action-possibilities} of the environment.
+\item[] $\mathcal{A}' \subseteq \mathcal{A}$, is a subset of the action space, representing the relevant {\it action-possibilities} of the environment.
 \item[] $p$ is a predicate on states, $s \longrightarrow \{$0$, 1\}$
   representing the {\em precondition} for the affordance.
 \item[] $g$ is an ungrounded predicate on states representing a {\it lifted goal description}.
 \end{itemize}
-The precondition and goal description refer to predicates that are defined in the OO-MDP definition.
+The precondition and lifted goal description refer to predicates that are defined in the OO-MDP definition.
 An affordance is {\it activated} when its predicate is true in a given state and its lifted goal description $g$ matches the agent's current goal. 
 Using OO-MDP predicates for affordance preconditions and goal descriptions 
 allows for state space independence. Thus, a planner equipped with
@@ -260,12 +261,12 @@ number of objects in the world, and specific goal the agent is trying to satisfy
 We call any planner that
 uses affordances an {\it affordance-aware} planner. For a given state, 
 our goal is to solve for the probability of getting a particular action set $\mathcal{A}^*$, and place a Dirichlet Multinomial
-prior on the action selection for a given state to maximize this probability. \dnote{Should we put a note about what the Dirichlet Multinomial is?}
+prior on the action selection for a given state to maximize this probability. \dnote{Should we put a note about what the Dirichlet Multinomial is?} \gnote{I don't think that's necessary, people who aren't familiar with it can look it up, right?}
 
 This ensures that in the limit, it is possible to apply each action in each state, retaining
 any optimality guarantees of the planner. $\mathcal{A}^*$ represents
 an action subset from the OO-MDP action set that is likely to contain the optimal action(s) for a given state,
-but not suboptimal actions.
+but not suboptimal actions. \gnote{Isn't $\mathcal{A}^*$ the set of optimal actions? It also looks like the definition of $\mathcal{A}^*$ change from the previous paragraph, where it represents ``a particular action set".}
 \begin{equation}
 \text{Pr}(\mathcal{A}^* \mid s, \Delta_1 \dots \Delta_K)
 \end{equation}
@@ -274,11 +275,12 @@ We let each affordance contribute a set $\mathcal{A}' \subseteq A^*$ in each sta
 \text{Pr}(\mathcal{A}'_1 \cup \ldots \cup \mathcal{A}'_K \mid s, \Delta_1 \dots \Delta_K)
 \end{align}
 We approximate this term assuming the sets $\mathcal{A}_i'$ are disjoint:
+\gnote{I think approximation should be changed for upper bound.}
 \begin{align}
 \sum_i^K \text{Pr}(\mathcal{A}'_i \mid s, \Delta_i)
 \end{align}
 \dnote{What do you think about the indicator function I mentioned here? It makes things a bit more complicated but to be really precise
-I think we need it.}
+I think we need it.} \gnote{I don't see an indicator function, did you take it out?}
 
 Given a set of $K$ domain affordances $Z = \{\Delta_1, ..., \Delta_K\}$ and a current 
 goal condition defined with an OO-MDP predicate $g$, the action set that a 
@@ -614,7 +616,7 @@ useful for a task. We conducted a set of experiments to investigate this intuiti
 
 At a high level both HTNs and affordances fulfill the same role: both achieve action pruning by exploiting some form of supplied knowledge. HTNs do so with the use of information regarding both the task decomposition of the goal at hand and the sorts constraints that said decomposition imposes upon the planner. Similarly, affordances require knowledge as to how to extract values for propositional functions of interest by querying the state.
 
-However there are three of essential distinctions between affordances and traditional HTNs. (1) HTNs deal exclusively with deterministic domains as opposed to the stochastic spaces with which affordances grapple. As a result they produce plans and not policies. (2) Moreover, HTNs do not incorporate reward into their planning. Consequently, they lack mathematical guarantees of optimal planning. \enote{I think.. We should double check this.} (3) On a qualitative level, the degree of supplied knowledge in HTNs surpasses that of affordances: whereas affordances simply require relevant propositional functions, HTNs require not only constraints for sub-tasks but a hierarchical framework of arbitrary complexity. Thus, despite a superficial similarity between affordances and HTNs wherein both employ supplied knowledge, the two deal with disparate forms of planning problems; HTN's planning problem is deterministic, reward-agnostic and allows for a plethora of knowledge while affordances solve a planning problem that is stochastic, reward-aware and permits only relatively basic knowledge about the domain.
+However there are three of essential distinctions between affordances and traditional HTNs. (1) HTNs deal exclusively with deterministic domains as opposed to the stochastic spaces with which affordances grapple. As a result they produce plans and not policies. (2) Moreover, HTNs do not incorporate reward into their planning. Consequently, they lack mathematical guarantees of optimal planning. \enote{I think.. We should double check this.} (3) On a qualitative level, the degree of supplied knowledge in HTNs surpasses that of affordances: whereas affordances simply require relevant propositional functions, HTNs require not only constraints for sub-tasks but a hierarchical framework of arbitrary complexity. Thus, despite a superficial similarity between affordances and HTNs wherein both employ supplied knowledge, the two deal with disparate forms of planning problems; HTN's planning problem is deterministic, reward-agnostic and necessitates a plethora of knowledge while affordances solve a planning problem that is stochastic, reward-aware and requires only relatively basic knowledge about the domain.
 % --- Subsection: Action Pruning ---
 \subsection{Action Pruning}
 
