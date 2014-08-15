@@ -89,9 +89,10 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfAgentNotLookTowardGold;
 	public PropositionalFunction		pfAgentNotLookTowardFurnace;
 	public PropositionalFunction		pfAgentCanJump;
+	public PropositionalFunction 		pfAlwaysTrue;
 	
 	// Dave's jenky hard coded prop funcs
-	public PropositionalFunction		pfAgentLookForwardAndWalkable;
+	public PropositionalFunction		pfAgentCanWalk;
 	public PropositionalFunction		pfTrenchBetweenAgentAndGoal;
 	public PropositionalFunction		pfEmptyCellFrontAgentWalk;
 	public PropositionalFunction		pfGoldBlockFrontOfAgent;
@@ -99,10 +100,9 @@ public class MinecraftBehavior {
 	public PropositionalFunction		pfWallInFrontOfAgent;
 	public PropositionalFunction		pfHurdleInFrontOfAgent;
 	public PropositionalFunction 		pfLavaFrontAgent;
-	public PropositionalFunction 		pfAgentLookBlock;
-	public PropositionalFunction 		pfAgentLookWall;
+	public PropositionalFunction 		pfAgentLookDestWall;
+	public PropositionalFunction 		pfAgentLookIndWall;
 	public PropositionalFunction 		pfAgentLookLava;
-	
 	
 	//Params for Planners
 	public double						gamma = 0.99;
@@ -115,6 +115,7 @@ public class MinecraftBehavior {
 	public int 							numRolloutsWithSmallChangeToConverge = 50; // RTDP
 	public double						boltzmannTemperature = 0.5;
 	public double						lavaReward = -10.0;
+	private PropositionalFunction pfIndBlockFrontOfAgent;
 
 	// ----- CLASS METHODS -----
 	
@@ -180,29 +181,37 @@ public class MinecraftBehavior {
 		this.pfBlockAt = domain.getPropFunction(NameSpace.PFBLOCKAT);
 		this.pfAgentHasAtLeastXGoldOre = domain.getPropFunction(NameSpace.PFATLEASTXGOLDORE);
 		this.pfAgentHasAtLeastXGoldBar = domain.getPropFunction(NameSpace.PFATLEASTXGOLDBAR);
-		this.pfBlockInFrontOfAgent = domain.getPropFunction(NameSpace.PFBLOCKINFRONT);
+		this.pfBlockInFrontOfAgent = domain.getPropFunction(NameSpace.PFINDBLOCKINFRONT);
 		this.pfEndOfMapInFrontOfAgent = domain.getPropFunction(NameSpace.PFENDOFMAPINFRONT);
 		this.pfAgentInMidAir = domain.getPropFunction(NameSpace.PFAGENTINMIDAIR);
-		this.pfAgentLookForwardAndWalkable = domain.getPropFunction(NameSpace.PFAGENTCANWALK);
+		this.pfAgentCanWalk = domain.getPropFunction(NameSpace.PFAGENTCANWALK);
 		this.pfEmptyCellFrontAgentWalk = domain.getPropFunction(NameSpace.PFEMPTYCELLINWALK);
 		this.pfTower = domain.getPropFunction(NameSpace.PFTOWER);
-		this.pfGoldBlockFrontOfAgent = domain.getPropFunction(NameSpace.PFGOLDFRONTAGENTONE);
+		// X front of agent (either at feet level or head)
+		this.pfGoldBlockFrontOfAgent = domain.getPropFunction(NameSpace.PFAGENTLOOKGOLD);
 		this.pfFurnaceInFrontOfAgent = domain.getPropFunction(NameSpace.PFFURNACEINFRONT);
-		this.pfWallInFrontOfAgent = domain.getPropFunction(NameSpace.PFWALLINFRONT);
+		this.pfWallInFrontOfAgent = domain.getPropFunction(NameSpace.PFAGENTLOOKWALLOBJ);
 		this.pfHurdleInFrontOfAgent = domain.getPropFunction(NameSpace.PFHURDLEINFRONTAGENT);
+		this.pfIndBlockFrontOfAgent = domain.getPropFunction(NameSpace.PFINDBLOCKINFRONT);
+		// Lava
 		this.pfAgentInLava = domain.getPropFunction(NameSpace.PFAGENTINLAVA);
 		this.pfLavaFrontAgent = domain.getPropFunction(NameSpace.PFLAVAFRONTAGENT);
-		this.pfAgentLookWall = domain.getPropFunction(NameSpace.PFAGENTLOOKWALL);
-		this.pfAgentLookBlock = domain.getPropFunction(NameSpace.PFAGENTLOOKBLOCK);
+		// Agent Looking at X
+		this.pfAgentLookIndWall = domain.getPropFunction(NameSpace.PFAGENTLOOKINDBLOCK);
+		this.pfAgentLookDestWall = domain.getPropFunction(NameSpace.PFAGENTLOOKDESTBLOCK);
 		this.pfAgentLookLava = domain.getPropFunction(NameSpace.PFAGENTLOOKLAVA);
+		// Agent looking toward X
 		this.pfAgentLookTowardGoal = domain.getPropFunction(NameSpace.PFAGENTLOOKTOWARDGOAL);
 		this.pfAgentLookTowardGold = domain.getPropFunction(NameSpace.PFAGENTLOOKTOWARDGOLD);
 		this.pfAgentLookTowardFurnace = domain.getPropFunction(NameSpace.PFAGENTLOOKTOWARDFURNACE);
+		// Agent not looking toward X
 		this.pfAgentNotLookTowardGoal = domain.getPropFunction(NameSpace.PFAGENTNOTLOOKTOWARDGOAL);
 		this.pfAgentNotLookTowardGold = domain.getPropFunction(NameSpace.PFAGENTNOTLOOKTOWARDGOLD);
 		this.pfAgentNotLookTowardFurnace = domain.getPropFunction(NameSpace.PFAGENTNOTLOOKTOWARDFURNACE);
+		// Misc
 		this.pfTrenchInFrontOfAgent = domain.getPropFunction(NameSpace.PFTRENCHINFRONTAGENT);
 		this.pfAgentCanJump = domain.getPropFunction(NameSpace.PFAGENTCANJUMP);
+		this.pfAlwaysTrue = domain.getPropFunction(NameSpace.PFALWAYSTRUE);
 		
 		// Set up goal LE and lava LE for use in reward function
 		PropositionalFunction pfToUse = getPFFromHeader(headerInfo);
@@ -213,19 +222,10 @@ public class MinecraftBehavior {
 		HashMap<LogicalExpression, Double> rewardMap = new HashMap<LogicalExpression, Double>();
 		rewardMap.put(this.currentGoal, 0.0);
 		rewardMap.put(lavaLE, this.lavaReward);
-		this.rewardFunction = new SingleGoalMultipleLERF(rewardMap, -1);
-		
-//		this.rewardFunction = new SingleGoalLERF(currentGoal, 0, -1); 
+		this.rewardFunction = new SingleGoalMultipleLERF(rewardMap, -1); 
 		
 		//Set up terminal function
 		this.terminalFunction = new SingleLETF(currentGoal);
-				
-//		//Set up reward function
-//		this.rewardFunction = new SingleGoalPFRF(pfToUse, 0, -1); 
-//		
-//		//Set up terminal function
-//		this.terminalFunction = new SinglePFTF(pfToUse);
-
 	}
 	
 	private PropositionalFunction getPFFromHeader(HashMap<String, Integer> headerInfo) {
@@ -513,7 +513,7 @@ public class MinecraftBehavior {
 	public static void main(String[] args) {
 //		String mapsPath = System.getProperty("user.dir") + "/maps/";
 		
-		String mapName = "src/minecraft/maps/test/DeepTrenchWorld0.map";
+		String mapName = "src/minecraft/maps/randomMaps/PlaneWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapName);
 		double [] results;
@@ -524,9 +524,9 @@ public class MinecraftBehavior {
 //		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//RTDP
-//		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, false, true);
+//		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, false, false);
 //		results = rtdpPlanner.runPlanner();
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+//		System.out.println("(minecraftBehavior) results [rtdp]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		//BFSRTDP
 //		BFSRTDPPlanner BFSRTDPPlanner = new BFSRTDPPlanner(mcBeh, false, false);
@@ -534,14 +534,14 @@ public class MinecraftBehavior {
 //		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 		
 		//AFFRTDP
-		boolean useOptions = true;
-		boolean useMAs = true;
-		boolean softFlag = true;
+		boolean useOptions = false;
+		boolean useMAs = false;
+		boolean softFlag = false;
 		// Load knowledge base
 		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "learning_rate/lr_0.400.kb", true);
+		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "expert/expert_prim_acts.kb", softFlag);
 
-		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, true, true, affKB);
+		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
 		results = affRTDPPlanner.runPlanner();
 		System.out.println("(minecraftBehavior) results [expertRTDP]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 

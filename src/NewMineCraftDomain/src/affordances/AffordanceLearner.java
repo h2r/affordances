@@ -58,13 +58,14 @@ public class AffordanceLearner {
 	private MinecraftBehavior 		mcb;
 	private int 					numWorldsPerLGD = 5;
 	private boolean					countTotalActions = true;
-	private Double 					lowVarianceThreshold = .004; // Threshold for what is considered high entropy/low information
+	private static final Double 	lowVarianceThreshold = .004; // Threshold for what is considered high entropy/low information
+	private static final double 	meanSquaredErrorThreshold = 0.004;
 	private boolean					useOptions;
 	private boolean					useMAs;
 	private int						totalNumActions;
 	private double 					fractOfStatesToUse;
+
 	private KnowledgeBase			alwaysTrueKB;
-	
 	
 	/**
 	 * An object that is responsible for learning affordances.
@@ -153,10 +154,10 @@ public class AffordanceLearner {
 		System.out.println("Generating maps..." + this.numWorldsPerLGD);
 		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
 		
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 2, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 2, 4);
 		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 1, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 1, 2, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 1, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 1, 2, 4);
 
 		// Not learning or testing with shelves right now
 		//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
@@ -279,6 +280,7 @@ public class AffordanceLearner {
 			// Remove the always true predicate
 			if(((SoftAffordance)aff.getAffordance()).getPreCondition().getClass().equals(AlwaysTruePF.class)) {
 				toRemove.add(aff);
+				continue;
 			}
 			List<Integer> counts = new ArrayList<Integer>(((SoftAffordance)aff.getAffordance()).getActionCounts().values());
 
@@ -292,11 +294,19 @@ public class AffordanceLearner {
 				continue;
 			}
 			
-			// Remove if entropy is close to as high as uniform
+			// Remove if variance is similar to uniform (less than @field this.lowVarianceThreshold)
 			double[] multinomial = normalizeCounts(counts);
 
-			if(isLowInformationAffordance(multinomial)) {
+			if(isCloseToUniformAffordance(multinomial)) {
 				toRemove.add(aff);
+				continue;
+			}
+			
+			// Remove if too similar to the AlwaysTrue affordance distribution (the true action distribution for the world)
+			if(isTooSimilarToTrueActionDistr(aff)) {
+				System.out.println("(AffLearner) toRemove: " + aff);
+				toRemove.add(aff);
+				continue;
 			}
 		}
 		
@@ -330,7 +340,7 @@ public class AffordanceLearner {
 	 * @param multinomial
 	 * @return
 	 */
-	private boolean isLowInformationAffordance(double[] multinomial) {
+	private boolean isCloseToUniformAffordance(double[] multinomial) {
 
 		// If there is a low variance, low information.
 		Double variance = computeVariance(multinomial);
@@ -339,6 +349,47 @@ public class AffordanceLearner {
 			return true;
 		}
 //		System.out.println("(AffordanceLearner) KEEEPING aff with variance: " + variance);
+		return false;
+	}
+	
+	/**
+	 * Compares the given affordance to the always true affordance with the same goal (aff.g)
+	 * and returns true if the mean square error between the two alpha counts are less than a
+	 * particular threshold (defined in @field this.meanSquaredErrorThreshold
+	 * @param aff
+	 * @return
+	 */
+	private boolean isTooSimilarToTrueActionDistr(AffordanceDelegate aff) {
+		// TODO: store always true KB in a way so we don't have to loop over and find goal matching aff
+		AffordanceDelegate alwaysTrueAffToCompare = new AffordanceDelegate(null);
+		for(AffordanceDelegate alwaysTrueAffDG : this.alwaysTrueKB.getAffordances()) {
+			if(((SoftAffordance)alwaysTrueAffDG.getAffordance()).getGoalDescription().equals(((SoftAffordance)aff.getAffordance()).getGoalDescription())) {
+				alwaysTrueAffToCompare = alwaysTrueAffDG;
+			}
+		}
+		
+		
+		List<Integer> affordanceCounts = new ArrayList<Integer>(((SoftAffordance)aff.getAffordance()).getActionCounts().values());
+		double[] affToCompareDistribution = normalizeCounts(affordanceCounts);
+		List<Integer> trueActionDistrCounts = new ArrayList<Integer>(((SoftAffordance)alwaysTrueAffToCompare.getAffordance()).getActionCounts().values());
+		double[] trueActionDistribution = normalizeCounts(trueActionDistrCounts);
+		
+		double sumSquared = 0;
+		double meanSquaredError;
+		
+		for (int i = 0; i < affToCompareDistribution.length; ++i)
+		{
+	        double p1 = affToCompareDistribution[i];
+	        double p2 = trueActionDistribution[i];
+	        double error = p2 - p1;
+	        sumSquared += Math.pow(error,2);
+		}
+		meanSquaredError = (double)sumSquared / affToCompareDistribution.length;
+		
+		if(meanSquaredError < this.meanSquaredErrorThreshold) {
+			System.out.println("(AffordanceLearner) meanSquaredError: " + meanSquaredError);
+			return true;
+		}
 		return false;
 	}
 	
@@ -669,8 +720,8 @@ public class AffordanceLearner {
 //		MinecraftBehavior mb = new MinecraftBehavior(br);
 		
 		boolean addOptions = false;
-		boolean addMAs = true;
-		double fractionOfStateSpaceToLearnWith = 0.1;
+		boolean addMAs = false;
+		double fractionOfStateSpaceToLearnWith = 1.0;
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
 		generateMinecraftKB(mcBeh, 1, false, addOptions, addMAs, fractionOfStateSpaceToLearnWith);
