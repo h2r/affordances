@@ -152,12 +152,13 @@ public class AffordanceLearner {
 		int numLavaBlocks = 1;
 		
 		System.out.println("Generating maps..." + this.numWorldsPerLGD);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
-		
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 2, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 1, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 1, 2, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 3, 3, 5);
+		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneGoldMineWorld(numLavaBlocks), 1, 3, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneGoldMineWorld(numLavaBlocks), 3, 1, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneWallWorld(1, numLavaBlocks), 3, 1, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 3, 3, 4);
 
 		// Not learning or testing with shelves right now
 		//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
@@ -525,7 +526,11 @@ public class AffordanceLearner {
 			kbDir = "learning_rate/";
 		}
 		else {
-			kbName = "learned" + affLearn.numWorldsPerLGD + ".kb";
+			kbName = "learned/learned" + affLearn.numWorldsPerLGD;
+			if(useMAs) kbName += "_ma";
+			else if(useOptions) kbName += "_op";
+			else kbName += "_prim_acts";
+			kbName += ".kb";
 		}
 
 		// Learn
@@ -717,9 +722,9 @@ public class AffordanceLearner {
 		boolean addOptions = false;
 		boolean addMAs = false;
 		double fractionOfStateSpaceToLearnWith = 1.0;
-		
+		final int numWorldsToLearnWith = 20;
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
-		generateMinecraftKB(mcBeh, 1, false, addOptions, addMAs, fractionOfStateSpaceToLearnWith);
+		generateMinecraftKB(mcBeh, numWorldsToLearnWith, false, addOptions, addMAs, fractionOfStateSpaceToLearnWith);
 	}
 	
 }
