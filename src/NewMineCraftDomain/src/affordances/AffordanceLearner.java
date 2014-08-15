@@ -155,7 +155,7 @@ public class AffordanceLearner {
 		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
 		
 //		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 2, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
 //		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 1, 4);
 //		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 1, 2, 4);
 
@@ -304,7 +304,6 @@ public class AffordanceLearner {
 			
 			// Remove if too similar to the AlwaysTrue affordance distribution (the true action distribution for the world)
 			if(isTooSimilarToTrueActionDistr(aff)) {
-				System.out.println("(AffLearner) toRemove: " + aff);
 				toRemove.add(aff);
 				continue;
 			}
@@ -379,15 +378,11 @@ public class AffordanceLearner {
 		
 		for (int i = 0; i < affToCompareDistribution.length; ++i)
 		{
-	        double p1 = affToCompareDistribution[i];
-	        double p2 = trueActionDistribution[i];
-	        double error = p2 - p1;
-	        sumSquared += Math.pow(error,2);
+	        sumSquared += Math.pow(affToCompareDistribution[i] - trueActionDistribution[i],2);
 		}
 		meanSquaredError = (double)sumSquared / affToCompareDistribution.length;
 		
 		if(meanSquaredError < this.meanSquaredErrorThreshold) {
-			System.out.println("(AffordanceLearner) meanSquaredError: " + meanSquaredError);
 			return true;
 		}
 		return false;
