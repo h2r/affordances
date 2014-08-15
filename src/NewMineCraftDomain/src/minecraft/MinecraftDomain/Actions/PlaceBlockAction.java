@@ -30,7 +30,15 @@ public class PlaceBlockAction extends AgentAction {
 	void doAction(State state) {
 		
 		ObjectInstance agent = state.getObjectsOfTrueClass(NameSpace.CLASSAGENT).get(0);
+		int agentVertDir = agent.getDiscValForAttribute(NameSpace.ATVERTDIR);
 		List<ObjectInstance> objectsTwoInfrontAgent = Helpers.getBlocksInfrontOfAgent(2, state);
+		
+		int[] posInFront = Helpers.positionInFrontOfAgent(1, state, true);
+		
+		int[] whereWantToPlace = Helpers.positionInFrontOfAgent(1, state, false);
+		int toPlaceX = whereWantToPlace[0];
+		int toPlaceY = whereWantToPlace[1];
+		int toPlaceZ = whereWantToPlace[2];
 		
 		boolean canPlace = false;
 		
@@ -41,6 +49,13 @@ public class PlaceBlockAction extends AgentAction {
 			}
 		}
 		
+		//Special case where looking 1
+		if (agentVertDir == 1 && Helpers.emptySpaceAt(posInFront[0], posInFront[1], posInFront[2]-1, state)
+				&& !Helpers.emptySpaceAt(posInFront[0], posInFront[1], posInFront[2]-2, state)) {
+			canPlace = true;
+			whereWantToPlace[1] += 1;
+		}
+		
 		int[] positionTwoAway = Helpers.positionInFrontOfAgent(2, state, false);
 		//Or can place against edge of map
 		if (!Helpers.withinMapAt(positionTwoAway[0], positionTwoAway[1], positionTwoAway[2], cols, rows, height)) {
@@ -48,10 +63,8 @@ public class PlaceBlockAction extends AgentAction {
 		}
 		
 		
-		int[] whereWantToPlace = Helpers.positionInFrontOfAgent(1, state, false);
-		int toPlaceX = whereWantToPlace[0];
-		int toPlaceY = whereWantToPlace[1];
-		int toPlaceZ = whereWantToPlace[2];
+
+		
 		
 		//Need empty space to place
 		canPlace = canPlace && Helpers.emptySpaceAt(toPlaceX, toPlaceY, toPlaceZ, state);
@@ -68,6 +81,7 @@ public class PlaceBlockAction extends AgentAction {
 			Random rand = new Random();
 			int index = rand.nextInt(999999);
 			//int numberOfObjects = state.getAllObjects().toArray().length + 1000000;
+			
 			//Update state
 			ObjectInstance toAdd = MinecraftStateGenerator.createIndWall(this.domain, toPlaceX, toPlaceY, toPlaceZ, index);//createNotPickupableDirtBlock(this.domain, toPlaceX, toPlaceY, toPlaceZ, index);
 			state.addObject(toAdd);
