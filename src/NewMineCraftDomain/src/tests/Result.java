@@ -7,7 +7,7 @@ import minecraft.NameSpace;
 
 public class Result {
 
-	private int avgBellmanUpdates;
+	private double avgBellmanUpdates;
 	private double avgAccumulatedReward;
 	private double taskCompletedRate;
 	private double avgCpuTime;
@@ -38,18 +38,14 @@ public class Result {
 			return;
 		}
 		
-		// Bellman Updates
-		int totalBellmanUpdates = 0;
-		for (Double bu : bellmanUpdateTrials) {
-			totalBellmanUpdates = (int) (totalBellmanUpdates + bu);
-		}
-		
-		// Reward
+		double totalBellmanUpdates = 0.0;
 		double totalReward = 0.0;
-		for (int i = 0; i < this.accumulatedRewardTrials.size(); i++) {
+		double totalCpuTime = 0.0;
+		for(int i = 0; i < this.numTrials; i++) {
 			if(this.didFinishTrials.get(i) == 1.0) {
-				assert(this.accumulatedRewardTrials.get(i) == null);
-				totalReward = totalReward + this.accumulatedRewardTrials.get(i);
+				totalBellmanUpdates += this.bellmanUpdateTrials.get(i);
+				totalReward += this.accumulatedRewardTrials.get(i);
+				totalCpuTime += this.cpuTrials.get(i);
 			}
 		}
 		
@@ -58,17 +54,11 @@ public class Result {
 		for (Double df : didFinishTrials) {
 			totalFinishedTrials = totalFinishedTrials + df;
 		}
-		
-		// CPU time
-		double totalCpuTime = 0.0;
-		for (Integer cput : cpuTrials) {
-			totalCpuTime = totalCpuTime + cput;
-		}
-		
-		this.avgBellmanUpdates = totalBellmanUpdates / this.numTrials;
+
+		this.avgBellmanUpdates = totalBellmanUpdates / this.numCompleted;
 		this.avgAccumulatedReward = totalReward / this.numCompleted; // Only average over completed trials;
 		this.taskCompletedRate = totalFinishedTrials / this.numTrials;
-		this.avgCpuTime = (totalCpuTime / this.numTrials) / 1000.0; //convert from milliseconds to seconds
+		this.avgCpuTime = (totalCpuTime / this.numCompleted) / 1000.0; //convert from milliseconds to seconds
 	}
 	
 	/**
@@ -89,26 +79,27 @@ public class Result {
 			return;
 		}
 		
-		// Bellman updates
-		int sumOfAvgDiffBellmanSqd = 0;
-		for (Double bu : bellmanUpdateTrials) {
-			sumOfAvgDiffBellmanSqd += Math.pow((bu - this.avgBellmanUpdates),2);
-		}
-		this.bellmanDeviation = Math.sqrt(((double)sumOfAvgDiffBellmanSqd) / (this.numTrials - 1));
-		
-		// Reward
-		// If only 1 or 0 tasks completed, then deviation is 0, otherwise compute as normal.
+		// Bellman updates and Reward
 		if(this.numCompleted <= 1) {
+			// If only 1 or 0 tasks completed, then deviation is 0, otherwise compute as normal.
 			this.rewardDeviation = 0.0;
+			this.bellmanDeviation = 0.0;
+			this.cpuDeviation = 0.0;
 		}
 		else {
+			double sumOfAvgDiffBellmanSqd = 0.0;
 			double sumOfAvgDiffRewardSqd = 0.0;
-			for (int i = 0; i < this.accumulatedRewardTrials.size(); i++) {
+			double sumOfAvgDiffCPUSqd = 0.0;
+			for (int i = 0; i < this.numTrials; i++) {
 				if(this.didFinishTrials.get(i) == 1.0) {
+					sumOfAvgDiffBellmanSqd += Math.pow((this.bellmanUpdateTrials.get(i) - this.avgBellmanUpdates),2);
 					sumOfAvgDiffRewardSqd += Math.pow((this.accumulatedRewardTrials.get(i) - this.avgAccumulatedReward),2);
+					sumOfAvgDiffCPUSqd += Math.pow(((this.cpuTrials.get(i) / 1000.0) - this.avgCpuTime),2); // Divide by 1000 to convert from ms to seconds
 				}
 			}
+			this.bellmanDeviation = Math.sqrt(((double)sumOfAvgDiffBellmanSqd) / (this.numTrials - 1));
 			this.rewardDeviation = Math.sqrt(((double)sumOfAvgDiffRewardSqd) / (this.numCompleted - 1));
+			this.cpuDeviation = Math.sqrt(((double)sumOfAvgDiffCPUSqd) / (this.numTrials - 1));
 		}
 		
 		// Task completion rate
@@ -117,32 +108,29 @@ public class Result {
 			sumOfAvgDiffCompeletedSqd = Math.pow((df - this.taskCompletedRate),2);
 		}
 		this.completedDeviation = Math.sqrt(((double)sumOfAvgDiffCompeletedSqd) / (this.numTrials - 1));
-		
-		// CPU time
-		double sumOfAvgDiffCPUSqd = 0.0;
-		for (Integer cput : cpuTrials) {
-			sumOfAvgDiffCPUSqd = Math.pow(((cput / 1000.0) - this.avgCpuTime),2); // Divide by 1000 to convert from ms to seconds
-		}
-		this.cpuDeviation = Math.sqrt(((double)sumOfAvgDiffCPUSqd) / (this.numTrials - 1));
 	}
 	
 	/**
 	 * Adds a single trial to the result data and averages the totals.
-	 * @param trial: a double list containing {bellmanUpdates, reward, completed}.
+	 * @param trial: a double list containing {bellmanUpdates, reward, completed, cpuTime}.
 	 */
 	public void addTrial(double[] trial) {
-		this.bellmanUpdateTrials.add(trial[0]);
 		
+		// Only count bellmanUpdates, cpu, and reward if we succeeded on the map.
 		if(trial[2] == 1.0) {
+			this.bellmanUpdateTrials.add(trial[0]);
 			this.accumulatedRewardTrials.add(trial[1]);
+			this.cpuTrials.add((int) trial[3]);
 			++this.numCompleted;
 		}
 		else{
 			this.accumulatedRewardTrials.add(null);
+			this.cpuTrials.add(null);
+			this.bellmanUpdateTrials.add(null);
 		}
 		
 		this.didFinishTrials.add(trial[2]);
-		this.cpuTrials.add((int) trial[3]);
+		
 		++this.numTrials;
 		computeAverages();
 		computeDeviations();
@@ -167,7 +155,7 @@ public class Result {
 	
 	// --- ACCESSORS ---
 	
-	public int getAvgBellmanUpdates() {
+	public double getAvgBellmanUpdates() {
 		return this.avgBellmanUpdates;
 	}
 	
@@ -211,16 +199,18 @@ public class Result {
 		String completed = "Completed: ";
 		String cpu = "CPU: ";
 		for(int i = 0; i < this.numTrials; i++) {
-			bellman += String.format("%.2f", this.bellmanUpdateTrials.get(i)) + ",";
+
 			
 			completed += String.format("%.2f", this.didFinishTrials.get(i)) + ",";
-			cpu += (this.cpuTrials.get(i) / 1000.0) + "s,";
-			
 			if(this.didFinishTrials.get(i) == 1.0) {
 				reward += String.format("%.2f", this.accumulatedRewardTrials.get(i)) + ",";
+				bellman += String.format("%.2f", this.bellmanUpdateTrials.get(i)) + ",";
+				cpu += (this.cpuTrials.get(i) / 1000.0) + "s,";
 			}
 			else {
 				reward += "null,";
+				bellman += "null,";
+				cpu += "null,";
 			}
 		}
 		

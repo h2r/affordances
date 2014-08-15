@@ -20,10 +20,11 @@ public class BlockInFrontOfAgentPF extends PropositionalFunction{
 	String objectStringToCheckAgainst; 
 	
 	/**
+	 * Checks to see if the given @param objectName is either at 
 	 * @param name
 	 * @param domain
 	 * @param parameterClasses
-	 * @param object
+	 * @param objectName
 	 */
 	public BlockInFrontOfAgentPF(String name, Domain domain, String[] parameterClasses, String objectName) {
 		super(name, domain, parameterClasses);
@@ -47,15 +48,6 @@ public class BlockInFrontOfAgentPF extends PropositionalFunction{
 		// Feet
 		List<ObjectInstance> objectsInFrontFeet = Helpers.objectsAt(positionInFront[0], positionInFront[1], positionInFront[2] - 1, state);
 		for(ObjectInstance block: objectsInFrontFeet) {
-			String blockClassName = block.getTrueClassName();
-			if (this.objectStringToCheckAgainst.equals(blockClassName)) {
-				return true;
-			}
-		}
-		
-		// Below feet
-		List<ObjectInstance> objectsInFrontBelow = Helpers.objectsAt(positionInFront[0], positionInFront[1], positionInFront[2] - 2, state);
-		for(ObjectInstance block: objectsInFrontBelow) {
 			String blockClassName = block.getTrueClassName();
 			if (this.objectStringToCheckAgainst.equals(blockClassName)) {
 				return true;

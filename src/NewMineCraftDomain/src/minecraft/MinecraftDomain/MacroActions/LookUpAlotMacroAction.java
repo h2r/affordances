@@ -28,7 +28,7 @@ public class LookUpAlotMacroAction extends MinecraftMacroAction {
 			double gamma, StateHashFactory hashFactory, Domain domain,
 			State state, int numLookDowns) {
 		
-		super(name + numLookDowns, rf, gamma, hashFactory, domain, state);
+		super(name, rf, gamma, hashFactory, domain, state);
 		this.numLookUps = numLookDowns;
 		if (this.numLookUps < 1) throw new IllegalArgumentException();
 	}

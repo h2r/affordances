@@ -23,6 +23,7 @@ import minecraft.MinecraftDomain.PropositionalFunctions.AgentCanWalkPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentLookingAtBlockPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentLookingInDirectionOfBlock;
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentNotLookingInDirectionOfBlock;
+import minecraft.MinecraftDomain.PropositionalFunctions.AlwaysTruePF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AtGoalPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.HurdleInFrontOfAgent;
 import minecraft.MinecraftDomain.PropositionalFunctions.BlockInFrontOfAgentPF;
@@ -271,7 +272,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new BlockAtPF(NameSpace.PFBLOCKAT, domain, new String[]{}, 0, 0, 0);
 		new AgentHasAtLeastXGoldOrePF(NameSpace.PFATLEASTXGOLDORE, domain, new String[]{NameSpace.CLASSAGENT}, 1);
 		new AgentHasAtLeastXGoldBarPF(NameSpace.PFATLEASTXGOLDBAR, domain, new String[]{NameSpace.CLASSAGENT}, 1);
-		new BlockInFrontOfAgentPF(NameSpace.PFBLOCKINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOAL);
+		new BlockInFrontOfAgentPF(NameSpace.PFINDBLOCKINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSINDWALL);
 		new AgentWalkIntoEndOfMapPF(NameSpace.PFENDOFMAPINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new EmptyCellInFrontOfAgentPF(NameSpace.PFEMPTYCELLINFRONT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new AgentInMidAirPF(NameSpace.PFAGENTINMIDAIR, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
@@ -287,6 +288,7 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		
 		new AgentCanJumpPF(NameSpace.PFAGENTCANJUMP, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new TrenchInFrontOfAgent(NameSpace.PFTRENCHINFRONTAGENT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
+		new AlwaysTruePF(NameSpace.PFALWAYSTRUE, domain, new String[]{NameSpace.CLASSAGENT});
 		
 		// Dave's jenky hard coded prop funcs
 //		new AgentAdjacentToTrenchPF(NameSpace.PFAGENTADJTRENCH, domain, new String[]{NameSpace.CLASSAGENT, NameSpace.CLASSTRENCH});
@@ -294,12 +296,12 @@ public class MinecraftDomainGenerator implements DomainGenerator{
 		new EmptyCellInAgentWalkDir(NameSpace.PFEMPTYCELLINWALK, domain, new String[]{NameSpace.CLASSAGENT});
 		new HurdleInFrontOfAgent(NameSpace.PFHURDLEINFRONTAGENT, domain, new String[]{NameSpace.CLASSAGENT}, rows, cols, height);
 		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKLAVA, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSLAVA);
-		new AgentLookingAtBlockPF(NameSpace.PFGOLDFRONTAGENTONE, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOLDBLOCK);
-		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKFURNACE, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSFURNACE);
-		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKWALL, domain,  new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSINDWALL);
-		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKBLOCK, domain,  new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSDIRTBLOCKNOTPICKUPABLE);
+		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKGOLD, domain, new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSGOLDBLOCK);
+		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKINDBLOCK, domain,  new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSINDWALL);
+		new AgentLookingAtBlockPF(NameSpace.PFAGENTLOOKDESTBLOCK, domain,  new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSDIRTBLOCKNOTPICKUPABLE);
 		new BlockInFrontOfAgentPF(NameSpace.PFLAVAFRONTAGENT, domain,  new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSLAVA);
-		new AgentLookingAtWallPF(NameSpace.PFWALLINFRONT, domain, new String[]{NameSpace.CLASSAGENT});
+		new BlockInFrontOfAgentPF(NameSpace.PFFURNACEINFRONT, domain,  new String[]{NameSpace.CLASSAGENT}, NameSpace.CLASSFURNACE);
+		new AgentLookingAtWallPF(NameSpace.PFAGENTLOOKWALLOBJ, domain, new String[]{NameSpace.CLASSAGENT});
 		return domain;
 	}
 	

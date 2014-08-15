@@ -105,23 +105,22 @@ public class NameSpace {
 	public static final String				PFBLOCKAT = "BlockAt";
 	public static final String				PFATLEASTXGOLDORE = "AgentHasXGoldOre";
 	public static final String				PFATLEASTXGOLDBAR = "AgentHasXGoldBlock";
-	public static final String				PFBLOCKINFRONT = "BlockFrontOfAgent";
+	public static final String				PFINDBLOCKINFRONT = "IndBlockFrontOfAgent";
 	public static final String				PFENDOFMAPINFRONT = "EndMapFrontOfAgent";
 	public static final String				PFEMPTYCELLINFRONT = "TrenchFrontOfAgent";
 	public static final String				PFAGENTINMIDAIR = "AgentInAir";
 	public static final String				PFAGENTCANWALK = "AgentCanWalk";
 	public static final String				PFEMPTYCELLINWALK = "EmptyCellInWalk";
 	public static final String				PFTOWER = "TowerInWorld";
-	public static final String				PFGOLDFRONTAGENTONE = "GoldFrontOfAgent1";
-	public static final String				PFGOLDFRONTAGENTTWO = "GoldFrontOfAgent2";
+	public static final String				PFAGENTLOOKGOLD = "AgentLookingAtGold";
 	public static final String				PFFURNACEINFRONT = "FurnaceInFront";
-	public static final String				PFWALLINFRONT = "WallInFront";
+	public static final String				PFAGENTLOOKWALLOBJ = "AgentLookingAtWallObject";
 	public static final String				PFHURDLEINFRONTAGENT = "HurdleInFrontOfAgent";
 	public static final String				PFAGENTINLAVA = "AgentInLava";
 	public static final String				PFLAVAFRONTAGENT = "LavaFrontOfAgent";
 	public static final String				PFAGENTLOOKLAVA = "AgentLookAtLava";
-	public static final String				PFAGENTLOOKWALL = "AgentLookAtWall";
-	public static final String				PFAGENTLOOKBLOCK = "AgentLookAtBlock";
+	public static final String				PFAGENTLOOKINDBLOCK = "AgentLookAtIndBlock";
+	public static final String				PFAGENTLOOKDESTBLOCK = "AgentLookAtDestBlock";
 	public static final String				PFAGENTLOOKFURNACE = "AgentLookAtFurnace";
 	public static final String				PFAGENTLOOKTOWARDGOAL = "AgentLookingInDirectionOfGoal";
 	public static final String				PFAGENTLOOKTOWARDGOLD = "AgentLookingInDirectionOfGold";
@@ -131,7 +130,7 @@ public class NameSpace {
 	public static final String				PFAGENTNOTLOOKTOWARDFURNACE = "AgentNotLookingInDirectionOfFurnace";
 	public static final String				PFTRENCHINFRONTAGENT = "TrenchIsInFrontOfAgent";
 	public static final String				PFAGENTCANJUMP = "AgentCanJump";
-
+	public static final String 				PFALWAYSTRUE = "True";
 
 	//-----------PLANNERS-------------
 	public static final String				RTDP = "RTDP";
@@ -151,6 +150,7 @@ public class NameSpace {
 	
 	//-------------MISC-------------
 	public static final String				DOUBLEFORMAT = "%.3f";
+
 	//-------------ENUMS-------------
 	public enum RotDirection {
 		NORTH(0), EAST(1), SOUTH(2), WEST(3);

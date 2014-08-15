@@ -1,4 +1,2 @@
-Done with vanilla/expert on map: [van,exp, numStates] DeepTrenchWorld0.map [7178,0, numStates: 336]
-(MinecraftTestPipeline) USING KB: learning_rate/lr_0.250.kbDone with learned on map: DeepTrenchWorld0.map, with kb: learning_rate/lr_0.250.kb
-(MinecraftTestPipeline) USING KB: learning_rate/lr_0.500.kbDone with learned on map: DeepTrenchWorld0.map, with kb: learning_rate/lr_0.500.kb
-(MinecraftTestPipeline) USING KB: learning_rate/lr_0.750.kbDone with learned on map: DeepTrenchWorld0.map, with kb: learning_rate/lr_0.750.kb
+Done with vanilla/expert on map: [van,exp, numStates] DeepTrenchWorld0.map [0,0, numStates: -1]
+(MinecraftTestPipeline) USING KB: lr_0.100.kbDone with learned on map: DeepTrenchWorld0.map, with kb: lr_0.100.kb

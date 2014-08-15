@@ -22,6 +22,7 @@ import minecraft.NameSpace;
 import minecraft.MinecraftBehavior.MinecraftBehavior;
 import minecraft.MinecraftBehavior.Planners.MinecraftPlanner;
 import minecraft.MinecraftBehavior.Planners.VIPlanner;
+import minecraft.MinecraftDomain.PropositionalFunctions.AlwaysTruePF;
 import minecraft.WorldGenerator.LearningWorldGenerator;
 import minecraft.WorldGenerator.MapFileGenerator;
 import minecraft.WorldGenerator.WorldTypes.DeepTrenchWorld;
@@ -61,8 +62,9 @@ public class AffordanceLearner {
 	private boolean					useOptions;
 	private boolean					useMAs;
 	private int						totalNumActions;
-	private double fractOfStatesToUse;
-//	private OOMDPPlanner planner;
+	private double 					fractOfStatesToUse;
+	private KnowledgeBase			alwaysTrueKB;
+	
 	
 	/**
 	 * An object that is responsible for learning affordances.
@@ -75,7 +77,7 @@ public class AffordanceLearner {
 	 * @param useMAs: a boolean indicating if we should learn with macroactions
 	 * @param fractOfStatesToUse: the fraction of the state space to learn with
 	 */
-	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorlds, boolean useOptions, boolean useMAs, double fractOfStatesToUse) {
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorlds, boolean useOptions, boolean useMAs, double fractOfStatesToUse, List<AbstractGroundedAction> allActions) {
 		this.lgds = lgds;
 		this.mcb = mcb;
 		this.affordanceKB = kb;
@@ -84,6 +86,19 @@ public class AffordanceLearner {
 		this.useMAs = useMAs;
 		this.fractOfStatesToUse = fractOfStatesToUse;
 		this.numWorldsPerLGD = numWorlds;
+		
+		setupAlwaysTrueKB(allActions);
+	}
+	
+	private void setupAlwaysTrueKB(List<AbstractGroundedAction> allActions) {
+		PropositionalFunction alwaysTruePF = new AlwaysTruePF(NameSpace.PFALWAYSTRUE, mcb.getDomain(), new String[]{NameSpace.CLASSAGENT});
+		LogicalExpression alwaysTrueLE = pfAtomFromPropFunc(alwaysTruePF); // For use in removing affordances that look too uniform
+		this.alwaysTrueKB = new KnowledgeBase();
+		for(LogicalExpression goal : this.lgds.values()) {
+			Affordance aff = new SoftAffordance(alwaysTrueLE, goal, allActions);
+			AffordanceDelegate affD = new AffordanceDelegate(aff);
+			this.alwaysTrueKB.add(affD);
+		}
 	}
 	
 	/**
@@ -138,11 +153,13 @@ public class AffordanceLearner {
 		System.out.println("Generating maps..." + this.numWorldsPerLGD);
 		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 1, 3, 5);
 		
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 3, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 1, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 2, 2, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 2, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 1, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 1, 2, 4);
+
+		// Not learning or testing with shelves right now
+		//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
 		
 	}
 	
@@ -241,6 +258,13 @@ public class AffordanceLearner {
 					}
 				}
 			}
+			if(this.countTotalActions) {
+				for(AffordanceDelegate alwaysTrueAffD : this.alwaysTrueKB.getAffordances()) {
+					if(alwaysTrueAffD.primeAndCheckIfActiveInState(st, affordanceKB.getAffordancesController().currentGoal)) {
+						((SoftAffordance)alwaysTrueAffD.getAffordance()).updateActionCount(ga);
+					}
+				}
+			}
 		}
 //		System.out.println("(AffordanceLearner) [fract] numStatesCounted, totalStates: [" + this.fractOfStatesToUse + "] " + numStatesCounted + "," + numStates);
 	}
@@ -252,6 +276,10 @@ public class AffordanceLearner {
 		List<AffordanceDelegate> toRemove = new ArrayList<AffordanceDelegate>();
 		// Get counts for each affordance and queue zero count affs for removal
 		for(AffordanceDelegate aff : affordanceKB.getAffordances()) {
+			// Remove the always true predicate
+			if(((SoftAffordance)aff.getAffordance()).getPreCondition().getClass().equals(AlwaysTruePF.class)) {
+				toRemove.add(aff);
+			}
 			List<Integer> counts = new ArrayList<Integer>(((SoftAffordance)aff.getAffordance()).getActionCounts().values());
 
 			// Remove if alpha counts are all 0
@@ -442,8 +470,8 @@ public class AffordanceLearner {
 		
 		// Initialize Learner
 		boolean countTotalActions = true;
-		AffordanceLearner affLearn = new AffordanceLearner(mcBeh, affKnowledgeBase, lgds, countTotalActions, numWorlds, useOptions, useMAs, fracOfStateSpace);
-		
+		AffordanceLearner affLearn = new AffordanceLearner(mcBeh, affKnowledgeBase, lgds, countTotalActions, numWorlds, useOptions, useMAs, fracOfStateSpace, allGroundedActions);
+
 		String kbName;
 		String kbDir = "";
 		if(learningRate) {
@@ -453,7 +481,7 @@ public class AffordanceLearner {
 		else {
 			kbName = "learned" + affLearn.numWorldsPerLGD + ".kb";
 		}
-		
+
 		// Learn
 		affLearn.learn(true);
 		affKnowledgeBase.save(kbDir + kbName);
@@ -503,14 +531,10 @@ public class AffordanceLearner {
 		PropositionalFunction hasGoldBlock = mcBeh.pfAgentHasAtLeastXGoldBar;
 		LogicalExpression goldBlockLE = pfAtomFromPropFunc(hasGoldBlock);
 		
-		PropositionalFunction towerBuilt = mcBeh.pfTower;
-		LogicalExpression towerBuiltLE = pfAtomFromPropFunc(towerBuilt);
-		
 		// Add goals
 		lgds.put(0,atGoalLE);
 		lgds.put(1,goldOreLE);
 		lgds.put(2,goldBlockLE);
-		lgds.put(3,towerBuiltLE);
 		
 		return lgds;
 	}
@@ -532,52 +556,70 @@ public class AffordanceLearner {
 		LogicalExpression trenchLE = pfAtomFromPropFunc(trenchInFrontOf);
 		
 		// Area in front of agent is clear PFAtom
-		PropositionalFunction forwardWalkable = mcBeh.pfAgentLookForwardAndWalkable;
-		LogicalExpression forwardWalkableLE = pfAtomFromPropFunc(forwardWalkable);
+		PropositionalFunction agentCanWalk = mcBeh.pfAgentCanWalk;
+		LogicalExpression agentCanWAlkLE = pfAtomFromPropFunc(agentCanWalk);
 
 		// Gold is in front of the agent
 		PropositionalFunction goldFrontAgent = mcBeh.pfGoldBlockFrontOfAgent;
 		LogicalExpression goldFrontAgentLE = pfAtomFromPropFunc(goldFrontAgent);
 		
+		// Wall (dest) front of agent
 		PropositionalFunction wallFrontAgent = mcBeh.pfWallInFrontOfAgent;
 		LogicalExpression wallFrontAgentLE = pfAtomFromPropFunc(wallFrontAgent);
 		
-		PropositionalFunction feetBlockHeadClear = mcBeh.pfHurdleInFrontOfAgent;
-		LogicalExpression feetBlockHeadClearLE = pfAtomFromPropFunc(feetBlockHeadClear);
+		// Furnace front of agent
+		PropositionalFunction furnaceFrontAgent = mcBeh.pfFurnaceInFrontOfAgent;
+		LogicalExpression furnaceFrontAgentLE = pfAtomFromPropFunc(furnaceFrontAgent);
 		
+		// Hurdle front of agent
+		PropositionalFunction hurdleFrontAgent = mcBeh.pfHurdleInFrontOfAgent;
+		LogicalExpression hurdleFrontAgentLE = pfAtomFromPropFunc(hurdleFrontAgent);
+		
+		// Lava front of agent
 		PropositionalFunction lavaFrontAgent = mcBeh.pfLavaFrontAgent;
 		LogicalExpression lavaFrontAgentLE = pfAtomFromPropFunc(lavaFrontAgent);
 		
+		// Agent look at lava
 		PropositionalFunction agentLookLava = mcBeh.pfAgentLookLava;
 		LogicalExpression agentLookLavaLE = pfAtomFromPropFunc(agentLookLava);
 		
-		PropositionalFunction agentLookBlock = mcBeh.pfAgentLookBlock;
-		LogicalExpression agentLookBlockLE = pfAtomFromPropFunc(agentLookBlock);
+		// Agent look at (dest) block
+		PropositionalFunction agentLookDestWall = mcBeh.pfAgentLookDestWall;
+		LogicalExpression agentLookDestWallLE = pfAtomFromPropFunc(agentLookDestWall);
 		
-		PropositionalFunction agentLookWall = mcBeh.pfAgentLookWall;
-		LogicalExpression agentLookWallLE = pfAtomFromPropFunc(agentLookWall);
+		// Agent look at (ind) wall
+		PropositionalFunction agentLookIndWall = mcBeh.pfAgentLookIndWall;
+		LogicalExpression agentLookIndWallLE = pfAtomFromPropFunc(agentLookIndWall);
 		
+		// Agent in lava
 		PropositionalFunction agentInLava = mcBeh.pfAgentInLava;
 		LogicalExpression agentInLavaLE = pfAtomFromPropFunc(agentInLava);
 		
+		// Looking toward goal
 		PropositionalFunction agentLookTowardGoal = mcBeh.pfAgentLookTowardGoal;
 		LogicalExpression agentLookTowardGoalLE = pfAtomFromPropFunc(agentLookTowardGoal);
 		
+		// Looking toward gold
 		PropositionalFunction agentLookTowardGold = mcBeh.pfAgentLookTowardGold;
 		LogicalExpression agentLookTowardGoldLE = pfAtomFromPropFunc(agentLookTowardGold);
 		
+		// Looking toward furnace
 		PropositionalFunction agentLookTowardFurnace = mcBeh.pfAgentLookTowardFurnace;
 		LogicalExpression agentLookTowardFurnaceLE = pfAtomFromPropFunc(agentLookTowardFurnace);
 		
+		// Not looking toward goal
 		PropositionalFunction notAgentLookTowardGoal = mcBeh.pfAgentNotLookTowardGoal;
 		LogicalExpression notAgentLookTowardGoalLE = pfAtomFromPropFunc(notAgentLookTowardGoal);
 		
+		// Not looking toward gold
 		PropositionalFunction notAgentLookTowardGold = mcBeh.pfAgentNotLookTowardGold;
 		LogicalExpression notAgentLookTowardGoldLE = pfAtomFromPropFunc(notAgentLookTowardGold);
 		
+		// Not looking toward furnace
 		PropositionalFunction notAgentLookTowardFurnace = mcBeh.pfAgentNotLookTowardFurnace;
 		LogicalExpression notAgentLookTowardFurnaceLE = pfAtomFromPropFunc(notAgentLookTowardFurnace);
 		
+		// Agent can jump
 		PropositionalFunction agentCanJump = mcBeh.pfAgentCanJump;
 		LogicalExpression agentCanJumpLE = pfAtomFromPropFunc(agentCanJump);
 		
@@ -585,14 +627,14 @@ public class AffordanceLearner {
 		predicates.add(agentInAirLE);
 		predicates.add(endOfMapLE);
 		predicates.add(trenchLE);
-		predicates.add(forwardWalkableLE);
+		predicates.add(agentCanWAlkLE);
 		predicates.add(goldFrontAgentLE);
 		predicates.add(wallFrontAgentLE);
-		predicates.add(feetBlockHeadClearLE);
+		predicates.add(hurdleFrontAgentLE);
 		predicates.add(lavaFrontAgentLE);
 		predicates.add(agentLookLavaLE);
-		predicates.add(agentLookBlockLE);
-		predicates.add(agentLookWallLE);
+		predicates.add(agentLookDestWallLE);
+		predicates.add(agentLookIndWallLE);
 		predicates.add(agentInLavaLE);
 		predicates.add(agentLookTowardGoalLE);
 		predicates.add(agentLookTowardGoldLE);
@@ -601,6 +643,7 @@ public class AffordanceLearner {
 		predicates.add(notAgentLookTowardGoldLE);
 		predicates.add(notAgentLookTowardFurnaceLE);
 		predicates.add(agentCanJumpLE);
+		predicates.add(furnaceFrontAgentLE);
 		
 		return predicates;
 	}
@@ -625,12 +668,12 @@ public class AffordanceLearner {
 		
 //		MinecraftBehavior mb = new MinecraftBehavior(br);
 		
-		boolean addOptions = true;
+		boolean addOptions = false;
 		boolean addMAs = true;
 		double fractionOfStateSpaceToLearnWith = 0.1;
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
-		generateMinecraftKB(mcBeh, 3, false, addOptions, addMAs, fractionOfStateSpaceToLearnWith);
+		generateMinecraftKB(mcBeh, 1, false, addOptions, addMAs, fractionOfStateSpaceToLearnWith);
 	}
 	
 }
