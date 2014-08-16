@@ -63,7 +63,7 @@ robotic cooking assistant domain.
 \section{Introduction}
 \label{sec:introduction}
 
-Robots operating in unstructured, stochastic environments face a highly difficult planning problem. that not only involves a very large state space but also requires grappling with stochasticity\citep{bollini12, knepper13}.
+Robots operating in unstructured, stochastic environments face a highly difficult planning problem~\citep{bollini12, knepper13}.
 %For example, cooking~\citep{bollini12} or assembling objects~\citep{knepper13} . 
 \enote{I don't think it's actually necessary to cite examples of tasks.}  Robotics planning problems are classically formalized as a stochastic sequential
 decision making problem in which the agent must find a mapping from
@@ -80,31 +80,32 @@ To address this state-action space explosion, prior work has explored adding
 knowledge to the planner,
 such as options~\cite{sutton99} and
 macroactions~\cite{Botea:2005kx,Newton:2005vn}. However, while these methods allow the agent to search more deeply in the state
-space they add knowledge in the form of additional high-level actions which {\em increases} the size of the state-action space.  The resulting augmented space is even larger, which can have
+space they add high-level actions to the planner which {\em increase} the size of the state-action space.  The resulting augmented space is even larger, which can have
 the paradoxical effect of increasing the search time for a good
 policy~\cite{Jong:2008zr}.  In deterministic domains, hierarchical
 task networks (HTNs) add knowledge that greatly increases planning
 speed~\citep{Nau:1999:SSH:1624312.1624357}, but HTNs do not apply
 to nondeterministic domains\dnote{Need a citation for this?} and
-learning this knowledge remains difficult.\dnote{And this?}
+learning this knowledge remains difficult.\dnote{And this?} \enote{I don't think we need to mention HTNs in the intro since they solve a very different problem.}
 
 % Other approaches fall short of learning useful, transferable
 % knowledge, either due to complexity or lack of generalizability.
 
 To address these issues, we propose augmenting a Markov Decision
-Process (MDP) with {\em affordances} \cite{gibson77}.  An
-affordance specifies which actions an agent should consider in
-different states in order to achieve its goal.  By limiting the agent's action set, affordances enable an agent to focus on aspects of the environment that
-are most relevant toward solving its current goassl and avoid
+Process (MDP) with a formalization of {\em affordances}. In its most abstract form, an
+affordance simply specifies which actions an agent should consider in
+different states in order to achieve its goal\cite{gibson77}. By applying formalized affordances to planning, we are able to limit the agent's action set, enabling an agent to focus on aspects of the environment that
+are most relevant toward solving its current goal and avoid
 exploration of irrelevant parts of the state-action space, which leads
-to dramatic speedups in planning. Moreover, affordances generalize across
+to dramatic speedups in planning. Moreover, our formalization allows generalization across
 specific tasks, so a single agent can autonomously learn affordances
-through experience, lessening \enote{with expert isn't there no dependence? Or is it that supplying the PFs counts as expert knowledge?}the agent's dependence on expert
+through experience, minimizing the agent's dependence on expert
 knowledge. Affordances are not specific to a particular reward
 function \enote{aren't they though -- like if we suddenly made lava good wouldn't that mess up our agentLookingAtLava affordance?} or state space, and provide the agent with transferable
 knowledge that is effective in a wide variety of problems. We call any
-planner that uses affordances an {\it affordance-aware} planner \enote{I feel like this goes without saying and can probably be cut.}.  We
-demonstrate that affordances provide dramatic speedups for a variety
+planner that uses affordances an {\it affordance-aware} planner \enote{I feel like this goes without saying and can probably be cut.}.  
+
+Our experiments demonstrate that affordances provide dramatic speedups for a variety
 of planning tasks compared to baselines, may be learned from
 experience, and can transfer across different tasks.  We conduct experiments
 in the game Minecraft, as well as on a robotic cooking assistant. 
@@ -183,9 +184,8 @@ in the game Minecraft, as well as on a robotic cooking assistant.
 \section{Affordances}
 \label{sec:affordances}
 
-Our definition of affordances builds on the Object-Oriented Markov
-Decision Process (OO-MDP)~\citep{diuk08}.  OO-MDPs are an extension of
-the classic Markov Decision Process (MDP).  A classic MDP is a
+\subsection{Affordances and OO-MDPs}
+A classic MDP is a
 five-tuple: $\langle \mathcal{S}, \mathcal{A}, \mathcal{T},
 \mathcal{R}, \gamma \rangle$, where $\mathcal{S}$ is a state-space;
 $\mathcal{A}$ is the agent's set of actions; $\mathcal{T}$ denotes
@@ -196,16 +196,15 @@ reward received by the agent for applying action $a$ in state $s$ and
 and transitioning to state $s'$; and $\gamma \in [0, 1)$ is a discount
   factor that defines how much the agent prefers immediate rewards
   over distant rewards (the agent more greatly prefers to maximize
-  more immediate rewards as $\gamma$ decreases).
+  more immediate rewards as $\gamma$ decreases). A classic way to provide a factored representation of an MDP state is to represent
+each MDP state as a single feature vector. 
 
-A classic way to provide a factored representation of an MDP state is to represent
-each MDP state as a single feature vector. By contrast, an OO-MDP represents the state space as a collection of objects,
+An Object-Oriented Markov
+Decision Process (OO-MDP)~\citep{diuk08} can be used to represent an MDP. Unlike the vectorized state of an MDP, an OO-MDP state is a collection of objects,
 $O = \{o_1, \ldots, o_o \}$.  Each object $o_i$ belongs to a
-class $c_j \in  \{c_1, \ldots, c_c\}$. Every class has a set of attributes
-$Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of which has a domain $Dom(c.a)$ of possible values.
-Upon instantiation of an object class, its attributes are given a state $o.state$
-(an assignment of values to its attributes).  The underlying MDP state is the set
-of all the object states: $s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$. 
+class, $c_j \in  \{c_1, \ldots, c_c\}$. Every class has a set of attributes,
+$Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of which has a domain, $Dom(c.a)$, of possible values. The collection of attribute values of a given object is termed that object's state, $o.state$. A vectorized MDP state rcan be equivalently understood as the set
+of all the object states, $s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$, in an OO-MDP. 
 
 %% An OO-MDP lies in the ability to
 %% formulate predicates over classes of objects. That is, the OO-MDP
@@ -226,63 +225,71 @@ of all the object states: $s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$.
 %% of Robots that utilize ROS. Our group is also working to deploy affordances as a
 %% means of knowledge representation and reasoning for collaborative cooking with ReThink's Baxter.
 
-We define an affordance, $\Delta$,
+
+\enote{we need to fix this formalism as per what we talked about Dave -- i.e. it's an object or a mapping...}
+ We define an affordance, $\Delta$,
 as the mapping $\langle p,g\rangle \longmapsto \mathcal{A}'$,
 where:
 \begin{itemize}
-\item[] $\mathcal{A}' \subseteq \mathcal{A}$, is a subset of the action space, representing the relevant {\it action-possibilities} of the environment.
-\item[] $p$ is a predicate on states, $s \longrightarrow \{$0$, 1\}$
-  representing the {\em precondition} for the affordance.
-\item[] $g$ is an ungrounded predicate on states representing a {\it lifted goal description}.
+\item $p$ is a predicate on states, $s \longrightarrow \{$0$, 1\}$
+  representing the {\em precondition} for the affordance. 
+\item $g$ is an ungrounded predicate on states representing a {\it lifted goal description}.
+\item $\mathcal{A}' \subseteq \mathcal{A}$, is a subset of the action space, representing the relevant {\it action-possibilities} of the environment.
 \end{itemize}
-The precondition and lifted goal description refer to predicates that are defined in the OO-MDP definition.
+The precondition and lifted goal description \enote{Can we maybe just call this a goal type?} refer to predicates that are defined in the OO-MDP definition.
 An affordance is {\it activated} when its predicate is true in a given state and its lifted goal description $g$ matches the agent's current goal. 
-Using OO-MDP predicates for affordance preconditions and goal descriptions 
-allows for state space independence. Thus, a planner equipped with
+
+Our definition of affordances builds on OO-MDPs. Using OO-MDP predicates for affordance preconditions and goal descriptions 
+allows for state space independence \enote{I think a sentence explaining/emphasizing this would be good since it's not entirely obvious at a first pass why OO-MDPs give you state-space independence}. \enote{also here's state space independence but what about reward independence?} Thus, a planner equipped with
 affordances can be used in any number of different environments. For instance, the affordances defined for 
 navigation problems can be used in any task regardless of the spatial size of the world, 
 number of objects in the world, and specific goal the agent is trying to satisfy.
 
 \subsection{Affordance-Aware Planning}
-We call any planner that
-uses affordances an {\it affordance-aware} planner. For a given state, 
-our goal is to solve for the probability of getting the optimal set of actions, $\mathcal{A}^*$, and place a Dirichlet-multinomial
-prior on the action selection for a given state to maximize this probability.
-
-This ensures that in the limit, it is possible to apply each action in each state, retaining
-any optimality guarantees of the planner. $\mathcal{A}^*$ represents
-the set of optimal actions for a given state.
-\begin{equation}
-\text{Pr}(\mathcal{A}^* \mid s, \Delta_1 \dots \Delta_K)
-\end{equation}
-We let each affordance contribute a set $\mathcal{A}' \subseteq A^*$ in each state:
-\begin{align}
-\text{Pr}(\mathcal{A}'_1 \cup \ldots \cup \mathcal{A}'_K \mid s, \Delta_1 \dots \Delta_K)
-\end{align}
-We approximate this term assuming the sets $\mathcal{A}_i'$ are independent:
-\begin{align}
-\sum_i^K \text{Pr}(\mathcal{A}'_i \mid s, \Delta_i)
-\end{align}
-
-Given a set of $K$ domain affordances $Z = \{\Delta_1, ..., \Delta_K\}$ and a current 
-goal condition defined as an OO-MDP predicate $G$, the action set that a 
-planning algorithm considers is pruned on a state by state basis as shown in 
-Algorithm~\ref{alg:prune_actions}. Each 
-activated affordance contributes a suggested action set, determined by Algorithm \ref{alg:get_actions}. 
-
+Affordances may be used to restrict the action set of any planner in a particular state to a subset of the action set. Namely,  the union of all action sets provided by all active affordances in any particular state, $\mathcal{A}_{\Delta}$, is a subset of the full action set and may be used instead of the full action set (Algorithm \ref{alg:get_actions}r):  $(\mathcal{A}_{\Delta} = \cup_{\Delta_{active}} \Delta.actions) \subseteq \mathcal{A}$ \enote{I could't figure out how to make this union pretty :(... Dave?}
 \begin{algorithm}
   \caption{getActionsForState($state$, $Z$, $G$)}
   \begin{algorithmic}[1]
-    \State $\mathcal{A}^* \leftarrow \{\}$
+    \State $\mathcal{A}_{\Delta} \leftarrow \{\}$
     \For {$\Delta \in Z$}
     \If {$\Delta.p(state)$ and $\Delta.g = G$}
-    \State $\mathcal{A}^* \leftarrow \mathcal{A}^* \cup \Delta.getActions(s)$
+    \State $\mathcal{A}_{\Delta} \leftarrow \mathcal{A}^* \cup \Delta.getActions(s)$
     \EndIf
     \EndFor \\
-    \Return $\mathcal{A}^*$
+    \Return $\mathcal{A}_{\Delta}$
   \end{algorithmic}
     \label{alg:prune_actions}
 \end{algorithm}
+
+
+Our goal for a given state is that the set of affordance actions, $\mathcal{A}_{\Delta}$, equals the set of optimal actions, $\mathcal{A}^o$. Otherwise stated, we would like the probability that our affordance actions are optimal to be 1:
+\begin{equation}
+\Pr( \mathcal{A}_{\Delta} = \mathcal{A}^o \mid s, \Delta_1 \dots \Delta_K) =^{?} 1
+\end{equation}
+
+Since our affordance actions are prescribed by the union of the actions of all active affordances this probability is simply the union of all active affordances where each affordance contributes a set $\mathcal{A}' \subseteq A^*$: 
+\begin{align}
+\Pr(\mathcal{A}'_1 \cup \ldots \cup \mathcal{A}'_K = \mathcal{A}^o \mid s, \Delta_1 \dots \Delta_K)
+\end{align}
+\enote{I think we probably don't actually to note this equation but I'm not sure}
+
+This probability can be equivalently understood as the probability that each optimal action is in $\mathcal{A}_{\Delta}$ and each non-optimal action is not in $\mathcal{A}_{\Delta}$ -- which is to say that each optimal action is in the action set of at least one active affordance and that each non-optimal action is not in the action set of any of any active affordances:
+
+\begin{equation*}
+\prod_i^{|\mathcal{A}^o|} \sum_j^{|\Delta|} \Pr(a_i \in \Delta_j \mid s, \Delta_j)\end{equation*}
+\begin{equation}
+\times \left[1 - \prod_i^{|\mathcal{A}^0|} \sum_j^{|\Delta|} \Pr(a_j \in \Delta_j \mid s, \Delta_j)\right]
+\end{equation}
+
+\enote{the bottom multiplicative sum needs to be over the complement of optimal actions -- not sure how to do this, also I think something in parens saying what each part of the probability is in words would be good but I can't figure out how to do this :(...}
+
+We complete the expansion of our probability with a prescription of the probability distribution from which each affordance retrieves its action set. We employ a Dirichelet-multinomial coupled with a Dirichelet. A Dirichelet-multinomial is a distribution over multinomial distributions. When an affordance is active it can simply sample a multinomial from its Dirichelet-multinomial and then return sampled actions from the multinomial. However, it is not obvious exactly how many actions the affordance should sample. To address this ambiguity, the affordance also maintains a Dirichelet distribution of the number of actions it samples from its sampled multinomial. The affordance's action sampling process is specified in \ref{alg:get_actions}. Our use of a Dirichlet-multinomial ensures that in the limit, it is possible to apply each action in each state, retaining any optimality guarantees of the planner. Thus, our final expanded probability is:
+
+\enote{INSERT EQUATION OF D-MULTI PROBABILITY}
+
+Provided that the Dirichelet-multinomial and Dirichelet associated with each affordance are properly specified, the probability of sampling the optimal action set, $\mathcal{A}^o$, is (almost \enote{almost because of noise from the Dirichelet-mult}) 1.
+
+
 
 \begin{algorithm}
 \caption{$\Delta_i.$getActions($s$)}
@@ -297,45 +304,21 @@ activated affordance contributes a suggested action set, determined by Algorithm
   \label{alg:get_actions}
 \end{algorithm}
 
-Specifically, we prune actions on a state by state basis
-by initializing an empty set of actions $\mathcal{A}^*$ (line 1). The algorithm then iterates
-through each of the domain affordances (lines 2-6). If the affordance
-precondition ($\Delta.p$) is satisfied by some set of objects in the current state
-and the affordance goal condition ($\Delta.g$) is defined with the same predicate
-as the current goal (line 3), then the actions associated with the affordance ($\Delta.\mathcal{A}' = \Delta.getActions(s)$) are added to the action set $\mathcal{A}^*$ (line 4). Finally, $\mathcal{A}^*$ is returned (line 7).
 
-\begin{figure}
-\centering
-\includegraphics[scale=0.14]{figures/learn_graphical_model.png}%
-  \caption{The graphical model approximating a distribution over $\mathcal{A}^*$, the pruned action set for a given state $s$ \stnote{Can you add a legend with variable defnitions?}}
-  \label{fig:graphical_model}
-\end{figure}
+Through the expert provisions of affordances as specified, any OO-MDP solver can be made
+{\it affordance-aware}. Namely, we require that an expert provide a set $\mathcal{P}$ of predicates
+for the domain of relevance (e.g. Minecraft, Cooking\enote{is there a reason Cooking is capitalized or can we smush that?}) and a set
+$\mathcal{G} \subset \mathcal{P}$ that indicates which predicates may serve as goal conditions. Additonally, they must specify the Dirichlet parameters $\alpha$ and $\beta$ for each affordance. \enote{I feel like we should say what they are -- just obfuscating them as "parameters" makes it sound like specifying them would be hard when in reality they're fairly intuitive pseudo-counts} \enote{With expert aren't they really specifying pairings of ps and gs not just the entire set of both -- there's an implicit pruning by the expert similar to what we do in learning}
 
-For each affordance, we get an action set $\mathcal{A}'$. This 
-process is outlined by Algorithm \ref{alg:get_actions}. To compute $\mathcal{A}'$, we form a Dirichlet-multinomial distribution
-over actions ($\lambda$), and a Dirichlet distribution over the size ($N$) of each action set. Therefore, the probability of getting an action set from affordance $i$ in state $s$ is: 
-%\stnote{Can you format Algorithm 1 and 2 so they are part of the same layout block?  Ideally at the top of the page.}
-\begin{equation}
-\text{Pr}(\mathcal{A}_i' \mid s,\Delta_i) = \text{Pr}(\mathcal{A}_i' \mid N_i, \lambda_i) = \text{Pr}(\lambda_i \mid \alpha_i) \text{Pr}(N_i \mid \beta_i)
-\end{equation}
-
-For a given affordance $\Delta_i$, we first sample from our distribution over action set size to get a candidate action set size (lines 1-2). We then
-take that many samples from our distribution over actions to get a candidate action set $\mathcal{A}'$ (lines 3-5).
-\begin{align}
-\text{Pr}(\lambda \mid \alpha) = DirMult(\alpha) \\
-\text{Pr}(N \mid \beta) = Dir(\beta)
-\end{align}
-
-Through the use of Algorithms \ref{alg:prune_actions} and \ref{alg:get_actions}, any OO-MDP solver can be made
-{\it affordance-aware}. For a planner to be made affordance-aware, we require that an expert provide a set $\mathcal{P}$ of predicates
-for the domain of relevance (i.e. Minecraft, Cooking). Additionally, the expert must specify a set
-$\mathcal{G} \subset \mathcal{P}$ that indicates which predicates may serve as goal conditions. If the expert wishes
-to provide the affordances directly, they must specify the Dirichlet parameters $\alpha$ and $\beta$ for each affordance. Note that
-in the limit, affordances become deterministic. In this way, the expert may fix $\alpha$ and $\beta$ in a way that forces a given
+Note that
+in the limit\enote{limit of what?}, affordances become deterministic. In this way, the expert may fix $\alpha$ and $\beta$ in a way that forces a given
 affordance to always suggest a specific set of actions - this type of expert affordance was provided for all
-experiments.
+experiments. \enote{isn't this just hard affordances? shouldn't we mention them by name -- also why are we talking about our experiments before our experiments section. I'm a bit confused by the purpose of the above sentence}
 
 \subsection{Learning Affordances}
+
+Not only is it arduous to specify $\alpha$ and $\beta$ but even with expert domain knowledge it is often unclear how to set them. A great deal of the a burden of supplied knowledge could be lessened, then, if these parameters could be inferred without expert intervention. We suggest such a methodology.
+\enote{This is as far as I got on my first pass (I added the above paragraph)}
 
 To learn affordances, we require that a domain expert supply a set of predicates
 $\mathcal{P}$ and possible goals $\mathcal{G} \subset \mathcal{P}$. Additionally,
@@ -584,6 +567,8 @@ useful for a task. We conducted a set of experiments to investigate this intuiti
 At a high level both HTNs and affordances fulfill the same role: both achieve action pruning by exploiting some form of supplied knowledge. HTNs do so with the use of information regarding both the task decomposition of the goal at hand and the sorts constraints that said decomposition imposes upon the planner. Similarly, affordances require knowledge as to how to extract values for propositional functions of interest by querying the state.
 
 However there are three of essential distinctions between affordances and traditional HTNs. (1) HTNs deal exclusively with deterministic domains as opposed to the stochastic spaces with which affordances grapple. As a result they produce plans and not policies. (2) Moreover, HTNs do not incorporate reward into their planning. Consequently, they lack mathematical guarantees of optimal planning. \enote{I think.. We should double check this.} (3) On a qualitative level, the degree of supplied knowledge in HTNs surpasses that of affordances: whereas affordances simply require relevant propositional functions, HTNs require not only constraints for sub-tasks but a hierarchical framework of arbitrary complexity. Thus, despite a superficial similarity between affordances and HTNs wherein both employ supplied knowledge, the two deal with disparate forms of planning problems; HTN's planning problem is deterministic, reward-agnostic and necessitates a plethora of knowledge while affordances solve a planning problem that is stochastic, reward-aware and requires only relatively basic knowledge about the domain.
+\enote{Need citations for HTNs}
+
 % --- Subsection: Action Pruning ---
 \subsection{Action Pruning}
 
@@ -637,8 +622,6 @@ The results support the effectiveness of the learned affordances, suggesting tha
 Lastly, we compared the effectiveness of augmenting planners with affordances to augmenting with temporally extended actions, as well as providing both to a planner. The results suggest that affordances, when combined with temporally extended actions, provide substantial reduction in the portion of the state-action space that needs to be explored.
 
 In the future, we hope to automatically discover useful subgoals - a topic of some active research \cite{Mcgovern01automaticdiscovery,Simsek:2005:IUS:1102351.1102454}. This will allow for affordances to plug into high-level subgoal planning, which will reduce the size of the explored state-action space and improve transferability across task types. Additionally, we hope to decrease the amount of knowledge given to the planner by implementing Incremental Feature Dependency Discovery ~\cite{ICML2011Geramifard_473}, which will allow our affordance learning algorithm to discover novel preconditions that will further enhance action pruning.
-
-\enote{There's a typo in [8]}
 
 {\small
 \bibliographystyle{plainnat}
