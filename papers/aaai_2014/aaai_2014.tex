@@ -327,27 +327,24 @@ Where $a_i$ is an optimal action for the given state, $a_i \in \mathcal{A}^o$, a
 
 If $M$ and $L$ are supplied by a domain expert, then $\Pr(a_i \in \Delta_j(s) \mid s, \Delta_j)$ is simply defined by the multinomials $\Delta_j.M$ and $\Delta_j.L$. \dnote{Write this better in math?}
 
+% --- Learning Affordances ---
+\subsection{Learning Affordances}
+\dnote{I moved this section much earlier. I think we should push the pseudocode up.}
+\noindent If no domain expert is available to provide knowledge, then the agent must learn $M$ and $L$ for each affordance.
 
-\noindent Furthermore, we define the probability that the $i$-th action is in the given affordances action set to be:
+We model the computation of each affordances contributed action set using a Dirichlet-multinomial distribution. Thus: 
+
 \begin{equation}
 \Pr(a_i \in \Delta_j(s) \mid s, \Delta_j) = DirMult(\Delta_j.\alpha, \Delta_j.n)
 \end{equation}
 
-\noindent Where $\Delta_j.\alpha$ denotes the hyper parameter vector for the Dirichlet-multinomial, and $\Delta_j.n$ indicates how many samples to draw. We define $\Delta_j.n$ to be a sample from a Dirichlet distribution over the affordances hyper parameter vector $\beta$:
+\noindent Where $\Delta_j.\alpha$ denotes the hyper parameter vector for the Dirichlet-multinomial, and $\Delta_j.n$ indicates the number of samples to draw. We define $\Delta_j.n$ to be a sample from a Dirichlet distribution over the affordances hyper parameter vector $\beta$:
 
 \begin{equation}
 \Delta_j.n \sim Dir(\Delta_j.\beta)
 \end{equation}
 
-
-We model the distributions of actions in $A'$ using a Dirichlet-multinomial distribution. 
-%We complete the expansion of our probability with a prescription of the probability distribution from which each affordance retrieves its action set. We employ a Dirichelet-multinomial coupled with a Dirichelet. A Dirichelet-multinomial is a distribution over multinomial distributions.
-When an affordance is active it can simply sample a multinomial from its Dirichelet-multinomial distribution and then return sampled actions from the multinomial. However, it is not obvious exactly how many actions the affordance should sample. To address this ambiguity, the affordance also maintains a Dirichelet distribution over the number of actions it samples from its sampled multinomial. The affordance's action sampling process is specified in \ref{alg:get_actions}. Our use of a Dirichlet-multinomial ensures that in the limit, it is possible to apply each action in each state, retaining any optimality guarantees of the planner. Thus, our final expanded probability is:
-
-\enote{INSERT EQUATION OF D-MULTI PROBABILITY}
-
-Provided that the Dirichelet-multinomial and Dirichelet associated with each affordance are properly specified, the probability of sampling the optimal action set, $\mathcal{A}^o$, approaches 1 as the counts of the hyperparameters for the Dirichlet-multinomial and dirichlet distributions increase. We will see exactly how these counts increase in the next section.
-
+Provided that the Dirichlet-multinomial and Dirichelet associated with each affordance are properly specified, the probability of retrieving the optimal action set across all affordances, as seen in Equation \ref{eq:opt}, approaches 1 as the counts of the hyperparameters for the Dirichlet-multinomial and Dirichlet distributions increase.
 
 
 \begin{algorithm}
@@ -374,7 +371,6 @@ in the limit\enote{limit of what?}, affordances become deterministic. In this wa
 affordance to always suggest a specific set of actions - this type of expert affordance was provided for all
 experiments. \enote{isn't this just hard affordances? shouldn't we mention them by name -- also why are we talking about our experiments before our experiments section. I'm a bit confused by the purpose of the above sentence}
 
-\subsection{Learning Affordances}
 
 Not only is it arduous to specify $\alpha$ and $\beta$ but even with expert domain knowledge it is often unclear how to set them. A great deal of the a burden of supplied knowledge could be lessened, then, if these parameters could be inferred without expert intervention. We suggest such a methodology.
 \enote{This is as far as I got on my first pass (I added the above paragraph)}
