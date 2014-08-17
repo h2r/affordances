@@ -22,7 +22,7 @@
 \newcommand{\gnote}[1]{\textcolor{Purple}{\textbf{G: #1}}}
 
 \pdfinfo{
-   /Author (David Abel, Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex)
+   /Author (David Abel \& Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex)
    /Title  (Toward Affordance-Aware Planning)
    /CreationDate (D:20101201120000)
    /Subject (Planning, Affordances, Sequential Decision Making)
@@ -35,7 +35,7 @@
 \title{Affordance-Aware Planning}
 
 % Author info:
-\author{\authorblockN{David Abel, Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex}
+\author{\authorblockN{David Abel \& Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex}
 \authorblockA{Department of Computer Science, Brown University \\
 \texttt{\{dabel,gabrielbm,jmacglashan,stefie10\}@cs.brown.edu}}}
 
@@ -69,11 +69,9 @@ Robots operating in unstructured, stochastic environments face a highly difficul
 decision making problem in which the agent must find a mapping from
 states to actions for some subset of the state space that enables the
 agent to achieve a goal while minimizing costs along the way. \enote{Isn't this just an MDP? Shouldn't we mention that here?}
-However, many robotics problems are of such exceeding complexity that formalizing them as mentioned results in an immense state-action space. This large state-action space, in turn, restricts the sorts of robotics problems that are computationally tractable.
+However, many robotics problems are of such exceeding complexity that formalizing them as mentioned results in an immense state-action space. This large state-action space, in turn, restricts the classes of robotics problems that are computationally tractable.
   For example, when a robot is manipulating objects in an environment
-an object can be placed anywhere in a large set of locations. The
-state space expands exponentially with the number of objects and
-possible locations. Since the size of the state space increases dramatically with the number of objects the number of objects bounds the placement problems which the robot is able to expediently solve.\enote{we need to be careful about state space vs state-action space...}
+an object can be placed anywhere in a large set of locations. The size of the state space increases exponentially with the number of objects, which bounds the placement problems that the robot is able to expediently solve.\enote{we need to be careful about state space vs state-action space...}
 %~\cite{grounds05}.
 
 To address this state-action space explosion, prior work has explored adding
@@ -101,15 +99,16 @@ to dramatic speedups in planning. Moreover, our formalization allows generalizat
 specific tasks, so a single agent can autonomously learn affordances
 through experience, minimizing the agent's dependence on expert
 knowledge. Affordances are not specific to a particular reward
-function \enote{aren't they though -- like if we suddenly made lava good wouldn't that mess up our agentLookingAtLava affordance?} or state space, and provide the agent with transferable
-knowledge that is effective in a wide variety of problems. We call any
-planner that uses affordances an {\it affordance-aware} planner \enote{I feel like this goes without saying and can probably be cut.}.  
+function \enote{aren't they though -- like if we suddenly made lava good wouldn't that mess up our agentLookingAtLava affordance?} \gnote{Your example would affect the planner (and the affordances would make planning take longer) but they can be learned independent of the reward function.} or state space, and provide the agent with transferable
+knowledge that is effective in a wide variety of problems.
+
+%We call any
+%planner that uses affordances an {\it affordance-aware} planner \enote{I feel like this goes without saying and can probably be cut.}.  
 
 Our experiments demonstrate that affordances provide dramatic speedups for a variety
 of planning tasks compared to baselines, may be learned from
 experience, and can transfer across different tasks.  We conduct experiments
 in the game Minecraft, as well as on a robotic cooking assistant. 
-\dnote{We have no plans to deploy affordances on blocks world for our experiments, currently, so I took that bit out.}
 
 %% Because affordances define the {\em kind} of goals for which actions
 %% are useful, affordances also enable high-level reasoning that can be
@@ -195,8 +194,8 @@ arriving in $s' \in \mathcal{S}$; $\mathcal{R}(s,a,s')$ denotes the
 reward received by the agent for applying action $a$ in state $s$ and
 and transitioning to state $s'$; and $\gamma \in [0, 1)$ is a discount
   factor that defines how much the agent prefers immediate rewards
-  over distant rewards (the agent more greatly prefers to maximize
-  more immediate rewards as $\gamma$ decreases). A classic way to provide a factored representation of an MDP state is to represent
+  over distant rewards (the agent prefers to maximize
+  immediate rewards as $\gamma$ decreases). A classic way to provide a factored representation of an MDP state is to represent
 each MDP state as a single feature vector. 
 
 An Object-Oriented Markov
@@ -246,7 +245,10 @@ navigation problems can be used in any task regardless of the spatial size of th
 number of objects in the world, and specific goal the agent is trying to satisfy.
 
 \subsection{Affordance-Aware Planning}
-Affordances may be used to restrict the action set of any planner in a particular state to a subset of the action set. Namely,  the union of all action sets provided by all active affordances in any particular state, $\mathcal{A}_{\Delta}$, is a subset of the full action set and may be used instead of the full action set (Algorithm \ref{alg:get_actions}r):  $(\mathcal{A}_{\Delta} = \cup_{\Delta_{active}} \Delta.actions) \subseteq \mathcal{A}$ \enote{I could't figure out how to make this union pretty :(... Dave?}
+Affordances may be used to restrict the action set of any planner in a particular state to a subset of the action set. Namely,  the union of all action sets provided by all active affordances in any particular state, $\mathcal{A}_{\Delta}$, is a subset of the full action set $\mathcal{A}$.
+\begin{align} \label{eq:afford_union}
+\mathcal{A}_{\Delta} = \left( \bigcup\limits_{\Delta_{active}} \Delta.getActions(s) \right) \subseteq \mathcal{A}
+\end{align}
 \begin{algorithm}
   \caption{getActionsForState($state$, $Z$, $G$)}
   \begin{algorithmic}[1]
@@ -263,31 +265,34 @@ Affordances may be used to restrict the action set of any planner in a particula
 
 
 Our goal for a given state is that the set of affordance actions, $\mathcal{A}_{\Delta}$, equals the set of optimal actions, $\mathcal{A}^o$. Otherwise stated, we would like the probability that our affordance actions are optimal to be 1:
-\begin{equation}
-\Pr( \mathcal{A}_{\Delta} = \mathcal{A}^o \mid s, \Delta_1 \dots \Delta_K) =^{?} 1
+\begin{equation} \label{eq:opt}
+\Pr( \mathcal{A}_{\Delta} = \mathcal{A}^o \mid s, \Delta_1 \dots \Delta_K) = 1
 \end{equation}
+\gnote{The previous sentence seem unnecessary given that we say we want $A_{\Delta} = A^o$ and have the equation.}
 
-Since our affordance actions are prescribed by the union of the actions of all active affordances this probability is simply the union of all active affordances where each affordance contributes a set $\mathcal{A}' \subseteq A^*$: 
+Since our affordance actions are defined as the union of the actions of all active affordances, we can combine equations \eqref{eq:afford_union} and \eqref{eq:opt}, where each affordance contributes a set $\mathcal{A}' \subseteq A_{\Delta}$: 
 \begin{align}
 \Pr(\mathcal{A}'_1 \cup \ldots \cup \mathcal{A}'_K = \mathcal{A}^o \mid s, \Delta_1 \dots \Delta_K)
 \end{align}
-\enote{I think we probably don't actually to note this equation but I'm not sure}
+%\enote{I think we probably don't actually to note this equation but I'm not sure}
 
-This probability can be equivalently understood as the probability that each optimal action is in $\mathcal{A}_{\Delta}$ and each non-optimal action is not in $\mathcal{A}_{\Delta}$ -- which is to say that each optimal action is in the action set of at least one active affordance and that each non-optimal action is not in the action set of any of any active affordances:
+%This probability can be equivalently understood as the probability that each optimal action is in $\mathcal{A}_{\Delta}$ and each non-optimal action is not in $\mathcal{A}_{\Delta}$ -- which is to say that each optimal action is in the action set of at least one active affordance and that each non-optimal action is not in the action set of any of any active affordances:
 
-\begin{equation*}
-\prod_i^{|\mathcal{A}^o|} \sum_j^{|\Delta|} \Pr(a_i \in \Delta_j \mid s, \Delta_j)\end{equation*}
-\begin{equation}
-\times \left[1 - \prod_i^{|\mathcal{A}^0|} \sum_j^{|\Delta|} \Pr(a_j \in \Delta_j \mid s, \Delta_j)\right]
-\end{equation}
+%\begin{equation*}
+%\prod_i^{|\mathcal{A}^o|} \sum_j^{|\Delta|} \Pr(a_i \in \Delta_j \mid s, \Delta_j)\end{equation*}
+%\begin{equation}
+%\times \left[1 - \prod_i^{|\mathcal{A}^0|} \sum_j^{|\Delta|} \Pr(a_j \in \Delta_j \mid s, \Delta_j)\right]
+%\end{equation}
 
-\enote{the bottom multiplicative sum needs to be over the complement of optimal actions -- not sure how to do this, also I think something in parens saying what each part of the probability is in words would be good but I can't figure out how to do this :(...}
+%\enote{the bottom multiplicative sum needs to be over the complement of optimal actions -- not sure how to do this, also I think something in parens saying what each part of the probability is in words would be good but I can't figure out how to do this :(...}
 
-We complete the expansion of our probability with a prescription of the probability distribution from which each affordance retrieves its action set. We employ a Dirichelet-multinomial coupled with a Dirichelet. A Dirichelet-multinomial is a distribution over multinomial distributions. When an affordance is active it can simply sample a multinomial from its Dirichelet-multinomial and then return sampled actions from the multinomial. However, it is not obvious exactly how many actions the affordance should sample. To address this ambiguity, the affordance also maintains a Dirichelet distribution of the number of actions it samples from its sampled multinomial. The affordance's action sampling process is specified in \ref{alg:get_actions}. Our use of a Dirichlet-multinomial ensures that in the limit, it is possible to apply each action in each state, retaining any optimality guarantees of the planner. Thus, our final expanded probability is:
+We model the distributions of actions in $A'$ using a Dirichlet-multinomial distribution. 
+%We complete the expansion of our probability with a prescription of the probability distribution from which each affordance retrieves its action set. We employ a Dirichelet-multinomial coupled with a Dirichelet. A Dirichelet-multinomial is a distribution over multinomial distributions.
+When an affordance is active it can simply sample a multinomial from its Dirichelet-multinomial distribution and then return sampled actions from the multinomial. However, it is not obvious exactly how many actions the affordance should sample. To address this ambiguity, the affordance also maintains a Dirichelet distribution over the number of actions it samples from its sampled multinomial. The affordance's action sampling process is specified in \ref{alg:get_actions}. Our use of a Dirichlet-multinomial ensures that in the limit, it is possible to apply each action in each state, retaining any optimality guarantees of the planner. Thus, our final expanded probability is:
 
 \enote{INSERT EQUATION OF D-MULTI PROBABILITY}
 
-Provided that the Dirichelet-multinomial and Dirichelet associated with each affordance are properly specified, the probability of sampling the optimal action set, $\mathcal{A}^o$, is (almost \enote{almost because of noise from the Dirichelet-mult}) 1.
+Provided that the Dirichelet-multinomial and Dirichelet associated with each affordance are properly specified, the probability of sampling the optimal action set, $\mathcal{A}^o$, approaches 1 as the counts of the hyperparameters for the Dirichlet-multinomial and dirichlet distributions increase. We will see exactly how these counts increase in the next section.
 
 
 
