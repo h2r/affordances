@@ -127,7 +127,9 @@ Our experiments demonstrate that affordances provide dramatic speedups for a var
 of planning tasks compared to baselines and apply across different state-spaces.  We conduct experiments
 in the game Minecraft, and on a robotic cooking assistant. 
 
+% ====== Background ======
 \section{Background}
+\label{sec:background}
 % --- Subsection: MDPS ---
 %\subsection{MDPs}
 A classic MDP is a five-tuple: $\langle \mathcal{S}, \mathcal{A}, \mathcal{T},
@@ -191,6 +193,7 @@ The term ``affordance" was introduced by J.J. Gibson in 1977 ~\citep{gibson77}. 
 \dnote{Ellis how about this? It's a little weird for the mapping to utilize elements of the tuple, but I think this
 paints the right picture.}
 
+% -- "Equation": Affordance Formalism --
  We define an affordance, $\Delta$, as the tuple $\langle p, g, M, n, \delta\rangle$,
 where:
 \begin{itemize}
@@ -247,34 +250,25 @@ Our goal is that the set of affordance actions, $\mathcal{A}_{\Delta}$, is equal
 \label{eq:opt}
 \end{equation}
 
-% NOTE: taken out for now, I think its crisper without it.
-%Combining equations \eqref{eq:afford_union} and \eqref{eq:opt}, where each affordance contributes a set $\mathcal{A} \subseteq A_{\Delta}$, we get: 
-%\begin{align}
-%\Pr(\mathcal{A}'_1 \cup \ldots \cup \mathcal{A}'_K = \mathcal{A}^o \mid s, \Delta_1 \dots \Delta_K)
-%\end{align}
-%\enote{I think we probably don't actually to note this equation but I'm not sure}
-%\dnote{I think we should include it.}
-
 This probability can be equivalently understood as the probability that each
 optimal action is in $\mathcal{A}_{\Delta}$ and each non-optimal action is not in $\mathcal{A}_{\Delta}$: %-- which is to say that each optimal action is in the action set of at least one active affordance and that each non-optimal action is not in the action set of any of any active affordances:
 
 % -- Equation: Is in optimal, is not in non-optimal --
-\begin{equation*}
-= \prod_i^{|\mathcal{A}^o|} \sum_j^{|\Delta|} \Pr(a_i \in \Delta_j.\delta(s,G) \mid s, G, \Delta_j)\end{equation*}
-\begin{equation}
+\begin{multline}
+= \left[\prod_i^{|\mathcal{A}^o|} \sum_j^{|\Delta|} \Pr(a_i \in \Delta_j.\delta(s,G) \mid s, G, \Delta_j)\right] \\
 \times \left[1 - \prod_i^{|\overline{\mathcal{A}^o}|} \sum_j^{|\Delta|} \Pr(b_i \in \Delta_j.\delta(s,G) \mid s, G, \Delta_j)\right]
 \label{eq:isin_notin}
-\end{equation}
+\end{multline}
 
 Where $a_i$ is an optimal action for the given state, $a_i \in \mathcal{A}^o$,
 and $b_i$ is a non-optimal action for the given state, $b_i \in \overline{\mathcal{A}^o}$.
 Equation \ref{eq:isin_notin} represents the probability that each optimal action is in the
 affordance action set, and that each non-optimal action is not in the affordance action set.
 
-A domain expert may specify the multinomial $M$ and parameter $n$ directly,
+A domain expert specifies the multinomial $M$ and parameter $n$ directly,
 allowing $\mathcal{A_\Delta}$ to be computed deterministically if 
 the expert desires. If an expert is not involved, the agent will learn $M$ and
-$n$ for each affordance during training time. If $M$ and $n$ are supplied
+$n$ for each affordance during training time \dnote{This wording should change a bit to reflect that we're learning Dirichlet-mult hyper parameters, without going into too much detail. I'm more or less satisfied with it as is but I think it could sounds crisper}. If $M$ and $n$ are supplied
 by a domain expert, then $\Pr(a_i \in \Delta_j.\delta(s,G) \mid s, \Delta_j)$ is
 defined by the multinomial $\Delta_j.M$ and $\Delta_j.n$, and computed as in Equation~\ref{eq:delta_mapping}.
 
@@ -285,7 +279,7 @@ Even with expert domain knowledge it is often unclear how to create
 an optimal knowledge base, and it can be arduous to specify a 
 large number of affordances. We developed an unsupervised learning
 process that requires only minimal seeding from an expert.
-The full learning algorithm is shown in Algorithm~\ref{lag:learn}.
+The full learning algorithm is shown in Algorithm~\ref{alg:learn}.
 
 To learn an affordance knowledge base, a domain 
 expert must supply a set of relevant domain specific predicates,
@@ -295,17 +289,21 @@ of generating candidate state spaces in which each goal $g \in \mathcal{G}$
  may be satisfied (i.e. the function $createTestWorld(g)$ at line 5 in Algorithm \ref{alg:learn}).
 
 \dnote{This part needs clean up. Ideally, it would tie into learning $M$ and $n$ directly.}
-For each learned affordance, we approximate taking $n$ samples from the affordance's multinomial $M$ with a Dirichlet-multinomial distribution:
+For each learned affordance, we approximate the mapping $\Delta.\delta$ by taking $n$ samples from the affordance's multinomial $M$ with a Dirichlet-multinomial distribution:
 % -- Equation: Dirichlet Multinomial --
-\begin{equation}
-\Pr(a_i \in \Delta_j.\delta(s,G) \mid s, G, \Delta_j) = DirMult(\Delta_j.\alpha, \Delta_j.n)
-\end{equation}
+\begin{multline}
+\Pr(a_i \in \Delta_j.\delta(s,G) \mid s, G, \Delta_j) \\
+= DirMult(\Delta_j.\alpha, \Delta_j.n) \cdot \left(\Delta.p(s) \wedge G \models \Delta.g\right)
+\end{multline}
 
-\noindent Where $\Delta_j.\alpha$ denotes the hyper parameter vector
-for the Dirichlet-multinomial, and $\Delta_j.n$ indicates the number of
-samples to draw. We compute $\Delta_j.n$ as a sample from a Dirichlet
-distribution over the hyper parameter vector $\beta$:
-
+\noindent Where $\Delta_j.\alpha$ denotes the hyper parameter
+for the Dirichlet-multinomial, $\Delta_j.n$ indicates the number of
+samples to draw, and $\Delta_.\beta$ is the hyper parameter for a Dirichlet.
+Learning consists primarily of computing these $\alpha$ and $\beta$ values.
+We only sample in the case that the affordance's precondition
+is satisfied in the state, and the affordance's goal type is entailed by the present goal type.
+We compute $\Delta_j.n$ as a sample from a Dirichlet
+distribution over the hyper parameter vector $\Delta_j.\beta$:
 % -- Equation: Dirichlet --
 \begin{equation}
 \Delta_j.n \sim Dir(\Delta_j.\beta)
@@ -333,12 +331,12 @@ is a difficult problem, however.
   \end{algorithmic}
   \label{alg:learn}
 \end{algorithm}
+
 The primary tasks in learning affordances is to learn reasonable precondition-goal combinations,
 and to compute $\alpha$ and $\beta$ for each affordance. To learn $p$ and $g$ for each affordance, 
-the algorithm forms a set of candidate affordances $\Delta$ with every
-combination of $\langle p, g \rangle$, for $p \in \mathcal{P}$ and $g
+the algorithm creates one affordance for each combination of $\langle p, g \rangle$, where $p \in \mathcal{P}$ and $g
 \in \mathcal{G}$, as seen in line 1-3 of Algorithm \ref{alg:learn}. Affordances
-whose predicate-goal pairs don't provide useful information are thrown out by the function call on line 9.
+whose precondition-goal pairs don't provide useful information are thrown out by the function call on line 9.
 We chose to remove affordances with little or no $\alpha$ counts at the end of training, or those
 whose $\alpha$ counts were close to the actual action distribution of the policy, indicating that the affordance
 contained little information.
@@ -346,9 +344,9 @@ contained little information.
 To learn the $\alpha$ and $\beta$ for each
 affordance, we synthesize a policy of $m$ goal-annotated
 OO-MDPs that have small state spaces, but share similar characteristics
-to the state spaces the agent might expect to see in more
-complex environments. For example, the agent learns to build bridges
-over trenches in small state spaces that can be solved exactly (i.e. a state space of several thousand states), but
+to the more complex state spaces the agent might expect to see at test time.
+For example, the agent learns to build bridges over trenches in small state
+spaces that can be solved exactly (i.e. a state space of several thousand states), but
 generalizes its knowledge to worlds that are too large to
 solve with exact algorithms (state spaces of hundreds of thousands of states). With this policy,
 we know the optimal action in each state and can generalize this optimality to larger state spaces.
@@ -366,6 +364,7 @@ we know the optimal action in each state and can generalize this optimality to l
     \EndFor
   \end{algorithmic}
   \label{alg:update_params}
+  \caption{\dnote{I need to add beta counts to this algorithm. It's a bit tricky to do concisely so I'm taking some time on it}}
 \end{algorithm}
 
 We update $\alpha$ and $\beta$ according to Algorithm~\ref{lag:update_params}.
@@ -376,9 +375,7 @@ integers $1$ to $|\mathcal{A}|$. Then, for each optimal policy, we
 count the number of unique actions that were optimal for each
 activated affordance $\Delta_i$, and increment that value for
 $\Delta_i.\beta$. This captures how large or small optimal action sets
-are expected to be for each affordance. \dnote{Need to add beta 
-counts to algorithm \ref{alg:update_params}. (a bit tricky to do concisely so I'm taking a bit of time on it.}
-
+are expected to be for each affordance. 
 For experiments, we introduce a simplified baseline version of the affordance where
 the action set $A$ associated computed by $\Delta.\delta$ is defined
 as the set of actions whose probability of being optimal was greater than $1\%$
@@ -455,7 +452,7 @@ expert Macroactions, and expert Options, as well as the combination of affordanc
 \subsection{Robotic Task}
 Finally, we deployed an affordance-aware planner onto Baxter for use in an assistive cooking task. \dnote{Need to fill in more details here}
 
-% ==== Section: Results ====
+% ====== Section: Results ======
 \section{Results}
 \label{sec:results}
 
@@ -611,7 +608,7 @@ At a high level both HTNs and affordances fulfill the same role: both achieve ac
 
 However there are three of essential distinctions between affordances and traditional HTNs. (1) HTNs deal exclusively with deterministic domains as opposed to the stochastic spaces with which affordances grapple. As a result they produce plans and not policies. (2) Moreover, HTNs do not incorporate reward into their planning. Consequently, they lack mathematical guarantees of optimal planning. \enote{I think.. We should double check this.} (3) On a qualitative level, the degree of supplied knowledge in HTNs surpasses that of affordances: whereas affordances simply require relevant propositional functions, HTNs require not only constraints for sub-tasks but a hierarchical framework of arbitrary complexity. Thus, despite a superficial similarity between affordances and HTNs wherein both employ supplied knowledge, the two deal with disparate forms of planning problems; HTN's planning problem is deterministic, reward-agnostic and necessitates a plethora of knowledge while affordances solve a planning problem that is stochastic, reward-aware and requires only relatively basic knowledge about the domain.
 \enote{Need citations for HTNs}
-
+\dnote{needs to be shorter}
 % --- Subsubsection: Temporal Logic ---
 \subsubsection{Temporal Logic}
 
