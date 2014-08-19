@@ -54,7 +54,7 @@ we formalize the notion of {\em affordances} as knowledge added to an
 Object Oriented Markov Decision Process (OO-MDP) \dnote{Should we specify the fact that
 we are adding affordances to an OO-MDP in particular? Also should we note that we are goal oriented?}.
 Affordances prune actions on a state-by-state basis, reducing the number of 
-state-action pairs the agent must evaluate in order to behave near optimally.
+state-action pairs the planner must evaluate in order to synthesize a near optimal policy.
 % NOTE: I think it sounds punchier without this sentence, but this information might
 % be important for the abstract?: (--Dave)
 %Affordances are not specific to a particular reward function
@@ -63,8 +63,8 @@ Furthermore, we show that an agent can learn affordances through unsupervised
 experience, and that learned affordances can equal or surpass the performance of those
 provided by experts. We demonstrate our approach in the state-rich Minecraft domain, 
 showing significant increases in speed and reductions in state-space exploration during
-planning with negligible loss in quality of the synthesized policy. Additionally, we 
-employ affordance-aware planning on a robot in a collaborative cooking task. 
+planning %with negligible loss in quality of the synthesized policy. % Dave note: thoughts on including this commented out bit?
+Additionally, we employ affordance-aware planning on a robot in a collaborative cooking task. 
 
 \end{abstract}
 
@@ -80,10 +80,9 @@ Robotic planning tasks are classically formalized as a stochastic sequential
 decision making problem, modeled as a Markov Decision Process (MDP). In these problems,
 the agent must find a mapping from states to actions for some subset of the 
 state space that enables the agent to achieve a goal while minimizing costs 
-along the way. However, many robotics problems are of such exceeding 
-complexity that modeling them as an MDP results in a massive state-action space, 
-which in turn, restricts the classes of robotics problems that are computationally tractable.
- \dnote{We say "problems" a bit too often here. I tried trimming it down.}
+along the way. However, many robotics tasks are so complex that modeling
+them as an MDP results in a massive state-action space, 
+which in turn restricts the types of robotics problems that are computationally tractable.
  
 For example, when a robot is manipulating objects in an environment
 an object can be placed anywhere in a large set of locations. The size
@@ -104,11 +103,12 @@ temporal logical planning (TLPlan)~\citep{Bacchus95usingtemporal,Bacchus99usingt
 add knowledge to the planner that greatly increases planning speed, but do not
 generalize to stochastic domains. Additionally, the knowledge provided to the 
 planner must be given by a domain expert, reducing the agent's autonomy.
+\dnote{Does this paragraph feel necessary? We talk about options/macroactions so it makes sense
+to gloss over our other related work.}
 
-To address these issues, we propose augmenting an MDP
-with a formalization of {\em affordances}. An
+We propose augmenting an MDP with a formalization of {\em affordances}. An
 affordance~\cite{gibson77} specifies which actions an agent should consider in
-different states of the world in order to achieve its goal. By applying affordances 
+different states of the world in order to satisfy a given goal. By applying affordances 
 to planning, we prune the agent's action set to focus on aspects of the environment
 that are most relevant to solving its current goal and avoid exploration of irrelevant 
 parts of the state-action space. Affordances are not specific to a particular reward
@@ -140,22 +140,22 @@ arriving in $s' \in \mathcal{S}$; $\mathcal{R}(s,a,s')$ denotes the
 reward received by the agent for applying action $a$ in state $s$ and
 and transitioning to state $s'$; and $\gamma \in [0, 1)$ is a discount
 factor that defines how much the agent prefers immediate rewards
-over distant rewards (the agent prefers to maximize
+over future rewards (the agent prefers to maximize
 immediate rewards as $\gamma$ decreases). A classic way to 
 provide a factored representation of an MDP state is to represent
 each MDP state as a single feature vector. 
 
 % -- Subsection: OO-MDPs --
 \subsection{OO-MDPs}
-An Object-Oriented Markov
-Decision Process (OO-MDP)~\citep{diuk08} can be used to represent an MDP.
-Unlike the vectorized state of an MDP, an OO-MDP state is a collection of objects,
-$O = \{o_1, \ldots, o_o \}$.  Each object $o_i$ belongs to a
-class, $c_j \in  \{c_1, \ldots, c_c\}$. Every class has a set of attributes,
-$Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of which has a domain, $Dom(c.a)$, of 
-possible values. The collection of attribute values of a given object is termed 
-that object's state, $o.state$. A vectorized MDP state can be equivalently understood as the set
-of all the object states, $s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$, in an OO-MDP. 
+An Object-Oriented Markov Decision Process (OO-MDP)~\citep{diuk08}
+can be used to represent an MDP. Unlike the vectorized state of an MDP, 
+an OO-MDP state is a collection of objects, $O = \{o_1, \ldots, o_o \}$. 
+Each object $o_i$ belongs to a class, $c_j \in  \{c_1, \ldots, c_c\}$. Every
+class has a set of attributes, $Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of which
+has a domain, $Dom(c.a)$, of possible values. The collection of attribute values
+of a given object is termed that object's state, $o.state$. A vectorized MDP state
+can be equivalently understood as the set of all the object states, 
+$s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$, in an OO-MDP. 
 
 
 %% An OO-MDP lies in the ability to
@@ -186,26 +186,24 @@ The term ``affordance" was introduced by J.J. Gibson in 1977~\citep{gibson77}. A
 affordance describes the action-possibilities that an environment presents to an agent.
 More specifically, Gibson proposed that an affordance is ``what [the environment] offers
 [an] animal, what [the environment] provides or furnishes, either for good or ill".
-\dnote{I moved MDPs and OO-MDPs into the "background" section, and added a brief affordance intro here - thoughts? MDPs/OO-MDPs felt odd at the beginning of the affordances section}
+\dnote{I moved MDPs and OO-MDPs into the "background" section, and added a brief affordance intro here - thoughts? MDPs/OO-MDPs felt odd at the beginning of the affordances section.}
 
 % -- Subsection: Affordance Formalism --
 \subsection{Affordance Formalism}
 
-\enote{we need to fix this formalism as per what we talked about Dave -- i.e. it's an object or a mapping...}
-\dnote{Ellis how about this? It's a little weird for the mapping to utilize elements of the tuple, but I think this
-paints the right picture. My other thought would be to replace M and n with alpha and beta, where they act as hyper params for
-the Dirichlet-multinomial and Dirichlet, respectively. That allows the formalism to tie more directly into the learning.}
-
 % -- "Equation": Affordance Formalism --
- We define an affordance, $\Delta$, as the tuple $\langle p, g, \delta, \alpha, \beta \rangle$,
+We define an affordance, $\Delta$, as the tuple $\langle p, g, \delta, \alpha, \beta \rangle$,
 where:
 \begin{itemize}
 \item $p$ is a predicate on states, $s \longrightarrow \{$0$, 1\}$ representing the {\em precondition} for the affordance. 
 \item $g$ is a {\it goal type}, representing the type of problem the agent is solving.
-\item $\delta$ is a mapping from an OO-MDP state $s$ and a goal type $G$ to a set of actions $A \subset \mathcal{A}$.
-\item $\alpha$ is a vector of counts of each action.
-\item $\beta$ is a vector of counts of the integers from 1 to $|\mathcal{A}|$, where $\mathcal{A}$ is the action set of the OO-MDP.
+\item $\delta$ is a mapping from an OO-MDP state $s$ and a goal type $G$ to a set of actions $A \subset \mathcal{A}$, where $\mathcal{A}$ is the action set of the OO-MDP.
+\item $\alpha$ is a vector of counts, representing the hyper parameter to a Dirichilet-multinomial distribution over possible action sets.
+\item $\beta$ is a vector of counts of the integers from 1 to $|\mathcal{A}|$, representing the hyper parameter to a Dirichlet distribution over possible action set sizes.
+%\item $\alpha$ is a vector of counts of size $\mathcal{A}$.
+%\item $\beta$ is a vector of counts of the integers from 1 to $|\mathcal{A}|$.
 \end{itemize}
+\dnote{I'm not thrilled about how I explained $\alpha$ and $\beta$ here. It's not clear how much information to put in the above descriptions, as much of the explanation behind the distributions doesn't come until a bit later. We could also take out $\alpha$ and $\beta$ from the formalism entirely, and just indicate that they need to be defined when we introduce the dirichlet-multinomial a bit later}.
 
 The precondition, $p$, and goal type, $g$, refer to predicates that are defined in the OO-MDP definition.
 The precondition specifies when certain affordances are relevant, and the goal allows the agent to focus
@@ -236,7 +234,7 @@ A &\leftarrow DirMult(\Delta.\alpha, n)
 \end{split}
 \label{eq:dir_mult_sample}
 \end{equation}
-\dnote{Should we make these variables affordance specific? I.e.: $n \sim Dir(\Delta_j.\beta)$, and $A \leftarrow DirMult(\alpha,n)$.}
+\dnote{Should we make these variables affordance specific? I.e.: $n \sim Dir(\Delta_j.\beta)$, and $A \leftarrow DirMult(\Delta_j.\alpha,n)$.}
 
 Where $\Delta.\alpha$ is the hyper parameter of action counts, $n$ is sampled 
 from a Dirichlet distribution over action set sizes with $\beta$ as the hyper parameter
@@ -257,7 +255,7 @@ the world, and specific goal the agent is trying to satisfy.
 % -- Subsection: Affordance-Aware Planning --
 \subsection{Affordance-Aware Planning}
 Affordances restrict the action set of a planner on a state by state basis. 
-Namely, for each state, the planner's available actions are set to be the 
+Namely, for each state, the planner's available actions are constrained to be the 
 union of all action sets provided by all affordances, $\mathcal{A}_{\Delta}$, 
 which is a subset of the full action set $\mathcal{A}$. 
 
@@ -310,7 +308,7 @@ in Equation~\ref{eq:dir_mult_sample}.
 Even with expert domain knowledge it is often unclear how to create
 an optimal knowledge base, and it can be arduous to specify a 
 large number of affordances. We developed an unsupervised learning
-process that requires only minimal seeding from an expert.
+process that requires only minimal seeding \dnote{Is this right the term? I wasn't sure how to describe this} from an expert.
 The full learning algorithm is shown in Algorithm~\ref{alg:learn}.
 
 To learn an affordance knowledge base, a domain 
