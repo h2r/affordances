@@ -1,0 +1,65 @@
+map: DeepTrenchWorldstateSpace=0.0
+	RTDP
+Bellman: 45389.00,
+Reward: -8.00,
+Completed: 1.00,
+CPU: 281.641s,
+AVERAGES: RTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
+	LHRTDP
+Bellman: 6072.00,
+Reward: -8.00,
+Completed: 1.00,
+CPU: 16.498s,
+AVERAGES: LHRTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
+map: PlaneGoldMineWorldstateSpace=0.0
+	RTDP
+Bellman: 45829.00,
+Reward: -6.00,
+Completed: 1.00,
+CPU: 69.782s,
+AVERAGES: RTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
+	LHRTDP
+Bellman: 34670.00,
+Reward: -6.00,
+Completed: 1.00,
+CPU: 52.309s,
+AVERAGES: LHRTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
+map: PlaneGoldSmeltWorldstateSpace=0.0
+	RTDP
+Bellman: 55866.00,
+Reward: -8.00,
+Completed: 1.00,
+CPU: 81.508s,
+AVERAGES: RTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
+	LHRTDP
+Bellman: 19443.00,
+Reward: -8.00,
+Completed: 1.00,
+CPU: 20.319s,
+AVERAGES: LHRTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
+map: PlaneWallWorldstateSpace=0.0
+	RTDP
+Bellman: null,
+Reward: null,
+Completed: 0.00,
+CPU: null,
+AVERAGES: RTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
+	LHRTDP
+Bellman: 65031.00,
+Reward: -12.00,
+Completed: 1.00,
+CPU: 99.656s,
+AVERAGES: LHRTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
+map: PlaneWorldstateSpace=0.0
+	RTDP
+Bellman: null,
+Reward: null,
+Completed: 0.00,
+CPU: null,
+AVERAGES: RTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
+	LHRTDP
+Bellman: 3855.00,
+Reward: -9.00,
+Completed: 1.00,
+CPU: 12.071s,
+AVERAGES: LHRTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
