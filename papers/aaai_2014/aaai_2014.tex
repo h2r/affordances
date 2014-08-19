@@ -39,7 +39,7 @@
 
 % Author info:
 \author{\authorblockN{David Abel \& Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex}
-\authorblockA{Department of Computer Science, Brown University \\
+\authorblockA{Computer Science Department, Brown University \\
 \texttt{\{dabel,gabrielbm,jmacglashan,stefie10\}@cs.brown.edu}}}
 
 \maketitle
@@ -47,24 +47,29 @@
 \begin{abstract}
 Planning algorithms for non-deterministic domains are often
 intractable in large state spaces due to the well-known curse of
-dimensionality. Existing approaches to planning in large stochastic state spaces fail to
-prevent autonomous agents from considering many actions that are
-obviously irrelevant to a human solving the same task. To solve this problem,
-we formalize the notion of {\em affordances} as knowledge added to an 
-Object Oriented Markov Decision Process (OO-MDP) \dnote{Should we specify the fact that
-we are adding affordances to an OO-MDP in particular? Also should we note that we are goal oriented?}.
-Affordances prune actions on a state-by-state basis, reducing the number of 
-state-action pairs the planner must evaluate in order to synthesize a near optimal policy.
+dimensionality. Existing approaches to planning in large stochastic
+state spaces fail to prevent autonomous agents from considering many
+actions that are obviously irrelevant to a human solving the same
+task. To reduce the size of the state/action space without sacrificing
+optimality, we formalize the notion of {\em affordances} as
+goal-oriented knowledge added to an Object Oriented Markov Decision
+Process (OO-MDP).  Affordances prune actions based on the current
+state and the robot's goal, reducing the number of state-action pairs
+the planner must evaluate in order to synthesize a near optimal
+policy.
 % NOTE: I think it sounds punchier without this sentence, but this information might
 % be important for the abstract?: (--Dave)
 %Affordances are not specific to a particular reward function
 %or state-space, so they may be applied to a variety of tasks and domains. 
-Furthermore, we show that an agent can learn affordances through unsupervised 
-experience, and that learned affordances can equal or surpass the performance of those
-provided by experts. We demonstrate our approach in the state-rich Minecraft domain, 
-showing significant increases in speed and reductions in state-space exploration during
-planning %with negligible loss in quality of the synthesized policy. % Dave note: thoughts on including this commented out bit?
-Additionally, we employ affordance-aware planning on a robot in a collaborative cooking task. 
+Furthermore, we show that an agent can learn affordances through
+unsupervised experience, and that learned affordances can equal or
+surpass the performance of those provided by experts. We demonstrate
+our approach in the state-rich Minecraft domain, showing significant
+increases in speed and reductions in state-space exploration during
+planning, with minimal loss in quality of the synthesized policy.
+Additionally, we employ affordance-aware planning on a Baxter robot,
+demonstrating it is able to assist a person performing a collaborative
+cooking task.
 
 \end{abstract}
 
@@ -74,48 +79,71 @@ Additionally, we employ affordance-aware planning on a robot in a collaborative 
 \section{Introduction}
 \label{sec:introduction}
 
-Robots operating in unstructured, stochastic environments face
-a difficult planning problem~\citep{bollini12,knepper13}.
-Robotic planning tasks are classically formalized as a stochastic sequential
-decision making problem, modeled as a Markov Decision Process (MDP). In these problems,
-the agent must find a mapping from states to actions for some subset of the 
-state space that enables the agent to achieve a goal while minimizing costs 
-along the way. However, many robotics tasks are so complex that modeling
-them as an MDP results in a massive state-action space, 
-which in turn restricts the types of robotics problems that are computationally tractable.
+Robots operating in unstructured, stochastic environments such as a
+factory floor or a kitchen face a difficult planning problem due to
+the large state space and inherent
+uncertainty~\citep{bollini12,knepper13}.  Robotic planning tasks are
+classically formalized as a stochastic sequential decision making
+problem, modeled as a Markov Decision Process (MDP). In these
+problems, the agent must find a mapping from states to actions for
+some subset of the state space that enables the agent to achieve a
+goal while minimizing costs along the way. However, many robotics
+tasks are so complex that modeling them as an MDP results in a massive
+state-action space, which in turn restricts the types of robotics
+problems that are computationally tractable.
  
-For example, when a robot is manipulating objects in an environment
-an object can be placed anywhere in a large set of locations. The size
-of the state space increases exponentially with the number of objects,
-which bounds the placement problems that the robot is able to expediently solve.
+For example, when a robot is manipulating objects in an environment,
+an object can be placed anywhere in a large set of locations.
+Depending on the task, most of these locations are irrelevant; for
+example, when making brownies, the oven and flour are important, while
+the soy sauce and saute pan are not.  For a different task, such as
+stir-frying broccoli, a different set of objects and actions are
+relevant.  Unfortunately, the size of the state space increases
+exponentially with the number of objects, which bounds the placement
+problems that the robot is able to expediently solve.
 
-To address this state-action space explosion, prior work has explored adding knowledge to the planner,
-such as options~\cite{sutton99} and macroactions~\cite{Botea:2005kx,Newton:2005vn}. 
-However, while these methods allow the agent to search more deeply in the state
-space, they add high-level actions to the planner which {\em increase} the size of the state-action space.
-The resulting augmented space is even larger, which can have the paradoxical 
-effect of increasing the search time for a good policy~\cite{Jong:2008zr}.
-\dnote{Should we mention heuristic planners or action pruning work here too?}
+To address this state-action space explosion, prior work has explored
+adding knowledge to the planner, such as options~\cite{sutton99} and
+macroactions~\cite{Botea:2005kx,Newton:2005vn}.  However, while these
+methods allow the agent to search more deeply in the state space, they
+add high-level actions to the planner which {\em increase} the size of
+the state-action space.  The resulting augmented space is even larger,
+which can have the paradoxical effect of increasing the search time
+for a good policy~\cite{Jong:2008zr}.  
+Deterministic forward-search algorithms like hierarchical task
+networks (HTNs)~\citep{Nau:1999:SSH:1624312.1624357}, and temporal
+logical planning
+(TLPlan)~\citep{Bacchus95usingtemporal,Bacchus99usingtemporal}, add
+knowledge to the planner that greatly increases planning speed, but do
+not generalize to stochastic domains. Additionally, the knowledge
+provided to the planner must be given by a domain expert, reducing the
+agent's autonomy.  
 
-Deterministic forward-search algorithms like hierarchical task networks (HTNs),
-such as SHOP~\citep{Nau:1999:SSH:1624312.1624357}, and
-temporal logical planning (TLPlan)~\citep{Bacchus95usingtemporal,Bacchus99usingtemporal}, 
-add knowledge to the planner that greatly increases planning speed, but do not
-generalize to stochastic domains. Additionally, the knowledge provided to the 
-planner must be given by a domain expert, reducing the agent's autonomy.
-\dnote{Does this paragraph feel necessary? We talk about options/macroactions so it makes sense
-to gloss over our other related work.}
 
-We propose augmenting an MDP with a formalization of {\em affordances}. An
-affordance~\cite{gibson77} specifies which actions an agent should consider in
-different states of the world in order to satisfy a given goal. By applying affordances 
-to planning, we prune the agent's action set to focus on aspects of the environment
-that are most relevant to solving its current goal and avoid exploration of irrelevant 
-parts of the state-action space. Affordances are not specific to a particular reward
-function or state space, and provide the agent with transferable knowledge that is 
-effective in a wide variety of problems. Moreover, our methods enable a single agent 
-to autonomously learn affordances through unsupervised experience, making affordances 
-a concise, transferable, and learnable means of representing useful planning knowledge.
+% \dnote{Should we mention
+%   heuristic planners or action pruning work here too?}
+
+% stefie10: I think it's okay not to mention them here.  We want to
+% highlight the closest areas in the introduction; we can save the
+% full thing for related work.
+
+%% \dnote{Does this paragraph feel necessary? We talk
+%%   about options/macroactions so it makes sense to gloss over our other
+%%   related work.}
+
+To address these issues, we propose augmenting an MDP with a
+formalization of {\em affordances}. An affordance~\cite{gibson77}
+specifies which actions an agent should consider in different states
+of the world in order to satisfy a given goal. By applying affordances
+to planning, we prune the agent's action set to focus on aspects of
+the environment that are most relevant to solving its current goal and
+avoid exploration of irrelevant parts of the state-action
+space. Affordances are not specific to a particular reward function or
+state space, and provide the agent with transferable knowledge that is
+effective in a wide variety of problems. Moreover, our methods enable
+a single agent to autonomously learn affordances through unsupervised
+experience, making affordances a concise, transferable, and learnable
+means of representing useful planning knowledge.
 
 %% Because affordances define the {\em kind} of goals for which actions
 %% are useful, affordances also enable high-level reasoning that can be
@@ -127,7 +155,7 @@ of planning tasks compared to baselines and apply across different state-spaces.
 conduct experiments in the game Minecraft, and on a robotic cooking assistant. 
 
 % ====== Background ======
-\section{Background}
+\section{Technical Approach}
 \label{sec:background}
 % --- Subsection: MDPS ---
 %\subsection{MDPs}
@@ -179,20 +207,13 @@ $s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$, in an OO-MDP.
 
 
 % ====== Section: Affordances ======
-\section{Affordances}
+\subsection{Affordances}
 \label{sec:affordances}
 
-The term ``affordance" was introduced by J.J. Gibson in 1977~\citep{gibson77}. An 
-affordance describes the action-possibilities that an environment presents to an agent.
-More specifically, Gibson proposed that an affordance is ``what [the environment] offers
-[an] animal, what [the environment] provides or furnishes, either for good or ill".
-\dnote{I moved MDPs and OO-MDPs into the "background" section, and added a brief affordance intro here - thoughts? MDPs/OO-MDPs felt odd at the beginning of the affordances section.}
-
-% -- Subsection: Affordance Formalism --
-\subsection{Affordance Formalism}
-
-% -- "Equation": Affordance Formalism --
-We define an affordance, $\Delta$, as the tuple $\langle p, g, \delta, \alpha, \beta \rangle$,
+\citet{gibson77} proposed that an affordance is ``what [the
+  environment] offers [an] animal, what [the environment] provides or
+furnishes, either for good or ill".  We define an affordance,
+$\Delta$, as the tuple $\langle p, g, \delta, \alpha, \beta \rangle$,
 where:
 \begin{itemize}
 \item $p$ is a predicate on states, $s \longrightarrow \{$0$, 1\}$ representing the {\em precondition} for the affordance. 
