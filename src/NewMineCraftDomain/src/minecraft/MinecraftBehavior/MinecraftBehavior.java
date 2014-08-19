@@ -110,7 +110,7 @@ public class MinecraftBehavior {
 	public int							maxSteps = 200;
 
 	public int 							numRollouts = 1500; // RTDP
-	public int							maxDepth = 25; // RTDP
+	public int							maxDepth = 50; // RTDP
 	public int 							vInit = 1; // RTDP
 	public int 							numRolloutsWithSmallChangeToConverge = 50; // RTDP
 	public double						boltzmannTemperature = 0.5;
@@ -513,7 +513,7 @@ public class MinecraftBehavior {
 	public static void main(String[] args) {
 //		String mapsPath = System.getProperty("user.dir") + "/maps/";
 		
-		String mapName = "src/minecraft/maps/randomMaps/PlaneWorld0.map";
+		String mapName = "src/minecraft/maps/test/DeepTrenchWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapName);
 		double [] results;
@@ -539,11 +539,13 @@ public class MinecraftBehavior {
 		boolean softFlag = false;
 		// Load knowledge base
 		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "expert/expert_prim_acts.kb", softFlag);
+//		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "expert/expert_prim_acts.kb", softFlag);
+		
+		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "learned/learned10_prim_acts.kb", softFlag);
 
-		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
+		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, useOptions, useMAs, affKB);
 		results = affRTDPPlanner.runPlanner();
-		System.out.println("(minecraftBehavior) results [expertRTDP]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		System.out.println("(minecraftBehavior) results [10RTDP]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//VI
 //		VIPlanner viPlan = new VIPlanner(mcBeh, false, false);
@@ -566,18 +568,18 @@ public class MinecraftBehavior {
 //		sgp.solve();
 		
 		// Collect results and write to file
-//		File resultsFile = new File("tests/results/mcBeh_results.result");
-//		BufferedWriter bw;
-//		FileWriter fw;
-//		try {
-//			fw = new FileWriter(resultsFile.getAbsoluteFile());
-//			bw = new BufferedWriter(fw);
-//			bw.write("(minecraftBehavior) results: RTDP " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
-//			bw.flush();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		File resultsFile = new File("src/tests/results/mcBeh_results.result");
+		BufferedWriter bw;
+		FileWriter fw;
+		try {
+			fw = new FileWriter(resultsFile.getAbsoluteFile());
+			bw = new BufferedWriter(fw);
+			bw.write("(minecraftBehavior) results: LRTDP " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
+			bw.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	

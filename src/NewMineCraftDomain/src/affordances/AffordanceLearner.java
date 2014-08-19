@@ -152,13 +152,13 @@ public class AffordanceLearner {
 		int numLavaBlocks = 1;
 		
 		System.out.println("Generating maps..." + this.numWorldsPerLGD);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 3, 3, 5);
-		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneGoldMineWorld(numLavaBlocks), 1, 3, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneGoldMineWorld(numLavaBlocks), 3, 1, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneWallWorld(1, numLavaBlocks), 3, 1, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks + 1), 3, 3, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 3, 3, 5);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneGoldMineWorld(numLavaBlocks), 1, 3, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneGoldMineWorld(numLavaBlocks), 3, 1, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneWallWorld(1, numLavaBlocks), 3, 1, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks), 3, 3, 4);
 
 		// Not learning or testing with shelves right now
 		//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
@@ -722,7 +722,7 @@ public class AffordanceLearner {
 		boolean addOptions = false;
 		boolean addMAs = false;
 		double fractionOfStateSpaceToLearnWith = 1.0;
-		final int numWorldsToLearnWith = 20;
+		final int numWorldsToLearnWith = 2;
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
 		generateMinecraftKB(mcBeh, numWorldsToLearnWith, false, addOptions, addMAs, fractionOfStateSpaceToLearnWith);
 	}
