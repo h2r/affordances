@@ -152,13 +152,11 @@ public class AffordanceLearner {
 		int numLavaBlocks = 1;
 		
 		System.out.println("Generating maps..." + this.numWorldsPerLGD);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 3, 3, 5);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneGoldMineWorld(numLavaBlocks), 1, 3, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneGoldMineWorld(numLavaBlocks), 3, 1, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 3, 3, 5);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 3, 4);
 //		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD / 2, new PlaneWallWorld(1, numLavaBlocks), 3, 1, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks), 3, 3, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 1, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks), 3, 3, 4);
 
 		// Not learning or testing with shelves right now
 		//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
@@ -188,8 +186,8 @@ public class AffordanceLearner {
 		// Updates the action counts (alpha)
 		updateActionCounts(planner, p, seen, true);
 		
-		// Updates the action set size counts (beta)
-		updateActionSetSizeCounts(seen);
+//		// Updates the action set size counts (beta)
+//		updateActionSetSizeCounts(seen);
 	}
 	
 	/**
@@ -245,7 +243,7 @@ public class AffordanceLearner {
 				}
 				
 				// If affordance is lit up
-				if(affDelegate.primeAndCheckIfActiveInState(st, affordanceKB.getAffordancesController().currentGoal)) {
+				if(affDelegate.isActive(st, affordanceKB.getAffordancesController().currentGoal)) {
 					
 					// If we're counting total number of actions OR we haven't counted this action for this affordance yet
 					if (this.countTotalActions || !seen.get(affDelegate).contains(ga)) {
@@ -262,7 +260,7 @@ public class AffordanceLearner {
 			}
 			if(this.countTotalActions) {
 				for(AffordanceDelegate alwaysTrueAffD : this.alwaysTrueKB.getAffordances()) {
-					if(alwaysTrueAffD.primeAndCheckIfActiveInState(st, affordanceKB.getAffordancesController().currentGoal)) {
+					if(alwaysTrueAffD.isActive(st, affordanceKB.getAffordancesController().currentGoal)) {
 						((SoftAffordance)alwaysTrueAffD.getAffordance()).updateActionCount(ga);
 					}
 				}
@@ -409,19 +407,19 @@ public class AffordanceLearner {
 	 * Updates the hyperparameter for the dirichlet over action set size
 	 * @param seen: map from affordances to actions
 	 */
-	public void updateActionSetSizeCounts(Map<AffordanceDelegate,List<AbstractGroundedAction>> seen) {
-		// Count the action set size for each affordance for this world
-		double counted = 0.0;
-		for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
-			if (seen.get(affDelegate).size() > 0) {
-				++counted;
-				((SoftAffordance)affDelegate.getAffordance()).updateActionSetSizeCount(seen.get(affDelegate).size());
-			}
-			else{
-			}
-		}
-//		System.out.println("(AffordanceLearner)Ratio of counted set sizes: " + (counted / affordanceKB.getAffordances().size()));
-	}
+//	public void updateActionSetSizeCounts(Map<AffordanceDelegate,List<AbstractGroundedAction>> seen) {
+//		// Count the action set size for each affordance for this world
+//		double counted = 0.0;
+//		for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
+//			if (seen.get(affDelegate).size() > 0) {
+//				++counted;
+//				((SoftAffordance)affDelegate.getAffordance()).updateActionSetSizeCount(seen.get(affDelegate).size());
+//			}
+//			else{
+//			}
+//		}
+////		System.out.println("(AffordanceLearner)Ratio of counted set sizes: " + (counted / affordanceKB.getAffordances().size()));
+//	}
 	
 	/**
 	 * Generates an affordance knowledge base object
@@ -440,7 +438,11 @@ public class AffordanceLearner {
 					aff = new SoftAffordance(pf, lgd, allActions);
 				}
 				else {
-					aff = new HardAffordance(pf, lgd, allActions);
+					Map<AbstractGroundedAction,Double> actionDistribution = new HashMap<AbstractGroundedAction,Double>();
+					for(AbstractGroundedAction aga : allActions) {
+						actionDistribution.put(aga, 1.0);
+					}
+					aff = new HardAffordance(pf, lgd, actionDistribution);
 				}
 				AffordanceDelegate affDelegate = new AffordanceDelegate(aff);	
 				affordanceKB.add(affDelegate);

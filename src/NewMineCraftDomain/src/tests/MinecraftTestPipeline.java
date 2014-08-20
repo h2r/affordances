@@ -55,12 +55,12 @@ public class MinecraftTestPipeline {
 //		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
 //		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 2, 2, 4);
 
-		// Big
-//		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 5, 5, 6);
-//		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 4, 4, 4);
+		// Big-RTDP (SIZES LOCKED)
+		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 5, 5, 6);
+		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 4, 4, 4);
 		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 4, 4, 4);
-//		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks + 1), 4, 4, 4);
-//		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 8, 8, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks + 1), 4, 4, 4);
+		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 8, 8, 4);
 	}
 	
 	/**
@@ -104,7 +104,7 @@ public class MinecraftTestPipeline {
 			else if(useOptions) expertKBName += "_op";
 			else expertKBName += "_prim_acts";
 			expertKBName += ".kb";
-			expertAffKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), expertKBName, false);
+			expertAffKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), expertKBName, true);
 		}
 
 		// Learn if we're supposed to learn a new KB
@@ -120,13 +120,13 @@ public class MinecraftTestPipeline {
 		// Hard Learned KB
 		KnowledgeBase learnedHardAffKB = new KnowledgeBase();
 		if(planners.contains(NameSpace.LearnedHardRTDP) || planners.contains(NameSpace.LearnedHardVI)) {
-			learnedHardAffKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), learnedKBName, false);
+			learnedHardAffKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), learnedKBName, true);
 		}
 		
 		// Soft Learned KB
 		KnowledgeBase learnedSoftAffKB = new KnowledgeBase();;
 		if(planners.contains(NameSpace.LearnedSoftRTDP) || planners.contains(NameSpace.LearnedSoftVI)) {
-			learnedSoftAffKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), learnedKBName, true);
+			learnedSoftAffKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), learnedKBName, false);
 		}
 		
 		// --- FILE WRITER SETUP ---
@@ -484,7 +484,7 @@ public class MinecraftTestPipeline {
 		boolean addMacroActions = false;
 		boolean countStateSpaceSize = false;
 		try {
-			runMinecraftTests(1, "1", learningFlag, planners, addOptions, addMacroActions, countStateSpaceSize);
+			runMinecraftTests(3, "3", learningFlag, planners, addOptions, addMacroActions, countStateSpaceSize);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -493,11 +493,11 @@ public class MinecraftTestPipeline {
 		
 		// --- Learning Rate Results ---
 //		boolean shouldLearn = true;
-//		int numTestingMaps = 3;
-//		int numLearningMapsPerLGD = 3;
-//		double minFractStateSpace = 0;
+//		int numTestingMaps = 1;
+//		int numLearningMapsPerLGD = 1;
+//		double minFractStateSpace = 0.01;
 //		double maxFractStateSpace = 1;
-//		double increment = 0.5;
+//		double increment = 1;
 //		boolean useOptions = false;
 //		boolean useMAs = false;
 //		boolean countStateSpaceSize = false;

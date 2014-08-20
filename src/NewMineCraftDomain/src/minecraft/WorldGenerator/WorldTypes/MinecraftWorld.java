@@ -12,7 +12,7 @@ public abstract class MinecraftWorld {
 	protected boolean wallsStraightAndBetweenAgentAndGoal = true;
 	protected int floorDepth = 1;
 	protected Integer goldOreDepth = 0;//Agent's feet is the origin
-	protected int numPlaceBlocks = 2;//Num blocks agent can place
+	protected int numPlaceBlocks = 1;//Num blocks agent can place
 	protected int goalShelfHeight = 0;
 	protected int numLava = 0;
 	

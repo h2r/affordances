@@ -19,6 +19,7 @@ import burlap.behavior.affordances.AffordanceDelegate;
 import burlap.behavior.affordances.AffordancesController;
 import burlap.behavior.affordances.SoftAffordance;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
+import burlap.oomdp.core.AbstractGroundedAction;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.singleagent.Action;
 
@@ -28,19 +29,11 @@ import burlap.oomdp.singleagent.Action;
  * @author dabel
  */
 public class KnowledgeBase {
-	private List<AffordanceDelegate>	affDelegateList;
-	private AffordancesController		affController;
-//	private String						basePath = System.getProperty("user.dir") + "/minecraft/kb/";
-	private final static ResourceLoader	resLoader = new ResourceLoader();
-	
+	private List<AffordanceDelegate>			affDelegateList;
+	private AffordancesController				affController;
+
 	public KnowledgeBase() {
 		this.affDelegateList = new ArrayList<AffordanceDelegate>();
-		this.affController = new AffordancesController(this.affDelegateList);
-	}
-	
-	public KnowledgeBase(List<AffordanceDelegate> kb) {
-		this.affDelegateList = new ArrayList<AffordanceDelegate>(kb);
-		this.affController = new AffordancesController(this.affDelegateList);
 	}
 	
 	public void add(AffordanceDelegate aff) {
@@ -81,7 +74,7 @@ public class KnowledgeBase {
 	
 	
 	
-	public void load(Domain d, Map<String,Action> temporallyExtActions, String filename, boolean softFlag) {
+	public void load(Domain d, Map<String,Action> temporallyExtActions, String filename, boolean hardFlag) {
 		AffordanceDelegate aff = null;
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(NameSpace.PATHKB + filename));
@@ -107,12 +100,7 @@ public class KnowledgeBase {
 			for(String affString : processedStrings) {
 				// Remove the final newline character from the affordance
 				String slicedString = affString.substring(0, affString.length() - 1);
-				if(softFlag) {
-					aff = AffordanceDelegate.loadSoft(d, temporallyExtActions, slicedString);
-				}
-				else {
-					aff = AffordanceDelegate.loadHard(d, temporallyExtActions, slicedString);
-				}
+				aff = AffordanceDelegate.load(d, temporallyExtActions, slicedString);
 				this.affDelegateList.add(aff);
 				reader.close();
 			}
@@ -122,12 +110,12 @@ public class KnowledgeBase {
 			e.printStackTrace();
 		}
 		
-		this.affController = new AffordancesController(this.affDelegateList);
+		this.affController = new AffordancesController(this.affDelegateList, hardFlag);
 	}
 	
 	public void processSoft() {
 		for(AffordanceDelegate affDelegate : affDelegateList) {
-			((SoftAffordance)affDelegate.getAffordance()).postProcess();
+			((SoftAffordance)affDelegate.getAffordance()).initializeMultinomial();
 		}
 	}
 	
