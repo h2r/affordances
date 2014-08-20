@@ -1,20 +1,3 @@
 Running on map: DeepTrenchWorld0.map
-	...RTDP Finished
-	...Expert RTDP Finished
-mapCounter: 1
-Running on map: DeepTrenchWorld1.map
-	...RTDP Finished
-	...Expert RTDP Finished
-mapCounter: 2
-Running on map: DeepTrenchWorld2.map
-	...RTDP Finished
-	...Expert RTDP Finished
-mapCounter: 3
-Running on map: DeepTrenchWorld3.map
-	...RTDP Finished
-	...Expert RTDP Finished
-mapCounter: 4
-Running on map: DeepTrenchWorld4.map
-	...RTDP Finished
-	...Expert RTDP Finished
-mapCounter: 5
+	...VI Finished
+	...Expert VI
