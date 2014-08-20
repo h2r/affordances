@@ -39,7 +39,7 @@
 \title{Affordance-Aware Planning}
 
 % Author info:
-\author{\authorblockN{David Abel, James MacGlashan, Stefanie Tellex}
+\author{\authorblockN{David Abel, \& Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex}
 \authorblockA{Computer Science Department, Brown University \\
 \texttt{\{dabel,gabrielbm,jmacglashan,stefie10\}@cs.brown.edu}}}
 
@@ -228,38 +228,38 @@ believed to be optimal by the affordances.
 This pruning is informed by the distribution over the optimal action set, given the current state,
 the type of the goal the agent is trying to satisfy, and a knowledge base $K$ of affordances:
 
-% -- Equation: Master --
-\begin{equation}
-\Pr(\mathcal{A}^\Delta = \mathcal{A}^o \mid s, G, K)
-\end{equation}
-
-We may replace $K$, $s$, and $G$ with the action distributions associated with the set of {\it active} affordances, for the given state $s$ under goal $G$.
-% -- Equation: Master w/ Active Affordances --
-\begin{equation}
-\Pr(\mathcal{A}^\Delta = \mathcal{A}^o \mid \Delta_1.A, \ldots, \Delta_m.A)
-\end{equation}
-
-We may reinterpret this probability in terms of the probability that each action in the OO-MDP action space is in the optimal action set
-% -- Equation: Specific Action --
-\begin{equation}
-\prod_{i=1}^{|\mathcal{A}|}\Pr(a_i \in \mathcal{A}^o \mid \Delta_1.A_i, \ldots, \Delta_m.A_i)
-\end{equation}
-
-We abbreviate $\Delta_j.A_i$ to $b_{ji}$, and $a_i \in \mathcal{A}^o$ to $a_i$:
-
-% -- Equation: Abbreviation --
-\begin{equation}
-\prod_{i=1}^{|\mathcal{A}|}\Pr(a_i \mid b_{1i}, \ldots, b_{mi})
-\end{equation}
-
-Applying Bayes Rule, we get:
-
-% -- Equation: Bayes --
-\begin{equation}
-\prod_{i=1}^{|\mathcal{A}|} \frac{\Pr(b_{1i}, \ldots, b_{mi} \mid a_i) \Pr(a_i)}{\Pr(b_{1i}, \ldots, b_{mi} \mid a_i) \Pr(a_i) + \Pr(b_{1i}, \ldots, b_{mi} \mid \neg a_i) \Pr(\neg a_i)}
-\end{equation}
-
-We assume a uniform prior on each action's optimality and that each affordances action distributions are conditionally independent given an action $a_i$:
+%% -- Equation: Master --
+%\begin{equation}
+%\Pr(\mathcal{A}^\Delta = \mathcal{A}^o \mid s, G, K)
+%\end{equation}
+%
+%We may replace $K$, $s$, and $G$ with the action distributions associated with the set of {\it active} affordances, for the given state $s$ under goal $G$.
+%% -- Equation: Master w/ Active Affordances --
+%\begin{equation}
+%\Pr(\mathcal{A}^\Delta = \mathcal{A}^o \mid \Delta_1.A, \ldots, \Delta_m.A)
+%\end{equation}
+%
+%We may reinterpret this probability in terms of the probability that each action in the OO-MDP action space is in the optimal action set
+%% -- Equation: Specific Action --
+%\begin{equation}
+%\prod_{i=1}^{|\mathcal{A}|}\Pr(a_i \in \mathcal{A}^o \mid \Delta_1.A_i, \ldots, \Delta_m.A_i)
+%\end{equation}
+%
+%We abbreviate $\Delta_j.A_i$ to $b_{ji}$, and $a_i \in \mathcal{A}^o$ to $a_i$:
+%
+%% -- Equation: Abbreviation --
+%\begin{equation}
+%\prod_{i=1}^{|\mathcal{A}|}\Pr(a_i \mid b_{1i}, \ldots, b_{mi})
+%\end{equation}
+%
+%Applying Bayes Rule, we get:
+%
+%% -- Equation: Bayes --
+%\begin{equation}
+%\prod_{i=1}^{|\mathcal{A}|} \frac{\Pr(b_{1i}, \ldots, b_{mi} \mid a_i) \Pr(a_i)}{\Pr(b_{1i}, \ldots, b_{mi} \mid a_i) \Pr(a_i) + \Pr(b_{1i}, \ldots, b_{mi} \mid \neg a_i) \Pr(\neg a_i)}
+%\end{equation}
+%
+%We assume a uniform prior on each action's optimality and that each affordances action distributions are conditionally independent given an action $a_i$:
 
 % -- Equation: Posterior --
 \begin{equation}
