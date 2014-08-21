@@ -9,6 +9,7 @@
 \usepackage{amsmath,empheq}
 \usepackage{amssymb}
 \usepackage{latexsym}
+\usepackage{bbm}
 
 \usepackage[numbers]{natbib}
 \usepackage{multicol}
@@ -22,6 +23,8 @@
 \newcommand{\dnote}[1]{\textcolor{Green}{\textbf{D: #1}}}
 \newcommand{\enote}[1]{\textcolor{Red}{\textbf{E: #1}}}
 \newcommand{\gnote}[1]{\textcolor{Purple}{\textbf{G: #1}}}
+
+% -- Misc. new commands --
 \newcommand{\argmax}{\operatornamewithlimits{argmax}}
 
 \pdfinfo{
@@ -108,9 +111,8 @@ which can have the paradoxical effect of increasing the search time
 for a good policy~\cite{Jong:2008zr}.  
 Deterministic forward-search algorithms like hierarchical task
 networks (HTNs)~\citep{Nau:1999:SSH:1624312.1624357}, and temporal
-logical planning
-(TLPlan)~\citep{Bacchus95usingtemporal,Bacchus99usingtemporal}, add
-knowledge to the planner that greatly increases planning speed, but do
+logical planning (TLPlan)~\citep{Bacchus95usingtemporal,Bacchus99usingtemporal},
+add knowledge to the planner that greatly increases planning speed, but do
 not generalize to stochastic domains. Additionally, the knowledge
 provided to the planner must be given by a domain expert, reducing the
 agent's autonomy. 
@@ -199,14 +201,16 @@ We define an affordance, $\Delta$, as the tuple $\langle p, g, A \rangle$, where
 \item $A$ is a distribution on the OO-MDP action space, $\mathcal{A}$, representing the probability that each action is optimal.
 \end{itemize}
 
-The precondition, $p$, and goal type, $g$, refer to predicates that are defined in the OO-MDP definition.
-The precondition specifies when certain affordances are relevant, and the goal allows the agent to focus
-on different actions depending on what it is trying to accomplish. The distribution $A$ indicates the affordance's
-belief that each action is optimal, represented as a Bernouli on each action. The weights of these distributions may
-be specified by a domain expert or learned during training time.
+The precondition, $p$, and goal type, $g$, refer to predicates that are defined 
+in the OO-MDP definition. The precondition specifies when certain affordances 
+are relevant, and the goal allows the agent to focus on different actions depending
+on what it is trying to accomplish. The distribution $A$ indicates the affordance's belief 
+that each action is optimal, represented as a Bernouli on each action. The weights 
+of these distributions are specified by a domain expert or learned during training time. 
 
-We call an affordance {\it active}, when its precondition $p$ evaluates to true in the given state and its goal type $g$ is entailed
-by the goal the agent is currently trying to satisfy.
+We call an affordance {\it active} when its precondition $p$ evaluates to true in the given
+state, $\Delta.p(s) = 1$, and its goal type $g$ is entailed by the goal the agent is currently
+trying to satisfy, $(G \models \Delta.g) = 1$.
 
 Our definition of affordances builds on OO-MDPs. Using OO-MDP predicates for affordance
 preconditions and goal types allows for state space independence, as predicates generalize across state-spaces. 
@@ -233,13 +237,13 @@ the type of the goal the agent is trying to satisfy, and a knowledge base $K$ of
 \Pr(\mathcal{A}^\Delta = \mathcal{A}^o \mid s, G, K)
 \end{equation}
 
-We may replace $K$, $s$, and $G$ with the action distributions associated with the set of {\it active} affordances, for the given state $s$ under goal $G$.
+We replace $K$, $s$, and $G$ with the action distributions associated with the set of {\it active} affordances, for the given state $s$ under goal $G$.
 % -- Equation: Master w/ Active Affordances --
 \begin{equation}
 \Pr(\mathcal{A}^\Delta = \mathcal{A}^o \mid \Delta_1.A, \ldots, \Delta_m.A)
 \end{equation}
 
-We may reinterpret this probability in terms of the probability that each action in the OO-MDP action space is in the optimal action set
+We may reinterpret this probability in terms of the probability that each action in the OO-MDP action space is in the optimal action set:
 % -- Equation: Specific Action --
 \begin{equation}
 \prod_{i=1}^{|\mathcal{A}|}\Pr(a_i \in \mathcal{A}^o \mid \Delta_1.A_i, \ldots, \Delta_m.A_i)
@@ -259,7 +263,8 @@ Applying Bayes Rule, we get:
 \prod_{i=1}^{|\mathcal{A}|} \frac{\Pr(b_{1i}, \ldots, b_{mi} \mid a_i) \Pr(a_i)}{\Pr(b_{1i}, \ldots, b_{mi} \mid a_i) \Pr(a_i) + \Pr(b_{1i}, \ldots, b_{mi} \mid \neg a_i) \Pr(\neg a_i)}
 \end{equation}
 
-We assume a uniform prior on each action's optimality and that each affordances action distributions are conditionally independent given an action $a_i$:
+We assume a uniform prior on each action's optimality and assume that 
+the affordances action distributions are conditionally independent given an action $a_i$:
 
 % -- Equation: Posterior --
 \begin{equation}
@@ -290,8 +295,8 @@ that maximizes the probability that the affordance action set $\mathcal{A}^\Delt
 \mathcal{K} = \argmax_{K \in \pmb{K}} \Pr(\mathcal{A}^\Delta = \mathcal{A}^o \mid s, G, K)
 \label{eq:learning_arg_max}
 \end{equation}
-\dnote{Is this necessary? Since we've computed the posterior this seems like a reasonable thing to include now}
-The primary tasks in computing $\mathcal{K}$ are to learn reasonable precondition-goal 
+\dnote{Is this necessary? Since we have a posterior to sample from this seems like a reasonable thing to include now}
+The primary tasks in computing $\mathcal{K}$ are learning reasonable precondition-goal 
 combinations and the distribution $A$ for each affordance.
 
 To learn an affordance knowledge base, a domain 
@@ -318,13 +323,13 @@ may be satisfied (i.e. the function $createTestWorld(g)$ at line 5 in Algorithm 
   \label{alg:learn}
 \end{algorithm}
 
-To determine good $p$ and $g$ pairs, the algorithm creates one affordance for 
+To determine good $p$ and $g$ pairs, the algorithm creates an affordance for 
 each combination of $\langle p, g \rangle$, where $p \in \mathcal{P}$ and $g
 \in \mathcal{G}$, as seen in line 1-3 of Algorithm \ref{alg:learn}. Affordances
 whose precondition-goal pairs don't provide useful information are thrown out 
 by the function call on line 9, leaving only those affordances with sound 
-precondition-goal pairs. We chose to remove affordances with little or no $\alpha$
-counts at the end of training, or those whose $\alpha$ counts were close to the 
+precondition-goal pairs. We chose to remove affordances with little or no action
+counts at the end of training, or those whose action counts mirrored the
 actual action distribution of the policy, indicating that the affordance contained little 
 information.
 
@@ -345,7 +350,7 @@ action in each state and can generalize this optimality to larger state spaces.
     \For {$state \in \pi.reachableStates()$}
     \For {$\Delta \in knowledgeBase$}
     \If	{$\Delta.p(s) \wedge \Delta.g \models s.g$}
-    \State $\Delta.\alpha(\pi.getOptimalAction(s))$++
+    \State $\Delta.incrementActionCount(\pi.getOptimalAction(s))$
     \EndIf
     \EndFor
     \EndFor
@@ -354,16 +359,16 @@ action in each state and can generalize this optimality to larger state spaces.
   \caption{\dnote{Do we need this anymore? If we're just counting and forming bernoulis?}}
 \end{algorithm}
 
-We learn $A$ for each affordance according to Algorithm~\ref{alg:update_params}.
-For each optimal policy, for each affordance, $\alpha$ is set to the number of states
-in which an action was optimal when its affordance's predicate was true and goal was
-entailed by the present goal. We then inform a Bernouli distribution on each action 
+We learn the action distribution $A$ for each affordance according to Algorithm~\ref{alg:update_params}.
+For each optimal policy, for each affordance, each action count is set to the number of states
+in which the action was optimal when its affordance's predicate was true and goal was
+entailed by the present goal. We then inform a Bernouli distribution for each action 
 using these counts.
 
 For experiments, we also introduce a thresholded version of an affordance, in which
 the action set $\mathcal{A}^\Delta$ is defined to be the actions in the posterior
 whose probability of being optimal was greater than an expert specified parameter. In
-all experiments, we set this parameter to be 0.01.
+all experiments, we set this parameter to be $0.01$.
 
 % ====== Section: Experiments ======
 \section{Experiments}
@@ -399,7 +404,8 @@ comparison to VI like Stefanie mentioned}
 
 % -- Figure: List of expert affordances used --
 \begin{figure}
-Figure listing the expert affordances
+{\it Figure listing the expert affordances}
+\dnote{Note this is more difficult now that $A$ is a distribution... Maybe we can just include the p-g pairs?}
 \label{fig:afford_kb_exp}
 \end{figure}
 
@@ -443,25 +449,16 @@ affordances, macroactions, and options. We conducted these experiments
 with the same configurations as our Minecraft experiments. The option policies
 and macro actions provided were hand coded by domain experts.
 
+\dnote{Do we need a note about how many actions/macroactions/options given?}
+
 % -- Subsection: Robotic Task --
 \subsection{Robotic Task}
 Finally, we deployed an affordance-aware planner onto Baxter for use
-in an assistive cooking task. \dnote{Need to fill in more details here}
+in an assistive cooking task. \dnote{ToDo}
 
 % ====== Section: Results ======
 \section{Results}
 \label{sec:results}
-
-% -- Subsection: Baxter --
-\subsection{Baxter}
-
-% -- Figure: Baxter results/image
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.195]{figures/baxter_temp.jpg}%
-  \caption{Placeholder for baxter results/image}
-  \label{fig:baxter_results}
-\end{figure}
 
 % -- Subsection: Minecraft --
 \subsection{Minecraft: Expert vs Learned vs None}
@@ -469,31 +466,30 @@ in an assistive cooking task. \dnote{Need to fill in more details here}
 \dnote{Should we switch tables to bar charts so we can show error bars?}
 
 % -- Figure: Minecraft results, RTDP --
-\begin{table}[H]
-\centering
-\begin{tabular}{ l  l || c c c c }
-  State Space 		&	Size 	&	RTDP 	& Learned 	& Learned Threshold & Expert 	\\ \hline
-  \texttt{Trench}  	& 	-	&	-	&	-		&	-	&	-	\\
-  \texttt{Mine}  		& 	-	&	-	&	-		&	-   	&	-	\\
-  \texttt{Smelt}  		& 	-	&	-	&	-		&	-	&	-	\\
-  \texttt{Wall}  		& 	-	&	-	&	-		&	-	&	-	\\
-  \texttt{Plane}  		& 	-	&	-	&	-		&	- 	&	-	\\
-\end{tabular}
-\caption{Place holder for RTDP Bellman/CPU}
-\label{table:minecraft_results_bellman}
-\end{table}
+%\begin{table}[H]
+%\centering
+%\begin{tabular}{ l  l || c c c c }
+%  State Space 		&	Size 	&	RTDP 	& Learned 	& Learned Threshold & Expert 	\\ \hline
+%  \texttt{Trench}  	& 	-	&	-	&	-		&	-	&	-	\\
+%  \texttt{Mine}  		& 	-	&	-	&	-		&	-   	&	-	\\
+%  \texttt{Smelt}  		& 	-	&	-	&	-		&	-	&	-	\\
+%  \texttt{Wall}  		& 	-	&	-	&	-		&	-	&	-	\\
+%  \texttt{Plane}  		& 	-	&	-	&	-		&	- 	&	-	\\
+%\end{tabular}
+%\caption{Place holder for RTDP Bellman/CPU}
+%\label{table:minecraft_results_bellman}
+%\end{table}
 
 \begin{table}[H]
 \centering
-\begin{tabular}{ l  | c c c c}
+\begin{tabular}{ l  || c c c c}
   Planner 				&	CPU	&	Reward 	& Bellman \\ \hline
   \texttt{RTDP}  			& 	-	&	-		&	-		\\
   \texttt{ERTDP}  		& 	-	&	-		&	-		\\
   \texttt{LRTDP}  		& 	-	&	-		&	-		\\
   \texttt{LTRTDP}  		& 	-	&	-		&	-		\\
 \end{tabular}
-\caption{\dnote{Thoughts on this style table instead? Then we would just report averages? Or a bar chart? Only downside is that we don't specify
-the state space/size}}
+\caption{\dnote{Thoughts on this style table instead? Then we would just report averages? Or a bar chart? Only downside is that we don't specify the state space size}}
 \label{table:minecraft_results_bellman}
 \end{table}
 
@@ -512,20 +508,34 @@ the state space/size}}
 % -- Subsection: Temporally Extended Actions --
 \subsection{Temporally Extended Actions}
 
-% -- Figure: Options Results --
+% -- Figure: Temporally Extended Actions Results --
+\dnote{I really think this should be a bar chart (can show error bars), but its quite a bit messier to show all this data on the same chart. If we went that route we would probably want several (one for CPU, one for Reward, etc.)}
 \begin{table}[H]
 \centering
-\begin{tabular}{ l l || c c c c }
-  State Space 		&	Size 	&	Options 	& Macroactions & Affordances  & 	All 	\\ \hline
-  \texttt{Trench}  	& 	-	&	-		&	-	&	-			&	-	\\
-  \texttt{Mine}  		& 	-	&	-		&	-	&	-  			&	-	\\
-  \texttt{Smelt}  		& 	-	&	-		&	-	&	-  			&	-	\\
-  \texttt{Wall}  		& 	-	&	-		&	-	&	-			&	-	\\
-  \texttt{Climb}  		& 	-	&	-		&	-	&	- 			&	-	\\
+\begin{tabular}{ l  || c c c c}
+  Augmentation 						&	CPU	&	Reward 	& Bellman \\ \hline
+  \texttt{RTDP}  						&	4.86s	&	-4.66		&	4074.0		\\
+  \texttt{w/ MA}  						&	21.73s	&	-4.66		&	5255.0		\\
+  \texttt{w/ Options}  					&	6.43s	&	-4.66		&	3890.33		\\
+  \texttt{w/ Affordances}  				& 	3.48s	&	-4.66		&	1907.0		\\
+  \texttt{w/ Affordances+MA}  			& 	7.54s	&	-4.66		&	2088.0		\\
+  \texttt{w/ Affordances+Options}  		& 	{\bf 3.32s}	&	-4.66		&	{\bf 1829.66}		\\
+  \texttt{w/ Affordances+MA+Options}  	& 	-		&	-		&	-		\\
 \end{tabular}
-\caption{Placeholder: Temporally Extended Actions vs Affordances}
-\label{table:minecraft_results_cpu}
+\caption{Affordances vs. Temporally Extended Actions}
+\label{table:temp_ext_acts_results}
 \end{table}
+
+% -- Subsection: Baxter --
+\subsection{Baxter}
+
+% -- Figure: Baxter results/image
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.195]{figures/baxter_temp.jpg}%
+  \caption{Placeholder for baxter results/image}
+  \label{fig:baxter_results}
+\end{figure}
 
 % ====== Section: Related Work ======
 \section{Related Work}
