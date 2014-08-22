@@ -225,7 +225,7 @@ action set, $\mathcal{A}^*$, for a given state $s$ and goal $G$ as:
 Here, $Q^*_G(s,a)$ and $V^*_G(s,a)$ represent the optimal Q function and 
 Value function, respectively.
 
-The knowledge base $K$ consists of a set of objects, $\delta_1 \ldots \delta_m$, and a 
+The knowledge base $K$ consists of a set of objects, $\delta_1 \ldots \delta_{|K|}$, and a 
 parameter vector $\theta$, where $\delta_j = \langle p, g \rangle$, and $\theta_{ij}$
 represents the weight associated with action $i$, for $\delta_j$. Here, $p \in \mathcal{P}$
 is a {\it predicate} in predicate space, $\mathcal{P}$, and $g \in \mathcal{G}$ is a {\it goal type}
@@ -237,7 +237,7 @@ its constituents:
 \Pr(\mathcal{A}^* \mid s, G, K) = \Pr(\mathcal{A}^* \mid s, G, \delta_1 \ldots \delta_{|K|}, \theta)
 \end{equation}
 
-To represent the state, goal, set of objects $\delta_1 \ldots \delta_m$ as a set of features,
+To represent the state, goal, set of objects $\delta_1 \ldots \delta_{|K|}$ as a set of features,
 we introduce the function $f : \Delta \times \mathcal{S} \times \mathcal{G}$.
 $\Delta$ is the space of all $\delta$ objects, and $\mathcal{S}$
 is the OO-MDP action space. $f$ is computed as follows:
