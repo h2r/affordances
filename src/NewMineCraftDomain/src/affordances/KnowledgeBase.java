@@ -34,6 +34,7 @@ public class KnowledgeBase {
 
 	public KnowledgeBase() {
 		this.affDelegateList = new ArrayList<AffordanceDelegate>();
+		this.affController = new AffordancesController(this.affDelegateList);
 	}
 	
 	public void add(AffordanceDelegate aff) {
@@ -62,7 +63,7 @@ public class KnowledgeBase {
 //			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 			
 			for (AffordanceDelegate aff: this.affDelegateList) {
-				bw.write(((SoftAffordance)aff.getAffordance()).toFile());
+				bw.write(((SoftAffordance) aff.getAffordance()).toFile());
 			}
 			bw.close();
 		} catch (IOException e) {
@@ -76,6 +77,7 @@ public class KnowledgeBase {
 	
 	public void load(Domain d, Map<String,Action> temporallyExtActions, String filename, boolean hardFlag) {
 		AffordanceDelegate aff = null;
+		
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(NameSpace.PATHKB + filename));
 			//new BufferedReader( //resLoader.getBufferedReader(basePath + filename);

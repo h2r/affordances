@@ -71,7 +71,6 @@ public abstract class MinecraftPlanner {
 	
 	protected void addOptionsAndMAsToOOMDPPlanner(OOMDPPlanner toAddTo) {
 		List<Action> toAdd = new ArrayList<Action>(getMapOfMAsAndOptions(this.mcBeh, this.addOptions, this.addMacroActions).values());
-		
 		for(Action action : toAdd) {
 			toAddTo.addNonDomainReferencedAction(action);
 			// Add to domain for use in affordance loading.
