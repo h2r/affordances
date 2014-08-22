@@ -17,7 +17,6 @@ import minecraft.NameSpace;
 import tests.ResourceLoader;
 import burlap.behavior.affordances.AffordanceDelegate;
 import burlap.behavior.affordances.AffordancesController;
-import burlap.behavior.affordances.SoftAffordance;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
 import burlap.oomdp.core.AbstractGroundedAction;
 import burlap.oomdp.core.Domain;
@@ -63,7 +62,7 @@ public class KnowledgeBase {
 //			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 			
 			for (AffordanceDelegate aff: this.affDelegateList) {
-				bw.write(((SoftAffordance) aff.getAffordance()).toFile());
+				bw.write(aff.toFile());
 			}
 			bw.close();
 		} catch (IOException e) {
@@ -113,12 +112,6 @@ public class KnowledgeBase {
 		}
 		
 		this.affController = new AffordancesController(this.affDelegateList, hardFlag);
-	}
-	
-	public void processSoft() {
-		for(AffordanceDelegate affDelegate : affDelegateList) {
-			((SoftAffordance)affDelegate.getAffordance()).initializeMultinomial();
-		}
 	}
 	
 	// --- ACCESSORS ---

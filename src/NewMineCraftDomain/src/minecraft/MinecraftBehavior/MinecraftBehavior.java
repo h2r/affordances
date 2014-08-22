@@ -316,7 +316,7 @@ public class MinecraftBehavior {
 	public static void main(String[] args) {
 //		String mapsPath = System.getProperty("user.dir") + "/maps/";
 		
-		String mapName = "src/minecraft/maps/test/DeepTrenchWorld0.map";
+		String mapName = "src/minecraft/maps/test/PlaneWorld0.map";
 		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapName);
 		double [] results;
@@ -343,12 +343,12 @@ public class MinecraftBehavior {
 		
 		// Load knowledge base
 		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "expert/expert_prim_acts.kb", hardFlag);
-//		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "learned/learned10_prim_acts.kb", hardFlag);
+//		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "expert/expert_prim_acts.kb", hardFlag);
+		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "learned/learned1_prim_acts.kb", hardFlag);
 
 		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, useOptions, useMAs, affKB);
 		results = affRTDPPlanner.runPlanner();
-		System.out.println("(minecraftBehavior) results [10RTDP]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		System.out.println("(minecraftBehavior) results [1LRTDP]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//VI
 //		VIPlanner viPlan = new VIPlanner(mcBeh, false, false);

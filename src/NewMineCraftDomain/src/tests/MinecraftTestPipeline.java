@@ -56,10 +56,10 @@ public class MinecraftTestPipeline {
 //		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 5, 5, 4);
 
 		// Big-RTDP (SIZES LOCKED)
-		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 5, 5, 6);
-		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 4, 4, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 4, 4, 4);
-		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks + 1), 4, 4, 4);
+//		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 5, 5, 6);
+//		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 4, 4, 4);
+//		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 4, 4, 4);
+//		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks + 1), 4, 4, 4);
 		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 8, 8, 4);
 	}
 	
@@ -482,43 +482,43 @@ public class MinecraftTestPipeline {
 //		System.out.close();
 		
 		// --- Basic Minecraft Results ---
-		boolean learningFlag = false;
+//		boolean learningFlag = false;
 //		 Choose which planners to collect results for
-		List<String> planners = new ArrayList<String>();
-		planners.add(NameSpace.RTDP);
-		planners.add(NameSpace.ExpertRTDP);
-		planners.add(NameSpace.LearnedHardRTDP);
-		planners.add(NameSpace.LearnedSoftRTDP);
+//		List<String> planners = new ArrayList<String>();
+//		planners.add(NameSpace.RTDP);
+//		planners.add(NameSpace.ExpertRTDP);
+//		planners.add(NameSpace.LearnedHardRTDP);
+//		planners.add(NameSpace.LearnedSoftRTDP);
 //		planners.add(NameSpace.VI);
 //		planners.add(NameSpace.ExpertVI);
 //		planners.add(NameSpace.LearnedHardVI);
-		boolean addOptions = false;
-		boolean addMacroActions = false;
-		boolean countStateSpaceSize = false;
-		try {
-			runMinecraftTests(3, "3_legit", learningFlag, planners, addOptions, addMacroActions, countStateSpaceSize);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		// --- Learning Rate Results ---
-//		boolean shouldLearn = true;
-//		int numTestingMaps = 1;
-//		int numLearningMapsPerLGD = 1;
-//		double minFractStateSpace = 0;
-//		double maxFractStateSpace = 1;
-//		double increment = 0.2;
-//		boolean useOptions = false;
-//		boolean useMAs = false;
+//		boolean addOptions = false;
+//		boolean addMacroActions = false;
 //		boolean countStateSpaceSize = false;
 //		try {
-//			runLearningRateTests("0-1_.2_legit_", numLearningMapsPerLGD, numTestingMaps, minFractStateSpace, maxFractStateSpace, increment, shouldLearn, countStateSpaceSize, useOptions, useMAs);
+//			runMinecraftTests(3, "3_legit", learningFlag, planners, addOptions, addMacroActions, countStateSpaceSize);
 //		} catch (IOException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
+		
+		
+		// --- Learning Rate Results ---
+		boolean shouldLearn = false;
+		int numTestingMaps = 5;
+		int numLearningMapsPerLGD = 1;
+		double minFractStateSpace = 0;
+		double maxFractStateSpace = 1;
+		double increment = 0.2;
+		boolean useOptions = false;
+		boolean useMAs = false;
+		boolean countStateSpaceSize = false;
+		try {
+			runLearningRateTests("0-1_.2_legit_", numLearningMapsPerLGD, numTestingMaps, minFractStateSpace, maxFractStateSpace, increment, shouldLearn, countStateSpaceSize, useOptions, useMAs);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

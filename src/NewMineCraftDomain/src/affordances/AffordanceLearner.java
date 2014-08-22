@@ -18,7 +18,6 @@ import minecraft.WorldGenerator.MapFileGenerator;
 import minecraft.WorldGenerator.WorldTypes.PlaneWorld;
 import burlap.behavior.affordances.Affordance;
 import burlap.behavior.affordances.AffordanceDelegate;
-import burlap.behavior.affordances.SoftAffordance;
 import burlap.behavior.singleagent.Policy;
 import burlap.behavior.singleagent.QValue;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
@@ -38,12 +37,11 @@ public class AffordanceLearner {
 	private Map<Integer,LogicalExpression> lgds;
 	private MinecraftBehavior 		mcb;
 	private int 					numWorldsPerLGD = 5;
-	private boolean					countTotalActions = true;
+	private Map<AbstractGroundedAction,Integer> totalActionCounts = new HashMap<AbstractGroundedAction,Integer>();
 	private static final Double 	lowVarianceThreshold = .004; // Threshold for what is considered high entropy/low information
 	private static final double 	meanSquaredErrorThreshold = 0.004;
 	private boolean					useOptions;
 	private boolean					useMAs;
-	private int						totalNumActions;
 	private double 					fractOfStatesToUse;
 
 	private KnowledgeBase			alwaysTrueKB;
@@ -59,27 +57,31 @@ public class AffordanceLearner {
 	 * @param useMAs: a boolean indicating if we should learn with macroactions
 	 * @param fractOfStatesToUse: the fraction of the state space to learn with
 	 */
-	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, boolean countTotalActions, int numWorlds, boolean useOptions, boolean useMAs, double fractOfStatesToUse, List<AbstractGroundedAction> allActions) {
+	public AffordanceLearner(MinecraftBehavior mcb, KnowledgeBase kb, Map<Integer,LogicalExpression> lgds, int numWorlds, boolean useOptions, boolean useMAs, double fractOfStatesToUse, List<AbstractGroundedAction> allActions) {
 		this.lgds = lgds;
 		this.mcb = mcb;
 		this.affordanceKB = kb;
-		this.countTotalActions = countTotalActions;
 		this.useOptions = useOptions;
 		this.useMAs = useMAs;
 		this.fractOfStatesToUse = fractOfStatesToUse;
 		this.numWorldsPerLGD = numWorlds;
 		
-		setupAlwaysTrueKB(allActions);
+		setupLearningDataStructures(allActions);
 	}
 	
-	private void setupAlwaysTrueKB(List<AbstractGroundedAction> allActions) {
+	private void setupLearningDataStructures(List<AbstractGroundedAction> allActions) {
 		PropositionalFunction alwaysTruePF = new AlwaysTruePF(NameSpace.PFALWAYSTRUE, mcb.getDomain(), new String[]{NameSpace.CLASSAGENT});
 		LogicalExpression alwaysTrueLE = pfAtomFromPropFunc(alwaysTruePF); // For use in removing affordances that look too uniform
 		this.alwaysTrueKB = new KnowledgeBase();
 		for(LogicalExpression goal : this.lgds.values()) {
-			Affordance aff = new SoftAffordance(alwaysTrueLE, goal, allActions);
+			Affordance aff = new Affordance(alwaysTrueLE, goal, allActions);
 			AffordanceDelegate affD = new AffordanceDelegate(aff);
 			this.alwaysTrueKB.add(affD);
+		}
+		
+		// Count total action counts for each action for Naive Bayes.
+		for(AbstractGroundedAction aga : allActions) {
+			this.totalActionCounts.put(aga, 0);
 		}
 	}
 	
@@ -117,7 +119,16 @@ public class AffordanceLearner {
 		}
 		
 		// Remove low information affordances
-		removeLowInfoAffordances();
+//		removeLowInfoAffordances();
+		
+		// Add total action counts to each aff delegate for naive bayes.
+		attachTotalActionCountsToAffordances();
+	}
+	
+	private void attachTotalActionCountsToAffordances() {
+		for(AffordanceDelegate affDel : this.affordanceKB.getAffordances()) {
+			affDel.getAffordance().setTotalActionCountMap(this.totalActionCounts);
+		}
 	}
 
 	/**
@@ -162,13 +173,9 @@ public class AffordanceLearner {
 		
 		// Synthesize a policy on the given map
 		Policy p = mcb.solve(planner);
-		Map<AffordanceDelegate,List<AbstractGroundedAction>> seen = new HashMap<AffordanceDelegate,List<AbstractGroundedAction>>();  // Makes sure we don't count an action more than once per affordance (per map)
 		
 		// Updates the action counts (alpha)
 		updateActionCounts(planner, p, true);
-		
-//		// Updates the action set size counts (beta)
-//		updateActionSetSizeCounts(seen);
 	}
 	
 	/**
@@ -219,11 +226,15 @@ public class AffordanceLearner {
 
 			for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
 				// If affordance is lit up
-				if(affDelegate.isActive(st, affordanceKB.getAffordancesController().currentGoal)) {
+				if(affDelegate.isActive(st)) {
 					// Update counts, and indicate we've seen this affordance/action pair
-					((SoftAffordance)affDelegate.getAffordance()).updateActionCount(ga);
+					affDelegate.getAffordance().incrementActionCount(ga);
 				}
 			}
+			
+			// Increment total action counts
+			int originalCount = this.totalActionCounts.get(ga);
+			this.totalActionCounts.put(ga, originalCount + 1);
 		}
 	}
 	
@@ -235,11 +246,11 @@ public class AffordanceLearner {
 		// Get counts for each affordance and queue zero count affs for removal
 		for(AffordanceDelegate aff : affordanceKB.getAffordances()) {
 			// Remove the always true predicate
-			if(((SoftAffordance)aff.getAffordance()).getPreCondition().getClass().equals(AlwaysTruePF.class)) {
+			if(aff.getAffordance().preCondition.getClass().equals(AlwaysTruePF.class)) {
 				toRemove.add(aff);
 				continue;
 			}
-			List<Integer> counts = new ArrayList<Integer>(((SoftAffordance)aff.getAffordance()).getActionCounts().values());
+			List<Integer> counts = new ArrayList<Integer>(aff.getAffordance().getActionCounts().values());
 
 			// Remove if alpha counts are all 0
 			double total = 0.0;
@@ -319,15 +330,15 @@ public class AffordanceLearner {
 		// TODO: store always true KB in a way so we don't have to loop over and find goal matching aff
 		AffordanceDelegate alwaysTrueAffToCompare = new AffordanceDelegate(null);
 		for(AffordanceDelegate alwaysTrueAffDG : this.alwaysTrueKB.getAffordances()) {
-			if(((SoftAffordance)alwaysTrueAffDG.getAffordance()).getGoalDescription().equals(((SoftAffordance)aff.getAffordance()).getGoalDescription())) {
+			if(alwaysTrueAffDG.getAffordance().goalDescription.equals((aff.getAffordance().goalDescription))) {
 				alwaysTrueAffToCompare = alwaysTrueAffDG;
 			}
 		}
 		
 		
-		List<Integer> affordanceCounts = new ArrayList<Integer>(((SoftAffordance)aff.getAffordance()).getActionCounts().values());
+		List<Integer> affordanceCounts = new ArrayList<Integer>(aff.getAffordance().getActionCounts().values());
 		double[] affToCompareDistribution = normalizeCounts(affordanceCounts);
-		List<Integer> trueActionDistrCounts = new ArrayList<Integer>(((SoftAffordance)alwaysTrueAffToCompare.getAffordance()).getActionCounts().values());
+		List<Integer> trueActionDistrCounts = new ArrayList<Integer>(alwaysTrueAffToCompare.getAffordance().getActionCounts().values());
 		double[] trueActionDistribution = normalizeCounts(trueActionDistrCounts);
 		
 		double sumSquared = 0;
@@ -391,7 +402,7 @@ public class AffordanceLearner {
 		
 		for (LogicalExpression pf : predicates) {
 			for (LogicalExpression lgd : lgds.values()) {
-				Affordance aff = new SoftAffordance(pf, lgd, allActions);
+				Affordance aff = new Affordance(pf, lgd, allActions);
 				AffordanceDelegate affDelegate = new AffordanceDelegate(aff);	
 				affordanceKB.add(affDelegate);
 			}
@@ -406,7 +417,7 @@ public class AffordanceLearner {
 	 */
 	public void printCounts() {
 		for (AffordanceDelegate affDelegate: this.affordanceKB.getAffordances()) {
-			((SoftAffordance)affDelegate.getAffordance()).printCounts();
+			affDelegate.printCounts();
 			System.out.println("");
 		}
 	}
@@ -463,8 +474,7 @@ public class AffordanceLearner {
 		KnowledgeBase affKnowledgeBase = generateAffordanceKB(getMinecraftPredicates(mcBeh), lgds, allGroundedActions);
 		
 		// Initialize Learner
-		boolean countTotalActions = true;
-		AffordanceLearner affLearn = new AffordanceLearner(mcBeh, affKnowledgeBase, lgds, countTotalActions, numWorlds, useOptions, useMAs, fracOfStateSpace, allGroundedActions);
+		AffordanceLearner affLearn = new AffordanceLearner(mcBeh, affKnowledgeBase, lgds, numWorlds, useOptions, useMAs, fracOfStateSpace, allGroundedActions);
 
 		String kbName;
 		String kbDir = "";
@@ -669,7 +679,7 @@ public class AffordanceLearner {
 		boolean addOptions = false;
 		boolean addMAs = false;
 		double fractionOfStateSpaceToLearnWith = 1.0;
-		final int numWorldsToLearnWith = 1;
+		final int numWorldsToLearnWith = 3;
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
 		generateMinecraftKB(mcBeh, numWorldsToLearnWith, false, addOptions, addMAs, fractionOfStateSpaceToLearnWith);
 	}
