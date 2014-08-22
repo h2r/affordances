@@ -9,7 +9,7 @@
 \usepackage{amsmath,empheq}
 \usepackage{amssymb}
 \usepackage{latexsym}
-\usepackage{bbm}
+%\usepackage{bbm}
 
 \usepackage[numbers]{natbib}
 \usepackage{multicol}
@@ -60,7 +60,7 @@ goal-oriented knowledge added to an Object Oriented Markov Decision
 Process (OO-MDP).  Affordances prune actions based on the current
 state and the robot's goal, reducing the number of state-action pairs
 the planner must evaluate in order to synthesize a near optimal
-policy. Furthermore, we show that an agent can learn affordances through
+policy. We show that an agent can learn affordances through
 unsupervised experience, and that learned affordances can equal or
 surpass the performance of those provided by experts. We demonstrate
 our approach in the state-rich Minecraft domain, showing significant
@@ -89,17 +89,16 @@ some subset of the state space that enables the agent to achieve a
 goal while minimizing costs along the way. However, many robotics
 tasks are so complex that modeling them as an MDP results in a massive
 state/action space, which in turn restricts the types of robotics
-problems that are computationally tractable.
- 
-For example, when a robot is manipulating objects in an environment,
-an object can be placed anywhere in a large set of locations.
-Depending on the task, most of these locations are irrelevant; for
-example, when making brownies, the oven and flour are important, while
-the soy sauce and saut\'{e} pan are not.  For a different task, such as
-stir-frying broccoli, a different set of objects and actions are
-relevant.  Unfortunately, the size of the state space increases
-exponentially with the number of objects, which bounds the placement
-problems that the robot is able to expediently solve.
+problems that are computationally tractable: when a robot is
+manipulating objects in an environment, an object can be placed
+anywhere in a large set of locations.  Depending on the task, most of
+these locations are irrelevant; for example, when making brownies, the
+oven and flour are important, while the soy sauce and saut\'{e} pan
+are not.  For a different task, such as stir-frying broccoli, a
+different set of objects and actions are relevant.  Unfortunately, the
+size of the state space increases exponentially with the number of
+objects, which bounds the placement problems that the robot is able to
+expediently solve.
 
 To address this state-action space explosion, prior work has explored
 adding knowledge to the planner, such as options~\cite{sutton99} and
@@ -120,16 +119,16 @@ agent's autonomy.
 To address these issues, we propose augmenting an MDP with a
 formalization of {\em affordances}. An affordance~\cite{gibson77}
 specifies which actions an agent should consider in different states
-of the world in order to satisfy a given goal. By applying affordances
-to planning, we prune the agent's action set to focus on aspects of
-the environment that are most relevant to solving its current goal and
-avoid exploration of irrelevant parts of the state-action
-space. Affordances are not specific to a particular reward function or
-state space, and provide the agent with transferable knowledge that is
-effective in a wide variety of problems. Moreover, our methods enable
-a single agent to autonomously learn affordances through unsupervised
-experience, making affordances a concise, transferable, and learnable
-means of representing useful planning knowledge.
+of the world in order to satisfy a given goal.  Affordances prune the
+agent's action set to focus on aspects of the environment that are
+most relevant to solving its current goal and avoid exploration of
+irrelevant parts of the state-action space. Affordances are not
+specific to a particular reward function or state space, and provide
+the agent with transferable knowledge that is effective in a wide
+variety of problems. Moreover, our methods enable a single agent to
+autonomously learn affordances through unsupervised experience, making
+affordances a concise, transferable, and learnable means of
+representing useful planning knowledge.
 
 %% Because affordances define the {\em kind} of goals for which actions
 %% are useful, affordances also enable high-level reasoning that can be
@@ -143,31 +142,38 @@ conduct experiments in the game Minecraft, and on a robotic cooking assistant.
 % ====== Technical Approach ======
 \section{Technical Approach}
 \label{sec:technical_approach}
-A classic MDP is a five-tuple: $\langle \mathcal{S}, \mathcal{A}, \mathcal{T},
-\mathcal{R}, \gamma \rangle$, where $\mathcal{S}$ is a state-space;
-$\mathcal{A}$ is the agent's set of actions; $\mathcal{T}$ denotes
-$\mathcal{T}(s' \mid s,a)$, the transition probability of an agent
-applying action $a \in \mathcal{A}$ in state $s \in \mathcal{S}$ and
-arriving in $s' \in \mathcal{S}$; $\mathcal{R}(s,a,s')$ denotes the
-reward received by the agent for applying action $a$ in state $s$ and
-and transitioning to state $s'$; and $\gamma \in [0, 1)$ is a discount
-factor that defines how much the agent prefers immediate rewards
-over future rewards (the agent prefers to maximize
-immediate rewards as $\gamma$ decreases). A classic way to 
-provide a factored representation of an MDP state is to represent
-each MDP state as a single feature vector. 
+
+Our approach defines affordances as knowledge added to a Markov
+DecisioN Process (MDP).  An MDP is a five-tuple: $\langle \mathcal{S},
+\mathcal{A}, \mathcal{T}, \mathcal{R}, \gamma \rangle$, where
+$\mathcal{S}$ is a state-space; $\mathcal{A}$ is the agent's set of
+actions; $\mathcal{T}$ denotes $\mathcal{T}(s' \mid s,a)$, the
+transition probability of an agent applying action $a \in \mathcal{A}$
+in state $s \in \mathcal{S}$ and arriving in $s' \in \mathcal{S}$;
+$\mathcal{R}(s,a,s')$ denotes the reward received by the agent for
+applying action $a$ in state $s$ and and transitioning to state $s'$;
+and $\gamma \in [0, 1)$ is a discount factor that defines how much the
+  agent prefers immediate rewards over future rewards (the agent
+  prefers to maximize immediate rewards as $\gamma$ decreases). A
+  classic way to provide a factored representation of an MDP state is
+  to represent each MDP state as a single feature vector.
 
 % -- Subsection: OO-MDPs --
 \subsection{OO-MDPs}
 An Object-Oriented Markov Decision Process (OO-MDP)~\citep{diuk08}
-can be used to represent an MDP. Unlike the vectorized state of an MDP, 
-an OO-MDP state is a collection of objects, $O = \{o_1, \ldots, o_o \}$. 
-Each object $o_i$ belongs to a class, $c_j \in  \{c_1, \ldots, c_c\}$. Every
-class has a set of attributes, $Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of which
-has a domain, $Dom(c.a)$, of possible values. The collection of attribute values
-of a given object is termed that object's state, $o.state$. A vectorized MDP state
-can be equivalently understood as the set of all the object states, 
-$s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$, in an OO-MDP. 
+efficiently represents the state of an MDP, organized around
+objects. Our definition of affordances builds on OO-MDPs. Using OO-MDP
+predicates for affordance preconditions and goal types allows for
+state space independence, as predicates generalize across
+state-spaces.  Unlike the vectorized state of an MDP, an OO-MDP state
+is a collection of objects, $O = \{o_1, \ldots, o_o \}$.  Each object
+$o_i$ belongs to a class, $c_j \in \{c_1, \ldots, c_c\}$. Every class
+has a set of attributes, $Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of
+which has a domain, $Dom(c.a)$, of possible values. The collection of
+attribute values of a given object is termed that object's state,
+$o.state$. A vectorized MDP state can be equivalently understood as
+the set of all the object states, $s \in {\cal S} = \cup_{i = 1}^o
+\{o_i.state\}$, in an OO-MDP.
 
 %% An OO-MDP lies in the ability to
 %% formulate predicates over classes of objects. That is, the OO-MDP
@@ -193,57 +199,57 @@ $s \in {\cal S} = \cup_{i = 1}^o \{o_i.state\}$, in an OO-MDP.
 
 \citet{gibson77} proposed that an affordance is ``what [the
   environment] offers [an] animal, what [the environment] provides or
-furnishes, either for good or ill". 
-We define an affordance, $\Delta$, as the tuple $\langle p, g, A \rangle$, where:
+furnishes, either for good or ill.''  Affordances restrict the action
+set of a planner on a state by state basis.  We
+define an affordance, $\Delta$, as the tuple $\langle p, g, A
+\rangle$, where:
 \begin{itemize}
 \item $p$ is a predicate on states, $s \longrightarrow \{$0$, 1\}$ representing the {\em precondition} for the affordance. 
 \item $g$ is a {\it goal type}, representing the type of problem the agent is solving.
-\item $A$ is a distribution on the OO-MDP action space, $\mathcal{A}$, representing the probability that each action is optimal.
+\item $A$ is a distribution on the OO-MDP action space, $\mathcal{A}$, representing the probability that each action is in the optimal action set for a state and goal, given the precondition, goal type, current state, $s$, and current goal, $G$: $P(a \in \mathcal{A}^* | p, g, s, G)$
 \end{itemize}
 
-The precondition, $p$, and goal type, $g$, refer to predicates that are defined 
-in the OO-MDP definition. The precondition specifies when certain affordances 
-are relevant, and the goal allows the agent to focus on different actions depending
-on what it is trying to accomplish. The distribution $A$ indicates the affordance's belief 
-that each action is optimal, represented as a Bernouli on each action. The weights 
-of these distributions are specified by a domain expert or learned during training time. 
+The precondition, $p$, and goal type, $g$ are specific predicates
+defined by the OO-MDP. The precondition specifies in which states the
+affordance is relevant, and the goal type specifies the type of
+problem in which the affordance is relevant.  An affordance is {\it
+  active} when its precondition $p$ evaluates to true and its goal
+type $g$ is entailed by the goal the agent is currently trying to
+satisfy.  The distribution $A$ indicates the probability that an
+action, $a$, is optimal when an affordance is active: We parameterize
+this distribution as a Bernouli on each action. The weights of these
+distributions can be specified by a domain expert or learned during
+training.
 
-We call an affordance {\it active} when its precondition $p$ evaluates to true in the given
-state, $\Delta.p(s) = 1$, and its goal type $g$ is entailed by the goal the agent is currently
-trying to satisfy, $(G \models \Delta.g) = 1$.
+%% \begin{align}
+%% A = P(a | \Delta.p(s) = 1, G \models \Delta.g)
+%% \end{align}
 
-Our definition of affordances builds on OO-MDPs. Using OO-MDP predicates for affordance
-preconditions and goal types allows for state space independence, as predicates generalize across state-spaces. 
-\enote{I think a sentence explaining/emphasizing this would be good since it's not entirely obvious at a first pass why OO-MDPs give you state-space independence}. \dnote{I added a note here but it sounds superfluous to me. Let me know what you think} 
-Thus, a planner equipped with affordances can be used in any number of
-different environments. For instance, the affordances defined for navigation problems 
-can be used in any task regardless of the spatial size of the world, number of objects in 
-the world, and specific goal the agent is trying to satisfy..
+
 
 % -- Subsection: Affordance-Aware Planning --
 \subsection{Affordance-Aware Planning}
-Affordances restrict the action set of a planner on a state by state basis. We define 
-$\mathcal{A}^o$ to be the optimal action set for a given state $s$ and goal $G$, and define
-$\mathcal{A}^\Delta$ to be the action set provided by a knowledge base of affordances, given a state $s$ and goal $G$.
-For each state, the planner's available actions are constrained to be 
-$\mathcal{A}^{\Delta} \subseteq \mathcal{A}$, the action set
-believed to be optimal by the affordances.
 
-This pruning is informed by the distribution over the optimal action set, given the current state,
-the type of the goal the agent is trying to satisfy, and a knowledge base $K$ of affordances:
-
+A planner equipped with affordances can be used in any number of
+different environments. For instance, the affordances defined for
+navigation problems can be used in any task regardless of the spatial
+size of the world, number of objects in the world, and specific goal
+the agent is trying to satisfy.  To use affordances in planning, we
+want to infer the optimal action set, $\mathcal{A}^o$, given the current state, $s$,  the current  goal, $G$, and a knowledge base of affordances, $K$:
 % -- Equation: Master --
 \begin{equation}
-\Pr(\mathcal{A}^\Delta = \mathcal{A}^o \mid s, G, K)
+\Pr(\mathcal{A}^o \mid s, G, K)
 \end{equation}
 
-We replace $K$, $s$, and $G$ with the action distributions associated with the set of {\it active} affordances, for the given state $s$ under goal $G$.
+The affordance knowledge base $K$ is the set of {\it active}
+affordances, for the given state $s$ under goal $G$.
 % -- Equation: Master w/ Active Affordances --
 \begin{equation}
-\Pr(\mathcal{A}^\Delta = \mathcal{A}^o \mid \Delta_1.A, \ldots, \Delta_m.A)
+\Pr(\mathcal{A}^o \mid \Delta_1.A, \ldots, \Delta_m.A)
 \end{equation}
 
 We may reinterpret this probability in terms of the probability that each action in the OO-MDP action space is in the optimal action set:
+\stnote{Doesn't this have to be a plus and a minus?}
 % -- Equation: Specific Action --
 \begin{equation}
 \prod_{i=1}^{|\mathcal{A}|}\Pr(a_i \in \mathcal{A}^o \mid \Delta_1.A_i, \ldots, \Delta_m.A_i)
@@ -257,7 +263,7 @@ We abbreviate $\Delta_j.A_i$ to $b_{ji}$, and $a_i \in \mathcal{A}^o$ to $a_i$:
 \end{equation}
 
 Applying Bayes Rule, we get:
-
+\stnote{What is not a?}
 % -- Equation: Bayes --
 \begin{equation}
 \prod_{i=1}^{|\mathcal{A}|} \frac{\Pr(b_{1i}, \ldots, b_{mi} \mid a_i) \Pr(a_i)}{\Pr(b_{1i}, \ldots, b_{mi} \mid a_i) \Pr(a_i) + \Pr(b_{1i}, \ldots, b_{mi} \mid \neg a_i) \Pr(\neg a_i)}
@@ -265,6 +271,8 @@ Applying Bayes Rule, we get:
 
 We assume a uniform prior on each action's optimality and assume that 
 the affordances action distributions are conditionally independent given an action $a_i$:
+
+
 
 % -- Equation: Posterior --
 \begin{equation}
@@ -275,6 +283,8 @@ the affordances action distributions are conditionally independent given an acti
 Since each affordance is associated with a distribution over actions, we can compute this posterior directly and sample from it
 to compute $\mathcal{A}^\Delta$.
 
+\stnote{I thought we couldn't compute it directly, and we just sampled?}
+
 Any OO-MDP solver may be made affordance-aware by replacing the 
 OO-MDP's action set $\mathcal{A}$ in each state with the affordance 
 suggested action set $\mathcal{A}^\Delta$. If no actions were considered optimal,
@@ -283,13 +293,15 @@ then $\mathcal{A}^\Delta$ is defined to be the full OO-MDP action set, $\mathcal
 % --- Subsection: Learning Affordances ---
 \subsection{Learning Affordances}
 
-Even with expert domain knowledge it is often unclear how to create
-an optimal knowledge base, and it can be arduous to specify a 
-large number of affordances. We developed an unsupervised learning
-process that requires only minimal seeding from an expert.
-The full learning algorithm is shown in Algorithm~\ref{alg:learn}. The goal
-of the learning algorithm is to learn the affordance knowledge base, $\mathcal{K}$,
-that maximizes the probability that the affordance action set $\mathcal{A}^\Delta$ is optimal:
+Affordance knowledge can be provided by an expert or learned from
+training example.  Providing expert affordances can be arduous so we
+have developed an algorithm to learn the affordance knowledge base,
+\stnote{What is the input to the learning algorithm?  I also think a sentence comparing this to conventional RL would be good.} 
+$\mathcal{K}$, that maximizes the probability that the affordance
+action set $\mathcal{A}^\Delta$ is optimal:
+
+\stnote{I think we should define this in terms of the reward and value
+  function, rather than just saying ``optimal''.}
 
 \begin{equation}
 \mathcal{K} = \argmax_{K \in \pmb{K}} \Pr(\mathcal{A}^\Delta = \mathcal{A}^o \mid s, G, K)
@@ -319,6 +331,7 @@ may be satisfied (i.e. the function $createTestWorld(g)$ at line 5 in Algorithm 
     \State $updateParameters(knowledgeBase, \pi_i)$
     \EndFor
     \State $removeLowInfoAffordances(knowledgeBase)$
+    \stnote{Can this be the precise condition used to remove them?}
   \end{algorithmic}
   \label{alg:learn}
 \end{algorithm}
@@ -326,21 +339,26 @@ may be satisfied (i.e. the function $createTestWorld(g)$ at line 5 in Algorithm 
 To determine good $p$ and $g$ pairs, the algorithm creates an affordance for 
 each combination of $\langle p, g \rangle$, where $p \in \mathcal{P}$ and $g
 \in \mathcal{G}$, as seen in line 1-3 of Algorithm \ref{alg:learn}. Affordances
-whose precondition-goal pairs don't provide useful information are thrown out 
+whose precondition-goal pairs do not provide useful information are thrown out 
+\stnote{No passive voice}
 by the function call on line 9, leaving only those affordances with sound 
 precondition-goal pairs. We chose to remove affordances with little or no action
 counts at the end of training, or those whose action counts mirrored the
 actual action distribution of the policy, indicating that the affordance contained little 
 information.
 
-To learn the distribution $A$ for each affordance, we synthesize a policy of
-$m$ goal-annotated OO-MDPs that have small state spaces, but share similar 
-characteristics to more complex state spaces the agent might expect to see at test time.
-For example, the agent learns to build bridges over trenches in small state
-spaces that can be solved exactly (i.e. a state space of several thousand states), but
-generalizes its knowledge to worlds that are too large to solve with exact algorithms
-(state spaces of hundreds of thousands of states). With this policy, we know the optimal 
-action in each state and can generalize this optimality to larger state spaces. 
+To learn the distribution $A$ for each affordance, the algorithm
+solves $m$ goal-annotated OO-MDPs which have state spaces small enough
+\stnote{When it does learning, are they all small?  Or are some small,
+  and some larger?  It would be cool if the larger ones started being
+  useful once it learned affordances in the small spaces, like
+  scaffolding.}  to be inferred exactly.  For example, the agent
+learns to build bridges over trenches in small state spaces that can
+be solved exactly (i.e. a state space of several thousand states), but
+generalizes its knowledge to worlds that are too large to solve with
+exact algorithms (state spaces of hundreds of thousands of
+states). With this policy, we know the optimal action in each state
+and can generalize this optimality to larger state spaces.
 
 % -- Algorithm: Update Parameters --
 \dnote{Algorithm numbering is off? not sure why}
@@ -374,15 +392,18 @@ all experiments, we set this parameter to be $0.01$.
 \section{Experiments}
 \label{sec:experiments}
 
-We use Minecraft as our planning and evaluation domain. Minecraft is a
+We use Minecraft as our training and evaluation domain. Minecraft is a
 3-D blocks game in which the user can place, craft, and destroy blocks
-of different types. It serves as a model for a variety of complex planning tasks involving 
-assembly, crafting, and construction.  Minecraft's physics and action space are expressive
-enough to allow users to create complex systems, including logic gates and 
-functional scientific graphing calculators\footnote{https://www.youtube.com/watch?v=wgJfVRhotlQ}.
-Minecraft serves as a model for robotic tasks such as cooking assistance, assembling
-items in a factory, object retrieval, and complex terrain traversal.  As in these tasks, 
-the agent operates in a very large state/action space in an uncertain environment.
+of different types.  Minecraft's physics and action space are
+expressive enough to allow users to create complex systems, including
+logic gates and functional scientific graphing
+calculators\footnote{https://www.youtube.com/watch?v=wgJfVRhotlQ}.
+Minecraft serves as a model for robotic tasks such as cooking
+assistance, assembling items in a factory, object retrieval, and
+complex terrain traversal.  As in these tasks, the agent operates in a
+very large state/action space in an uncertain environment.
+Figure~\ref{fig:minecraft} shows a scene from one of our Minecraft
+problems. \stnote{Add minecraft figure.}
 
 For experiments, we introduce a simplified baseline version of the affordance where
 the action set $A$ associated computed by $\Delta.\delta$ is defined
