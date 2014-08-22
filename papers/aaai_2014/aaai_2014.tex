@@ -270,7 +270,7 @@ We assume each action's optimality is independent from all others':
 Applying Bayes' Rule:
 % -- Equation: Bayes --
 \begin{equation}
-= \prod_{i=1}^{|\mathcal{A}|} \frac{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i \mid a_i \in \mathcal{A}^*) \Pr(a_i \in \mathcal{A}^*)}{\Pr(\phi_1, \ldots, \phi_n, \theta_i)}
+= \prod_{i=1}^{|\mathcal{A}|} \frac{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i \mid a_i \in \mathcal{A}^*) \Pr(a_i \in \mathcal{A}^*)}{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i)}
 \label{eq:bayes}
 \end{equation}
 
@@ -284,7 +284,7 @@ and assuming that the features are conditionally independent of one another:
 
 % -- Equation: Naive assumption and uniform prior--
 \begin{equation}
-= \prod_{i=1}^{|\mathcal{A}|} \frac{\prod_{j=1}^{|K|} \Pr(\phi_j, \theta_{ij} \mid a_i \in \mathcal{A}^*)}{\Pr(\phi_1, \ldots, \phi_n, \theta_i)}
+= \prod_{i=1}^{|\mathcal{A}|} \frac{\prod_{j=1}^{|K|} \Pr(\phi_j, \theta_{ij} \mid a_i \in \mathcal{A}^*)}{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i)}
 \label{eq:final}
 \end{equation}
 
@@ -292,7 +292,7 @@ A specific affordance refers to the action distribution associated with a single
 
 % -- Equation: Specific affordance --
 \begin{equation}
-= \prod_{i=1}^{|\mathcal{A}|} \frac{\sum_{m\not=j}^{|K|} \Pr(\phi_j, \theta_{ij} \mid a_i \in \mathcal{A}^*, \phi_m) \Pr(\phi_m)}{\Pr(\phi_1, \ldots, \phi_n, \theta_i)}
+= \prod_{i=1}^{|\mathcal{A}|} \frac{\sum_{m\not=j}^{|K|} \Pr(\phi_j, \theta_{ij} \mid a_i \in \mathcal{A}^*, \phi_m) \Pr(\phi_m)}{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i)}
 \label{eq:posterior}
 \end{equation}
 
@@ -319,7 +319,7 @@ Where $W$ is the set of training worlds. We rewrite using Equation~\ref{eq:poste
 \argmax_\theta \propto \sum_{w \in W} \sum_{s \in w} \prod_{i=1}^{|\mathcal{A}|} \prod_{j=1}^{|K|} \Pr(\theta_{ji}, \phi_j \mid a_i \in \mathcal{A}^*)
 \end{equation}
 
-We compute using the Maximum Likelihood Estimate for $\theta_{ji}$:
+We compute $\theta_{ij}$ as the Maximum Likelihood Estimate:
 
 \begin{equation}
 \theta_{ji} = \frac{C(\phi_j \mid a_i \in \mathcal{A}^*)}{\sum \limits_{j=1}^{|K|} C(\phi_j \mid a_i \in \mathcal{A}^*)}
