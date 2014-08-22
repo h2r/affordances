@@ -53,7 +53,7 @@ public class MinecraftTestPipeline {
 //		mapMaker.generateNMaps(numMaps, new PlaneGoldMineWorld(numLavaBlocks), 2, 2, 4);
 //		mapMaker.generateNMaps(numMaps, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
 //		mapMaker.generateNMaps(numMaps, new PlaneWallWorld(1, numLavaBlocks), 1, 3, 4);
-//		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 2, 2, 4);
+//		mapMaker.generateNMaps(numMaps, new PlaneWorld(numLavaBlocks), 5, 5, 4);
 
 		// Big-RTDP (SIZES LOCKED)
 		mapMaker.generateNMaps(numMaps, new DeepTrenchWorld(1, numLavaBlocks), 5, 5, 6);
@@ -85,10 +85,10 @@ public class MinecraftTestPipeline {
 		
 		// Result objects
 		Result rtdpResults = new Result(NameSpace.RTDP);
-		Result optionResults = new Result("options" + NameSpace.RTDP);
-		Result macroActionResults = new Result("options" + NameSpace.RTDP);
+		Result macroActionOptionsResults = new Result(NameSpace.RTDP + "_MAs(" + useMAs + ")_options(" + useOptions + ")");
 		Result expertRTDPResults = new Result(NameSpace.ExpertRTDP);
-		Result learnedHardRTDPResults = new Result(NameSpace.LearnedHardRTDP);
+		Result learnedHardVanillaResults = new Result(NameSpace.LearnedHardRTDP);
+		Result learnedHardOptMAResults = new Result(NameSpace.LearnedHardRTDP + "_MAs(" + useMAs + ")_options(" + useOptions + ")");
 		Result learnedSoftRTDPResults = new Result(NameSpace.LearnedSoftRTDP);
 		Result viResults = new Result(NameSpace.VI);
 		Result expertVIResults = new Result(NameSpace.ExpertVI);
@@ -99,11 +99,7 @@ public class MinecraftTestPipeline {
 		// Expert KB
 		KnowledgeBase expertAffKB = new KnowledgeBase();
 		if(planners.contains(NameSpace.ExpertRTDP) || planners.contains(NameSpace.ExpertVI)) {
-			String expertKBName = "expert/expert";
-			if(useMAs) expertKBName += "_ma";
-			else if(useOptions) expertKBName += "_op";
-			else expertKBName += "_prim_acts";
-			expertKBName += ".kb";
+			String expertKBName = "expert/expert_prim_acts.kb";
 			expertAffKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), expertKBName, true);
 		}
 
@@ -114,7 +110,11 @@ public class MinecraftTestPipeline {
 			learnedKBName = AffordanceLearner.generateMinecraftKB(mcBeh, 5, false, useOptions, useMAs, 1.0);
 		}
 		else {
-			learnedKBName = "learned/learned10_prim_acts.kb";
+			learnedKBName = "learned/learned10";
+			if(useMAs) learnedKBName += "_ma";
+			if(useOptions) learnedKBName += "_op";
+			if(!useMAs && !useOptions) learnedKBName += "_prim_acts";
+			learnedKBName += ".kb";
 		}
 		
 		// Hard Learned KB
@@ -173,25 +173,17 @@ public class MinecraftTestPipeline {
 			
 			// --- Plan for each planner given ---
 			
-			if(useOptions) {
-				statusBW.write("\t...options RTDP");
+			// Options and Macroactions
+			if(useOptions || useMAs) {
+				statusBW.write("\t...RTDP + MAs(" + useMAs + ")_options(" + useOptions + ")");
 				statusBW.flush();
-			RTDPPlanner rtdp = new RTDPPlanner(mcBeh, true, false);
-			optionResults.addTrial(rtdp.runPlanner());
+				RTDPPlanner rtdp = new RTDPPlanner(mcBeh, useOptions, useMAs);
+				macroActionOptionsResults.addTrial(rtdp.runPlanner());
 				statusBW.write(" Finished\n");
 				statusBW.flush();
 			}
 			
-			if(useMAs) {
-				statusBW.write("\t...macro actions RTDP");
-				statusBW.flush();
-			RTDPPlanner rtdp = new RTDPPlanner(mcBeh, false, true);
-			macroActionResults.addTrial(rtdp.runPlanner());
-				statusBW.write(" Finished\n");
-				statusBW.flush();
-			}
-			
-			// RTDP
+			// RTDP (no options or macroactions)
 			if(planners.contains(NameSpace.RTDP)) {
 					statusBW.write("\t...RTDP");
 					statusBW.flush();
@@ -205,20 +197,32 @@ public class MinecraftTestPipeline {
 			if(planners.contains(NameSpace.ExpertRTDP)) {
 					statusBW.write("\t...Expert RTDP");
 					statusBW.flush();
-				AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, useOptions, useMAs, expertAffKB);
+				AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, false, false, expertAffKB);
 				affRTDP.updateKB(expertAffKB);
 				expertRTDPResults.addTrial(affRTDP.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
 			}
 			
+			// Learned Hard RTDP w/ Options and Macroactions
+			if(planners.contains(NameSpace.LearnedHardRTDP) && (useOptions || useMAs)) {
+					statusBW.write("\t...LearnedHard RTDP_ma(" + useMAs + ")_opt(" + useOptions + ")");
+					statusBW.flush();
+				AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, useOptions, useMAs, learnedHardAffKB);
+				affRTDP.updateKB(learnedHardAffKB);
+				learnedHardOptMAResults.addTrial(affRTDP.runPlanner());
+					statusBW.write(" Finished\n");
+					statusBW.flush();
+			}
+						
+			
 			// Learned Hard RTDP
 			if(planners.contains(NameSpace.LearnedHardRTDP)) {
 					statusBW.write("\t...LearnedHard RTDP");
 					statusBW.flush();
-				AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, useOptions, useMAs, learnedHardAffKB);
+				AffordanceRTDPPlanner affRTDP = new AffordanceRTDPPlanner(mcBeh, false, false, learnedHardAffKB);
 				affRTDP.updateKB(learnedHardAffKB);
-				learnedHardRTDPResults.addTrial(affRTDP.runPlanner());
+				learnedHardVanillaResults.addTrial(affRTDP.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
 			}
@@ -281,6 +285,10 @@ public class MinecraftTestPipeline {
 				
 					resultsBW.write("map: " + map.substring(0, map.length() - 5) + "stateSpace=" + avgStateSpaceSize + "\n");
 				if(planners.contains(NameSpace.RTDP)) {
+					if(useOptions || useMAs) {
+						resultsBW.write("\t" + macroActionOptionsResults.getAllResults() + "AVERAGES: " + macroActionOptionsResults + "\n");
+						macroActionOptionsResults.clear();
+					}
 						resultsBW.write("\t" + rtdpResults.getAllResults() + "AVERAGES: " + rtdpResults + "\n");
 					System.out.println(rtdpResults.toString());
 					rtdpResults.clear();
@@ -291,9 +299,13 @@ public class MinecraftTestPipeline {
 					expertRTDPResults.clear();
 				}
 				if(planners.contains(NameSpace.LearnedHardRTDP)) {
-						resultsBW.write("\t" + learnedHardRTDPResults.getAllResults() + "AVERAGES: " + learnedHardRTDPResults + "\n");
-					System.out.println(learnedHardRTDPResults.toString());
-					learnedHardRTDPResults.clear();
+					if(useOptions || useMAs) {
+						resultsBW.write("\t" + learnedHardOptMAResults.getAllResults() + "AVERAGES: " + learnedHardOptMAResults + "\n");
+						learnedHardOptMAResults.clear();
+					}
+						resultsBW.write("\t" + learnedHardVanillaResults.getAllResults() + "AVERAGES: " + learnedHardVanillaResults + "\n");
+					System.out.println(learnedHardVanillaResults.toString());
+					learnedHardVanillaResults.clear();
 				}
 				if(planners.contains(NameSpace.LearnedSoftRTDP)) {
 						resultsBW.write("\t" + learnedSoftRTDPResults.getAllResults() + "AVERAGES: " + learnedSoftRTDPResults + "\n");
@@ -389,7 +401,7 @@ public class MinecraftTestPipeline {
 			rtdpResults.addTrial(rtdp.runPlanner());
 
 			// Expert
-			affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "pseudo_expert_replace.kb", false);
+			affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "expert/expert_prim_acts.kb", false);
 			AffordanceRTDPPlanner affExpertRTDP = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
 			expertRTDPResults.addTrial(affExpertRTDP.runPlanner());
 			
@@ -484,7 +496,7 @@ public class MinecraftTestPipeline {
 		boolean addMacroActions = false;
 		boolean countStateSpaceSize = false;
 		try {
-			runMinecraftTests(3, "3", learningFlag, planners, addOptions, addMacroActions, countStateSpaceSize);
+			runMinecraftTests(3, "3_legit", learningFlag, planners, addOptions, addMacroActions, countStateSpaceSize);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -495,14 +507,14 @@ public class MinecraftTestPipeline {
 //		boolean shouldLearn = true;
 //		int numTestingMaps = 1;
 //		int numLearningMapsPerLGD = 1;
-//		double minFractStateSpace = 0.01;
+//		double minFractStateSpace = 0;
 //		double maxFractStateSpace = 1;
-//		double increment = 1;
+//		double increment = 0.2;
 //		boolean useOptions = false;
 //		boolean useMAs = false;
 //		boolean countStateSpaceSize = false;
 //		try {
-//			runLearningRateTests("0-1,.5", numLearningMapsPerLGD, numTestingMaps, minFractStateSpace, maxFractStateSpace, increment, shouldLearn, countStateSpaceSize, useOptions, useMAs);
+//			runLearningRateTests("0-1_.2_legit_", numLearningMapsPerLGD, numTestingMaps, minFractStateSpace, maxFractStateSpace, increment, shouldLearn, countStateSpaceSize, useOptions, useMAs);
 //		} catch (IOException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
