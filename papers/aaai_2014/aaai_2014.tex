@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{subfloat}
 \usepackage{float}
+\usepackage{mathtools}% http://ctan.org/pkg/mathtools
 \usepackage{amsmath,empheq}
 \usepackage{amssymb}
 \usepackage{latexsym}
@@ -281,15 +282,31 @@ the optimal action set by computing the Maximum Likelihood Estimate of this dist
 This distribution may be modeled in any number of ways, making this approach quite flexible.
 We have chosen to model it as a Naive-Bayes, assuming a uniform prior on the optimality of each action,
 and assuming that the features are conditionally independent of one another:
+
 % -- Equation: Naive assumption and uniform prior--
 \begin{equation}
 = \prod_{i=1}^{|\mathcal{A}|} \frac{\prod_{j=1}^{|K|} \Pr(\phi_j, \theta_{ij} \mid a_i \in \mathcal{A}^*)}{\Pr(\phi_1, \ldots, \phi_n, \theta_i)}
+\label{eq:final}
+\end{equation}
+
+A specific affordance refers to the action distribution associated with a single feature being active, while marginalizing out the rest of the features:
+
+% -- Equation: Specific affordance --
+\begin{equation}
+= \prod_{i=1}^{|\mathcal{A}|} \frac{\sum_{m\not=j}^{|K|} \Pr(\phi_j, \theta_{ij} \mid a_i \in \mathcal{A}^*, \phi_m) \Pr(\phi_m)}{\Pr(\phi_1, \ldots, \phi_n, \theta_i)}
 \label{eq:posterior}
 \end{equation}
 
+\dnote{Reminder to include example about a specific affordance being lit up}
+
+As with human agents, many affordances are often relevant in decision making at a given time.
+Thus, affordance-aware planning agents operating within an OO-MDP will rarely make specific
+reference to particular affordances, but will instead reason about the world using the relevant
+action possibilities identified but the distribution in Equation~\ref{eq:final}
+
 % -- Subsection: Learning --
 \subsection{Learning}
-\dnote{Will add additional text here on next pass. Only included math from meeting}
+\dnote{More text needed (will add next pass, switching gears to the grid for a bit)}
 We are interested in learning the parameter $\theta$ that maximizes the accumulated reward
 during training:
 
