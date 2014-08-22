@@ -514,13 +514,14 @@ in an assistive cooking task. \dnote{ToDo}
 \centering
 \begin{tabular}{ l  || c c c c}
   Augmentation 						&	CPU	&	Reward 	& Bellman \\ \hline
-  \texttt{RTDP}  						&	4.86s	&	-4.66		&	4074.0		\\
+  \texttt{RTDP}  						&	4.86s	&	-4.66		&	4792.0		\\
   \texttt{w/ MA}  						&	21.73s	&	-4.66		&	5255.0		\\
   \texttt{w/ Options}  					&	6.43s	&	-4.66		&	3890.33		\\
+  \texttt{w/ Options + MA}  				&	26.10s	&	-4.66		&	5310.0		\\
   \texttt{w/ Affordances}  				& 	3.48s	&	-4.66		&	1907.0		\\
   \texttt{w/ Affordances+MA}  			& 	7.54s	&	-4.66		&	2088.0		\\
   \texttt{w/ Affordances+Options}  		& 	{\bf 3.32s}	&	-4.66		&	{\bf 1829.66}		\\
-  \texttt{w/ Affordances+MA+Options}  	& 	-		&	-		&	-		\\
+  \texttt{w/ Affordances+MA+Options}  	& 	-8.45s	&	-4.66		&	2053.66		\\
 \end{tabular}
 \caption{Affordances vs. Temporally Extended Actions}
 \label{table:temp_ext_acts_results}
