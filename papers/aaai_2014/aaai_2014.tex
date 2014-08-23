@@ -145,7 +145,7 @@ conduct experiments in the game Minecraft, and on a robotic cooking assistant.
 \label{sec:technical_approach}
 
 Our approach defines affordances as knowledge added to a Markov
-DecisioN Process (MDP).  An MDP is a five-tuple: $\langle \mathcal{S},
+Decision Process (MDP).  An MDP is a five-tuple: $\langle \mathcal{S},
 \mathcal{A}, \mathcal{T}, \mathcal{R}, \gamma \rangle$, where
 $\mathcal{S}$ is a state-space; $\mathcal{A}$ is the agent's set of
 actions; $\mathcal{T}$ denotes $\mathcal{T}(s' \mid s,a)$, the
@@ -163,9 +163,8 @@ and $\gamma \in [0, 1)$ is a discount factor that defines how much the
 \subsection{OO-MDPs}
 An Object-Oriented Markov Decision Process (OO-MDP)~\citep{diuk08}
 efficiently represents the state of an MDP, organized around
-objects. Our definition of affordances builds on OO-MDPs. Using OO-MDP
-predicates for affordance preconditions and goal types allows for
-state space independence, as predicates generalize across
+objects. Using OO-MDP predicates as features for action pruning allows
+for state space independence when predicates generalize across
 state-spaces.  Unlike the vectorized state of an MDP, an OO-MDP state
 is a collection of objects, $O = \{o_1, \ldots, o_o \}$.  Each object
 $o_i$ belongs to a class, $c_j \in \{c_1, \ldots, c_c\}$. Every class
@@ -198,13 +197,14 @@ the set of all the object states, $s \in {\cal S} = \cup_{i = 1}^o
 % -- Subsection: Affordances --
 \subsection{Affordances}
 
-\citet{gibson77} proposed that an affordance is ``what [the
-  environment] offers [an] animal, what [the environment] provides or
-furnishes, either for good or ill.''  
+%% \citet{gibson77} proposed that an affordance is ``what [the
+%%   environment] offers [an] animal, what [the environment] provides or
+%% furnishes, either for good or ill.''  
 
-We model affordances as a mapping from a goal-directed OO-MDP state to
-a distribution over the OO-MDP action set. We compute this distribution as the probability of the optimal
-action set, $\mathcal{A}^*$, in a particular state $s$, under a goal $G$, and given a knowledge base $K$.
+To perform action pruning, we model the distribution over the OO-MDP
+action set. We compute this distribution as the probability of the
+optimal action set, $\mathcal{A}^*$, in a particular state $s$, under
+a goal $G$, and given a knowledge base $K$.
 
 % -- Equation: Master Equation --
 \begin{equation}
@@ -218,11 +218,11 @@ action set, $\mathcal{A}^*$, for a given state $s$ and goal $G$ as:
 
 % -- Equation: Optimal Action Set --
 \begin{equation}
-\mathcal{A}^* = \left\{ a \mid Q^*_G(s,a) = V^*_G(s,a) \right\}
+\mathcal{A}^* = \left\{ a \mid Q^*_G(s,a) = V^*_G(s) \right\}
 \label{eq:opt_act_set}
 \end{equation}
 
-Here, $Q^*_G(s,a)$ and $V^*_G(s,a)$ represent the optimal Q function and 
+Here, $Q^*_G(s,a)$ and $V^*_G(s)$ represent the optimal Q function and 
 Value function, respectively.
 
 The knowledge base $K$ consists of a set of objects, $\delta_1 \ldots \delta_{|K|}$, and a 
@@ -260,12 +260,14 @@ state features, $\phi_1 \ldots \phi_{|K|}$, where $\phi_j = f(\delta_j, s, G)$:
 \label{eq:feature_rep}
 \end{equation}
 
-We assume each action's optimality is independent from all others':
+We assume each action's optimality is independent from all other actions:
 % -- Equation: Assume action's independent --
 \begin{equation}
 = \prod_{i=1}^{|\mathcal{A}|} \Pr(a_i \in \mathcal{A}^* \mid \phi_1, \ldots, \phi_{|K|}, \theta_i)
 \label{eq:action_independ}
 \end{equation}
+
+\stnote{Don't we need a negative term in the previous equation?  We need to also compute the probability of all the other actions not in A*}
 
 Applying Bayes' Rule:
 % -- Equation: Bayes --
@@ -310,7 +312,7 @@ We are interested in learning the parameter $\theta$ that maximizes the accumula
 during training:
 
 \begin{equation}
-\argmax_\theta = \sum_{w \in W} \sum_{s \in w} \Pr(\mathcal{A}^* \mid s, w.G, K)
+\argmax_\theta \sum_{w \in W} \sum_{s \in w} \Pr(\mathcal{A}^* \mid s, w.G, K)
 \end{equation}
 
 Where $W$ is the set of training worlds. We rewrite using Equation~\ref{eq:posterior}:
