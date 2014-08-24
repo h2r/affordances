@@ -238,19 +238,19 @@ its constituents:
 \end{equation}
 
 To represent the state, goal, set of objects $\delta_1 \ldots \delta_{|K|}$ as a set of features,
-we introduce the function $f : \Delta \times \mathcal{S} \times \mathcal{G}$.
+we introduce the function $f : \Delta \times \mathcal{S} \times \mathcal{G} \mapsto \{0,1\}$.
 $\Delta$ is the space of all $\delta$ objects, and $\mathcal{S}$
 is the OO-MDP action space. $f$ is computed as follows:
 % -- Equation: function f defn --
 \begin{equation}
 f(\delta, s, G) = 
 \begin{cases}
-1& \delta.p(s) \wedge G \models g \\
+1& \delta.p(s) \wedge G \models \delta.g \\
 0& \text{otherwise}
 \end{cases}
 \label{eq:f_func_def}
 \end{equation}
-
+\dnote{Do we need some explanation of what $f$ is doing here? Or is it obvious?}
 Using $f$, we consolidate the state, goal type, and $\delta_1 \ldots \delta_{|K|}$ into a set of binary goal dependent
 state features, $\phi_1 \ldots \phi_{|K|}$, where $\phi_j = f(\delta_j, s, G)$:
 
@@ -260,25 +260,23 @@ state features, $\phi_1 \ldots \phi_{|K|}$, where $\phi_j = f(\delta_j, s, G)$:
 \label{eq:feature_rep}
 \end{equation}
 
-We assume each action's optimality is independent from all other actions:
+We assume each action's optimality is independent from all other actions':
 % -- Equation: Assume action's independent --
 \begin{equation}
 = \prod_{i=1}^{|\mathcal{A}|} \Pr(a_i \in \mathcal{A}^* \mid \phi_1, \ldots, \phi_{|K|}, \theta_i)
 \label{eq:action_independ}
 \end{equation}
 
-\stnote{Don't we need a negative term in the previous equation?  We need to also compute the probability of all the other actions not in A*}
-
-Applying Bayes' Rule:
+We abbreviate $a_i \in \mathcal{A}^*$ to $a_i$. Applying Bayes' Rule:
 % -- Equation: Bayes --
 \begin{equation}
-= \prod_{i=1}^{|\mathcal{A}|} \frac{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i \mid a_i \in \mathcal{A}^*) \Pr(a_i \in \mathcal{A}^*)}{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i)}
+= \prod_{i=1}^{|\mathcal{A}|} \frac{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i \mid a_i) \Pr(a_i)}{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i)}
 \label{eq:bayes}
 \end{equation}
 
 Affordance-aware planning involves using this distribution to prune the action set of the OO-MDP
 to an approximation of the optimal action set, on a state by state basis. In experiments, we approximate
-the optimal action set by computing the Maximum Likelihood Estimate of this distribution and sampling.
+the optimal action set by computing the Maximum Likelihood Estimate of $\theta$ from training data and sampling.
 
 This distribution may be modeled in any number of ways, making this approach quite flexible.
 We have chosen to model it as a Naive-Bayes, assuming a uniform prior on the optimality of each action,
@@ -286,7 +284,7 @@ and assuming that the features are conditionally independent of one another:
 
 % -- Equation: Naive assumption and uniform prior--
 \begin{equation}
-= \prod_{i=1}^{|\mathcal{A}|} \frac{\prod_{j=1}^{|K|} \Pr(\phi_j, \theta_{ij} \mid a_i \in \mathcal{A}^*)}{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i)}
+= \prod_{i=1}^{|\mathcal{A}|} \frac{\prod_{j=1}^{|K|} \Pr(\phi_j, \theta_{ij} \mid a_i) }{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i)}
 \label{eq:final}
 \end{equation}
 
@@ -294,20 +292,23 @@ A specific affordance refers to the action distribution associated with a single
 
 % -- Equation: Specific affordance --
 \begin{equation}
-= \prod_{i=1}^{|\mathcal{A}|} \frac{\sum_{m\not=j}^{|K|} \Pr(\phi_j, \theta_{ij} \mid a_i \in \mathcal{A}^*, \phi_m) \Pr(\phi_m)}{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i)}
+= \prod_{i=1}^{|\mathcal{A}|} \frac{\sum_{m\not=j}^{|K|} \Pr(\phi_j, \theta_{ij} \mid a_i, \phi_m) \Pr(\phi_m)}{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i)}
 \label{eq:posterior}
 \end{equation}
-
-\dnote{Reminder to include example about a specific affordance being lit up}
 
 As with human agents, many affordances are often relevant in decision making at a given time.
 Thus, affordance-aware planning agents operating within an OO-MDP will rarely make specific
 reference to particular affordances, but will instead reason about the world using the relevant
-action possibilities identified but the distribution in Equation~\ref{eq:final}
+action possibilities identified by the distribution in Equation~\ref{eq:final}. For instance, suppose
+an affordance-aware Minecraft agent was attempting to cross a trench to reach a goal on the 
+other side. The affordance of `jump ability' will likely activate, indicating the agent may jump over the trench,
+or perhaps the 'bridge ability' will activate if it is a large enough trench, suggesting that the trench
+may be traversed by constructing a bridge. These affordances are important to consider, but only inform part of the agent's decision making. As with a human agent, the full set of relevant affordances defines the actions 
+the agent ought to consider in any state of the world.
 
 % -- Subsection: Learning --
 \subsection{Learning}
-\dnote{More text needed (will add next pass, switching gears to the grid for a bit)}
+
 We are interested in learning the parameter $\theta$ that maximizes the accumulated reward
 during training:
 
@@ -318,14 +319,26 @@ during training:
 Where $W$ is the set of training worlds. We rewrite using Equation~\ref{eq:posterior}:
  
 \begin{equation}
-\argmax_\theta \propto \sum_{w \in W} \sum_{s \in w} \prod_{i=1}^{|\mathcal{A}|} \prod_{j=1}^{|K|} \Pr(\theta_{ji}, \phi_j \mid a_i \in \mathcal{A}^*)
+\argmax_\theta \propto \sum_{w \in W} \sum_{s \in w} \prod_{i=1}^{|\mathcal{A}|} \prod_{j=1}^{|K|} \Pr(\theta_{ji}, \phi_j \mid a_i)
 \end{equation}
 
-We compute $\theta_{ij}$ as the Maximum Likelihood Estimate:
+As with a Bernouli naive Bayes, we express $\Pr(\theta_{ji}, \phi_j \mid a_i)$ as follows:
+\begin{multline}
+\Pr(\theta_{ji}, \phi_j \mid a_i) = \\
+\phi_j \cdot \Pr(\theta_{ij} \mid a_i) + (1 - \phi_j) \cdot (1 - \Pr(\theta_{ij} \mid a_i))
+\end{multline}
+
+We compute $\Pr(\theta_{ij}\mid a_i)$ as the Maximum Likelihood Estimate:
 
 \begin{equation}
-\theta_{ji} = \frac{C(\phi_j \mid a_i \in \mathcal{A}^*)}{\sum \limits_{j=1}^{|K|} C(\phi_j \mid a_i \in \mathcal{A}^*)}
+\theta_{ji} = \frac{C(\phi_j \mid a_i)}{\sum \limits_{j=1}^{|K|} C(\phi_j \mid a_i)}
 \end{equation}
+
+Where $C(\phi_j \mid a_i)$ denotes the counts of the number of times feature $\phi_j$ was active
+in states where $a_i$ was optimal during training. To inform these counts, we randomly generate a
+set of training worlds, $W$, that are small enough to synthesize a policy using tabular methods
+(i.e. thousands of states). We generated $W$ so that each of the possible goal types was assigned to a subset
+of the generated worlds.
 
 \dnote{----Edited up to here-----}
 
@@ -580,7 +593,7 @@ Additionally, we conducted experiments in which we varied the number of states v
 As in Table \ref{table:learned-results}, we randomly generated simple state spaces
 containing several thousand states containing features that mirrored the agent's state
 space at test time. We then solved the OO-MDP with knowledge bases learned from 
-10 to 10000 states.\dnote{same here}
+10 to 10000 states.\dnote{update when training complete}
 
 % -- Subsection: Temporally Extended Actions --
 \subsection{Temporally Extended Actions}
