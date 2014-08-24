@@ -15,6 +15,10 @@ import minecraft.MinecraftBehavior.Planners.MinecraftPlanner;
 import minecraft.MinecraftBehavior.Planners.VIPlanner;
 import minecraft.MinecraftDomain.PropositionalFunctions.AlwaysTruePF;
 import minecraft.WorldGenerator.MapFileGenerator;
+import minecraft.WorldGenerator.WorldTypes.DeepTrenchWorld;
+import minecraft.WorldGenerator.WorldTypes.PlaneGoldMineWorld;
+import minecraft.WorldGenerator.WorldTypes.PlaneGoldSmeltWorld;
+import minecraft.WorldGenerator.WorldTypes.PlaneWallWorld;
 import minecraft.WorldGenerator.WorldTypes.PlaneWorld;
 import burlap.behavior.affordances.Affordance;
 import burlap.behavior.affordances.AffordanceDelegate;
@@ -144,11 +148,11 @@ public class AffordanceLearner {
 		int numLavaBlocks = 1;
 		
 		System.out.println("Generating maps..." + this.numWorldsPerLGD);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 3, 3, 5);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 3, 1, 5);
 //		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 3, 4);
 //		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
 //		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 1, 4);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks), 3, 3, 4);
+//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks), 3, 3, 4);
 
 		// Not learning or testing with shelves right now
 		//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
@@ -614,19 +618,7 @@ public class AffordanceLearner {
 		// Looking toward furnace
 		PropositionalFunction agentLookTowardFurnace = mcBeh.pfAgentLookTowardFurnace;
 		LogicalExpression agentLookTowardFurnaceLE = pfAtomFromPropFunc(agentLookTowardFurnace);
-		
-		// Not looking toward goal
-		PropositionalFunction notAgentLookTowardGoal = mcBeh.pfAgentNotLookTowardGoal;
-		LogicalExpression notAgentLookTowardGoalLE = pfAtomFromPropFunc(notAgentLookTowardGoal);
-		
-		// Not looking toward gold
-		PropositionalFunction notAgentLookTowardGold = mcBeh.pfAgentNotLookTowardGold;
-		LogicalExpression notAgentLookTowardGoldLE = pfAtomFromPropFunc(notAgentLookTowardGold);
-		
-		// Not looking toward furnace
-		PropositionalFunction notAgentLookTowardFurnace = mcBeh.pfAgentNotLookTowardFurnace;
-		LogicalExpression notAgentLookTowardFurnaceLE = pfAtomFromPropFunc(notAgentLookTowardFurnace);
-		
+			
 		// Agent can jump
 		PropositionalFunction agentCanJump = mcBeh.pfAgentCanJump;
 		LogicalExpression agentCanJumpLE = pfAtomFromPropFunc(agentCanJump);
@@ -647,9 +639,6 @@ public class AffordanceLearner {
 		predicates.add(agentLookTowardGoalLE);
 		predicates.add(agentLookTowardGoldLE);
 		predicates.add(agentLookTowardFurnaceLE);
-		predicates.add(notAgentLookTowardGoalLE);
-		predicates.add(notAgentLookTowardGoldLE);
-		predicates.add(notAgentLookTowardFurnaceLE);
 		predicates.add(agentCanJumpLE);
 		predicates.add(furnaceFrontAgentLE);
 		
@@ -679,7 +668,7 @@ public class AffordanceLearner {
 		boolean addOptions = false;
 		boolean addMAs = false;
 		double fractionOfStateSpaceToLearnWith = 1.0;
-		final int numWorldsToLearnWith = 3;
+		final int numWorldsToLearnWith = 1;
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
 		generateMinecraftKB(mcBeh, numWorldsToLearnWith, false, addOptions, addMAs, fractionOfStateSpaceToLearnWith);
 	}

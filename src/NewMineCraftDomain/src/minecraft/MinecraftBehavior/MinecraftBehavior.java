@@ -339,12 +339,12 @@ public class MinecraftBehavior {
 		//AFFRTDP
 		boolean useOptions = false;
 		boolean useMAs = false;
-		boolean hardFlag = false;
+		boolean hardFlag = true;
 		
 		// Load knowledge base
 		KnowledgeBase affKB = new KnowledgeBase();
 //		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "expert/expert_prim_acts.kb", hardFlag);
-		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "learned/learned1_prim_acts.kb", hardFlag);
+		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "learned/learned3_prim_acts_plane.kb", hardFlag);
 
 		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, useOptions, useMAs, affKB);
 		results = affRTDPPlanner.runPlanner();
