@@ -143,9 +143,12 @@ public class NameSpace {
 	public static final String				LearnedSoftVI = "LSVI";
 
 	//----------DIRECTORIES---------
-	public static final String				PATHMAPS = "src/minecraft/maps/";
+	// Grid changes
+//	public static final String				PATHMAPS = "src/minecraft/maps/";
+	public static final String				PATHMAPS = "maps/";
 	public static final String				PATHKB = "src/minecraft/kb/";
-	public static final String				PATHTEMPLATEMAP = "src/minecraft/maps/template.map";
+//	public static final String				PATHTEMPLATEMAP = "src/minecraft/maps/template.map";
+	public static final String				PATHTEMPLATEMAP = "maps/template.map";
 	public static final String				PATHRESULTS = "src/tests/results/";
 	
 	//-------------MISC-------------

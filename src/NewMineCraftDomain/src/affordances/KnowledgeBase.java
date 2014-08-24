@@ -53,23 +53,31 @@ public class KnowledgeBase {
 	}
 	
 	public void save(String filename) {
-		String fpath = NameSpace.PATHKB + "/" + filename;
-		
-		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(fpath)));
-			
-			// For grid
-//			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-			
-			for (AffordanceDelegate aff: this.affDelegateList) {
-				bw.write(aff.toFile());
-			}
-			bw.close();
-		} catch (IOException e) {
-			System.out.println("ERROR");
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		// -- GRID --
+		for (AffordanceDelegate aff: this.affDelegateList) {
+
+			System.out.println(aff.toFile());
 		}
+		
+		// -- NON GRID --
+//		String fpath = NameSpace.PATHKB + "/" + filename;
+//		
+//		try {
+//			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(fpath)));
+//			
+//			// For grid
+////			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//			
+//			for (AffordanceDelegate aff: this.affDelegateList) {
+//				bw.write(aff.toFile());
+//			}
+//			bw.close();
+//		} catch (IOException e) {
+//			System.out.println("ERROR");
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	

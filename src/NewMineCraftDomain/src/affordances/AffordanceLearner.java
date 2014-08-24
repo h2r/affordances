@@ -147,12 +147,13 @@ public class AffordanceLearner {
 		
 		int numLavaBlocks = 1;
 		
-		System.out.println("Generating maps..." + this.numWorldsPerLGD);
-		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 3, 1, 5);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 3, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 2, 2, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 1, 4);
-//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks), 3, 3, 4);
+//		System.out.println("Generating maps..." + this.numWorldsPerLGD);
+		// Learning map sizes LOCKED temporarily
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new DeepTrenchWorld(1, numLavaBlocks), 3, 3, 5);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldMineWorld(numLavaBlocks), 1, 3, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoldSmeltWorld(numLavaBlocks), 3, 3, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWallWorld(1, numLavaBlocks), 3, 1, 4);
+		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneWorld(numLavaBlocks), 5, 5, 4);
 
 		// Not learning or testing with shelves right now
 		//		mapMaker.generateNMaps(this.numWorldsPerLGD, new PlaneGoalShelfWorld(2,1, numLavaBlocks), 2, 2, 5);
@@ -377,46 +378,6 @@ public class AffordanceLearner {
 	}
 	
 	/**
-	 * Updates the hyperparameter for the dirichlet over action set size
-	 * @param seen: map from affordances to actions
-	 */
-//	public void updateActionSetSizeCounts(Map<AffordanceDelegate,List<AbstractGroundedAction>> seen) {
-//		// Count the action set size for each affordance for this world
-//		double counted = 0.0;
-//		for (AffordanceDelegate affDelegate: affordanceKB.getAffordances()) {
-//			if (seen.get(affDelegate).size() > 0) {
-//				++counted;
-//				((SoftAffordance)affDelegate.getAffordance()).updateActionSetSizeCount(seen.get(affDelegate).size());
-//			}
-//			else{
-//			}
-//		}
-////		System.out.println("(AffordanceLearner)Ratio of counted set sizes: " + (counted / affordanceKB.getAffordances().size()));
-//	}
-	
-	/**
-	 * Generates an affordance knowledge base object
-	 * @param predicates: the list of predicates to use
-	 * @param lgds: a list of goals to use
-	 * @param allActions: the set of possible actions (OO-MDP action set)
-	 * @return
-	 */
-	public static KnowledgeBase generateAffordanceKB(List<LogicalExpression> predicates, Map<Integer, LogicalExpression> lgds, List<AbstractGroundedAction> allActions) {
-		KnowledgeBase affordanceKB = new KnowledgeBase();
-		
-		for (LogicalExpression pf : predicates) {
-			for (LogicalExpression lgd : lgds.values()) {
-				Affordance aff = new Affordance(pf, lgd, allActions);
-				AffordanceDelegate affDelegate = new AffordanceDelegate(aff);	
-				affordanceKB.add(affDelegate);
-			}
-		}
-		
-		return affordanceKB;
-		
-	}
-	
-	/**
 	 * Helper method that prints out the counts for each affordance
 	 */
 	public void printCounts() {
@@ -501,27 +462,25 @@ public class AffordanceLearner {
 		return kbName;
 	}
 	
-	private static List<AbstractGroundedAction> getAllActions(MinecraftBehavior mcBeh, boolean useOptions, boolean useMAs) {
+	/**
+	 * Generates an affordance knowledge base object
+	 * @param predicates: the list of predicates to use
+	 * @param lgds: a list of goals to use
+	 * @param allActions: the set of possible actions (OO-MDP action set)
+	 * @return
+	 */
+	public static KnowledgeBase generateAffordanceKB(List<LogicalExpression> predicates, Map<Integer, LogicalExpression> lgds, List<AbstractGroundedAction> allActions) {
+		KnowledgeBase affordanceKB = new KnowledgeBase();
 		
-		List<AbstractGroundedAction> allGroundedActions = new ArrayList<AbstractGroundedAction>();
-		
-		// Create Grounded Action instances for each primitive action
-		List<Action> primitiveActions = mcBeh.getDomain().getActions();
-		for(Action a : primitiveActions) {
-			String[] freeParams = makeFreeVarListFromObjectClasses(a.getParameterClasses());
-			GroundedAction ga = new GroundedAction(a, freeParams);
-			allGroundedActions.add(ga);
+		for (LogicalExpression pf : predicates) {
+			for (LogicalExpression lgd : lgds.values()) {
+				Affordance aff = new Affordance(pf, lgd, allActions);
+				AffordanceDelegate affDelegate = new AffordanceDelegate(aff);	
+				affordanceKB.add(affDelegate);
+			}
 		}
 		
-		// Create Grounded Action instances for each temporally extended action
-		List<Action> temporallyExtendedActions = new ArrayList<Action>(MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs).values());
-		for(Action a : temporallyExtendedActions) {
-			String[] freeParams = makeFreeVarListFromObjectClasses(a.getParameterClasses());
-			GroundedAction ga = new GroundedAction(a, freeParams);
-			allGroundedActions.add(ga);
-		}
-		
-		return allGroundedActions;
+		return affordanceKB;
 		
 	}
 	
@@ -643,6 +602,30 @@ public class AffordanceLearner {
 		predicates.add(furnaceFrontAgentLE);
 		
 		return predicates;
+	}
+	
+	private static List<AbstractGroundedAction> getAllActions(MinecraftBehavior mcBeh, boolean useOptions, boolean useMAs) {
+		
+		List<AbstractGroundedAction> allGroundedActions = new ArrayList<AbstractGroundedAction>();
+		
+		// Create Grounded Action instances for each primitive action
+		List<Action> primitiveActions = mcBeh.getDomain().getActions();
+		for(Action a : primitiveActions) {
+			String[] freeParams = makeFreeVarListFromObjectClasses(a.getParameterClasses());
+			GroundedAction ga = new GroundedAction(a, freeParams);
+			allGroundedActions.add(ga);
+		}
+		
+		// Create Grounded Action instances for each temporally extended action
+		List<Action> temporallyExtendedActions = new ArrayList<Action>(MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs).values());
+		for(Action a : temporallyExtendedActions) {
+			String[] freeParams = makeFreeVarListFromObjectClasses(a.getParameterClasses());
+			GroundedAction ga = new GroundedAction(a, freeParams);
+			allGroundedActions.add(ga);
+		}
+		
+		return allGroundedActions;
+		
 	}
 
 	public static void main(String[] args) {

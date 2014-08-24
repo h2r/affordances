@@ -90,14 +90,13 @@ public class MapFileGenerator {
 	public void generateNMaps(int numMaps, MinecraftWorld minecraftWorld, int rows, int cols, int height) {
 		WorldGenerator worldGen = new WorldGenerator(rows, cols, height);
 		generateNMapsHelpers(numMaps, minecraftWorld, worldGen);
-			
 	}
 	
 	public void generateNMapsHelpers(int numMaps, MinecraftWorld minecraftWorld, WorldGenerator worldGen) {
 		
 		List<MapIO> toWriteToFile = new ArrayList<MapIO>();
 		String baseFileName = minecraftWorld.getName();
-		System.out.println("Generating " + baseFileName + " maps...");
+//		System.out.println("Generating " + baseFileName + " maps...");
 		for (int i = 0; i < numMaps; i++) {		
 			try {
 				worldGen.randomizeMap(minecraftWorld.getGoal(), minecraftWorld.getFloorOf(), minecraftWorld.getNumTrenches(),
