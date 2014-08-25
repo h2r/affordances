@@ -62,14 +62,13 @@ Process (OO-MDP).  Affordances prune actions based on the current
 state and the robot's goal, reducing the number of state-action pairs
 the planner must evaluate in order to synthesize a near optimal
 policy. We show that an agent can learn affordances through
-unsupervised\dnote{Do you agree that this is unsupervised?} experience, and that learned affordances can equal or
-surpass the performance of those provided by experts. We demonstrate
-our approach in the state-rich Minecraft domain, showing significant
-increases in speed and reductions in state-space exploration during
-planning, with minimal loss in quality of the synthesized policy.
-Additionally, we employ affordance-aware planning on a Baxter robot,
-demonstrating it is able to assist a person performing a collaborative
-cooking task.
+experiencex, and that learned affordances can equal or surpass the
+performance of those provided by experts. We demonstrate our approach
+in the state-rich Minecraft domain, showing significant increases in
+speed and reductions in state-space exploration during planning, with
+minimal loss in quality of the synthesized policy.  Additionally, we
+employ affordance-aware planning on a Baxter robot, demonstrating it
+is able to assist a person performing a collaborative cooking task.
 
 \end{abstract}
 
@@ -126,54 +125,60 @@ most relevant to solving its current goal and avoid exploration of
 irrelevant parts of the state-action space. Affordances are not
 specific to a particular reward function or state space, and provide
 the agent with transferable knowledge that is effective in a wide
-variety of problems. Moreover, our methods enable a single agent to
-autonomously learn affordances through unsupervised experience, making
-affordances a concise, transferable, and learnable means of
-representing useful planning knowledge.
+variety of problems. Moreover, an agent can learn affordances through
+experience, making affordances a concise, transferable, and learnable
+means of representing useful planning knowledge.  Our experiments
+demonstrate that affordances provide dramatic speedups for a variety
+of planning tasks compared to baselines and apply across different
+state-spaces.  We conduct experiments in the game Minecraft, which has
+a very large state-action space, and on a real-world robotic cooking
+assistant.
 
 %% Because affordances define the {\em kind} of goals for which actions
 %% are useful, affordances also enable high-level reasoning that can be
 %% combined with approaches like subgoal planning for even
 %% greater performance gains. 
 
-Our experiments demonstrate that affordances provide dramatic speedups for a variety
-of planning tasks compared to baselines and apply across different state-spaces.  We 
-conduct experiments in the game Minecraft, and on a robotic cooking assistant. 
+
 
 % ====== Technical Approach ======
 \section{Technical Approach}
 \label{sec:technical_approach}
 
-Our approach defines affordances as knowledge added to a Markov
-Decision Process (MDP).  An MDP is a five-tuple: $\langle \mathcal{S},
-\mathcal{A}, \mathcal{T}, \mathcal{R}, \gamma \rangle$, where
-$\mathcal{S}$ is a state-space; $\mathcal{A}$ is the agent's set of
-actions; $\mathcal{T}$ denotes $\mathcal{T}(s' \mid s,a)$, the
-transition probability of an agent applying action $a \in \mathcal{A}$
-in state $s \in \mathcal{S}$ and arriving in $s' \in \mathcal{S}$;
+We formalize affordances as knowledge added to a Markov Decision Process
+(MDP).  An MDP is a five-tuple: $\langle \mathcal{S}, \mathcal{A},
+\mathcal{T}, \mathcal{R}, \gamma \rangle$, where $\mathcal{S}$ is a
+state-space; $\mathcal{A}$ is the agent's set of actions;
+$\mathcal{T}$ denotes $\mathcal{T}(s' \mid s,a)$, the transition
+probability of an agent applying action $a \in \mathcal{A}$ in state
+$s \in \mathcal{S}$ and arriving in $s' \in \mathcal{S}$;
 $\mathcal{R}(s,a,s')$ denotes the reward received by the agent for
 applying action $a$ in state $s$ and and transitioning to state $s'$;
 and $\gamma \in [0, 1)$ is a discount factor that defines how much the
   agent prefers immediate rewards over future rewards (the agent
-  prefers to maximize immediate rewards as $\gamma$ decreases). A
-  classic way to provide a factored representation of an MDP state is
-  to represent each MDP state as a single feature vector.
+  prefers to maximize immediate rewards as $\gamma$ decreases).
+
+% I think it's fine to go straight to OO-MDPs.  This sentence was
+% hanging at the end of the MDP paragraph and wasn't a good open for
+% OO-MDPs.  ``A classic way to provide a factored representation of an
+% MDP state is to represent each MDP state as a single feature
+% vector.''  A vectorized MDP state can be equivalently understood as
+% the set of all the object states, $s \in {\cal S} = \cup_{i = 1}^o
+% \{o_i.state\}$, in an OO-MDP.  -- stefie10
 
 % -- Subsection: OO-MDPs --
 \subsection{OO-MDPs}
+
 An Object-Oriented Markov Decision Process (OO-MDP)~\citep{diuk08}
-efficiently represents the state of an MDP, organized around
-objects. Using OO-MDP predicates as features for action pruning allows
-for state space independence when predicates generalize across
-state-spaces.  Unlike the vectorized state of an MDP, an OO-MDP state
-is a collection of objects, $O = \{o_1, \ldots, o_o \}$.  Each object
-$o_i$ belongs to a class, $c_j \in \{c_1, \ldots, c_c\}$. Every class
-has a set of attributes, $Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of
-which has a domain, $Dom(c.a)$, of possible values. The collection of
-attribute values of a given object is termed that object's state,
-$o.state$. A vectorized MDP state can be equivalently understood as
-the set of all the object states, $s \in {\cal S} = \cup_{i = 1}^o
-\{o_i.state\}$, in an OO-MDP.
+efficiently represents the state of an MDP, organized around objects
+and predicates. We use OO-MDP predicates as features for action
+pruning, allowing for state space independence when predicates
+generalize across state spaces.  An OO-MDP state is a collection of
+objects, $O = \{o_1, \ldots, o_o \}$.  Each object $o_i$ belongs to a
+class, $c_j \in \{c_1, \ldots, c_c\}$. Every class has a set of
+attributes, $Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of which has a
+domain, $Dom(c.a)$, of possible values. The collection of attribute
+values of a given object is termed that object's state, $o.state$. 
 
 %% An OO-MDP lies in the ability to
 %% formulate predicates over classes of objects. That is, the OO-MDP
@@ -201,21 +206,9 @@ the set of all the object states, $s \in {\cal S} = \cup_{i = 1}^o
 %%   environment] offers [an] animal, what [the environment] provides or
 %% furnishes, either for good or ill.''  
 
-To perform action pruning, we model the distribution over the OO-MDP
-action set. We compute this distribution as the probability of the
-optimal action set, $\mathcal{A}^*$, in a particular state $s$, under
-a goal $G$, and given a knowledge base $K$.
-
-% -- Equation: Master Equation --
-\begin{equation}
-\Pr(\mathcal{A}^* \mid s, G, K)
-\label{eq:master}
-\end{equation}
-
-This distribution may be used to approximate the optimal action set for each 
-state-goal pair, based on the set of available affordances. We define the optimal
-action set, $\mathcal{A}^*$, for a given state $s$ and goal $G$ as:
-
+To perform action pruning, we model the distribution over the optimal
+OO-MDP action set. We define the optimal action set, $\mathcal{A}^*$,
+for a given state $s$ and goal $G$ as:
 % -- Equation: Optimal Action Set --
 \begin{equation}
 \mathcal{A}^* = \left\{ a \mid Q^*_G(s,a) = V^*_G(s) \right\}
@@ -223,15 +216,31 @@ action set, $\mathcal{A}^*$, for a given state $s$ and goal $G$ as:
 \end{equation}
 
 Here, $Q^*_G(s,a)$ and $V^*_G(s)$ represent the optimal Q function and 
-Value function, respectively.
+value function, respectively.
 
-The knowledge base $K$ consists of a set of objects, $\delta_1 \ldots \delta_{|K|}$, and a 
-parameter vector $\theta$, where $\delta_j = \langle p, g \rangle$, and $\theta_{ij}$
-represents the weight associated with action $i$, for $\delta_j$. Here, $p \in \mathcal{P}$
-is a {\it predicate} in predicate space, $\mathcal{P}$, and $g \in \mathcal{G}$ is a {\it goal type}
-in goal space, $\mathcal{G}$. We may rewrite Equation~\ref{eq:master} replacing $K$ with
-its constituents:
 
+We induce a distribution over the optimal action set, in a particular
+state $s$, under a goal $G$, and given a knowledge base $K$.
+
+% -- Equation: Master Equation --
+\begin{equation}
+\Pr(\mathcal{A}^* \mid s, G, K)
+\label{eq:master}
+\end{equation}
+
+The agent uses this distribution to estimate the optimal action set
+for each state-goal pair, based on the set of available affordances.
+To formalize a knowledge base of affordances, we represent $K$ as a
+set of paired state preconditions and goal types, which induce a
+distribution over the resulting optimal action set.  Formally, $K$
+consists of a set of paired preconditions and goal types, $\delta_1
+\ldots \delta_{|K|}$, and a parameter vector $\theta$.  Each
+$\delta_j$ is a precondition and goal type pair, $\langle p, g
+\rangle$.  The parameter vector, $\theta_{ij}$ represents the weight
+associated with action $i$, for $\delta_j$. Here, $p \in \mathcal{P}$
+is a {\it predicate} in predicate space, $\mathcal{P}$, and $g \in
+\mathcal{G}$ is a {\it goal type} in goal space, $\mathcal{G}$. We
+rewrite Equation~\ref{eq:master} replacing $K$ with its constituents:
 % -- Equation: replace K --
 \begin{equation}
 \Pr(\mathcal{A}^* \mid s, G, K) = \Pr(\mathcal{A}^* \mid s, G, \delta_1 \ldots \delta_{|K|}, \theta)
@@ -250,10 +259,8 @@ f(\delta, s, G) =
 \end{cases}
 \label{eq:f_func_def}
 \end{equation}
-\dnote{Do we need some explanation of what $f$ is doing here? Or is it obvious?}
 Using $f$, we consolidate the state, goal type, and $\delta_1 \ldots \delta_{|K|}$ into a set of binary goal dependent
 state features, $\phi_1 \ldots \phi_{|K|}$, where $\phi_j = f(\delta_j, s, G)$:
-
 % -- Equation: replace deltas with phi --
 \begin{equation}
 \Pr(\mathcal{A}^* \mid s, G, \delta_1 \ldots \delta_{|K|}, \theta) = \Pr(\mathcal{A}^* \mid \phi_1, \ldots, \phi_{|K|}, \theta)
@@ -267,28 +274,33 @@ We assume each action's optimality is independent from all other actions':
 \label{eq:action_independ}
 \end{equation}
 
-We abbreviate $a_i \in \mathcal{A}^*$ to $a_i$. Applying Bayes' Rule:
+We abbreviate $a_i \in \mathcal{A}^*$ to $a_i$.  This distribution may
+be modeled in any number of ways, making this approach quite flexible.
+We have chosen to model it as a Naive-Bayes, assuming a uniform prior
+on the optimality of each action, and assuming that the features are
+conditionally independent of one another.  First we factor using Bayes' rule:
 % -- Equation: Bayes --
 \begin{equation}
 = \prod_{i=1}^{|\mathcal{A}|} \frac{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i \mid a_i) \Pr(a_i)}{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i)}
 \label{eq:bayes}
 \end{equation}
-
-Affordance-aware planning involves using this distribution to prune the action set of the OO-MDP
-to an approximation of the optimal action set, on a state by state basis. In experiments, we approximate
-the optimal action set by computing the Maximum Likelihood Estimate of $\theta$ from training data and sampling.
-
-This distribution may be modeled in any number of ways, making this approach quite flexible.
-We have chosen to model it as a Naive-Bayes, assuming a uniform prior on the optimality of each action,
-and assuming that the features are conditionally independent of one another:
-
+Next we assume that each feature is independent of the others, given
+the true class label:
 % -- Equation: Naive assumption and uniform prior--
 \begin{equation}
 = \prod_{i=1}^{|\mathcal{A}|} \frac{\prod_{j=1}^{|K|} \Pr(\phi_j, \theta_{ij} \mid a_i) }{\Pr(\phi_1, \ldots, \phi_{|K|}, \theta_i)}
 \label{eq:final}
 \end{equation}
 
-A specific affordance refers to the action distribution associated with a single feature being active, while marginalizing out the rest of the features:
+We approximate the optimal action set by computing the maximum
+likelihood estimate of $\theta$ from training data and sampling, by
+counting the number of times an action occurs in an optimal policy
+when the associated precondition and postcondition are satisfied,
+described in the following section.
+
+A specific affordance refers to the action distribution associated
+with a single feature being active, while marginalizing out the rest
+of the features:
 
 % -- Equation: Specific affordance --
 \begin{equation}
@@ -296,28 +308,37 @@ A specific affordance refers to the action distribution associated with a single
 \label{eq:posterior}
 \end{equation}
 
-As with human agents, many affordances are often relevant in decision making at a given time.
-Thus, affordance-aware planning agents operating within an OO-MDP will rarely make specific
-reference to particular affordances, but will instead reason about the world using the relevant
-action possibilities identified by the distribution in Equation~\ref{eq:final}. For instance, suppose
-an affordance-aware Minecraft agent was attempting to cross a trench to reach a goal on the 
-other side. The affordance of `jump ability' will likely activate, indicating the agent may jump over the trench,
-or perhaps the 'bridge ability' will activate if it is a large enough trench, suggesting that the trench
-may be traversed by constructing a bridge. These affordances are important to consider, but only inform part of the agent's decision making. As with a human agent, the full set of relevant affordances defines the actions 
-the agent ought to consider in any state of the world.
+\stnote{Can we say something about expert-provided hard affordances
+  here?  Basically, that you could specify hard affordances according
+  to equation 9, but in practice, many affordances are relevant... and
+  then the rest of this paragraph} As with human agents, many
+affordances are often relevant in decision making at a given time.
+Thus, affordance-aware planning agents operating within an OO-MDP will
+rarely make specific reference to particular affordances, but will
+instead reason about the world using the relevant action possibilities
+identified by the distribution in Equation~\ref{eq:final}. For
+instance, suppose an affordance-aware Minecraft agent was attempting
+to cross a trench to reach a goal on the other side. The 'jump'
+affordance will likely activate, indicating the agent may jump over
+the trench, or perhaps the 'bridge' affordance will activate if it is
+a large enough trench, suggesting that the trench may be traversed by
+constructing a bridge. These affordances are important to consider,
+but only inform part of the agent's decision making. As with a human
+agent, the full set of relevant affordances defines the actions the
+agent ought to consider in any state of the world.
+\stnote{Shouldn't we refer back to the optimal action set? }
 
 % -- Subsection: Learning --
 \subsection{Learning}
 
-We are interested in learning the parameter $\theta$ that maximizes the accumulated reward
-during training:
-
+To learn affordances, we estimate the parameter vector $\theta$ that
+maximizes the accumulated reward during training, given a set of
+training worlds, $W$:
 \begin{equation}
 \argmax_\theta \sum_{w \in W} \sum_{s \in w} \Pr(\mathcal{A}^* \mid s, w.G, K)
 \end{equation}
 
-Where $W$ is the set of training worlds. We rewrite using Equation~\ref{eq:posterior}:
- 
+We rewrite using Equation~\ref{eq:posterior}:
 \begin{equation}
 \argmax_\theta \propto \sum_{w \in W} \sum_{s \in w} \prod_{i=1}^{|\mathcal{A}|} \prod_{j=1}^{|K|} \Pr(\theta_{ji}, \phi_j \mid a_i)
 \end{equation}
@@ -334,11 +355,14 @@ We compute $\Pr(\theta_{ij}\mid a_i)$ as the Maximum Likelihood Estimate:
 \theta_{ji} = \frac{C(\phi_j \mid a_i)}{\sum \limits_{j=1}^{|K|} C(\phi_j \mid a_i)}
 \end{equation}
 
-Where $C(\phi_j \mid a_i)$ denotes the counts of the number of times feature $\phi_j$ was active
-in states where $a_i$ was optimal during training. To inform these counts, we randomly generate a
-set of training worlds, $W$, that are small enough to synthesize a policy using tabular methods
-(i.e. thousands of states). We generated $W$ so that each of the possible goal types was assigned to a subset
-of the generated worlds.
+Where $C(\phi_j \mid a_i)$ denotes the counts of the number of times
+feature $\phi_j$ was active in states where $a_i$ was optimal during
+training. To inform these counts, we randomly generate a set of
+training worlds, $W$, that are small enough to synthesize a policy
+using tabular methods (i.e. thousands of states). We generated $W$ so
+that each of the possible goal types was assigned to a subset of the
+generated worlds.
+\stnote{Do we run only on worlds small enough to use a tabular method, or do we let it do bootstrapping?}
 
 \dnote{----Edited up to here-----}
 
