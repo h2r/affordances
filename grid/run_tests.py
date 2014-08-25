@@ -1,4 +1,4 @@
 #!/usr/bin/env python
 
 import subprocess
-subprocess.call(['java', '-jar', '-Xmx2048m', 'minecraftLearner.jar'])
+subprocess.call(['java', '-jar', '-Xmx2048m', 'minecraftTests.jar', '1'])
