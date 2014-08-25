@@ -14,7 +14,6 @@ def setup_files(job_name):
 
 	Returns:
 		A list of file names
-
 	"""
 	# Get the STDOUT files from the grid job in the home directory 
 	path = "."
@@ -29,7 +28,16 @@ def setup_files(job_name):
 
 def merge_kb_files(kb_file_list):
 	"""
+	Note:
+		Merges the provided list of knowledge base files into a single knowledge base
 
+	Args:
+		kb_file_list: a list of strings, where each string refers to a knowledge base file of relevance to merge
+
+	Returns:
+		knowledge_base: a dictionary containing all the relevant merged information, where:
+			Key = ((str) P, (str) G)
+			Value = {(str) action_name, [(int) action_count, (int) total_action_count]}
 	"""
 	# Key = ((str) P, (str) G)
 	# Value = {(str) action_name, [(int) action_count, (int) total_action_count]}
@@ -77,7 +85,14 @@ def merge_kb_files(kb_file_list):
 
 	return knowledge_base
 
-def write_kb_to_file(merged_kb, job_name):
+def write_kb_to_file(merged_kb):
+	""" 
+	Note:
+		Writes out the final knowledge base file to "grid.kb"
+
+	Args:
+		merged_kb: a dictionary containing all the relevant knowledge base information
+	"""
 	outfile = open("grid.kb", "w+")
 	for affordance in merged_kb:
 		outfile.write(affordance + "\n")
@@ -89,16 +104,20 @@ def write_kb_to_file(merged_kb, job_name):
 	outfile.close()
 
 def main():
+	# Get job name
 	try:
 		job_name = sys.argv[1]
 	except:
 		print "Error: missing argument.\nUsage: > python kb_parser.py <job_name>"
 		quit()
+	# Set up the knowledge base files
 	kb_files = setup_files(job_name)
 
+	# Merged all knowledge bases into one
 	merged_kb = merge_kb_files(kb_files)
 
-	write_kb_to_file(merged_kb, job_name)
+	# Write the merged knowledge base out to a file
+	write_kb_to_file(merged_kb)
 
 if __name__ == "__main__":
 	main()
