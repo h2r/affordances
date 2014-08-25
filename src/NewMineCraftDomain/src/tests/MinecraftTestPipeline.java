@@ -504,21 +504,21 @@ public class MinecraftTestPipeline {
 		
 		
 		// --- Learning Rate Results ---
-		boolean shouldLearn = false;
-		int numTestingMaps = 5;
-		int numLearningMapsPerLGD = 1;
-		double minFractStateSpace = 0;
-		double maxFractStateSpace = 1;
-		double increment = 0.2;
-		boolean useOptions = false;
-		boolean useMAs = false;
-		boolean countStateSpaceSize = false;
-		try {
-			runLearningRateTests("0-1_.2_legit_", numLearningMapsPerLGD, numTestingMaps, minFractStateSpace, maxFractStateSpace, increment, shouldLearn, countStateSpaceSize, useOptions, useMAs);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		boolean shouldLearn = false;
+//		int numTestingMaps = 5;
+//		int numLearningMapsPerLGD = 1;
+//		double minFractStateSpace = 0;
+//		double maxFractStateSpace = 1;
+//		double increment = 0.2;
+//		boolean useOptions = false;
+//		boolean useMAs = false;
+//		boolean countStateSpaceSize = false;
+//		try {
+//			runLearningRateTests("0-1_.2_legit_", numLearningMapsPerLGD, numTestingMaps, minFractStateSpace, maxFractStateSpace, increment, shouldLearn, countStateSpaceSize, useOptions, useMAs);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 }

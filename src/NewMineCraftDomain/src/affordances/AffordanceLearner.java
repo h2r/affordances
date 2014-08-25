@@ -648,7 +648,7 @@ public class AffordanceLearner {
 		
 //		MinecraftBehavior mb = new MinecraftBehavior(br);
 		
-		boolean addOptions = false;
+		boolean addOptions = true;
 		boolean addMAs = false;
 		double fractionOfStateSpaceToLearnWith = 1.0;
 		final int numWorldsToLearnWith = 1;

@@ -340,15 +340,23 @@ public class MinecraftBehavior {
 		boolean useOptions = false;
 		boolean useMAs = false;
 		boolean hardFlag = true;
+		boolean expert = false;
+		
+		String kbName = "";
+		if(expert) kbName += "expert/expert";
+		else kbName += "learned/grid";
+		
+		if(useMAs) kbName += "_ma";
+		if(useOptions) kbName += "_o";
+		if(!useMAs && !useOptions) kbName += "_prim_acts";
+		kbName += ".kb";
 		
 		// Load knowledge base
 		KnowledgeBase affKB = new KnowledgeBase();
-//		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "expert/expert_prim_acts.kb", hardFlag);
-		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), "learned/learned3_prim_acts_plane.kb", hardFlag);
-
+		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), kbName, hardFlag);
 		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, useOptions, useMAs, affKB);
 		results = affRTDPPlanner.runPlanner();
-		System.out.println("(minecraftBehavior) results [1LRTDP]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
+		System.out.println("(minecraftBehavior) results expert(" + expert + ") : " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 
 		//VI
 //		VIPlanner viPlan = new VIPlanner(mcBeh, false, false);
