@@ -1,3 +1,23 @@
 Running on map: DeepTrenchWorld0.map
-	...VI Finished
-	...Expert VI
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+mapCounter: 1
+Running on map: DeepTrenchWorld1.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+mapCounter: 2
+Running on map: DeepTrenchWorld2.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP Finished
+mapCounter: 3
+Running on map: PlaneGoldMineWorld0.map
+	...RTDP Finished
+	...Expert RTDP Finished
+	...LearnedHard RTDP Finished
+	...Learned Soft RTDP

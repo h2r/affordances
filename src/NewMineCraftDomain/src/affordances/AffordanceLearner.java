@@ -429,7 +429,7 @@ public class AffordanceLearner {
 	 * @param fracOfStateSpace: The fraction of the state space to learn with.
 	 * @return
 	 */
-	public static String generateMinecraftKB(MinecraftBehavior mcBeh, int numWorlds, boolean learningRate, boolean useOptions, boolean useMAs, double fracOfStateSpace) {
+	public static String generateMinecraftKB(MinecraftBehavior mcBeh, int numWorlds, boolean learningRate, boolean useOptions, boolean useMAs, double fracOfStateSpace, String jobID) {
 		
 		// Get Actions
 		List<AbstractGroundedAction> allGroundedActions = getAllActions(mcBeh, useOptions, useMAs);
@@ -641,19 +641,17 @@ public class AffordanceLearner {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
+
 		
-//		InputStream is = o.getClass.getResourceAsStream("/DeepTrenchWorld0.map");
-//		InputStreamReader isr = new InputStreamReader(input);
-//		BufferedReader br = new BufferedReader(isr);
-		
-//		MinecraftBehavior mb = new MinecraftBehavior(br);
-		
-		boolean addOptions = false;
+		boolean addOptions = true;
 		boolean addMAs = false;
 		double fractionOfStateSpaceToLearnWith = 1.0;
 		final int numWorldsToLearnWith = 1;
 		MinecraftBehavior mcBeh = new MinecraftBehavior();
-		generateMinecraftKB(mcBeh, numWorldsToLearnWith, false, addOptions, addMAs, fractionOfStateSpaceToLearnWith);
+		String jobID = args[0];
+		if(addMAs) jobID += "_ma";
+		if(addOptions) jobID += "_o";
+		generateMinecraftKB(mcBeh, numWorldsToLearnWith, false, addOptions, addMAs, fractionOfStateSpaceToLearnWith, jobID);
 	}
 	
 }
