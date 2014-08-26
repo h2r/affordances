@@ -268,9 +268,8 @@ whether the action is optimal:
 \end{equation}
 \jnote{I'm somewhat inclined to not write down the Naive Bayes derivation and just say ``We have chosen a Naive-Bayes model which treats each feature as indepdent of each other given whether the action was optimal or not''}
 
-This representation of affordances is supported by an interpretation of affordances proposed by \citet{chemero2003} in a recent review of the cognitive psychology literature on the theory of affordances. Chemero suggests that an affordance is a relation between the features of an environment and an agent's abilities. We have chosen to ground this claim, where
-the agent's abilities correspond to the OO-MDP action set and the features of the environment correspond
-to the goal-dependent state features, $\phi$. In our model, there is an affordance for each $\delta_j$, with preconditions $\delta_j.p$, goal type $\delta_j.g$ and action distribution $\Pr({\cal A}^* | \phi_j, \theta)$, which is computed in our Naive Bayes model by marginalizing over all the features not associated with $\delta_j$.
+In a recent review on the theory of affordances, \citet{chemero2003} suggests that an affordance is a relation between the features of an environment and an agent's abilities. We have chosen to ground this claim, where
+the features of the environment correspond to the goal-dependent state features, $\phi$, and the agent's abilities correspond to the OO-MDP action set. In our model, there is an affordance for each $\delta_j$, with preconditions $\delta_j.p$, goal type $\delta_j.g$ and action distribution $\Pr({\cal A}^* | \phi_j, \theta)$, which is computed in our Naive Bayes model by marginalizing over all the features not associated with $\delta_j$.
 
 %\dnote{I think we need to talk about the presence of the goal type in planning, too, but for now I'm okay with the above paragraph}
 %Furthermore, in a planning context, affordances must be goal directed since the set of affordances an agent cares about at any given time to will change with respect to the agent's current goal. Thus, our features ($\phi$) are not just state features, but goal-dependent state features.  
@@ -417,44 +416,29 @@ and macro actions provided were hand coded by domain experts.
 % -- Subsection: Minecraft --
 \subsection{Minecraft: Affordance-Aware RTDP vs. RTDP}
 %
-Table~\ref{table:minecraft_results} shows the average CPU time, Bellman Updates, and accumulated reward for RTDP and affordance-aware RTDP (ARTDP) after planning in 10 different maps of each goal type. Because the planners were forced to terminate after only 1500 rollouts, they did not always converge to the optimal policy. As the results suggest, ARTDP found a near optimal policy in significantly less time than RTDP in the Gold Smelting task (217 seconds to 4544 seconds), as well as the Wall traversal task (87s to 327s). In both of these cases, ARTDP also found a significantly better plan(-18.3 to -75.3 and -0.6 to -9.9 reward, respectively).
-
-In some cases, ARTDP found a less optimal plan than RTDP - this is likely due to the fact that the affordances pruned away actions that were optimal in some states. If this were to happen consistently, the expert defined threshold could lowered to reduce the amount of pruning, raising the likelihood of finding the optimal policy. Conversely, though, this reduces the speedups of affordance-aware planning. In future work, we are considering an extension to our current sampling methods in which the threshold iteratively becomes less conservative until an optimal policy is found.
-
-% -- Figure: Minecraft results, RTDP --
-%\begin{table}[H]
-%\centering
-%\begin{tabular}{ l  l || c c c c }
-%  State Space 		&	Size 	&	RTDP 	& Learned 	& Learned Threshold & Expert 	\\ \hline
-%  \texttt{Trench}  	& 	-	&	-	&	-		&	-	&	-	\\
-%  \texttt{Mine}  		& 	-	&	-	&	-		&	-   	&	-	\\
-%  \texttt{Smelt}  		& 	-	&	-	&	-		&	-	&	-	\\
-%  \texttt{Wall}  		& 	-	&	-	&	-		&	-	&	-	\\
-%  \texttt{Plane}  		& 	-	&	-	&	-		&	- 	&	-	\\
-%\end{tabular}
-%\caption{Place holder for RTDP Bellman/CPU}
-%\label{table:minecraft_results_bellman}
-%\end{table}
-
+Table~\ref{table:minecraft_results} shows the average CPU time, Bellman Updates, and accumulated reward for RTDP and affordance-aware RTDP (ARTDP) after planning in 10 different maps of each goal type. Because the planners were forced to terminate after only 1500 rollouts, they did not always converge to the optimal policy. As the results suggest, ARTDP found a near optimal policy in significantly less time than RTDP in the Gold Smelting task (21.7 seconds to 454.4 seconds), as well as the Wall traversal task (8.7 seconds to 32.7 seconds). In both of these cases, ARTDP also found a significantly better plan(-18.3 to -75.3 and -0.6 to -9.9 reward, respectively).
 
 \begin{table}[H]
 \centering
 \begin{tabular}{ c l  || c c c c}
   State Space	&	Planner 				&	CPU	&	Reward 	& Bellman \\ \hline
-  Mine 	& \texttt{RTDP}  			& 	{\bf 76s}	&	{\bf -2.2}	&	{\bf 5291}		\\
-  		& \texttt{ARTDP}  			& 	156s		&	-12.4		&	5442		\\  \hline
-  Smelt	&	\texttt{RTDP}  			& 	4544s	&	-75.3		&	67805		\\
-  		&	\texttt{ARTDP}  		& 	{\bf 217s}	&	{\bf -18.1}	&	{\bf 5666}		\\  \hline
-  Wall	&	\texttt{RTDP}  			& 	327s		&	-9.9		&	6946		\\
-  		&	\texttt{ARTDP}  		& 	{\bf 87s}	&	{\bf -0.6}	&	{\bf 1597}		\\  \hline
-  Trench	&	\texttt{RTDP}  			& 	942s		&	{\bf -3.15}	&	{\bf 12009}		\\
-  		&	\texttt{ARTDP}  		& 	{\bf 932s}	&	-24.5		&	15270		\\ \hline
-Plane	&	\texttt{RTDP}  			& 	137s		&	-0.9		&	3543		\\
-  		&	\texttt{ARTDP}  		& 	{\bf 59s}	&	-0.9		&	{\bf 301}		\\ 
+  Mine 	& \texttt{RTDP}  			& 	{\bf 7.6s}	&	{\bf -2.2}	&	{\bf 5291}		\\
+  		& \texttt{ARTDP}  			& 	15.6s		&	-12.4		&	5442		\\  \hline
+  Smelt	&	\texttt{RTDP}  			& 	454.4s	&	-75.3		&	67805		\\
+  		&	\texttt{ARTDP}  		& 	{\bf 21.7s}	&	{\bf -18.1}	&	{\bf 5666}		\\  \hline
+  Wall	&	\texttt{RTDP}  			& 	32.7s		&	-9.9		&	6946		\\
+  		&	\texttt{ARTDP}  		& 	{\bf 8.7s}	&	{\bf -0.6}	&	{\bf 1597}		\\  \hline
+  Trench	&	\texttt{RTDP}  			& 	94,2s		&	{\bf -3.15}	&	{\bf 12009}		\\
+  		&	\texttt{ARTDP}  		& 	{\bf 93.2s}	&	-24.5		&	15270		\\ \hline
+Plane	&	\texttt{RTDP}  			& 	13.7s		&	-0.9		&	3543		\\
+  		&	\texttt{ARTDP}  		& 	{\bf 5.9s}	&	-0.9		&	{\bf 301}		\\ 
 \end{tabular}
 \caption{RTDP vs. Learned Affordance-Aware RTDP}
 \label{table:minecraft_results}
 \end{table}
+
+
+In some cases, ARTDP found a less optimal plan than RTDP - this is likely due to the fact that the affordances pruned away actions that were optimal in some states. If this were to happen consistently, the expert defined threshold could lowered to reduce the amount of pruning, raising the likelihood of finding the optimal policy. Conversely, though, this reduces the speedups of affordance-aware planning. In future work, we are considering an extension to our current sampling methods in which the threshold iteratively becomes less conservative until an optimal policy is found.
 
 
 % -- Subsection: Minecraft Learning Rate
@@ -473,20 +457,20 @@ Experiments have not yet finished.
 % -- Subsection: Temporally Extended Actions --
 \subsection{Temporally Extended Actions}
 
-Table~\ref{table:temp_ext_act_results} indicates the results of comparing RTDP equipped with macro actions, options, and affordances across 10 different executions in the same randomly generated Minecraft worlds. The planners were tasked with reaching a particular location, given a set of obstacles in the terrain. As the results suggest, both macro actions and options add significant amount of CPU time to planning (186s vs. 301s vs. 547s). This is due to the fact that the branching factor of the state-action space significantly increases when augmented with additional actions. Furthermore, computing the expected reward of applying an option is computationally expensive. With affordances, the planner completed in less CPU time, and with fewer bellman updates. This supports the claim that affordances can handle the augmented action space proded by temporally extended actions by pruning away unnecessary actions.
+Table~\ref{table:temp_ext_act_results} indicates the results of comparing RTDP equipped with macro actions, options, and affordances across 10 different executions in the same randomly generated Minecraft worlds. The planners were tasked with reaching a particular location, given a set of obstacles in the terrain. As the results suggest, both macro actions and options add significant amount of CPU time to planning (18.6s vs. 30.1s vs. 54.7s). This is due to the fact that the branching factor of the state-action space significantly increases when augmented with additional actions. Furthermore, computing the expected reward of applying an option is computationally expensive. With affordances, the planner completed in less CPU time, and with fewer bellman updates. This supports the claim that affordances can handle the augmented action space proded by temporally extended actions by pruning away unnecessary actions.
 
 % -- Figure: Temporally Extended Actions Results --
 \begin{table}[H]
 \centering
 \begin{tabular}{ l  || c c c c}
   Augmentation 						&	CPU	&	Reward 	& Bellman \\ \hline
-  \texttt{RTDP}  						&	186s	&	-1.05		&	1000		\\
-  \texttt{w/ Opt}  					&	301s	&	-1.05		&	1058		\\
-  \texttt{w/ MA}  						&	547s	&	-1.05		&	703.25		\\
-  \texttt{w/ Affordances}  				& 	{\bf 43s}	&	-1.05		&	204		\\
-  \texttt{w/ Affordances+Opt}  			& 	130s	&	-1.05		&	349.6		\\
-   \texttt{w/ Affordances+MA}  			& 	153s	&	-1.05		&	202.15		\\
-   \texttt{w/ Affordances+MA+Opt}  		& 	183s	&	-1.05		&	{\bf 180.9}		\\
+  \texttt{RTDP}  						&	18.6s	&	-1.05		&	1000		\\
+  \texttt{w/ Opt}  					&	30.1s	&	-1.05		&	1058		\\
+  \texttt{w/ MA}  						&	54.7s	&	-1.05		&	703.25		\\
+  \texttt{w/ Affordances}  				& 	{\bf 4.3s}	&	-1.05		&	204		\\
+  \texttt{w/ Affordances+Opt}  			& 	13.0s	&	-1.05		&	349.6		\\
+   \texttt{w/ Affordances+MA}  			& 	15.3s	&	-1.05		&	202.15		\\
+   \texttt{w/ Affordances+MA+Opt}  		& 	18.3s	&	-1.05		&	{\bf 180.9}		\\
 \end{tabular}
 \caption{Affordances vs. Temporally Extended Actions}
 \label{table:temp_ext_act_results}
