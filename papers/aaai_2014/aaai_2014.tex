@@ -212,10 +212,8 @@ $\delta_j$ is a precondition and goal type pair, $\langle p, g
 \rangle$, where $p \in \mathcal{P}$ is a {\it predicate} in predicate space, 
 $\mathcal{P}$, and $g \in \mathcal{G}$ is a {\it goal type} in goal space. 
 We assume that the the goal space consists of logical expression of state predicates.
-A goal type specifies the sort of problem the agent is trying to achieve. Consider that a robotic
-cooking agent is equipped to cook a variety of meals - the goal type in this case simply specifics
-the type of meal to cook.
-\jnote{Somewhere, maybe here? we should give an example of goals and goal types.
+A goal type specifies the sort of problem the agent is trying to achieve. In the context of Minecraft,
+a goal type might consist of retrieving an object of a certain type from the environment, reaching a particular location, or crafting a structure. \jnote{Somewhere, maybe here? we should give an example of goals and goal types.
 I think it's kind of ambiguous what we mean.} \dnote{how about this?}
 The parameter vector, $\theta$ represents model parameters for the probability distribution.
 We rewrite Equation~\ref{eq:master} replacing $K$ with its constituents:
@@ -268,7 +266,7 @@ whether the action is optimal:
 \end{equation}
 \jnote{I'm somewhat inclined to not write down the Naive Bayes derivation and just say ``We have chosen a Naive-Bayes model which treats each feature as indepdent of each other given whether the action was optimal or not''}
 
-In a recent review on the theory of affordances, \citet{chemero2003} suggests that an affordance is a relation between the features of an environment and an agent's abilities. We have chosen to ground this claim, where
+In a recent review on the theory of affordances, \citet{chemero2003} suggests that an affordance is a relation between the features of an environment and an agent's abilities. We have chosen to ground this interpretation, where
 the features of the environment correspond to the goal-dependent state features, $\phi$, and the agent's abilities correspond to the OO-MDP action set. In our model, there is an affordance for each $\delta_j$, with preconditions $\delta_j.p$, goal type $\delta_j.g$ and action distribution $\Pr({\cal A}^* | \phi_j, \theta)$, which is computed in our Naive Bayes model by marginalizing over all the features not associated with $\delta_j$.
 
 %\dnote{I think we need to talk about the presence of the goal type in planning, too, but for now I'm okay with the above paragraph}
@@ -283,15 +281,15 @@ As with human agents, multiple affordances often inform decision making at a giv
 Thus, affordance-aware planning agents operating within an OO-MDP will
 rarely make specific reference to particular affordances, but will
 instead reason about the world using the relevant action possibilities
-identified by the distribution in Equation~\ref{eq:final}. For
-instance, suppose an affordance-aware Minecraft agent was attempting
-to cross a trench to reach a goal on the other side. The `jump'
-affordance will likely activate, indicating the agent may jump over
-the trench. This affordance is important to consider,
-but only informs part of the agent's decision making, as there are a variety
-of other affordances that are likely relevant to the agent, too. As with a human
-agent, the full set of relevant affordances approximates the optimal actions the
-agent ought to consider in any state of the world.
+identified by the distribution in Equation~\ref{eq:final}. 
+%For instance, suppose an affordance-aware Minecraft agent was attempting
+%to cross a trench to reach a goal on the other side. The `jump'
+%affordance will likely activate, indicating the agent may jump over
+%the trench. This affordance is important to consider,
+%but only informs part of the agent's decision making, as there are a variety
+%of other affordances that are likely relevant to the agent, too. As with a human
+%agent, the full set of relevant affordances approximates the optimal actions the
+%agent ought to consider in any state of the world.
 
 % -- Subsection: Action Pruning --
 \subsection{Action Pruning}
@@ -347,7 +345,7 @@ We conducted a series of experiments in the Minecraft domain that
 compared the performance of Real Time Dynamic Programming (RTDP)
 without affordances to its affordance-aware counterpart. We created a set of expert
 affordances from our background knowledge of the domain, which are
-listed in Figure \ref{fig:afford_kb_exp}. Additionally, we ran our full
+listed in Figure \ref{fig:afford_kb_exp} (Note: expert method intentionally ignored for now). Additionally, we ran our full
 learning process and learned affordances for each task. We compared
 RTDP with its expert-affordance-aware and learned-affordance-aware 
 counterparts. 
@@ -435,7 +433,7 @@ found a significantly better plan (-18.3 to -75.3 and -0.6 to -9.9 reward, respe
   		&	\texttt{ARTDP}  		& 	{\bf 21.7s}	&	{\bf -18.1}	&	{\bf 5666}		\\  \hline
   Wall	&	\texttt{RTDP}  			& 	32.7s		&	-9.9		&	6946		\\
   		&	\texttt{ARTDP}  		& 	{\bf 8.7s}	&	{\bf -0.6}	&	{\bf 1597}		\\  \hline
-  Trench	&	\texttt{RTDP}  			& 	94,2s		&	{\bf -3.15}	&	{\bf 12009}		\\
+  Trench	&	\texttt{RTDP}  			& 	94.2s		&	{\bf -3.15}	&	{\bf 12009}		\\
   		&	\texttt{ARTDP}  		& 	{\bf 93.2s}	&	-24.5		&	15270		\\ \hline
 Plane	&	\texttt{RTDP}  			& 	13.7s		&	-0.9		&	3543		\\
   		&	\texttt{ARTDP}  		& 	{\bf 5.9s}	&	-0.9		&	{\bf 301}		\\ 
@@ -474,26 +472,26 @@ Table~\ref{table:temp_ext_act_results} indicates the results of comparing RTDP
 equipped with macro actions, options, and affordances across 10 different executions
 in the same randomly generated Minecraft worlds. The planners were tasked with 
 reaching a particular location, given a set of obstacles to overcome. As the results 
-suggest, both macroactions and options add significant amount of CPU time to 
-planning (18.6s vs. 30.1s vs. 54.7s). This is due to the fact that the branching factor 
-of the state-action space significantly increases when augmented with additional 
+suggest, both macroactions and options add significant amount of Bellman Updates to 
+planning (note: they did, though I need to recollect results as there was an issue with CPU time computation). 
+This is due to the fact that the branching factor of the state-action space significantly increases when augmented with additional 
 actions. Furthermore, computing the expected reward of applying an option is computationally 
 expensive. With affordances, the planner completed in less CPU time, and with fewer 
 bellman updates. This supports the claim that affordances can handle the augmented 
-action space proded by temporally extended actions by pruning away unnecessary actions.
+action space provided by temporally extended actions by pruning away unnecessary actions.
 
 % -- Figure: Temporally Extended Actions Results --
 \begin{table}[H]
 \centering
 \begin{tabular}{ l  || c c c c}
   Augmentation 						&	CPU	&	Reward 	& Bellman \\ \hline
-  \texttt{RTDP}  						&	18.6s	&	-1.05		&	1000		\\
-  \texttt{w/ Opt}  					&	30.1s	&	-1.05		&	1058		\\
-  \texttt{w/ MA}  						&	54.7s	&	-1.05		&	703.25		\\
-  \texttt{w/ Affordances}  				& 	{\bf 4.3s}	&	-1.05		&	204		\\
-  \texttt{w/ Affordances+Opt}  			& 	13.0s	&	-1.05		&	349.6		\\
-   \texttt{w/ Affordances+MA}  			& 	15.3s	&	-1.05		&	202.15		\\
-   \texttt{w/ Affordances+MA+Opt}  		& 	18.3s	&	-1.05		&	{\bf 180.9}		\\
+  \texttt{RTDP}  						&		&	-1.05		&	1000		\\
+  \texttt{w/ Opt}  					&		&	-1.05		&	1058		\\
+  \texttt{w/ MA}  						&		&	-1.00		&	703.25		\\
+  \texttt{w/ Affordances}  				& 		&	-1.05		&	204		\\
+  \texttt{w/ Affordances+Opt}  			& 		&	-1.05		&	349.6		\\
+   \texttt{w/ Affordances+MA}  			& 		&	-1.05		&	202.15		\\
+   \texttt{w/ Affordances+MA+Opt}  		& 		&	-1.05		&	{\bf 180.9}		\\
 \end{tabular}
 \caption{Affordances vs. Temporally Extended Actions}
 \label{table:temp_ext_act_results}
