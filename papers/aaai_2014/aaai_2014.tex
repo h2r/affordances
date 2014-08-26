@@ -416,7 +416,14 @@ and macro actions provided were hand coded by domain experts.
 % -- Subsection: Minecraft --
 \subsection{Minecraft: Affordance-Aware RTDP vs. RTDP}
 %
-Table~\ref{table:minecraft_results} shows the average CPU time, Bellman Updates, and accumulated reward for RTDP and affordance-aware RTDP (ARTDP) after planning in 10 different maps of each goal type. Because the planners were forced to terminate after only 1500 rollouts, they did not always converge to the optimal policy. As the results suggest, ARTDP found a near optimal policy in significantly less time than RTDP in the Gold Smelting task (21.7 seconds to 454.4 seconds), as well as the Wall traversal task (8.7 seconds to 32.7 seconds). In both of these cases, ARTDP also found a significantly better plan(-18.3 to -75.3 and -0.6 to -9.9 reward, respectively).
+Table~\ref{table:minecraft_results} shows the average CPU time, Bellman Updates, 
+and accumulated reward for RTDP and affordance-aware RTDP (ARTDP) after 
+planning in 10 different maps of each goal type. Because the planners were forced 
+to terminate after only 1500 rollouts, they did not always converge to the optimal policy. 
+As the results suggest, ARTDP found a near optimal policy in significantly less time than 
+RTDP in the Gold Smelting task (21.7 seconds to 454.4 seconds), as well as the Wall 
+traversal task (8.7 seconds to 32.7 seconds). In both of these cases, ARTDP also 
+found a significantly better plan (-18.3 to -75.3 and -0.6 to -9.9 reward, respectively).
 
 \begin{table}[H]
 \centering
@@ -438,7 +445,13 @@ Plane	&	\texttt{RTDP}  			& 	13.7s		&	-0.9		&	3543		\\
 \end{table}
 
 
-In some cases, ARTDP found a less optimal plan than RTDP - this is likely due to the fact that the affordances pruned away actions that were optimal in some states. If this were to happen consistently, the expert defined threshold could lowered to reduce the amount of pruning, raising the likelihood of finding the optimal policy. Conversely, though, this reduces the speedups of affordance-aware planning. In future work, we are considering an extension to our current sampling methods in which the threshold iteratively becomes less conservative until an optimal policy is found.
+In some cases, ARTDP found a less optimal plan than RTDP - this is likely due to 
+the fact that the affordances pruned away actions that were optimal in some states. 
+If this were to happen consistently, the expert defined threshold could lowered to 
+reduce the amount of pruning, raising the likelihood of finding the optimal policy. 
+Conversely, though, this reduces the speedups of affordance-aware planning. In 
+future work, we are considering an extension to our current sampling methods in 
+which the threshold iteratively becomes less conservative until an optimal policy is found.
 
 
 % -- Subsection: Minecraft Learning Rate
@@ -457,7 +470,17 @@ Experiments have not yet finished.
 % -- Subsection: Temporally Extended Actions --
 \subsection{Temporally Extended Actions}
 
-Table~\ref{table:temp_ext_act_results} indicates the results of comparing RTDP equipped with macro actions, options, and affordances across 10 different executions in the same randomly generated Minecraft worlds. The planners were tasked with reaching a particular location, given a set of obstacles in the terrain. As the results suggest, both macro actions and options add significant amount of CPU time to planning (18.6s vs. 30.1s vs. 54.7s). This is due to the fact that the branching factor of the state-action space significantly increases when augmented with additional actions. Furthermore, computing the expected reward of applying an option is computationally expensive. With affordances, the planner completed in less CPU time, and with fewer bellman updates. This supports the claim that affordances can handle the augmented action space proded by temporally extended actions by pruning away unnecessary actions.
+Table~\ref{table:temp_ext_act_results} indicates the results of comparing RTDP
+equipped with macro actions, options, and affordances across 10 different executions
+in the same randomly generated Minecraft worlds. The planners were tasked with 
+reaching a particular location, given a set of obstacles to overcome. As the results 
+suggest, both macroactions and options add significant amount of CPU time to 
+planning (18.6s vs. 30.1s vs. 54.7s). This is due to the fact that the branching factor 
+of the state-action space significantly increases when augmented with additional 
+actions. Furthermore, computing the expected reward of applying an option is computationally 
+expensive. With affordances, the planner completed in less CPU time, and with fewer 
+bellman updates. This supports the claim that affordances can handle the augmented 
+action space proded by temporally extended actions by pruning away unnecessary actions.
 
 % -- Figure: Temporally Extended Actions Results --
 \begin{table}[H]
