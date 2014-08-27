@@ -328,11 +328,12 @@ where $C(a_i)$ is the number of observed occurrences where $a_i$ was optimal, $C
 \section{Experiments}
 \label{sec:experiments}
 
-We use Minecraft as our training and evaluation domain. Minecraft is a
-3-D blocks game in which the user can place, craft, and destroy blocks
-of different types.  Minecraft's physics and action space are
-expressive enough to allow users to create complex systems, including
-logic gates and functional scientific graphing
+
+We evaluate our approach using the game Minecraft as well as on a
+collaborative cooking robot.  Minecraft is a 3-D blocks game in which
+the user can place, craft, and destroy blocks of different types.
+Minecraft's physics and action space allow users to create complex
+systems, including logic gates and functional scientific graphing
 calculators\footnote{https://www.youtube.com/watch?v=wgJfVRhotlQ}.
 Minecraft serves as a model for robotic tasks such as cooking
 assistance, assembling items in a factory, object retrieval, and
@@ -372,20 +373,21 @@ randomized worlds of varying size and difficulty. The generated test
 worlds varied in size from tens of thousands of states to hundreds of thousands of states.
 
 The training data consisted of 10 simple state spaces of each map type
-(50 total), each map approximately a 1,000-10,000 state world with randomized
-features that mirrored the agent's actual state space. The same training data
-was used for each test state space.
+(50 total), each map approximately a 1,000-10,000 state world with
+randomized features that mirrored the agent's actual state space. The
+same training data was used for each test state space. \stnote{Whoa really?  We should be using different maps between training and test.  }
 
-The evaluation metric for each trial was the
-number of Bellman updates that were executed by each planning
-algorithm, the accumulated reward, and the CPU time taken to find a plan. All planners were terminated
-when the maximum change in the value function was less than 0.01 for 100 
-consecutive policy rollouts, or the planner failed to converge after 1500 rollouts. 
-We set the reward  function to $-1$ for all transitions, except transitions to states in 
-which the agent was on lava, which returned $-10$. The goal was set to be 
-terminal. The discount factor was set to $\lambda = 0.99$. For all experiments,
-movement actions (move, rotate, jump) had a small probability (0.05) of 
-incorrectly applying a different movement action.
+The evaluation metric for each trial was the number of Bellman updates
+that were executed by each planning algorithm, the accumulated reward,
+and the CPU time taken to find a plan.  We terminated each planner
+when the maximum change in the value function was less than 0.01 for
+100 consecutive policy rollouts, or the planner failed to converge
+after 1500 rollouts.  We set the reward function to $-1$ for all
+transitions, except transitions to states in which the agent was on
+lava, which returned $-10$. The goal was set to be terminal. The
+discount factor was set to $\lambda = 0.99$. For all experiments,
+movement actions (move, rotate, jump) had a small probability (0.05)
+of incorrectly applying a different movement action.
 
 % -- Subsection: Learning Rate --
 \subsection{Learning Rate}
@@ -442,6 +444,21 @@ Plane	&	\texttt{RTDP}  			& 	168.4s		&	-1.8		&	7954		\\
 \caption{RTDP vs. Learned Affordance-Aware RTDP}
 \label{table:minecraft_results}
 \end{table}
+
+% -- older results
+%\begin{tabular}{ c l  || c c c c}
+%  State Space	&	Planner 				&	CPU	&	Reward 	& Bellman \\ \hline
+%  Mine 	& \texttt{RTDP}  			& 	{\bf 7.6s}	&	{\bf -2.2}	&	{\bf 5291}		\\
+%  		& \texttt{ARTDP}  			& 	15.6s		&	-12.4		&	5442		\\  \hline
+%  Smelt	&	\texttt{RTDP}  			& 	454.4s	&	-75.3		&	67805		\\
+%  		&	\texttt{ARTDP}  		& 	{\bf 21.7s}	&	{\bf -18.1}	&	{\bf 5666}		\\  \hline
+%  Wall	&	\texttt{RTDP}  			& 	32.7s		&	-9.9		&	6946		\\
+%  		&	\texttt{ARTDP}  		& 	{\bf 8.7s}	&	{\bf -0.6}	&	{\bf 1597}		\\  \hline
+%  Trench	&	\texttt{RTDP}  			& 	94.2s		&	{\bf -3.15}	&	{\bf 12009}		\\
+%  		&	\texttt{ARTDP}  		& 	{\bf 93.2s}	&	-24.5		&	15270		\\ \hline
+%Plane	&	\texttt{RTDP}  			& 	13.7s		&	-0.9		&	3543		\\
+%  		&	\texttt{ARTDP}  		& 	{\bf 5.9s}	&	-0.9		&	{\bf 301}		\\ 
+%\end{tabular}
 
 In some cases, ARTDP found a less optimal plan than RTDP - this is likely due to 
 the fact that the affordances pruned away actions that were optimal in some states. 
