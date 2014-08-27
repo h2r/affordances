@@ -328,11 +328,12 @@ where $C(a_i)$ is the number of observed occurrences where $a_i$ was optimal, $C
 \section{Experiments}
 \label{sec:experiments}
 
-We use Minecraft as our training and evaluation domain. Minecraft is a
-3-D blocks game in which the user can place, craft, and destroy blocks
-of different types.  Minecraft's physics and action space are
-expressive enough to allow users to create complex systems, including
-logic gates and functional scientific graphing
+
+We evaluate our approach using the game Minecraft as well as on a
+collaborative cooking robot.  Minecraft is a 3-D blocks game in which
+the user can place, craft, and destroy blocks of different types.
+Minecraft's physics and action space allow users to create complex
+systems, including logic gates and functional scientific graphing
 calculators\footnote{https://www.youtube.com/watch?v=wgJfVRhotlQ}.
 Minecraft serves as a model for robotic tasks such as cooking
 assistance, assembling items in a factory, object retrieval, and
@@ -372,20 +373,21 @@ randomized worlds of varying size and difficulty. The generated test
 worlds varied in size from tens of thousands of states to hundreds of thousands of states.
 
 The training data consisted of 10 simple state spaces of each map type
-(50 total), each map approximately a 1,000-10,000 state world with randomized
-features that mirrored the agent's actual state space. The same training data
-was used for each test state space.
+(50 total), each map approximately a 1,000-10,000 state world with
+randomized features that mirrored the agent's actual state space. The
+same training data was used for each test state space. \stnote{Whoa really?  We should be using different maps between training and test.  }
 
-The evaluation metric for each trial was the
-number of Bellman updates that were executed by each planning
-algorithm, the accumulated reward, and the CPU time taken to find a plan. All planners were terminated
-when the maximum change in the value function was less than 0.01 for 100 
-consecutive policy rollouts, or the planner failed to converge after 1500 rollouts. 
-We set the reward  function to $-1$ for all transitions, except transitions to states in 
-which the agent was on lava, which returned $-10$. The goal was set to be 
-terminal. The discount factor was set to $\lambda = 0.99$. For all experiments,
-movement actions (move, rotate, jump) had a small probability (0.05) of 
-incorrectly applying a different movement action.
+The evaluation metric for each trial was the number of Bellman updates
+that were executed by each planning algorithm, the accumulated reward,
+and the CPU time taken to find a plan.  We terminated each planner
+when the maximum change in the value function was less than 0.01 for
+100 consecutive policy rollouts, or the planner failed to converge
+after 1500 rollouts.  We set the reward function to $-1$ for all
+transitions, except transitions to states in which the agent was on
+lava, which returned $-10$. The goal was set to be terminal. The
+discount factor was set to $\lambda = 0.99$. For all experiments,
+movement actions (move, rotate, jump) had a small probability (0.05)
+of incorrectly applying a different movement action.
 
 % -- Subsection: Learning Rate --
 \subsection{Learning Rate}
