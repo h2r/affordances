@@ -421,29 +421,27 @@ and accumulated reward for RTDP and affordance-aware RTDP (ARTDP) after
 planning in 10 different maps of each goal type. Because the planners were forced 
 to terminate after only 1500 rollouts, they did not always converge to the optimal policy. 
 As the results suggest, ARTDP found a near optimal policy in significantly less time than 
-RTDP in the gold smelting task (21.7 seconds to 454.4 seconds), as well as the wall 
-traversal task (8.7 seconds to 32.7 seconds). In both of these cases, ARTDP also 
-found a significantly better plan (-18.3 to -75.3 and -0.6 to -9.9 reward, respectively).
+RTDP in the gold smelting task (6 seconds to 543 seconds), as well as the plane 
+traversal task (17.5 seconds to 168.4 seconds).
 
 \begin{table}[H]
 \centering
 \begin{tabular}{ c l  || c c c c}
   State Space	&	Planner 				&	CPU	&	Reward 	& Bellman \\ \hline
-  Mine 	& \texttt{RTDP}  			& 	{\bf 7.6s}	&	{\bf -2.2}	&	{\bf 5291}		\\
-  		& \texttt{ARTDP}  			& 	15.6s		&	-12.4		&	5442		\\  \hline
-  Smelt	&	\texttt{RTDP}  			& 	454.4s	&	-75.3		&	67805		\\
-  		&	\texttt{ARTDP}  		& 	{\bf 21.7s}	&	{\bf -18.1}	&	{\bf 5666}		\\  \hline
-  Wall	&	\texttt{RTDP}  			& 	32.7s		&	-9.9		&	6946		\\
-  		&	\texttt{ARTDP}  		& 	{\bf 8.7s}	&	{\bf -0.6}	&	{\bf 1597}		\\  \hline
-  Trench	&	\texttt{RTDP}  			& 	94.2s		&	{\bf -3.15}	&	{\bf 12009}		\\
-  		&	\texttt{ARTDP}  		& 	{\bf 93.2s}	&	-24.5		&	15270		\\ \hline
-Plane	&	\texttt{RTDP}  			& 	13.7s		&	-0.9		&	3543		\\
-  		&	\texttt{ARTDP}  		& 	{\bf 5.9s}	&	-0.9		&	{\bf 301}		\\ 
+  Mine 	& \texttt{RTDP}  			& 	129.1s	&	{\bf -33.55}	&	63291		\\
+  		& \texttt{ARTDP}  			& 	{\bf 65.6s}	&	-99.5		&	{\bf 16917}		\\  \hline
+  Smelt	&	\texttt{RTDP}  			& 	543.0s	&	-99.5		&	74260		\\
+  		&	\texttt{ARTDP}  		& 	{\bf 6.3s}	&	{\bf -6.3}	&	{\bf 1845}		\\  \hline
+  Wall	&	\texttt{RTDP}  			& 	55.4s		&	-8.6		&	29324		\\
+  		&	\texttt{ARTDP}  		& 	{\bf 14.8s}	&	{\bf -11.4}	&	{\bf 3955}		\\  \hline
+  Trench	&	\texttt{RTDP}  			& 	{\bf 30.2s}		&	{\bf -3.35}	&	{\bf 5070}		\\
+  		&	\texttt{ARTDP}  		& 	600.1s	&	-89.8		&	67625		\\ \hline
+Plane	&	\texttt{RTDP}  			& 	168.4s		&	-1.8		&	7954		\\
+  		&	\texttt{ARTDP}  		& 	{\bf 17.5s}	&	-1.8		&	{\bf 830}		\\ 
 \end{tabular}
 \caption{RTDP vs. Learned Affordance-Aware RTDP}
 \label{table:minecraft_results}
 \end{table}
-
 
 In some cases, ARTDP found a less optimal plan than RTDP - this is likely due to 
 the fact that the affordances pruned away actions that were optimal in some states. 
