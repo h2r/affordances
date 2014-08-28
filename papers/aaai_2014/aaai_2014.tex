@@ -200,7 +200,7 @@ value function, respectively.
 Naturally, we cannot expect to have this knowledge ahead of time, otherwise there wouldn't be a planning problem to solve. Instead, we aim to learn a probability distribution over the optimal action set for a given state ($s$), goal ($G$), and knowledge base ($K$)
 % -- Equation: Master Equation --
 \begin{equation}
-\Pr(\mathcal{A}^* \mid s, G, K).
+\Pr(\mathcal{A}^* \mid s, G, K)
 \label{eq:master}
 \end{equation}
 from which action pruning may be informed (see Section \ref{sec:action_pruning}).
@@ -235,7 +235,7 @@ f(\delta, s, G) =
 Evaluating the relevance of each $\delta_j$ gives rise to a set of binary features, $\phi_j = f(\delta_j, s, G)$, which we use to reformulate our probability distribution:
 % -- Equation: replace deltas with phi --
 \begin{equation}
-\Pr(\mathcal{A}^* \mid s, G, \delta_1 \ldots \delta_{|K|}, \theta) = \Pr(\mathcal{A}^* \mid \phi_1, \ldots, \phi_{|K|}, \theta).
+\Pr(\mathcal{A}^* \mid s, G, \delta_1 \ldots \delta_{|K|}, \theta) = \Pr(\mathcal{A}^* \mid \phi_1, \ldots, \phi_{|K|}, \theta)
 \label{eq:feature_rep}
 \end{equation}
 
@@ -430,35 +430,40 @@ traversal task (17.5 seconds to 168.4 seconds).
 \centering
 \begin{tabular}{ c l  || c c c c}
   State Space	&	Planner 				&	CPU	&	Reward 	& Bellman \\ \hline
-  Mine 	& \texttt{RTDP}  			& 	129.1s	&	{\bf -33.55}	&	63291		\\
-  		& \texttt{ARTDP}  			& 	{\bf 65.6s}	&	-99.5		&	{\bf 16917}		\\  \hline
-  Smelt	&	\texttt{RTDP}  			& 	543.0s	&	-99.5		&	74260		\\
-  		&	\texttt{ARTDP}  		& 	{\bf 6.3s}	&	{\bf -6.3}	&	{\bf 1845}		\\  \hline
-  Wall	&	\texttt{RTDP}  			& 	55.4s		&	-8.6		&	29324		\\
-  		&	\texttt{ARTDP}  		& 	{\bf 14.8s}	&	{\bf -11.4}	&	{\bf 3955}		\\  \hline
-  Trench	&	\texttt{RTDP}  			& 	{\bf 30.2s}		&	{\bf -3.35}	&	{\bf 5070}		\\
-  		&	\texttt{ARTDP}  		& 	600.1s	&	-89.8		&	67625		\\ \hline
-Plane	&	\texttt{RTDP}  			& 	168.4s		&	-1.8		&	7954		\\
-  		&	\texttt{ARTDP}  		& 	{\bf 17.5s}	&	-1.8		&	{\bf 830}		\\ 
+  Mine 	& \texttt{RTDP}  			& 	160.0s	&	-228.75	&	80610.7		\\
+  		& \texttt{ARTDP}  			& 	{\bf 68.1s}	&	{\bf -12.4}	&	{\bf 16633.1}		\\  \hline
+  Smelt	&	\texttt{RTDP}  			& 	639.4s	&	-231.4	&	99089.6		\\
+  		&	\texttt{ARTDP}  		& 	{\bf 20.8s}	&	{\bf -11.9}	&	{\bf 4807.4}		\\  \hline
+  Wall	&	\texttt{RTDP}  			& 	144.5s	&	-26.0		&	60994.9		\\
+  		&	\texttt{ARTDP}  		& 	{\bf 116.6s}&	{\bf -17.9}	&	{\bf 23198}		\\  \hline
+  Trench	&	\texttt{RTDP}  			& 	206.5s	&	{\bf -6.5}	&	19529.6		\\
+  		&	\texttt{ARTDP}  		& 	{\bf 116.4s}&	-7.2		&	{\bf 10533.9}		\\ \hline
+Plane	&	\texttt{RTDP}  			& 	1414.1s	&	{\bf -6.1}	&	30987		\\
+  		&	\texttt{ARTDP}  		& 	{\bf 159.4s}&	{\bf -6.1}	&	{\bf 5096.2}		\\ 
 \end{tabular}
 \caption{RTDP vs. Learned Affordance-Aware RTDP}
 \label{table:minecraft_results}
 \end{table}
 
-% -- older results
+
+%\begin{table}[H]
+%\centering
 %\begin{tabular}{ c l  || c c c c}
 %  State Space	&	Planner 				&	CPU	&	Reward 	& Bellman \\ \hline
-%  Mine 	& \texttt{RTDP}  			& 	{\bf 7.6s}	&	{\bf -2.2}	&	{\bf 5291}		\\
-%  		& \texttt{ARTDP}  			& 	15.6s		&	-12.4		&	5442		\\  \hline
-%  Smelt	&	\texttt{RTDP}  			& 	454.4s	&	-75.3		&	67805		\\
-%  		&	\texttt{ARTDP}  		& 	{\bf 21.7s}	&	{\bf -18.1}	&	{\bf 5666}		\\  \hline
-%  Wall	&	\texttt{RTDP}  			& 	32.7s		&	-9.9		&	6946		\\
-%  		&	\texttt{ARTDP}  		& 	{\bf 8.7s}	&	{\bf -0.6}	&	{\bf 1597}		\\  \hline
-%  Trench	&	\texttt{RTDP}  			& 	94.2s		&	{\bf -3.15}	&	{\bf 12009}		\\
-%  		&	\texttt{ARTDP}  		& 	{\bf 93.2s}	&	-24.5		&	15270		\\ \hline
-%Plane	&	\texttt{RTDP}  			& 	13.7s		&	-0.9		&	3543		\\
-%  		&	\texttt{ARTDP}  		& 	{\bf 5.9s}	&	-0.9		&	{\bf 301}		\\ 
+%  Mine 	& \texttt{RTDP}  			& 	129.1s	&	{\bf -33.55}	&	63291		\\
+%  		& \texttt{ARTDP}  			& 	{\bf 65.6s}	&	-99.5		&	{\bf 16917}		\\  \hline
+%  Smelt	&	\texttt{RTDP}  			& 	543.0s	&	-99.5		&	74260		\\
+%  		&	\texttt{ARTDP}  		& 	{\bf 6.3s}	&	{\bf -6.3}	&	{\bf 1845}		\\  \hline
+%  Wall	&	\texttt{RTDP}  			& 	55.4s		&	-8.6		&	29324		\\
+%  		&	\texttt{ARTDP}  		& 	{\bf 14.8s}	&	{\bf -11.4}	&	{\bf 3955}		\\  \hline
+%  Trench	&	\texttt{RTDP}  			& 	{\bf 30.2s}		&	{\bf -3.35}	&	{\bf 5070}		\\
+%  		&	\texttt{ARTDP}  		& 	600.1s	&	-89.8		&	67625		\\ \hline
+%Plane	&	\texttt{RTDP}  			& 	168.4s		&	-1.8		&	7954		\\
+%  		&	\texttt{ARTDP}  		& 	{\bf 17.5s}	&	-1.8		&	{\bf 830}		\\ 
 %\end{tabular}
+%\caption{RTDP vs. Learned Affordance-Aware RTDP}
+%\label{table:minecraft_results}
+%\end{table}
 
 In some cases, ARTDP found a less optimal plan than RTDP - this is likely due to 
 the fact that the affordances pruned away actions that were optimal in some states. 
