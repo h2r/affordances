@@ -20,11 +20,11 @@
 \usepackage{pgfplots}
 
 % -- Comment commands --
-\newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{}}}
-\newcommand{\dnote}[1]{\textcolor{Green}{\textbf{}}}
-\newcommand{\enote}[1]{\textcolor{Red}{\textbf{}}}
-\newcommand{\gnote}[1]{\textcolor{Purple}{\textbf{}}}
-\newcommand{\jnote}[1]{\textcolor{Orange}{\textbf{}}}
+\newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{S: #1}}}
+\newcommand{\dnote}[1]{\textcolor{Green}{\textbf{D: #1}}}
+\newcommand{\enote}[1]{\textcolor{Red}{\textbf{E: #1}}}
+\newcommand{\gnote}[1]{\textcolor{Purple}{\textbf{G: #1}}}
+\newcommand{\jnote}[1]{\textcolor{Orange}{\textbf{J: #1}}}
 
 % -- Misc. new commands --
 \newcommand{\argmax}{\operatornamewithlimits{argmax}}
@@ -325,8 +325,8 @@ Under our Bernouli Naive Bayes model, we need to estimate the parameters $\theta
 where $C(a_i)$ is the number of observed occurrences where $a_i$ was optimal, $C(\bar{a_i})$ is the number of observed occurrences where $a_i$ was not optimal, and $C(\phi_j, a_i)$ is the number of occurrences where $\phi=1$ and $a_i$ was optimal.
 
 % ====== Section: Experiments ======
-\section{Experiments}
-\label{sec:experiments}
+\section{Results}
+\label{sec:results}
 
 
 We evaluate our approach using the game Minecraft as well as on a
@@ -361,8 +361,8 @@ counterparts.
 % -- Figure: Minecraft pic --
 \begin{figure}[t]
 \centering
-\includegraphics[scale=0.13]{figures/epicworld_1.jpg}%
   \caption{A gold smelting task in the Minecraft domain}
+\includegraphics[scale=0.13]{figures/epicworld_1.jpg}%
   \label{fig:minecraft}
 \end{figure}
 
@@ -374,8 +374,8 @@ worlds varied in size from tens of thousands of states to hundreds of thousands 
 
 The training data consisted of 10 simple state spaces of each map type
 (50 total), each map approximately a 1,000-10,000 state world with
-randomized features that mirrored the agent's actual state space. The
-same training data was used for each test state space. \stnote{Whoa really?  We should be using different maps between training and test.  }
+randomized features that mirrored the agent's actual state space. All tests
+conducted used the same training data.
 
 The evaluation metric for each trial was the number of Bellman updates
 that were executed by each planning algorithm, the accumulated reward,
@@ -389,45 +389,15 @@ discount factor was set to $\lambda = 0.99$. For all experiments,
 movement actions (move, rotate, jump) had a small probability (0.05)
 of incorrectly applying a different movement action.
 
-% -- Subsection: Learning Rate --
-\subsection{Learning Rate}
-Additionally, we conducted experiments in which we varied the number of states visited at training time. 
-As in Table \ref{table:minecraft_results}, we randomly generated simple state spaces
-containing several thousand states containing features that mirrored the agent's state
-space at test time. We then solved the OO-MDP with knowledge bases learned from 
-10 to 10000 states.\dnote{update when training complete}
-
-% -- Subsection: Temporally Extended Actions --
-\subsection{Temporally Extended Actions}
-Furthermore, we compared our approach to Temporally Extended Actions: 
-macroactions and options. We compared RTDP with expert affordances, 
-expert macroactions, and expert options, as well as the combination of 
-affordances, macroactions, and options. We conducted these experiments 
-with the same configurations as our Minecraft experiments. The option policies
-and macroactions provided were hand coded by domain experts.
-
-%% -- Subsection: Robotic Task --
-%\subsection{Robotic Task}
-%Finally, we deployed an affordance-aware planner onto Baxter for use
-%in an assistive cooking task. %\dnote{ToDo}
-%
-% ====== Section: Results ======
-\section{Results}
-\label{sec:results}
-%
-% -- Subsection: Minecraft --
-\subsection{Minecraft: Affordance-Aware RTDP vs. RTDP}
-%
-Table~\ref{table:minecraft_results} shows the average CPU time, Bellman updates, 
-and accumulated reward for RTDP and affordance-aware RTDP (ARTDP) after 
-planning in 10 different maps of each goal type. Because the planners were forced 
-to terminate after only 1500 rollouts, they did not always converge to the optimal policy. 
-As the results suggest, ARTDP found a near optimal policy in significantly less time than 
+Table~\ref{table:minecraft_results} shows the average CPU time, accumulated reward, and Bellman updates, 
+for RTDP and affordance-aware RTDP (ARTDP) after planning in 20 different maps of each goal type. Because the planners were forced to terminate after only 1000 rollouts, they did not always converge to the optimal policy. 
+As the results suggest, ARTDP found a better plan (-11.9 reward to -231.4 reward) in significantly less time than 
 RTDP in the gold smelting task (6 seconds to 543 seconds), as well as the plane 
 traversal task (17.5 seconds to 168.4 seconds).
 
 \begin{table}[H]
 \centering
+\caption{RTDP vs. Learned Affordance-Aware RTDP}
 \begin{tabular}{ c l  || c c c c}
   State Space	&	Planner 				&	CPU	&	Reward 	& Bellman \\ \hline
   Mine 	& \texttt{RTDP}  			& 	160.0s	&	-228.75	&	80610.7		\\
@@ -441,10 +411,10 @@ traversal task (17.5 seconds to 168.4 seconds).
 Plane	&	\texttt{RTDP}  			& 	1414.1s	&	{\bf -6.1}	&	30987		\\
   		&	\texttt{ARTDP}  		& 	{\bf 159.4s}&	{\bf -6.1}	&	{\bf 5096.2}		\\ 
 \end{tabular}
-\caption{RTDP vs. Learned Affordance-Aware RTDP}
 \label{table:minecraft_results}
 \end{table}
 
+\dnote{Put in a note about the threshold}
 
 %\begin{table}[H]
 %\centering
@@ -473,21 +443,14 @@ Conversely, though, this reduces the speedups of affordance-aware planning. In
 future work, we are considering an extension to our current sampling methods in 
 which the threshold iteratively becomes less conservative until an optimal policy is found.
 
-% -- Subsection: Minecraft Learning Rate
-\subsection{Minecraft: Learning rate}
-
-Experiments have not yet finished.
-
-% -- Figure: Learning rate results --
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.195]{figures/training_results.png}%
-  \caption{PLACE HOLDER for learning rate results}
-  \label{fig:training_results}
-\end{figure}
-
 % -- Subsection: Temporally Extended Actions --
 \subsection{Temporally Extended Actions}
+Furthermore, we compared our approach to Temporally Extended Actions: 
+macroactions and options. We compared RTDP with expert affordances, 
+expert macroactions, and expert options, as well as the combination of 
+affordances, macroactions, and options. We conducted these experiments 
+with the same configurations as our Minecraft experiments. The option policies
+and macroactions provided were hand coded by domain experts.
 
 Table~\ref{table:temp_ext_act_results} indicates the results of comparing RTDP
 equipped with macro actions, options, and affordances across 10 different executions
@@ -498,9 +461,11 @@ planning, and an increase in CPU time. This is due to the fact that the branchin
 bellman updates. This supports the claim that affordances can handle the augmented 
 action space provided by temporally extended actions by pruning away unnecessary actions.
 
+\dnote{New results incoming tomorrow}
 % -- Figure: Temporally Extended Actions Results --
 \begin{table}[H]
 \centering
+\caption{Affordances vs. Temporally Extended Actions}
 \begin{tabular}{ l  || c c c c}
   Augmentation 						&	CPU	&	Reward 	& Bellman \\ \hline
   \texttt{RTDP}  						&		&	-1.05		&	1000		\\
@@ -511,14 +476,33 @@ action space provided by temporally extended actions by pruning away unnecessary
    \texttt{w/ Affordances+MA}  			& 		&	-1.05		&	202.15		\\
    \texttt{w/ Affordances+MA+Opt}  		& 		&	-1.05		&	{\bf 180.9}		\\
 \end{tabular}
-\caption{Affordances vs. Temporally Extended Actions}
 \label{table:temp_ext_act_results}
 \end{table}
+
+% -- Subsection: Learning Rate --
+\subsection{Learning Rate}
+Additionally, we conducted experiments in which we varied the number of states visited at training time. 
+As in Table \ref{table:minecraft_results}, we randomly generated simple state spaces
+containing several thousand states containing features that mirrored the agent's state
+space at test time. We then solved the OO-MDP with knowledge bases learned from 
+10 to 10000 states.\dnote{update when training complete}
+
+\dnote{Experiments have not yet finished for learning rate (underway)}
+
+% -- Figure: Learning rate results --
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.195]{figures/training_results.png}%
+  \caption{PLACE HOLDER for learning rate results}
+  \label{fig:training_results}
+\end{figure}
 
 % -- Subsection: Baxter --
 \subsection{Baxter}
 
-Experiments not yet finished.
+\dnote{Insert description of baxter stuff here}
+
+\dnote{Experiments not yet finished}
 
 % -- Figure: Baxter results/image
 \begin{figure}[H]
