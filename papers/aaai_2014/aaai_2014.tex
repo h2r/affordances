@@ -195,7 +195,8 @@ We define the optimal action set, $\mathcal{A}^*$, for a given state $s$ and goa
 \end{equation}
 where, $Q^*_G(s,a)$ and $V^*_G(s)$ represent the optimal Q function and 
 value function, respectively. 
-
+\dnote{This makes a pretty big jump from introducing an MDP. Do we need to introduce
+the bellman equation and everything above, too?}
 Naturally, we cannot expect to have this knowledge ahead of time, otherwise there wouldn't be a planning problem to solve. Instead, we aim to learn a probability distribution over the optimal action set for a given state ($s$), goal ($G$), and knowledge base ($K$)
 % -- Equation: Master Equation --
 \begin{equation}
@@ -205,9 +206,9 @@ Naturally, we cannot expect to have this knowledge ahead of time, otherwise ther
 from which action pruning may be informed (see Section \ref{sec:action_pruning}).
 
 We formalize our knowledge base as a set of affordances, in which $K$
-consists of a set of paired preconditions and goal types, $\langle p_1, g_1 \rangle
-\ldots \langle p_{|K|}, g_{|K|} \rangle$, and a parameter vector $\theta$.  We abbreviate
-each pair $\langle p_j, g_j \rangle$ to $\delta_j$ for simplicity. Each precondition $p \in \mathcal{P}$
+consists of a set of paired preconditions and goal types, $\{ (p_1, g_1) 
+\ldots (p_{|K|}, g_{|K|}) \}$, and a parameter vector $\theta$.  We abbreviate
+each pair $(p_j, g_j)$ to $\delta_j$ for simplicity. Each precondition $p \in \mathcal{P}$
 is a {\it predicate} in predicate space, $\mathcal{P}$, defined by the OO-MDP, and $g \in \mathcal{G}$ is a {\it goal type} in goal space. We assume that the goal space consists of logical expressions of state predicates.
 A goal type specifies the sort of problem the agent is trying to achieve. In the context of Minecraft,
 a goal type might refer to the agent retrieving an object of a certain type from the environment, reaching a particular location, or crafting a structure. \jnote{Somewhere, maybe here? we should give an example of goals and goal types.
@@ -442,15 +443,16 @@ and macroactions provided were hand coded by domain experts.
 \begin{table}[H]
 \centering
 \caption{Affordances vs. Temporally Extended Actions}
-\begin{tabular}{ l  || c c c c}
+\begin{tabular}{ l l  || c c c c}
   Augmentation 					&	CPU	&	Reward 	& Bellman \\ \hline
-  \texttt{RTDP}  					&		&	-1.05		&	1000		\\
-  \texttt{w/ Opt}  				&		&	-1.05		&	1058		\\
-  \texttt{w/ MA}  					&		&	-1.05		&	703.25		\\
-  \texttt{w/ Affordances}  			& 		&	-1.05		&	204		\\
-  \texttt{w/ Affordances+Opt}  		& 		&	-1.05		&	349.6		\\
-   \texttt{w/ Affordances+MA}  		& 		&	-1.05		&	202.15		\\
-   \texttt{w/ Affordances+MA+Opt}  	& 		&	-1.05		&	{\bf 180.9}		\\
+RTDP &  \texttt{Vanilla}  					&	204.4s&	-42.9		&	82565.2		\\
+ & \texttt{w/ Opt}  				&	267.8s	&	-52.6		&	79051		\\
+ &\texttt{w/ MA}  					&	695.0s	&	-29.6		&	72282.2		\\
+ &\texttt{w/ MA+Opt}  			&	838.5s&	-38.7s	&	72544.7		\\ \hline
+ Affordance-Aware &\texttt{Vanilla}  			& 	{\bf 166.6s}&	-29.1		&	{\bf 29950.3}		\\
+  &\texttt{w/ Opt}  		& 	284.8s&	{\bf -28.5}		&	30658.0		\\
+  &\texttt{w/ MA}  		& 	503.8s&	-28.6		&	30047.7		\\
+  &\texttt{w/ MA+Opt}  	& 	730.0s&	-30.9		&	33346.2		\\
 \end{tabular}
 \label{table:temp_ext_act_results}
 \end{table}
@@ -529,9 +531,7 @@ doors.
 Although the classic options framework is not generalizable to different state spaces,
 creating {\em portable} options is a topic of active research~\cite{konidaris07,konidaris2009efficient,Ravindran03analgebraic,croonenborghs2008learning,andre2002state,konidaris2012transfer}.
 
-Given the potential for unhelpful temporally extended actions to negatively impact planning time~\cite{Jong:2008zr}, we believe combing affordances with temporally extended actions
-may be especially valuable because it will restrict the set of temporally extended actions to those
-useful for a task. We conducted a set of experiments to investigate this intuition. \dnote{Note about the results validating our hypotheses?}
+Since temporally extended actions may negatively impact planning time~\cite{Jong:2008zr}, combining affordances with temporally extended actions allow for even further speedups in planning, as demonstrated in~\ref{table:temp_ext_act_results}. This suggests that affordances are complementary to macro actions and options. \dnote{not sure if this is the right way to phrase - could use a second read}
 
 % --- Subsection: Action Pruning ---
 \subsubsection{Action Pruning}
