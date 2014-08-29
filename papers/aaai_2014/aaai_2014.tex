@@ -47,8 +47,10 @@ intractable in large state spaces due to the well-known curse of
 dimensionality. Existing approaches to planning in large stochastic
 state spaces fail to prevent autonomous agents from considering many
 actions that are obviously irrelevant to a human solving the same
-task. To reduce the size of the state/action space without sacrificing
-optimality, we formalize the notion of {\em affordances} as
+task. To reduce the size of the state/action space 
+%without sacrificing optimality
+\dnote{We do sacrifice optimality (we lose any guarantees under our new model)}, 
+we formalize the notion of {\em affordances} as
 goal-oriented knowledge added to an Object Oriented Markov Decision
 Process (OO-MDP).  Affordances prune actions based on the current
 state and the robot's goal, reducing the number of state-action pairs
@@ -158,9 +160,8 @@ enable planners to use predicates over classes of objects. That is, the OO-MDP
 definition also includes a set of predicates $\mathcal{P}$ that operate
 on the state of objects to provide additional high-level information
 about the MDP state. We use OO-MDP predicates as features for action
-pruning, allowing for state space independence since predicates
+pruning, allowing for state space independence, since predicates
 generalize across state spaces.
-\dnote{Reworded the above a bit, what do you think?}
 
 %% While an OO-MDP reduces the size of the state space by a significant
 %% factor, the resulting state space is still far too large to solve with
@@ -183,7 +184,7 @@ generalize across state spaces.
 %% furnishes, either for good or ill.''  
 
 Our goal is to define a formalism of affordances that enables a planning algorithm
-to prune away suboptimal actions. In the most ideal circumstance, an agent would
+to prune away suboptimal actions in each state. In the most ideal circumstance, an agent would
 know the subset of actions that were optimal in a given state for a given goal, in 
 which case all suboptimal actions in the planning problem would be pruned. 
 We define the optimal action set, $\mathcal{A}^*$, for a given state $s$ and goal $G$ as:
@@ -207,7 +208,7 @@ We formalize our knowledge base as a set of affordances, in which $K$
 consists of a set of paired preconditions and goal types, $\langle p_1, g_1 \rangle
 \ldots \langle p_{|K|}, g_{|K|} \rangle$, and a parameter vector $\theta$.  We abbreviate
 each pair $\langle p_j, g_j \rangle$ to $\delta_j$ for simplicity. Each precondition $p \in \mathcal{P}$
-is a {\it predicate} in predicate space, $\mathcal{P}$, and $g \in \mathcal{G}$ is a {\it goal type} in goal space, defined by the OO-MDP. We assume that the goal space consists of logical expressions of state predicates.
+is a {\it predicate} in predicate space, $\mathcal{P}$, defined by the OO-MDP, and $g \in \mathcal{G}$ is a {\it goal type} in goal space. We assume that the goal space consists of logical expressions of state predicates.
 A goal type specifies the sort of problem the agent is trying to achieve. In the context of Minecraft,
 a goal type might refer to the agent retrieving an object of a certain type from the environment, reaching a particular location, or crafting a structure. \jnote{Somewhere, maybe here? we should give an example of goals and goal types.
 I think it's kind of ambiguous what we mean.} \dnote{how about this?}
@@ -218,7 +219,7 @@ We rewrite Equation~\ref{eq:master} replacing $K$ with its constituents:
 \Pr(\mathcal{A}^* \mid s, G, K) = \Pr(\mathcal{A}^* \mid s, G, \delta_1 \ldots \delta_{|K|}, \theta)
 \end{equation}
 
-When a precondition and goal type ($\langle p , g \rangle = \delta$) is paired with a current state and goal to be solved in a planning problem, we can evaluate whether $\delta$ is relevant to the current circumstance by checking if the predicate of $\delta$ is true in the current state and if the current goal logically entails the goal type of $\delta$. This relevance is defined with the indicator function $f$:
+When a precondition and goal type ($\langle p , g \rangle = \delta$) is paired with a current state and goal to be solved in a planning problem, we can evaluate whether $\delta$ is relevant to the current circumstance by checking if the predicate of $\delta$ is true in the current state and if the current goal logically entails\dnote{I originally changed equality to entailment - do you all think this is the right move? This is what we'd like eventually, but currently we just check equivalence (in the code)} the goal type of $\delta$. This relevance is defined with the indicator function $f$:
 % -- Equation: function f defn --
 \begin{equation}
 f(\delta, s, G) = 
@@ -285,7 +286,8 @@ The first method of pruning is to impose an expert defined threshold on the post
 Affordances may also be specified by a domain expert using a discriminative OR model in place of the Naive Bayes. In this way, the expert will specify a set of actions associated with a precondition-goal type pair. For instance, if an agent is standing above a block of buried gold and is trying to smelt a block of gold, then an expert may indicate that the agent should consider the actions of looking down and digging. Each active affordances contributes some set of actions to consider. During experiments, this method is denoted as \texttt{ERTDP}.
 
 % 3) Sampling? Noisy Or? Others
-\dnote{Need to include sampling paragraph}
+Additionally, actions may be pruned on a state by state basis by sampling actions from the Equation~\ref{eq:final}. We treat each action's probability mass as a Bernouli trial and sample across the entire action set. In preliminary results, this method did not perform as well as baseline RTDP - likely because the weights associated with each action were too small. In future work, we are interested in investigating more sophisticated approaches to sampling as a means of action pruning.
+\dnote{Thoughts on the sampling paragraph?}
 
 
 % -- Subsection: Learning --
@@ -608,7 +610,7 @@ We proposed a novel approach to representing transferable knowledge in terms of
 {\em affordances}~\cite{gibson77} that allows an agent to efficiently prune actions 
 based on learned knowledge, providing a significant reduction in the number of state-action
 pairs the agent needs to evaluate in order to act near optimally. We demonstrated the 
-effectiveness of the affordance model by comparing a standard planner to its affordance-aware
+effectiveness of the affordance model by comparing a RTDP to its affordance-aware
 equivalent in a series of challenging planning tasks in the Minecraft domain. Further, we designed
 a full learning process that allows an agent to autonomously learn useful affordances that may be used
 across a variety of task types, reward functions, and state-spaces, allowing for convenient extensions 
@@ -619,14 +621,17 @@ temporally extended actions. The results suggest that affordances, when combined
 temporally extended actions, provide substantial reduction in the portion of the state-action 
 space that needs to be explored.
 
-Lastly, we deployed an affordance-aware planner on a robotic task with a massive 
+Lastly, we deployed an affordance-aware planner on a robot in a collaborative cooking task with a massive 
 state space. \dnote{Need to flesh out once we have more detail}.
 
 In the future, we hope to automatically discover useful state-space-specific-subgoals online 
 - a topic of some active research \cite{Mcgovern01automaticdiscovery,Simsek:2005:IUS:1102351.1102454}.
 This will allow affordances to plug into high-level subgoal planning, which will reduce the size of the 
-explored state-action space and improve the relevance of the action pruning. Additionally, we hope to 
-decrease the amount of knowledge given to the planner by learning predicates, or relations between predicates (i.e. Incremental Feature Dependency Discovery ~\cite{ICML2011Geramifard_473}) to further enhance autonomy. We hope to pursue additional models beyond Naive Bayes, such as noisy-or and log-linear models. Lastly, we hope to explore additional methods that capitalize on the distribution over optimal actions, such as incorporating affordances with a forward search sparse sampling algorithm~\cite{walsh2010integrating}.
+explored state-action space and improve the relevance of the action pruning. 
+
+Additionally, we hope to explore additional methods that capitalize on the distribution over optimal actions, such as incorporating affordances with a forward search sparse sampling algorithm~\cite{walsh2010integrating}, or replacing the Naive Bayes model with a more sophisticated model, such as Logistic Regression or a Noisy-OR. We are also investigating methods of learning the thresholded value in a more principled way - one such approach is to initialize the planner with a strict threshold, and slowly relax the threshold until a near optimal policy is found. We are also interested in updating model parameters on-line by using planning data to update the distribution over optimal actions. 
+
+Lastly, we hope to decrease the amount of knowledge given to the planner by learning predicates, or relations between predicates (i.e. Incremental Feature Dependency Discovery ~\cite{ICML2011Geramifard_473}) to further enhance autonomy.
 
 {\small
 \bibliographystyle{plainnat}
