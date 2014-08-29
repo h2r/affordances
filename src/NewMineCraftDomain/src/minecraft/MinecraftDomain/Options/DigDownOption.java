@@ -33,13 +33,12 @@ public class DigDownOption extends MinecraftOption {
 		ObjectInstance agent = state.getFirstObjectOfClass(NameSpace.CLASSAGENT);
 		int agentX = agent.getDiscValForAttribute(NameSpace.ATX);
 		int agentY = agent.getDiscValForAttribute(NameSpace.ATY);
-		int zBelowAgent = agent.getDiscValForAttribute(NameSpace.ATZ)-2;
-		//Initiate if destructible block below
-		for (ObjectInstance object : Helpers.objectsAt(agentX, agentY, zBelowAgent, state)) {
-			if (object.getObjectClass().hasAttribute(NameSpace.ATDEST) &&
-					object.getDiscValForAttribute(NameSpace.ATDEST) == 1)
-				return true;
-			
+		ObjectInstance gold = state.getFirstObjectOfClass(NameSpace.CLASSGOLDBLOCK);
+		int goldX = gold.getDiscValForAttribute(NameSpace.ATX);
+		int goldY = gold.getDiscValForAttribute(NameSpace.ATY);
+		//Initiate if gold block below
+		if (agentX == goldX && agentY == goldY) {
+			return true;
 		}
 		return false;
 	}
