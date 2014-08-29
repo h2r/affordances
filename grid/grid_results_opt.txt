@@ -1,0 +1,8 @@
+RTDP,82565.2,-42.91,204.4885
+
+RTDP_MAs(false)_options(true),79051.02,-52.6,267.8322
+
+LHRTDP,29950.26,-29.07,166.5768
+
+LHRTDP_MAs(false)_options(true),30657.97,-28.51,284.84
+
