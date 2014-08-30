@@ -1,4 +1,3 @@
-rotateCounterClockwise; lookup; destroyBlock; moveAction; rotateCounterClockwise; moveAction; rotateCounterClockwise; useBlock
 AgentInAir,AtGoal
 rotateCounterClockwise,0,309
 destroyBlock,0,31
