@@ -76,24 +76,24 @@ is able to assist a person performing a collaborative cooking task.
 Robots operating in unstructured, stochastic environments such as a
 factory floor or a kitchen face a difficult planning problem due to
 the large state space and inherent
-uncertainty~\citep{bollini12,knepper13}.  Robotic planning tasks are
+uncertainty\enote{It's unclear as to what it is uncertainty about -- I want to fill this in but I'm not sure with what since I'm not sure what it's uncertainty about}~\citep{bollini12,knepper13}.  Robotic planning tasks are
 classically formalized as a stochastic sequential decision making
 problem, modeled as a Markov Decision Process (MDP). In these
 problems, the agent must find a mapping from states to actions for
 some subset of the state space that enables the agent to achieve a
 goal while minimizing costs along the way. However, many robotics
 tasks are so complex that modeling them as an MDP results in a massive
-state/action space, which in turn restricts the types of robotics
-problems that are computationally tractable: when a robot is
+state/action \enote{we're inconsistent with our use of state/action space vs state-action space. Not sure what the convention is but we should pick one and replace all the other.} space, which in turn restricts the types of robotics
+problems that are computationally tractable. For example, when a robot is
 manipulating objects in an environment, an object can be placed
-anywhere in a large set of locations.  Depending on the task, most of
-these locations are irrelevant; for example, when making brownies, the
-oven and flour are important, while the soy sauce and saut\'{e} pan
-are not.  For a different task, such as stir-frying broccoli, a
-different set of objects and actions are relevant.  Unfortunately, the
+anywhere in a large set of locations. Unfortunately, the
 size of the state space increases exponentially with the number of
 objects, which bounds the placement problems that the robot is able to
-expediently solve.
+expediently solve. \enote{it's unclear to me what the purpose of the remainder of this paragraph is -- the irrelevance of locations seems incongruous with the thrust of the rest of the paragraph (robotic planning problems are hard). It seems like this bit should be right before we introduce affordances in the introduction so as to provide a motivation for affordances} Moreover, depending on the task, most of
+these locations are irrelevant: when making brownies, the
+oven and flour are important, while the soy sauce and saut\'{e} pan
+are not.  For a different task, such as stir-frying broccoli, a
+different set of objects and actions are relevant.  
 
 To address this state-action space explosion, prior work has explored
 adding knowledge to the planner, such as options~\cite{sutton99} and
@@ -108,10 +108,10 @@ networks (HTNs)~\citep{Nau:1999:SSH:1624312.1624357}, and temporal
 logical planning (TLPlan)~\citep{Bacchus95usingtemporal,Bacchus99usingtemporal},
 add knowledge to the planner that greatly increases planning speed, but do
 not generalize to stochastic domains. Additionally, the knowledge
-provided to the planner must be given by a domain expert, reducing the
+provided to the planner by these methods is quite extensive, reducing the
 agent's autonomy. 
 
-We propose augmenting an MDP with a representation of 
+We propose augmenting an MDP with a formalization of 
 {\em affordances}. An affordance~\cite{gibson77} focuses an
 agent's attention on aspects of the environment that are
 most relevant to solving its current goal and avoid exploration of
@@ -150,19 +150,18 @@ prefers to maximize immediate rewards as $\gamma$ decreases).
 % -- Subsection: OO-MDPs --
 \subsection{OO-MDPs}
 Our representation of affordances builds on an Object-Oriented extension of an MDP.
-An Object-Oriented Markov Decision Process (OO-MDP)~\citep{diuk08}
-efficiently represents the state of an MDP, organized around objects
-and predicates.  An OO-MDP state is a collection of
+An Object-Oriented Markov Decision Process (OO-MDP)~\citep{diuk08} state
+efficiently represents the state of an MDP, through the use of OO-MDP objects
+and OO-MDP predicates.  An OO-MDP state is a collection of
 objects, $O = \{o_1, \ldots, o_o \}$.  Each object $o_i$ belongs to a
 class, $c_j \in \{c_1, \ldots, c_c\}$. Every class has a set of
 attributes, $Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of which has a
-domain, $Dom(c.a)$, of possible values. The collection of attribute
-values of a given object is termed that object's state, $o.state$. OO-MDPs
+domain, $Dom(c.a)$, of possible values. OO-MDPs
 enable planners to use predicates over classes of objects. That is, the OO-MDP
 definition also includes a set of predicates $\mathcal{P}$ that operate
 on the state of objects to provide additional high-level information
 about the MDP state. We use OO-MDP predicates as features for action
-pruning, allowing for state space independence.
+pruning, allowing for state space \enote{we're inconsistent about state-space vs state space and should pick one} independence.
 
 %% While an OO-MDP reduces the size of the state space by a significant
 %% factor, the resulting state space is still far too large to solve with
@@ -179,15 +178,14 @@ pruning, allowing for state space independence.
 
 % -- Subsection: Affordances --
 \subsection{Affordance-Aware Planning}
-
+\enote{This seems like a misnomer for this section since all this section really is is "we can get an action distribution to be later used in planning" and we haven't yet dug into how we actually are pruning/planning yet.}
 %% \citet{gibson77} proposed that an affordance is ``what [the
 %%   environment] offers [an] animal, what [the environment] provides or
 %% furnishes, either for good or ill.''  
 
 Our goal is to define a formalism of affordances that enables a planning algorithm
-to prune away suboptimal actions in each state. In the most ideal circumstance, an agent would
-know the subset of actions that were optimal each state for the given goal, in 
-which case all suboptimal actions in the planning problem would be pruned. 
+to prune away suboptimal actions in each state. In the ideal circumstance, an agent would
+know the subset of actions that were optimal in each state for the given goal, thereby allowing for pruning of all suboptimal actions in that state.
 We define the optimal action set, $\mathcal{A}^*$, for a given state $s$ and goal $G$ as:
 % -- Equation: Optimal Action Set --
 \begin{equation}
@@ -197,39 +195,36 @@ We define the optimal action set, $\mathcal{A}^*$, for a given state $s$ and goa
 where, $Q^*_G(s,a)$ and $V^*_G(s)$ represent the optimal Q function and 
 value function, respectively. 
 \dnote{This makes a pretty big jump from introducing an MDP. Do we need to introduce
-the bellman equation/value function above, too?}
+the bellman equation/value function above, too?}\enote{I honestly don't think we need to mention the Q fn or V fn since most people have an intuitive sense of "optimal" action and the functions don't have any immediate bearing on anything specific to our research}
+
 Naturally, we cannot expect to have this knowledge ahead of time, otherwise there wouldn't
 be a planning problem to solve. Instead, we aim to learn a probability distribution over the optimal
-action set for a given state ($s$), goal ($G$), and knowledge base ($K$):
+action set for a given state ($s$), goal ($G$), and knowledge base ($K$) from which action pruning may be informed (see Section \ref{sec:action_pruning}):
 % -- Equation: Master Equation --
 \begin{equation}
 \Pr(\mathcal{A}^* \mid s, G, K)
 \label{eq:master}
 \end{equation}
-from which action pruning may be informed (see Section \ref{sec:action_pruning}).
 
-We formalize our knowledge base as a set of affordances, in which $K$
-consists of a set of paired preconditions and goal types, $\{ (p_1, g_1) 
-\ldots (p_{|K|}, g_{|K|}) \}$, and a parameter vector $\theta$.  We abbreviate
+We formalize our knowledge base, $K$, as a set of paired preconditions and goal types, $\{ (p_1, g_1) 
+\ldots (p_{|K|}, g_{|K|}) \}$,\enote{maybe overly picky but since our KB includes theta isn't it incorrect to say we have |K| deltas} and a parameter vector $\theta$.  We abbreviate
 each pair $(p_j, g_j)$ to $\delta_j$ for simplicity. Each precondition $p \in \mathcal{P}$
 is a {\it predicate} in predicate space, $\mathcal{P}$, defined by the OO-MDP, and
 $g \in \mathcal{G}$ is a {\it goal type} in goal space. We assume that the goal space
 consists of logical expressions of state predicates. A goal type specifies the sort of
 problem the agent is trying to achieve. In the context of Minecraft, a goal type might refer
 to the agent retrieving an object of a certain type from the environment, reaching a particular
-location, or crafting a structure. 
+location, or crafting a structure. The parameter vector, $\theta$ represents model parameters for the probability distribution \enote{I think it's worthwhile expanding this explanation -- it's not obvious what theta is at a first pass to me}.
 
-The parameter vector, $\theta$ represents model parameters for the probability distribution.
 We rewrite Equation~\ref{eq:master} replacing $K$ with its constituents:
 % -- Equation: replace K --
 \begin{equation}
 \Pr(\mathcal{A}^* \mid s, G, K) = \Pr(\mathcal{A}^* \mid s, G, \delta_1 \ldots \delta_{|K|}, \theta)
 \end{equation}
 
-When a precondition and goal type ($\langle p , g \rangle = \delta$) is paired with a current
-state and goal to be solved in a planning problem, we can evaluate whether $\delta$ is relevant
-to the current circumstance by checking if the predicate of $\delta$ is true in the current state
-and if the current goal logically entails\dnote{I originally changed equality to entailment - do you all think this is the right move? This is what we'd like eventually, but currently we just check equivalence (in the code). It's easy enough to change here} the goal type of $\delta$. This relevance is defined with the indicator function $f$:
+When a precondition and goal type ($\langle p , g \rangle = \delta$) is paired with a
+state and goal to be solved in a planning problem, we can evaluate whether $\delta$ is relevant by checking if the predicate of $\delta$ is true in the current state
+and if the current goal logically entails\dnote{I originally changed equality to entailment - do you all think this is the right move? This is what we'd like eventually, but currently we just check equivalence (in the code). It's easy enough to change here}\enote{my vote is for equals} the goal type of $\delta$. This relevance is defined with the indicator function $f$:
 % -- Equation: function f defn --
 \begin{equation}
 f(\delta, s, G) = 
@@ -240,7 +235,7 @@ f(\delta, s, G) =
 \label{eq:f_func_def}
 \end{equation}
 
-Evaluating the relevance of each $\delta_j$ gives rise to a set of binary features,
+Evaluating f for each $\delta_j$ given the current state and goal gives rise to a set of binary features,
 $\phi_j = f(\delta_j, s, G)$, which we use to reformulate our probability distribution:
 % -- Equation: replace deltas with phi --
 \begin{equation}
@@ -257,9 +252,7 @@ We assume each action's optimality is independent from all other actions':
 where $\theta_i$ represents the set of parameters relevant to modeling the probability
 distribution of action $a_i \in {\cal A}^*$. Henceforth, we abbreviate $a_i \in \mathcal{A}^*$ to $a_i$.
 
-This distribution may be modeled in any number of ways, making this approach quite flexible.
-We have chosen to model it as a Naive-Bayes, assuming a uniform prior on the optimality of
-each action, and assuming that the features are conditionally independent of one another. 
+Though this distribution may be modeled in a number of ways making this approach quite flexible, we have chosen to model it as a Naive-Bayes. 
 First we factor using Bayes' rule:
 % -- Equation: Bayes --
 \begin{equation}
@@ -267,12 +260,16 @@ First we factor using Bayes' rule:
 \label{eq:bayes}
 \end{equation}
 
-Next we assume that each feature is independent of the others, given whether the action is optimal:
+Next we assume that each feature is conditionally independent of the others, given whether the action is optimal:
 % -- Equation: Naive assumption and uniform prior--
 \begin{equation}
 = \prod_{i=1}^{|\mathcal{A}|} \frac{\Pr(a_i \mid \theta) \prod_{j=1}^{|K|} \Pr(\phi_j \mid a_i, \theta) }{\Pr(\phi_1, \ldots, \phi_{|K|} | \theta)}
 \label{eq:final}
 \end{equation}
+\enote{It's confusing to me that order of terms in the numerator was swapped. Is there a reason for this?}
+
+Finally, we assume a uniform prior \enote{why are we using a uniform prior instead of just frequency of action optimality in the training set? Maybe this is explained later... In any case I don't think we need to specify what our prior is -- at least not at his point in the paper} on the optimality of
+each action.
 
 This distribution fully describes the model used by an affordance-aware planner. 
 
@@ -289,6 +286,8 @@ Thus, affordance-aware planning agents operating within an OO-MDP will rarely ma
 reference to particular affordances, but will instead reason about the world using the relevant
 action possibilities identified by the distribution in Equation~\ref{eq:final}. 
 
+\enote{A general note about this section, especially the last two paragraphs. The connecting up with affordances seems a bit tenuous and I think it would help to more obviously ground what exactly an affordance is for us within our mathematical model. I get that that is what the penultimate paragraph is getting at but that bit still confuses me a bit - Dave can we talk about this? Also I noted it before but it is still very unclear to me what theta is -- it seems like we could do just naive bayes over our binary features without anything else.}
+
 % -- Subsection: Action Pruning --
 \subsection{Action Pruning}
 \label{sec:action_pruning}
@@ -301,15 +300,16 @@ approaches to perform this pruning.
 The first method of pruning is to impose an expert defined threshold on the posterior. In this way, the affordances prune away any actions whose probability of being optimal is below the provided threshold for each state. For experiments, this method is denoted as \texttt{ARTDP}, and was set to $\frac{0.2}{|\mathcal{A}|}$, where $|\mathcal{A}|$ is the size of the full action space of the OO-MDP.
 
 % 2) Expert (discriminative or model)
-Affordances may also be specified by a domain expert using a discriminative OR model in place of the Naive Bayes. In this way, the expert will specify a set of actions associated with a precondition-goal type pair. For instance, if an agent is standing above a block of buried gold and is trying to smelt a block of gold, then an expert may indicate that the agent should consider the actions of looking down and digging. Each active affordances contributes some set of actions to consider. During experiments, this method is denoted as \texttt{ERTDP}.
+Affordances may also be specified by a domain expert using a discriminative OR model in place of the Naive Bayes. In this method, the expert specifies a set of actions associated with a precondition-goal type pair. For instance, if an agent is standing above a block of buried gold and is trying to smelt a block of gold, then an expert may indicate that the agent should consider the actions of looking down and digging. Each active affordances contributes some set of actions to consider. During experiments, this method is denoted as \texttt{ERTDP}.
 
 % 3) Sampling
-Additionally, actions may be pruned on a state by state basis by sampling actions from the Equation~\ref{eq:final}. We treat each action's probability mass as a Bernouli trial and sample across the entire action set. In preliminary results, this method did not perform as well as baseline RTDP - likely because the weights associated with each action were too small. In future work, we are interested in investigating more sophisticated approaches to sampling as a means of action pruning.
+Additionally, actions may be pruned on a state by state basis by sampling actions from the probability distribution over actions as specified by Equation~\ref{eq:final}. We treat each action's probability mass as a Bernouli trial and sample across the entire action set. In preliminary results, this method did not perform as well as baseline RTDP - likely because the weights associated with each action were too small. In future work, we are interested in investigating more sophisticated approaches to sampling as a means of action pruning 
 \dnote{Thoughts on the sampling paragraph?}
-
+\enote{I'm a bit uncomfortable with us jumping the gun and talking about results and then future work here -- I think this paragraph is good but we should shift the content towards the end to the correct sections.}.
 
 % -- Subsection: Learning --
 \subsection{Learning}
+\enote{I feel as though learning should go before action pruning since it specifies the action prior that is then used for pruning as detailed in Action Pruning.}
 
 To learn affordances, we input a set of training worlds ($W$) for which the optimal policy
 may be tractably computed. Then, we determine the parameter vector $\theta$ that 
@@ -344,10 +344,10 @@ assistance, assembling items in a factory, object retrieval, and
 complex terrain traversal.  As in these tasks, the agent operates in a
 very large state/action space in an uncertain environment.
 Figure~\ref{fig:minecraft} shows a scene from one of our Minecraft
-problems.
+problems \enote{This doesn't seem fair to say since it this is much more difficult than our actual tests.}.
 
 % -- Subsection: Minecraft Tests --
-\subsection{Minecraft Tests}
+\subsection{ARTDP in Minecraft}
 We conducted a series of experiments in the Minecraft domain that
 compared the performance of Real Time Dynamic Programming (RTDP)~\citep{barto95}
 without affordances to its affordance-aware counterpart (ARTDP). We created a set of expert
@@ -382,9 +382,7 @@ The training data consisted of 20 simple state spaces of each map type
 randomized features that mirrored the agent's actual state space. We conducted all tests
 with a single knowledge base.
 
-The evaluation metric for each trial was the number of Bellman updates
-that were executed by each planning algorithm, the accumulated reward,
-and the CPU time taken to find a plan.  We terminated each planner
+Our (A)RTDP and domain parameters are set as follows. We terminated each planner
 when the maximum change in the value function was less than 0.01 for
 100 consecutive policy rollouts, or the planner failed to converge
 after 1500 rollouts.  We set the reward function to $-1$ for all
@@ -413,6 +411,9 @@ Plane	&	\texttt{RTDP}  		& 	1414.1s	&	{\bf -6.1}	&	30987		\\
 \label{table:minecraft_results}
 \end{table}
 
+The evaluation metric for each trial was the number of Bellman updates
+that were executed by each planning algorithm, the accumulated reward \enote{of the average plan right?},
+and the CPU time taken to find a plan.
 Table~\ref{table:minecraft_results} shows the average CPU time, accumulated reward, and Bellman updates 
 for RTDP and affordance-aware RTDP (ARTDP) after planning in 20 different maps of each goal type (100 total).
 Because the planners were forced to terminate after only 1000 rollouts, they did not always converge to the optimal policy.
@@ -450,7 +451,7 @@ task (6 seconds to 543 seconds), as well as the plane traversal task (17.5 secon
 %\end{table}
 
 % -- Subsection: Temporally Extended Actions --
-\subsection{Temporally Extended Actions}
+\subsection{ARTDP and Temporally Extended Actions in Minecraft}
 Additionally, we compared our approach to Temporally Extended Actions: 
 macroactions and options. We compared RTDP with expert affordances, 
 expert macroactions, and expert options, as well as the combination of 
@@ -512,7 +513,7 @@ bellman updates. This supports the claim that affordances can handle the augment
 action space provided by temporally extended actions by pruning away unnecessary actions.
 
 % -- Subsection: Learning Rate --
-\subsection{Learning Rate}
+\subsection{Learning Rate in Minecraft}
 Additionally, we conducted experiments in which we varied the number of states visited at training time. 
 As in Table \ref{table:minecraft_results}, we randomly generated simple state spaces
 containing several thousand states containing features that mirrored the agent's state
@@ -530,7 +531,7 @@ space at test time. We then solved the OO-MDP with knowledge bases learned from
 \end{figure}
 
 % -- Subsection: Baxter --
-\subsection{Baxter}
+\subsection{ARTDP and Baxter}
 
 \dnote{Insert description of baxter stuff here}
 
@@ -575,7 +576,7 @@ doors.
 Although the classic options framework is not generalizable to different state spaces,
 creating {\em portable} options is a topic of active research~\cite{konidaris07,konidaris2009efficient,Ravindran03analgebraic,croonenborghs2008learning,andre2002state,konidaris2012transfer}.
 
-Since temporally extended actions may negatively impact planning time~\cite{Jong:2008zr}, combining affordances with temporally extended actions allow for even further speedups in planning, as demonstrated in~\ref{table:temp_ext_act_results}. This suggests that affordances are complementary to macro actions and options. \dnote{not sure if this is the right way to phrase - could use a second read}
+Since temporally extended actions may negatively impact planning time~\cite{Jong:2008zr} by adding to the number of actions the agent can choose from in a given state, combining affordances with temporally extended actions allow for even further speedups in planning, as demonstrated in~\ref{table:temp_ext_act_results}. This suggests that affordances are complementary to macro actions and options. \dnote{not sure if this is the right way to phrase - could use a second read}\enote{I actually like this a good deal}
 
 % --- Subsection: Action Pruning ---
 \subsubsection{Action Pruning}
@@ -586,7 +587,7 @@ transferred to a new, but similar, target task to reduce the learning time requi
 the optimal policy in the target task. The main difference between our affordance-based 
 action set pruning and this action transfer work is that affordances prune away actions on 
 a state by state basis, where as the learned action pruning is on per task level. Further, 
-with lifted goal descriptions, affordances may be attached to subgoal planning for a significant
+with lifted goal descriptions\enote{This is the first time we are now talking about LGD?}, affordances may be attached to subgoal planning for a significant
 benefit in planning tasks where complete subgoal knowledge is known.
 
 Rosman and Ramamoorthy~\cite{rosman2012good} provide a method for learning action
@@ -628,20 +629,16 @@ planning algorithms than either approach alone.
 
 There have been several successful attempts at engineering knowledge to
 decrease planning time for deterministic planners. These are fundamentally solving
-a different problem from what we are interested in, but there approaches are interesting to consider.
-\dnote{Need to rephrase}
+a different problem from what we are interested in since they deal with non-stochastic problems, but there are a number of salient parallels and contrasts to be drawn nonetheless.
 
 % --- Subsubsection: Hierarchical Task Networks ---
 \subsubsection{Hierarchical Task Networks}
 
 \dnote{I think we should have a shoutout to Branavan's Learning High Level Plans from Text paper in this section (and include subgoal planning as part of this section}
 
-\enote{I've been writing traditional as I expect we'll discover some HTNs that grapple with the issues stated below -- which we should probably cite}Traditional Hierarchical Task Networks (HTNs) employ \textit{task decompositions} to aid in planning. The goal at hand is decomposed into smaller tasks which are in turn decomposed into smaller tasks. This decomposition continues until primitive tasks that are immediately achievable are derived. The current state of the task decomposition, in turn, informs constraints which reduce the space over which the planner searches.
+Traditional Hierarchical Task Networks (HTNs) employ \textit{task decompositions} to aid in planning. The goal at hand is decomposed into smaller tasks which are in turn decomposed into smaller tasks. This decomposition continues until primitive tasks that are immediately achievable are derived. The current state of the task decomposition, in turn, informs constraints which reduce the space over which the planner searches. At a high level both HTNs and affordances fulfill the same role: both achieve action pruning by exploiting some form of supplied knowledge. 
 
-At a high level both HTNs and affordances fulfill the same role: both achieve action pruning by exploiting some form of supplied knowledge. HTNs do so with the use of information regarding both the task decomposition of the goal at hand and the sorts constraints that said decomposition imposes upon the planner. Similarly, affordances require knowledge as to how to extract values for propositional functions of interest by querying the state.
-
-However there are three of essential distinctions between affordances and traditional HTNs. (1) HTNs deal exclusively with deterministic domains as opposed to the stochastic spaces with which affordances grapple. As a result they produce plans and not policies. (2) Moreover, HTNs do not incorporate reward into their planning. Consequently, they lack mathematical guarantees of optimal planning. \enote{I thinks We should double check this.} (3) On a qualitative level, the degree of supplied knowledge in HTNs surpasses that of affordances: whereas affordances simply require relevant propositional functions, HTNs require not only constraints for sub-tasks but a hierarchical framework of arbitrary complexity. Thus, despite a superficial similarity between affordances and HTNs wherein both employ supplied knowledge, the two deal with disparate forms of planning problems; HTN's planning problem is deterministic, reward-agnostic and necessitates a plethora of knowledge while affordances solve a planning problem that is stochastic, reward-aware and requires only relatively basic knowledge about the domain.
-\enote{Need citations for HTNs}
+However there are two essential distinctions between affordances and traditional HTNs.  (1) HTNs do not incorporate reward into their planning. Consequently, they lack mathematical guarantees of optimal planning. (2) On a qualitative level, the degree of supplied knowledge in HTNs surpasses that of affordances: whereas affordances simply require relevant propositional functions, HTNs require not only constraints for sub-tasks but a hierarchical framework of arbitrary complexity. \enote{Need citations for HTNs}
 \dnote{needs to be shorter}
 % --- Subsubsection: Temporal Logic ---
 \subsubsection{Temporal Logic}
@@ -652,6 +649,8 @@ temporal logic (LTL), which they used for control of a forward-chaining planner.
 a \textsc{Strips} style planner may be guided through the search space by checking 
 whether candidate plans do not falsify a given knowledge base of LTL formulas, often
 achieving polynomial time planning in exponential space.
+
+\enote{Maybe add how LTL is similar to what we are doing?}
 
 The primary difference between this body of work and affordance-aware planning is that
 affordances may be learned increasing autonomy of the agent and flexibility of the approach, while LTL formulas are far
