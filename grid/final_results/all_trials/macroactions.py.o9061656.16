@@ -1,0 +1,45 @@
+map: DeepTrenchWorldstateSpace=0.0
+
+RTDP_MAs(true)_options(false) 13241.00 -8.00 268.00
+RTDP 14428.00 -8.00 70.95
+ERTDP 12094.00 -8.00 190.96
+LHRTDP_MAs(true)_options(false) 13010.00 -8.00 322.00
+LHRTDP 9518.00 -8.00 63.80
+
+
+map: PlaneGoldMineWorldstateSpace=0.0
+
+RTDP_MAs(true)_options(false) 8270.00 -4.00 39.72
+RTDP 8036.00 -4.00 11.86
+ERTDP 9083.00 -4.00 54.26
+LHRTDP_MAs(true)_options(false) 13485.00 -7.00 135.57
+LHRTDP 32848.00 -18.00 116.35
+
+
+map: PlaneGoldSmeltWorldstateSpace=0.0
+
+RTDP_MAs(true)_options(false) 57549.00 -10.00 528.14
+RTDP 59188.00 -10.00 144.18
+ERTDP 49073.00 -13.00 413.06
+LHRTDP_MAs(true)_options(false) 2499.00 -10.00 24.26
+LHRTDP 2952.00 -10.00 11.38
+
+
+map: PlaneWallWorldstateSpace=0.0
+
+RTDP_MAs(true)_options(false) 19336.00 -7.00 144.14
+RTDP 18968.00 -7.00 44.44
+ERTDP 11154.00 -7.00 95.50
+LHRTDP_MAs(true)_options(false) 4832.00 -7.00 62.41
+LHRTDP 6509.00 -7.00 30.48
+
+
+map: PlaneWorldstateSpace=0.0
+
+RTDP_MAs(true)_options(false) 13348.00 -5.00 784.75
+RTDP 13839.00 -5.00 165.17
+ERTDP 1219.00 -5.00 40.15
+LHRTDP_MAs(true)_options(false) 2912.00 -5.00 124.38
+LHRTDP 3127.00 -5.00 45.77
+
+

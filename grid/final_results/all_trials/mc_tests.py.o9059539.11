@@ -1,0 +1,35 @@
+map: DeepTrenchWorldstateSpace=0.0
+
+RTDP 12592.00 -6.00 37.44
+ERTDP 3577.00 -6.00 13.73
+LHRTDP 6392.00 -6.00 27.55
+
+
+map: PlaneGoldMineWorldstateSpace=0.0
+
+RTDP 6275.00 -4.00 6.17
+ERTDP 2623.00 -4.00 5.65
+LHRTDP 1036.00 -4.00 2.63
+
+
+map: PlaneGoldSmeltWorldstateSpace=0.0
+
+RTDP 20839.00 -8.00 25.99
+ERTDP 18198.00 -8.00 42.35
+LHRTDP 2312.00 -8.00 5.92
+
+
+map: PlaneWallWorldstateSpace=0.0
+
+RTDP 11756.00 -5.00 16.91
+ERTDP 4750.00 -5.00 13.43
+LHRTDP 1974.00 -5.00 6.16
+
+
+map: PlaneWorldstateSpace=0.0
+
+RTDP 95273.00 -199.00 1674.85
+ERTDP 36213.00 -9.00 387.67
+LHRTDP 12656.00 -9.00 106.59
+
+
