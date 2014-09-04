@@ -153,7 +153,6 @@ def averageAndGetCIsForTemp(tempData, mapCounter):
     print tempData
     for planner in tempData:
         data = tempData[planner]
-        print "data:", data
         dataAsList = list(data[0])
         tempData[planner] = dataToAverageAndCI(dataAsList)
    
@@ -168,7 +167,7 @@ def dataToAverageAndCI(data):
 
     alpha = 1.0 - confidenceLevel
 
-    zVal = st.norm.ppf(alpha)
+    zVal = st.norm.ppf(float(alpha)/float(2))
 
     CIPlusMinues = math.fabs(zVal * STD/(math.sqrt(sampleSize)))
 
@@ -188,13 +187,13 @@ def main():
 
     # Merged all results into one
     merged_results, map_counter = merge_result_files(result_files)
+    print merged_results    
 
     averageAndGetCIs(merged_results, map_counter)
 
     if(len(sys.argv) > 2):
         temp_ext_results = merge_map_results(merged_results, map_counter)
         averageAndGetCIsForTemp(temp_ext_results, map_counter)
-        print temp_ext_results
         write_temp_ext_results_to_file(temp_ext_results)
         quit()
         
