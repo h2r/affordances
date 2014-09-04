@@ -112,10 +112,7 @@ def write_temp_ext_results_to_file(merged_results):
         outfile.write(planner + ",")
         outfile.write(str(merged_results[planner][0]) + ",")
         outfile.write(str(merged_results[planner][1]) + ",")
-        if len(merged_results) > 5:
-            outfile.write(str(merged_results[planner][2]) + "\n")
-        else:
-            outfile.write("\n")
+        outfile.write(str(merged_results[planner][2]) + "\n")
         outfile.write("\n");
     outfile.close()
 
@@ -150,12 +147,18 @@ def averageAndGetCIs(results, mapCounter):
                 results[mapType][planner][index] = dataToAverageAndCI(dataList)
 
 def averageAndGetCIsForTemp(tempData, mapCounter):
-    print tempData
     for planner in tempData:
         data = tempData[planner]
-        dataAsList = list(data[0])
-        tempData[planner] = dataToAverageAndCI(dataAsList)
-   
+        allLists = []
+        toChange = []
+        for tupleOfData in data:
+            currList = list(tupleOfData)
+            avgAndCI = dataToAverageAndCI(currList)
+            toChange += [tuple(avgAndCI)]
+
+        tempData[planner] = toChange
+        
+
 def dataToAverageAndCI(data):
     confidenceLevel = .95
     sampleSize = len(data)
@@ -187,13 +190,13 @@ def main():
 
     # Merged all results into one
     merged_results, map_counter = merge_result_files(result_files)
-    print merged_results    
+        
 
     averageAndGetCIs(merged_results, map_counter)
-
     if(len(sys.argv) > 2):
         temp_ext_results = merge_map_results(merged_results, map_counter)
         averageAndGetCIsForTemp(temp_ext_results, map_counter)
+        print temp_ext_results
         write_temp_ext_results_to_file(temp_ext_results)
         quit()
         
