@@ -34,7 +34,7 @@
 \begin{document}
 
 % paper title
-\title{Affordances-Aware Planning}
+\title{Affordance-Aware Planning}
 
 % Author info:
 %\author{\authorblockN{David Abel \& Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex}
@@ -269,7 +269,6 @@ Finally, we define the prior on the optimality of each action to be the fraction
 
 % -- Subsection: Learning --
 \subsection{Learning}
-\enote{I feel as though learning should go before action pruning since it specifies the action prior that is then used for pruning as detailed in Action Pruning.}
 
 To learn affordances, we input a set of training worlds ($W$) for which the optimal policy
 may be tractably computed. Then, we determine the parameter vector $\theta$ that 
@@ -346,7 +345,7 @@ We conducted a series of experiments in the Minecraft domain that
 compared the performance of Real Time Dynamic Programming (RTDP)~\citep{barto95}
 without affordances to its affordance-aware counterpart (ARTDP). We created a set of expert
 affordances from our background knowledge of the domain, which are
-listed in Figure \ref{fig:afford_kb_exp} \dnote{Expert ignored for now}. Additionally, we ran our full
+listed in Figure \ref{fig:afford_kb_exp} \dnote{Figure coming soon}. Additionally, we ran our full
 learning process and learned a single knowledge base of affordances for use in all tests. We compared
 RTDP with its expert-affordance-aware and learned-affordance-aware 
 counterparts.
