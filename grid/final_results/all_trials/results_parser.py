@@ -70,6 +70,7 @@ def merge_result_files(result_file_list):
                     if planner in results[map_type]:
                         results[map_type][planner][0] += [bellman]
                         results[map_type][planner][1] += [reward]
+
                         results[map_type][planner][2] += [cpu]
                     else:
                         results[map_type][planner] = [[bellman], [reward], [cpu]]
@@ -117,6 +118,7 @@ def write_temp_ext_results_to_file(merged_results):
     outfile.close()
 
 def merge_map_results(merged_results, map_counter):
+    print merged_results
     results = {} # {planner : [bellman, reward, cpu]}
     num_trials = 0
     for map_type in merged_results:
@@ -151,6 +153,7 @@ def averageAndGetCIsForTemp(tempData, mapCounter):
         data = tempData[planner]
         allLists = []
         toChange = []
+        isRTDP = planner == "RTDP"
         for tupleOfData in data:
             currList = list(tupleOfData)
             avgAndCI = dataToAverageAndCI(currList)
@@ -190,15 +193,15 @@ def main():
 
     # Merged all results into one
     merged_results, map_counter = merge_result_files(result_files)
-        
 
-    averageAndGetCIs(merged_results, map_counter)
     if(len(sys.argv) > 2):
         temp_ext_results = merge_map_results(merged_results, map_counter)
         averageAndGetCIsForTemp(temp_ext_results, map_counter)
-        print temp_ext_results
         write_temp_ext_results_to_file(temp_ext_results)
         quit()
+    else:
+        averageAndGetCIs(merged_results, map_counter)
+
         
     # Write the merged knowledge base out to a file
     write_results_to_file(merged_results, map_counter)
