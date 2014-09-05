@@ -390,7 +390,7 @@ of incorrectly applying a different movement action.
 \centering
 \caption{RTDP vs. Learned Affordance-Aware RTDP}
 \begin{tabular}{ c l  | l l l l}
-  State \\ Space	&	Planner 		&	Bellman			&	Reward 		& Cpu \\ \hline
+  State \\ Space	&	Planner 		&	Bellman			&	Reward 		& CPU \\ \hline
 Mine 	& \texttt{RTDP} 	& 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1) 	& {\bf 17.6s}   ($\pm$4) \\
 		& \texttt{LHRTDP} 	& {\bf 12664.0} ($\pm$9340) 	& -12.7 ($\pm$5) 		& 33.1s   ($\pm$23) \\
 		& \texttt{ERTDP} 	& 14357.4 ($\pm$3275) 		& {\bf -6.5}   ($\pm$1) 	& 31.9s   ($\pm$8) \\ \hline
@@ -448,6 +448,25 @@ Expert affordances outperformed both RTDP and LARTDP on the Trench task, finding
 %\label{table:minecraft_results}
 %\end{table}
 
+% Averaged over all worlds
+\begin{table}[b]
+\centering
+\caption{Affordances vs. Temporally Extended Actions}
+\begin{tabular}{ l l  | c c c c}
+  Planner & Augmentation 			&	Bellman	&	Reward 	& CPU \\ \hline
+RTDP &  \texttt{Vanilla}  			&	27439($\pm$2348)	&	-22.6($\pm$9)	&	107($\pm$33)		\\
+ & \texttt{w/ Opt}  				&	26663($\pm$2298)	&	-17.4($\pm$4.0)	&	129($\pm$35)		\\
+ &\texttt{w/ MA}  				&	31083($\pm$2468)	&	-21.7	($\pm$5.0)	&	336($\pm$28)		\\
+ &\texttt{w/ MA+Opt}  			&	27143($\pm$2380)	&	-16.9($\pm$3.0)	&	323($\pm$38)		\\ \hline
+ Affordance- &\texttt{Vanilla}  	& 	9935($\pm$1031)&	-12.4($\pm$1.0)	&	\bf{53}($\pm$5.0)		\\
+Aware  &\texttt{w/ Opt}  				& 	\bf{9675}($\pm$953)	&	\bf{-11.5}($\pm$1.0)	&	93($\pm$10)		\\
+  &\texttt{w/ MA}  				& 	9854($\pm$1034)	&	-11.7($\pm$1.0)		&	162($\pm$17)		\\
+  &\texttt{w/ MA+Opt}  			& 	10622($\pm$1046)	&	-13.4($\pm$1.0)	&	237($\pm$29)		\\
+\end{tabular}
+\label{table:temp_ext_act_results}
+\end{table}
+
+
 % -- Subsection: Temporally Extended Actions --
 \subsection{Temporally Extended Actions and Affordances}
 Additionally, we compared our approach to Temporally Extended Actions: 
@@ -479,25 +498,6 @@ and macroactions provided were hand coded by domain experts.
 %\end{tabular}
 %\caption{Caption}
 %\end{table*}
-
-
-% Averaged over all worlds
-\begin{table}[H]
-\centering
-\caption{Affordances vs. Temporally Extended Actions}
-\begin{tabular}{ l l  | c c c c}
-  Planner & Augmentation 			&	Bellman	&	Reward 	& CPU \\ \hline
-RTDP &  \texttt{Vanilla}  			&	27439($\pm$2348)	&	-22.6($\pm$9)	&	\bf{107}($\pm$33)		\\
- & \texttt{w/ Opt}  				&	\bf{26663}($\pm$2298)	&	-17.4($\pm$4.0)	&	129($\pm$35)		\\
- &\texttt{w/ MA}  				&	31083($\pm$2468)	&	-21.7	($\pm$5.0)	&	336($\pm$28)		\\
- &\texttt{w/ MA+Opt}  			&	27143($\pm$2380)	&	\bf{-16.9}($\pm$3.0)	&	323($\pm$38)		\\ \hline
- Affordance-Aware &\texttt{Vanilla}  	& 	9935($\pm$1031)&	-12.4($\pm$1.0)	&	\bf{53}($\pm$5.0)		\\
-  &\texttt{w/ Opt}  				& 	\bf{9675}($\pm$953)	&	\bf{-11.5}($\pm$1.0)	&	93($\pm$10)		\\
-  &\texttt{w/ MA}  				& 	9854($\pm$1034)	&	-11.7($\pm$1.0)		&	162($\pm$17)		\\
-  &\texttt{w/ MA+Opt}  			& 	10622($\pm$1046)	&	-13.4($\pm$1.0)	&	237($\pm$29)		\\
-\end{tabular}
-\label{table:temp_ext_act_results}
-\end{table}
 
 Table~\ref{table:temp_ext_act_results} indicates the results of comparing RTDP
 equipped with macro actions, options, and affordances across 100 different executions
