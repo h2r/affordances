@@ -21,11 +21,11 @@
 \usepackage{pgfplots}
 
 % -- Comment commands --
-\newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{S: #1}}}
-\newcommand{\dnote}[1]{\textcolor{Green}{\textbf{D: #1}}}
-\newcommand{\enote}[1]{\textcolor{Red}{\textbf{E: #1}}}
-\newcommand{\gnote}[1]{\textcolor{Purple}{\textbf{G: #1}}}
-\newcommand{\jnote}[1]{\textcolor{Orange}{\textbf{J: #1}}}
+\newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{}}}
+\newcommand{\dnote}[1]{\textcolor{Green}{\textbf{}}}
+\newcommand{\enote}[1]{\textcolor{Red}{\textbf{}}}
+\newcommand{\gnote}[1]{\textcolor{Purple}{\textbf{}}}
+\newcommand{\jnote}[1]{\textcolor{Orange}{\textbf{}}}
 
 % -- Misc. new commands --
 \newcommand{\argmax}{\operatornamewithlimits{argmax}} % argmax
@@ -224,12 +224,12 @@ We rewrite Equation~\ref{eq:master} replacing $K$ with its constituents:
 
 When a precondition and goal type ($\langle p , g \rangle = \delta$) is paired with a
 state and goal to be solved in a planning problem, we can evaluate whether $\delta$ is relevant by checking if the predicate of $\delta$ is true in the current state
-and if the current goal logically entails\dnote{I originally changed equality to entailment - do you all think this is the right move? This is what we'd like eventually, but currently we just check equivalence (in the code). It's easy enough to change here}\enote{my vote is for equals} the goal type of $\delta$. This relevance is defined with the indicator function $f$:
+and if the current goal is equivalent to the goal type of $\delta$. This relevance is defined with the indicator function $f$:
 % -- Equation: function f defn --
 \begin{equation}
 f(\delta, s, G) = 
 \begin{cases}
-1& \delta.p(s) \wedge G \models \delta.g \\
+1& \delta.p(s) \wedge G == \delta.g \\
 0& \text{otherwise}
 \end{cases}.
 \label{eq:f_func_def}
@@ -304,7 +304,6 @@ Affordances may also be specified by a domain expert using a discriminative OR m
 
 % 3) Sampling
 Additionally, actions may be pruned on a state by state basis by sampling actions from the probability distribution over actions as specified by Equation~\ref{eq:final}. We treat each action's probability mass as a Bernouli trial and sample across the entire action set. In preliminary results, this method did not perform as well as baseline RTDP - likely because the weights associated with each action were too small. In future work, we are interested in investigating more sophisticated approaches to sampling as a means of action pruning 
-\dnote{Thoughts on the sampling paragraph?}
 \enote{I'm a bit uncomfortable with us jumping the gun and talking about results and then future work here -- I think this paragraph is good but we should shift the content towards the end to the correct sections.}.
 
 % -- Subsection: Learning --
@@ -395,7 +394,7 @@ of incorrectly applying a different movement action.
 \begin{table}[H]
 \centering
 \caption{RTDP vs. Learned Affordance-Aware RTDP}
-\begin{tabular}{ c l  || c c c c}
+\begin{tabular}{ c l  | c c c c}
   State Space	&	Planner 		&	CPU	&	Reward 	& Bellman \\ \hline
   Mine 	& 	\texttt{RTDP}  		& 	160.0s	&	-228.75	&	80610.7		\\
   		& 	\texttt{ARTDP}  	& 	{\bf 68.1s}	&	{\bf -12.4}	&	{\bf 16633.1}	\\  \hline
@@ -459,7 +458,6 @@ affordances, macroactions, and options. We conducted these experiments
 with the same configurations as our Minecraft experiments. The option policies
 and macroactions provided were hand coded by domain experts.
 
-\dnote{New results incoming tomorrow}
 % -- Figure: Temporally Extended Actions Results --
 
 % - Fancy table (incoming) -
@@ -488,28 +486,30 @@ and macroactions provided were hand coded by domain experts.
 \begin{table}[H]
 \centering
 \caption{Affordances vs. Temporally Extended Actions}
-\begin{tabular}{ l l  || c c c c}
-  Augmentation 					&	CPU	&	Reward 	& Bellman \\ \hline
-RTDP &  \texttt{Vanilla}  					&	204.4s&	-42.9		&	82565.2		\\
- & \texttt{w/ Opt}  				&	267.8s	&	-52.6		&	79051		\\
- &\texttt{w/ MA}  					&	695.0s	&	-29.6		&	72282.2		\\
- &\texttt{w/ MA+Opt}  			&	838.5s&	-38.7s	&	72544.7		\\ \hline
- Affordance-Aware &\texttt{Vanilla}  			& 	{\bf 166.6s}&	-29.1		&	{\bf 29950.3}		\\
-  &\texttt{w/ Opt}  		& 	284.8s&	{\bf -28.5}		&	30658.0		\\
-  &\texttt{w/ MA}  		& 	503.8s&	-28.6		&	30047.7		\\
-  &\texttt{w/ MA+Opt}  	& 	730.0s&	-30.9		&	33346.2		\\
+\begin{tabular}{ l l  | c c c c}
+  Planner & Augmentation 					&	CPU	&	Reward 	& Bellman \\ \hline
+RTDP &  \texttt{Vanilla}  			&	204.4s	&	-42.9		&	82565.2		\\
+ & \texttt{w/ Opt}  				&	269.1s	&	-35.1		&	79441.0		\\
+ &\texttt{w/ MA}  				&	695.0s	&	-29.6		&	72282.2		\\
+ &\texttt{w/ MA+Opt}  			&	891.7s	&	-34.6s	&	77511.5		\\ \hline
+ Affordance-Aware &\texttt{Vanilla}  	& 	{\bf 166.6s}&	-29.1		&	{\bf 29950.3}		\\
+  &\texttt{w/ Opt}  				& 	269.1s	&	{\bf -28.2}	&	32644.7		\\
+  &\texttt{w/ MA}  				& 	503.8s	&	-28.6		&	30047.7		\\
+  &\texttt{w/ MA+Opt}  			& 	791.3s	&	-32.5		&	37328.7		\\
 \end{tabular}
 \label{table:temp_ext_act_results}
 \end{table}
 
-\dnote{New results here incoming Sunday 8/31 hopefully}
 Table~\ref{table:temp_ext_act_results} indicates the results of comparing RTDP
-equipped with macro actions, options, and affordances across 10 different executions
-in the same randomly generated Minecraft worlds. The planners were tasked with 
-reaching a particular location, given a set of obstacles to overcome. As the results 
-suggest, both macroactions and options add significant number of Bellman Updates to 
-planning, and an increase in CPU time. This is due to the fact that the branching factor of the state-action space significantly increases when augmented with additional actions. Furthermore, computing the expected reward of applying an option is computationally expensive. With affordances, the planner completed in less CPU time, and with fewer 
-bellman updates. This supports the claim that affordances can handle the augmented 
+equipped with macro actions, options, and affordances across 100 different executions
+in the same randomly generated Minecraft worlds. The results above are averaged across tasks of
+each type presented in Table~\ref{table:minecraft_results}. As the results 
+suggest, both macroactions and options add a significant amount of time to planning.
+This is due to the fact that it is computationally expensive to predict the expected reward
+associated with applying an option or a macro-actions. Furthermore, the branching factor of the
+state-action space significantly increases when augmented with additional actions, causing the
+planner to run for longer and perform more Bellman updates. With affordances, the planner found a better plan
+in less CPU time, and with fewer Bellman updates. This supports the claim that affordances can handle the augmented 
 action space provided by temporally extended actions by pruning away unnecessary actions.
 
 % -- Subsection: Learning Rate --
@@ -576,7 +576,7 @@ doors.
 Although the classic options framework is not generalizable to different state spaces,
 creating {\em portable} options is a topic of active research~\cite{konidaris07,konidaris2009efficient,Ravindran03analgebraic,croonenborghs2008learning,andre2002state,konidaris2012transfer}.
 
-Since temporally extended actions may negatively impact planning time~\cite{Jong:2008zr} by adding to the number of actions the agent can choose from in a given state, combining affordances with temporally extended actions allow for even further speedups in planning, as demonstrated in~\ref{table:temp_ext_act_results}. This suggests that affordances are complementary to macro actions and options. \dnote{not sure if this is the right way to phrase - could use a second read}\enote{I actually like this a good deal}
+Since temporally extended actions may negatively impact planning time~\cite{Jong:2008zr} by adding to the number of actions the agent can choose from in a given state, combining affordances with temporally extended actions allow for even further speedups in planning, as demonstrated in~\ref{table:temp_ext_act_results}. This suggests that affordances are complementary to macro actions and options.
 
 % --- Subsection: Action Pruning ---
 \subsubsection{Action Pruning}
@@ -587,7 +587,7 @@ transferred to a new, but similar, target task to reduce the learning time requi
 the optimal policy in the target task. The main difference between our affordance-based 
 action set pruning and this action transfer work is that affordances prune away actions on 
 a state by state basis, where as the learned action pruning is on per task level. Further, 
-with lifted goal descriptions\enote{This is the first time we are now talking about LGD?}, affordances may be attached to subgoal planning for a significant
+with goal types\enote{This is the first time we are now talking about LGD?}, affordances may be attached to subgoal planning for a significant
 benefit in planning tasks where complete subgoal knowledge is known.
 
 Rosman and Ramamoorthy~\cite{rosman2012good} provide a method for learning action
@@ -639,7 +639,7 @@ a different problem from what we are interested in since they deal with non-stoc
 Traditional Hierarchical Task Networks (HTNs) employ \textit{task decompositions} to aid in planning. The goal at hand is decomposed into smaller tasks which are in turn decomposed into smaller tasks. This decomposition continues until primitive tasks that are immediately achievable are derived. The current state of the task decomposition, in turn, informs constraints which reduce the space over which the planner searches. At a high level both HTNs and affordances fulfill the same role: both achieve action pruning by exploiting some form of supplied knowledge. 
 
 However there are two essential distinctions between affordances and traditional HTNs.  (1) HTNs do not incorporate reward into their planning. Consequently, they lack mathematical guarantees of optimal planning. (2) On a qualitative level, the degree of supplied knowledge in HTNs surpasses that of affordances: whereas affordances simply require relevant propositional functions, HTNs require not only constraints for sub-tasks but a hierarchical framework of arbitrary complexity. \enote{Need citations for HTNs}
-\dnote{needs to be shorter}
+
 % --- Subsubsection: Temporal Logic ---
 \subsubsection{Temporal Logic}
 
