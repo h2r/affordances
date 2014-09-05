@@ -21,11 +21,11 @@
 \usepackage{pgfplots}
 
 % -- Comment commands --
-\newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{}}}
-\newcommand{\dnote}[1]{\textcolor{Green}{\textbf{}}}
-\newcommand{\enote}[1]{\textcolor{Red}{\textbf{}}}
-\newcommand{\gnote}[1]{\textcolor{Purple}{\textbf{}}}
-\newcommand{\jnote}[1]{\textcolor{Orange}{\textbf{}}}
+ \newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{S: #1}}}
+ \newcommand{\dnote}[1]{\textcolor{Green}{\textbf{D: #1}}}
+ \newcommand{\enote}[1]{\textcolor{Red}{\textbf{E: #1}}}
+ \newcommand{\gnote}[1]{\textcolor{Purple}{\textbf{G: #1}}}
+ \newcommand{\jnote}[1]{\textcolor{Orange}{\textbf{J: #1}}}
 
 % -- Misc. new commands --
 \newcommand{\argmax}{\operatornamewithlimits{argmax}} % argmax
@@ -34,7 +34,7 @@
 \begin{document}
 
 % paper title
-\title{Affordance-Aware Planning}
+\title{Affordances-Aware Planning}
 
 % Author info:
 %\author{\authorblockN{David Abel \& Gabriel Barth-Maron, James MacGlashan, Stefanie Tellex}
@@ -49,7 +49,7 @@ intractable in large state spaces due to the well-known curse of
 dimensionality. Existing approaches to planning in large stochastic
 state spaces fail to prevent autonomous agents from considering many
 actions that are obviously irrelevant to a human solving the same
-task. To reduce the size of the state/action space
+task. To reduce the size of the state-action space
 %without sacrificing optimality
 % NOTE: \dnote{We do sacrifice optimality (we lose any guarantees under our new model)}, 
 we formalize the notion of {\em affordances} as
@@ -61,7 +61,7 @@ policy. We show that an agent can learn affordances through
 experience, and that learned affordances can equal or surpass the
 performance of those provided by experts.
 We demonstrate our approach in the state-rich Minecraft domain, showing significant increases in
-speed and reductions in state-space exploration during planning, with
+speed and reductions in state space exploration during planning, with
 minimal loss in quality of the synthesized policy.  Additionally, we
 employ affordance-aware planning on a Baxter robot, demonstrating it
 is able to assist a person performing a collaborative cooking task.
@@ -75,25 +75,25 @@ is able to assist a person performing a collaborative cooking task.
 
 Robots operating in unstructured, stochastic environments such as a
 factory floor or a kitchen face a difficult planning problem due to
-the large state space and inherent
-uncertainty\enote{It's unclear as to what it is uncertainty about -- I want to fill this in but I'm not sure with what since I'm not sure what it's uncertainty about}~\citep{bollini12,knepper13}.  Robotic planning tasks are
-classically formalized as a stochastic sequential decision making
-problem, modeled as a Markov Decision Process (MDP). In these
-problems, the agent must find a mapping from states to actions for
-some subset of the state space that enables the agent to achieve a
-goal while minimizing costs along the way. However, many robotics
-tasks are so complex that modeling them as an MDP results in a massive
-state/action \enote{we're inconsistent with our use of state/action space vs state-action space. Not sure what the convention is but we should pick one and replace all the other.} space, which in turn restricts the types of robotics
-problems that are computationally tractable. For example, when a robot is
-manipulating objects in an environment, an object can be placed
-anywhere in a large set of locations. Unfortunately, the
-size of the state space increases exponentially with the number of
-objects, which bounds the placement problems that the robot is able to
-expediently solve. \enote{it's unclear to me what the purpose of the remainder of this paragraph is -- the irrelevance of locations seems incongruous with the thrust of the rest of the paragraph (robotic planning problems are hard). It seems like this bit should be right before we introduce affordances in the introduction so as to provide a motivation for affordances} Moreover, depending on the task, most of
-these locations are irrelevant: when making brownies, the
-oven and flour are important, while the soy sauce and saut\'{e} pan
-are not.  For a different task, such as stir-frying broccoli, a
-different set of objects and actions are relevant.  
+the large state space and inherent uncertainty due to unreliable
+perception and actuation~\citep{bollini12,knepper13}.  Robotic
+planning tasks are often formalized as a stochastic sequential
+decision making problem, modeled as a Markov Decision Process
+(MDP)~\citep{thrun2008probabilistic}. In these problems, the agent
+must find a mapping from states to actions for some subset of the
+state space that enables the agent to achieve a goal while minimizing
+costs along the way. However, many robotics tasks are so complex that
+modeling them as an MDP results in a massive state-action space, which
+in turn restricts the types of robotics problems that are
+computationally tractable. For example, when a robot is manipulating
+objects in an environment, an object can be placed anywhere in a large
+set of locations. The size of the state space increases exponentially
+with the number of objects, which bounds the placement problems that
+the robot is able to expediently solve.  Moreover, depending on the
+task, most of these locations are irrelevant: when making brownies,
+the oven and flour are important, while the soy sauce and saut\'{e}
+pan are not.  For a different task, such as stir-frying broccoli, a
+different set of objects and actions are relevant.
 
 To address this state-action space explosion, prior work has explored
 adding knowledge to the planner, such as options~\cite{sutton99} and
@@ -111,19 +111,20 @@ not generalize to stochastic domains. Additionally, the knowledge
 provided to the planner by these methods is quite extensive, reducing the
 agent's autonomy. 
 
-We propose augmenting an MDP with a formalization of 
-{\em affordances}. An affordance~\cite{gibson77} focuses an
-agent's attention on aspects of the environment that are
-most relevant to solving its current goal and avoid exploration of
-irrelevant parts of the world. Affordances are not specific to a particular
-reward function or state space, and provide the agent with transferable 
-knowledge that is effective in a wide variety of problems. Moreover, an 
-agent can learn affordances through experience, making affordances a 
-concise, transferable, and learnable means of representing useful planning
-knowledge.  Our experiments demonstrate that affordances provide dramatic
-speedups for a variety of planning tasks compared to baselines and apply across
-different state-spaces.  We conduct experiments in the game Minecraft, which has
-a very large state-action space, and on a real-world robotic cooking assistant.
+Instead, we propose augmenting an MDP with a formalization of {\em
+  affordances}. An affordance~\cite{gibson77} focuses an agent's
+attention on aspects of the environment that are most relevant to
+solving its current goal and avoid exploration of irrelevant parts of
+the world. Affordances are not specific to a particular reward
+function or state space, and provide the agent with transferable
+knowledge that is effective in a wide variety of problems. Moreover,
+we show that an agent can learn affordances through experience, making
+affordances a concise, transferable, and learnable means of
+representing useful planning knowledge.  Our experiments demonstrate
+that affordances provide dramatic speedups for a variety of planning
+tasks compared to baselines and apply across different state spaces.
+We conduct experiments in the game Minecraft, which has a very large
+state-action space, and on a real-world robotic cooking assistant.
 
 %% Because affordances define the {\em kind} of goals for which actions
 %% are useful, affordances also enable high-level reasoning that can be
@@ -131,13 +132,13 @@ a very large state-action space, and on a real-world robotic cooking assistant.
 %% greater performance gains. 
 
 % ====== Affordances ======
-\section{Affordances}
+\section{Technical Approach}
 \label{sec:affordances}
 
 We formalize affordances as knowledge added to a Markov Decision Process
 (MDP).  An MDP is a five-tuple: $\langle \mathcal{S}, \mathcal{A},
 \mathcal{T}, \mathcal{R}, \gamma \rangle$, where $\mathcal{S}$ is a
-state-space; $\mathcal{A}$ is the agent's set of actions;
+state space; $\mathcal{A}$ is the agent's set of actions;
 $\mathcal{T}$ denotes $\mathcal{T}(s' \mid s,a)$, the transition
 probability of an agent applying action $a \in \mathcal{A}$ in state
 $s \in \mathcal{S}$ and arriving in $s' \in \mathcal{S}$;
@@ -148,20 +149,22 @@ agent prefers immediate rewards over future rewards (the agent
 prefers to maximize immediate rewards as $\gamma$ decreases).
 
 % -- Subsection: OO-MDPs --
-\subsection{OO-MDPs}
-Our representation of affordances builds on an Object-Oriented extension of an MDP.
-An Object-Oriented Markov Decision Process (OO-MDP)~\citep{diuk08} state
-efficiently represents the state of an MDP, through the use of OO-MDP objects
-and OO-MDP predicates.  An OO-MDP state is a collection of
-objects, $O = \{o_1, \ldots, o_o \}$.  Each object $o_i$ belongs to a
-class, $c_j \in \{c_1, \ldots, c_c\}$. Every class has a set of
-attributes, $Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of which has a
-domain, $Dom(c.a)$, of possible values. OO-MDPs
-enable planners to use predicates over classes of objects. That is, the OO-MDP
-definition also includes a set of predicates $\mathcal{P}$ that operate
-on the state of objects to provide additional high-level information
-about the MDP state. We use OO-MDP predicates as features for action
-pruning, allowing for state space \enote{we're inconsistent about state-space vs state space and should pick one} independence.
+%\subsection{OO-MDPs}
+
+\stnote{Need to open by motivating why we chose OO-MDPs, in one
+  sentence.} Our representation of affordances builds on an
+Object-Oriented MDPs (OO-MDP)~\citep{diuk08}.  An OO-MDP efficiently
+represents the state of an MDP through the use of objects and
+predicates.  An OO-MDP state is a collection of objects, $O = \{o_1,
+\ldots, o_o \}$.  Each object $o_i$ belongs to a class, $c_j \in
+\{c_1, \ldots, c_c\}$. Every class has a set of attributes, $Att(c) =
+\{c.a_1, \ldots, c.a_a \}$, each of which has a domain, $Dom(c.a)$, of
+possible values. OO-MDPs enable planners to use predicates over
+classes of objects. That is, the OO-MDP definition also includes a set
+of predicates $\mathcal{P}$ that operate on the state of objects to
+provide additional high-level information about the MDP state. We use
+OO-MDP predicates as features for action pruning, allowing for state
+space independence.
 
 %% While an OO-MDP reduces the size of the state space by a significant
 %% factor, the resulting state space is still far too large to solve with
@@ -177,16 +180,16 @@ pruning, allowing for state space \enote{we're inconsistent about state-space vs
 %% means of knowledge representation and reasoning for collaborative cooking with ReThink's Baxter.
 
 % -- Subsection: Affordances --
-\subsection{Affordance-Aware Planning}
-\enote{This seems like a misnomer for this section since all this section really is is "we can get an action distribution to be later used in planning" and we haven't yet dug into how we actually are pruning/planning yet.}
+\subsection{Affordances}
+
 %% \citet{gibson77} proposed that an affordance is ``what [the
 %%   environment] offers [an] animal, what [the environment] provides or
 %% furnishes, either for good or ill.''  
 
-Our goal is to define a formalism of affordances that enables a planning algorithm
-to prune away suboptimal actions in each state. In the ideal circumstance, an agent would
-know the subset of actions that were optimal in each state for the given goal, thereby allowing for pruning of all suboptimal actions in that state.
-We define the optimal action set, $\mathcal{A}^*$, for a given state $s$ and goal $G$ as:
+Our goal is to formalize affordances in a way that enables a planning
+algorithm to prune away suboptimal actions in each state. We define
+the optimal action set, $\mathcal{A}^*$, for a given state $s$ and
+goal $G$ as:
 % -- Equation: Optimal Action Set --
 \begin{equation}
 \mathcal{A}^* = \left\{ a \mid Q^*_G(s,a) = V^*_G(s) \right\}, 
@@ -197,9 +200,10 @@ value function, respectively.
 \dnote{This makes a pretty big jump from introducing an MDP. Do we need to introduce
 the bellman equation/value function above, too?}\enote{I honestly don't think we need to mention the Q fn or V fn since most people have an intuitive sense of "optimal" action and the functions don't have any immediate bearing on anything specific to our research}
 
-Naturally, we cannot expect to have this knowledge ahead of time, otherwise there wouldn't
-be a planning problem to solve. Instead, we aim to learn a probability distribution over the optimal
-action set for a given state ($s$), goal ($G$), and knowledge base ($K$) from which action pruning may be informed (see Section \ref{sec:action_pruning}):
+We aim to learn a probability distribution over the optimal action set
+for a given state ($s$), goal ($G$), and knowledge base ($K$) from
+which action pruning may be informed (see Section
+\ref{sec:action_pruning}):
 % -- Equation: Master Equation --
 \begin{equation}
 \Pr(\mathcal{A}^* \mid s, G, K)
@@ -289,7 +293,7 @@ action possibilities identified by the distribution in Equation~\ref{eq:final}.
 \enote{A general note about this section, especially the last two paragraphs. The connecting up with affordances seems a bit tenuous and I think it would help to more obviously ground what exactly an affordance is for us within our mathematical model. I get that that is what the penultimate paragraph is getting at but that bit still confuses me a bit - Dave can we talk about this? Also I noted it before but it is still very unclear to me what theta is -- it seems like we could do just naive bayes over our binary features without anything else.}
 
 % -- Subsection: Action Pruning --
-\subsection{Action Pruning}
+\subsection{Affordance-Aware Planning}
 \label{sec:action_pruning}
 Given a probability distribution over the optimal action set, any typical
 planner can be made to be an affordance-aware planner by pruning its action
@@ -341,7 +345,7 @@ calculators\footnote{https://www.youtube.com/watch?v=wgJfVRhotlQ}.
 Minecraft serves as a model for robotic tasks such as cooking
 assistance, assembling items in a factory, object retrieval, and
 complex terrain traversal.  As in these tasks, the agent operates in a
-very large state/action space in an uncertain environment.
+very large state-action space in an uncertain environment.
 Figure~\ref{fig:minecraft} shows a scene from one of our Minecraft
 problems \enote{This doesn't seem fair to say since it this is much more difficult than our actual tests.}.
 
@@ -394,18 +398,23 @@ of incorrectly applying a different movement action.
 \begin{table}[H]
 \centering
 \caption{RTDP vs. Learned Affordance-Aware RTDP}
-\begin{tabular}{ c l  | c c c c}
-  State Space	&	Planner 		&	CPU	&	Reward 	& Bellman \\ \hline
-  Mine 	& 	\texttt{RTDP}  		& 	160.0s	&	-228.75	&	80610.7		\\
-  		& 	\texttt{ARTDP}  	& 	{\bf 68.1s}	&	{\bf -12.4}	&	{\bf 16633.1}	\\  \hline
-  Smelt	&	\texttt{RTDP}  		& 	639.4s	&	-231.4	&	99089.6		\\
-  		&	\texttt{ARTDP}  	& 	{\bf 20.8s}	&	{\bf -11.9}	&	{\bf 4807.4}	\\  \hline
-  Wall	&	\texttt{RTDP}  		& 	144.5s	&	-26.0		&	60994.9		\\
-  		&	\texttt{ARTDP}  	& 	{\bf 116.6s}&	{\bf -17.9}	&	{\bf 23198}	\\  \hline
-  Trench	&	\texttt{RTDP}  		& 	206.5s	&	{\bf -6.5}	&	19529.6		\\
-  		&	\texttt{ARTDP}  	& 	{\bf 116.4s}&	-7.2		&	{\bf 10533.9}	\\ \hline
-Plane	&	\texttt{RTDP}  		& 	1414.1s	&	{\bf -6.1}	&	30987		\\
-  		&	\texttt{ARTDP}  	& 	{\bf 159.4s}&	{\bf -6.1}	&	{\bf 5096.2}	\\ 
+\begin{tabular}{ c l  | l l l l}
+  State \\ Space	&	Planner 		&	Bellman			&	Reward 		& Cpu \\ \hline
+Mine 	& \texttt{RTDP} 	& 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1) 	& {\bf 17.6s}   ($\pm$4) \\
+		& \texttt{LHRTDP} 	& {\bf 12664.0} ($\pm$9340) 	& -12.7 ($\pm$5) 		& 33.1s   ($\pm$23) \\
+		& \texttt{ERTDP} 	& 14357.4 ($\pm$3275) 		& {\bf -6.5}   ($\pm$1) 	& 31.9s   ($\pm$8) \\ \hline
+Smelt 	& \texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) 	& 45.1s   ($\pm$14) \\
+		& \texttt{LHRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) 		& {\bf 7.5s}  ($\pm$2) \\
+		& \texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) 	& 72.6s   ($\pm$19) \\ \hline
+Wall 		& \texttt{RTDP} 	& 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) 		& {\bf 68.7s}   ($\pm$22) \\
+		& \texttt{LHRTDP} 	& {\bf 24020.8} ($\pm$9239) 	& {\bf -15.8}   ($\pm$5) 	& 80.5s   ($\pm$34) \\
+		& \texttt{ERTDP} 	& 32552.0 ($\pm$10794) 		& -34.5   ($\pm$25) 		& 96.5s   ($\pm$39) \\ \hline
+Trench 	& \texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& -8.1   ($\pm$2) 		& 53.1s   ($\pm$22) \\
+		& \texttt{LHRTDP} 	& {\bf 11758.4} ($\pm$2815) 	& {\bf -8.7}   ($\pm$1) 	& 57.9s   ($\pm$20) \\
+		& \texttt{ERTDP} 	& 8674.8 	($\pm$2700) 		& -8.2   ($\pm$2) 		& {\bf 35.9s}   ($\pm$15) \\ \hline
+Plane 	& \texttt{RTDP} 	& 52407.8 ($\pm$18432) 		& -82.6   ($\pm$42) 		& 877.0s   ($\pm$381) \\
+		& \texttt{LHRTDP} 	& {\bf 19089.9} ($\pm$9158) 	& {\bf -7.5}   ($\pm$1) 	& {\bf 246.4s}   ($\pm$159) \\
+		& \texttt{ERTDP} 	& 32928.0 ($\pm$14997) 		& -44.9   ($\pm$34) 		& 505.3s   ($\pm$304) \\
 \end{tabular}
 \label{table:minecraft_results}
 \end{table}
@@ -667,7 +676,7 @@ pairs the agent needs to evaluate in order to act near optimally. We demonstrate
 effectiveness of the affordance model by comparing a RTDP to its affordance-aware
 equivalent in a series of challenging planning tasks in the Minecraft domain. Further, we designed
 a full learning process that allows an agent to autonomously learn useful affordances that may be used
-across a variety of task types, reward functions, and state-spaces, allowing for convenient extensions 
+across a variety of task types, reward functions, and state spaces, allowing for convenient extensions 
 to robotic applications.
 
 We compared the effectiveness of augmenting planners with affordances compared to 
