@@ -87,8 +87,8 @@ computationally tractable. For example, when a robot is manipulating
 objects in an environment, an object can be placed anywhere in a large
 set of locations. The size of the state space increases exponentially
 with the number of objects, which bounds the placement problems that
-the robot is able to expediently solve.  Moreover, depending on the
-task, most of these locations are irrelevant: when making brownies,
+the robot is able to expediently solve.  Moreover, the task is made further
+difficult by the fact that, most of these locations are irrelevant: when making brownies,
 the oven and flour are important, while the soy sauce and saut\'{e}
 pan are not.  For a different task, such as stir-frying broccoli, a
 different set of objects and actions are relevant.
@@ -486,15 +486,15 @@ and macroactions provided were hand coded by domain experts.
 \centering
 \caption{Affordances vs. Temporally Extended Actions}
 \begin{tabular}{ l l  | c c c c}
-  Planner & Augmentation 					&	CPU	&	Reward 	& Bellman \\ \hline
-RTDP &  \texttt{Vanilla}  			&	204.4s	&	-42.9		&	82565.2		\\
- & \texttt{w/ Opt}  				&	269.1s	&	-35.1		&	79441.0		\\
- &\texttt{w/ MA}  				&	695.0s	&	-29.6		&	72282.2		\\
- &\texttt{w/ MA+Opt}  			&	891.7s	&	-34.6s	&	77511.5		\\ \hline
- Affordance-Aware &\texttt{Vanilla}  	& 	{\bf 166.6s}&	-29.1		&	{\bf 29950.3}		\\
-  &\texttt{w/ Opt}  				& 	269.1s	&	{\bf -28.2}	&	32644.7		\\
-  &\texttt{w/ MA}  				& 	503.8s	&	-28.6		&	30047.7		\\
-  &\texttt{w/ MA+Opt}  			& 	791.3s	&	-32.5		&	37328.7		\\
+  Planner & Augmentation 			&	Bellman	&	Reward 	& CPU \\ \hline
+RTDP &  \texttt{Vanilla}  			&	27439($\pm$2348)	&	-22.6($\pm$9)	&	\bf{107}($\pm$33)		\\
+ & \texttt{w/ Opt}  				&	\bf{26663}($\pm$2298)	&	-17.4($\pm$4.0)	&	129($\pm$35)		\\
+ &\texttt{w/ MA}  				&	31083($\pm$2468)	&	-21.7	($\pm$5.0)	&	336($\pm$28)		\\
+ &\texttt{w/ MA+Opt}  			&	27143($\pm$2380)	&	\bf{-16.9}($\pm$3.0)	&	323($\pm$38)		\\ \hline
+ Affordance-Aware &\texttt{Vanilla}  	& 	9935($\pm$1031)&	-12.4($\pm$1.0)	&	\bf{53}($\pm$5.0)		\\
+  &\texttt{w/ Opt}  				& 	\bf{9675}($\pm$953)	&	\bf{-11.5}($\pm$1.0)	&	93($\pm$10)		\\
+  &\texttt{w/ MA}  				& 	9854($\pm$1034)	&	-11.7($\pm$1.0)		&	162($\pm$17)		\\
+  &\texttt{w/ MA+Opt}  			& 	10622($\pm$1046)	&	-13.4($\pm$1.0)	&	237($\pm$29)		\\
 \end{tabular}
 \label{table:temp_ext_act_results}
 \end{table}

@@ -150,12 +150,15 @@ def main():
 	# Set up the result files
 	result_files = setup_files(job_name)
 	num_trials = len(result_files)
-
+	print "asfasfafsaasdads"
 	# Merged all results into one
+
 	merged_results, map_counter = merge_result_files(result_files)
+	print "merged_results:", merged_results
 
 	if(len(sys.argv) > 2):
 		temp_ext_results = merge_map_results(merged_results, map_counter)
+		print temp_ext_results
 		write_temp_ext_results_to_file(temp_ext_results)
 		quit()
 		
