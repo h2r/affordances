@@ -50,8 +50,6 @@ dimensionality. Existing approaches to planning in large stochastic
 state spaces fail to prevent autonomous agents from considering many
 actions that are obviously irrelevant to a human solving the same
 task. To reduce the size of the state-action space
-%without sacrificing optimality
-% NOTE: \dnote{We do sacrifice optimality (we lose any guarantees under our new model)}, 
 we formalize the notion of {\em affordances} as
 goal-oriented knowledge added to an Object Oriented Markov Decision
 Process (OO-MDP).  Affordances prune actions based on the current
@@ -112,7 +110,7 @@ provided to the planner by these methods is quite extensive, reducing the
 agent's autonomy. 
 
 Instead, we propose augmenting an MDP with a formalization of {\em
-  affordances}. An affordance~\cite{gibson77} focuses an agent's
+  affordances}. \dnote{Insert aft line here}. An affordance~\cite{gibson77} focuses an agent's
 attention on aspects of the environment that are most relevant to
 solving its current goal and avoid exploration of irrelevant parts of
 the world. Affordances are not specific to a particular reward
@@ -148,11 +146,7 @@ and $\gamma \in [0, 1)$ is a discount factor that defines how much the
 agent prefers immediate rewards over future rewards (the agent
 prefers to maximize immediate rewards as $\gamma$ decreases).
 
-% -- Subsection: OO-MDPs --
-%\subsection{OO-MDPs}
-
-\stnote{Need to open by motivating why we chose OO-MDPs, in one
-  sentence.} Our representation of affordances builds on an
+Our representation of affordances builds on an
 Object-Oriented MDPs (OO-MDP)~\citep{diuk08}.  An OO-MDP efficiently
 represents the state of an MDP through the use of objects and
 predicates.  An OO-MDP state is a collection of objects, $O = \{o_1,
@@ -180,7 +174,7 @@ space independence.
 %% means of knowledge representation and reasoning for collaborative cooking with ReThink's Baxter.
 
 % -- Subsection: Affordances --
-\subsection{Affordances}
+\subsection{Modeling $\mathcal{A}^*$}
 
 %% \citet{gibson77} proposed that an affordance is ``what [the
 %%   environment] offers [an] animal, what [the environment] provides or
@@ -256,6 +250,9 @@ We assume each action's optimality is independent from all other actions':
 where $\theta_i$ represents the set of parameters relevant to modeling the probability
 distribution of action $a_i \in {\cal A}^*$. Henceforth, we abbreviate $a_i \in \mathcal{A}^*$ to $a_i$.
 
+% -- Subsection: Learning A* --
+\subsection{Learning $\mathcal{A}^*$}
+
 Though this distribution may be modeled in a number of ways making this approach quite flexible, we have chosen to model it as a Naive-Bayes. 
 First we factor using Bayes' rule:
 % -- Equation: Bayes --
@@ -277,6 +274,24 @@ each action.
 
 This distribution fully describes the model used by an affordance-aware planner. 
 
+% -- Subsection: Action Pruning --
+\subsection{Affordance-Aware Planning}
+\label{sec:action_pruning}
+Given a probability distribution over the optimal action set, any typical
+planner can be made to be an affordance-aware planner by pruning its action
+set in each state based on the probability distribution. In this work we propose several
+approaches to perform this pruning.
+
+% 1) Threshold
+The first method of pruning is to impose an expert defined threshold on the posterior. In this way, the affordances prune away any actions whose probability of being optimal is below the provided threshold for each state. For experiments, this method is denoted as \texttt{LARTDP}, and was set to $\frac{0.2}{|\mathcal{A}|}$, where $|\mathcal{A}|$ is the size of the full action space of the OO-MDP.
+
+% 2) Expert (discriminative or model)
+Affordances may also be specified by a domain expert using a discriminative OR model in place of the Naive Bayes. In this method, the expert specifies a set of actions associated with a precondition-goal type pair. For instance, if an agent is standing above a block of buried gold and is trying to smelt a block of gold, then an expert may indicate that the agent should consider the actions of looking down and digging. Each active affordances contributes some set of actions to consider. During experiments, this method is denoted as \texttt{EARTDP}.
+
+% 3) Sampling
+Additionally, actions may be pruned on a state by state basis by sampling actions from the probability distribution over actions as specified by Equation~\ref{eq:final}. We treat each action's probability mass as a Bernouli trial and sample across the entire action set. In preliminary results, this method did not perform as well as baseline RTDP - likely because the weights associated with each action were too small. In future work, we are interested in investigating more sophisticated approaches to sampling as a means of action pruning 
+\enote{I'm a bit uncomfortable with us jumping the gun and talking about results and then future work here -- I think this paragraph is good but we should shift the content towards the end to the correct sections.}.
+
 In a recent review on the theory of affordances, \citet{chemero2003} suggests that an affordance
 is a relation between the features of an environment and an agent's abilities. We have chosen to
 ground this interpretation, where the features of the environment correspond to the goal-dependent
@@ -289,26 +304,6 @@ As with human agents, multiple affordances often inform decision making at a giv
 Thus, affordance-aware planning agents operating within an OO-MDP will rarely make specific
 reference to particular affordances, but will instead reason about the world using the relevant
 action possibilities identified by the distribution in Equation~\ref{eq:final}. 
-
-\enote{A general note about this section, especially the last two paragraphs. The connecting up with affordances seems a bit tenuous and I think it would help to more obviously ground what exactly an affordance is for us within our mathematical model. I get that that is what the penultimate paragraph is getting at but that bit still confuses me a bit - Dave can we talk about this? Also I noted it before but it is still very unclear to me what theta is -- it seems like we could do just naive bayes over our binary features without anything else.}
-
-% -- Subsection: Action Pruning --
-\subsection{Affordance-Aware Planning}
-\label{sec:action_pruning}
-Given a probability distribution over the optimal action set, any typical
-planner can be made to be an affordance-aware planner by pruning its action
-set in each state based on the probability distribution. In this work we propose several
-approaches to perform this pruning.
-
-% 1) Threshold
-The first method of pruning is to impose an expert defined threshold on the posterior. In this way, the affordances prune away any actions whose probability of being optimal is below the provided threshold for each state. For experiments, this method is denoted as \texttt{ARTDP}, and was set to $\frac{0.2}{|\mathcal{A}|}$, where $|\mathcal{A}|$ is the size of the full action space of the OO-MDP.
-
-% 2) Expert (discriminative or model)
-Affordances may also be specified by a domain expert using a discriminative OR model in place of the Naive Bayes. In this method, the expert specifies a set of actions associated with a precondition-goal type pair. For instance, if an agent is standing above a block of buried gold and is trying to smelt a block of gold, then an expert may indicate that the agent should consider the actions of looking down and digging. Each active affordances contributes some set of actions to consider. During experiments, this method is denoted as \texttt{ERTDP}.
-
-% 3) Sampling
-Additionally, actions may be pruned on a state by state basis by sampling actions from the probability distribution over actions as specified by Equation~\ref{eq:final}. We treat each action's probability mass as a Bernouli trial and sample across the entire action set. In preliminary results, this method did not perform as well as baseline RTDP - likely because the weights associated with each action were too small. In future work, we are interested in investigating more sophisticated approaches to sampling as a means of action pruning 
-\enote{I'm a bit uncomfortable with us jumping the gun and talking about results and then future work here -- I think this paragraph is good but we should shift the content towards the end to the correct sections.}.
 
 % -- Subsection: Learning --
 \subsection{Learning}
@@ -332,7 +327,7 @@ where $C(a_i)$ is the number of observed occurrences where $a_i$ was optimal,
 $C(\bar{a_i})$ is the number of observed occurrences where $a_i$ was not optimal,
 and $C(\phi_j, a_i)$ is the number of occurrences where $\phi=1$ and $a_i$ was optimal.
 
-% ====== Section: Experiments ======
+% ====== Section: Results ======
 \section{Results}
 \label{sec:results}
 
@@ -410,8 +405,8 @@ Wall 		& \texttt{RTDP} 	& 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) 		& {\bf 68
 		& \texttt{LHRTDP} 	& {\bf 24020.8} ($\pm$9239) 	& {\bf -15.8}   ($\pm$5) 	& 80.5s   ($\pm$34) \\
 		& \texttt{ERTDP} 	& 32552.0 ($\pm$10794) 		& -34.5   ($\pm$25) 		& 96.5s   ($\pm$39) \\ \hline
 Trench 	& \texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& -8.1   ($\pm$2) 		& 53.1s   ($\pm$22) \\
-		& \texttt{LHRTDP} 	& {\bf 11758.4} ($\pm$2815) 	& {\bf -8.7}   ($\pm$1) 	& 57.9s   ($\pm$20) \\
-		& \texttt{ERTDP} 	& 8674.8 	($\pm$2700) 		& -8.2   ($\pm$2) 		& {\bf 35.9s}   ($\pm$15) \\ \hline
+		& \texttt{LHRTDP} 	& 11758.4 ($\pm$2815) 	& {\bf -8.7}   ($\pm$1) 	& 57.9s   ($\pm$20) \\
+		& \texttt{ERTDP} 	& {\bf 8674.8} 	($\pm$2700) 		& -8.2   ($\pm$2) 		& {\bf 35.9s}   ($\pm$15) \\ \hline
 Plane 	& \texttt{RTDP} 	& 52407.8 ($\pm$18432) 		& -82.6   ($\pm$42) 		& 877.0s   ($\pm$381) \\
 		& \texttt{LHRTDP} 	& {\bf 19089.9} ($\pm$9158) 	& {\bf -7.5}   ($\pm$1) 	& {\bf 246.4s}   ($\pm$159) \\
 		& \texttt{ERTDP} 	& 32928.0 ($\pm$14997) 		& -44.9   ($\pm$34) 		& 505.3s   ($\pm$304) \\
