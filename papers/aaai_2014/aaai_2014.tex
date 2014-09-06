@@ -1,6 +1,6 @@
-\documentclass[conference]{IEEEtran}
-%\documentclass[letterpaper]{article}
-%\usepackage{aaai}
+%\documentclass[conference]{IEEEtran}
+\documentclass[letterpaper]{article}
+\usepackage{aaai}
 \usepackage{times}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -91,8 +91,8 @@ computationally tractable. For example, when a robot is manipulating
 objects in an environment, an object can be placed anywhere in a large
 set of locations. The size of the state space increases exponentially
 with the number of objects, which bounds the placement problems that
-the robot is able to expediently solve.  Moreover, the task is made further
-difficult by the fact that, most of these locations are irrelevant: when making brownies,
+the robot is able to expediently solve.  Moreover, the difficulty of the task is compounded
+by the fact that most of these objects and locations are irrelevant: when making brownies,
 the oven and flour are important, while the soy sauce and saut\'{e}
 pan are not.  For a different task, such as stir-frying broccoli, a
 different set of objects and actions are relevant.
@@ -165,19 +165,6 @@ provide additional high-level information about the MDP state. We use
 OO-MDP predicates as features for action pruning, allowing for state
 space independence.
 
-%% While an OO-MDP reduces the size of the state space by a significant
-%% factor, the resulting state space is still far too large to solve with
-%% any existing (OO)-MDP solver. This is the primary motivator for
-%% incorporating affordances - to reduce the amount of the state space
-%% that an OO-MDP agent will have to explore.
-
-%% The Brown UMBC Reinforcement Learning And Planning framework (BURLAP\footnote{http://burlap.cs.brown.edu/})
-%% is working toward integrating planning and reinforcement learning algorithms with a variety of planning domains represented
-%% as an OO-MDP, including ROS. In this way, transferable knowledge like affordances can be quickly deployed
-%% to domains like Mountain Car \cite{Moore90efficientmemory-based} and Minecraft, but also to a variety
-%% of Robots that utilize ROS. Our group is also working to deploy affordances as a
-%% means of knowledge representation and reasoning for collaborative cooking with ReThink's Baxter.
-
 % -- Subsection: Affordances --
 \subsection{Modeling $\mathcal{A}^*$}
 
@@ -223,7 +210,9 @@ We rewrite Equation~\ref{eq:master} replacing $K$ with its constituents:
 \end{equation}
 
 When a precondition and goal type ($\langle p , g \rangle = \delta$) is paired with a
-state and goal to be solved in a planning problem, we can evaluate whether $\delta$ is relevant by checking if the predicate of $\delta$ is true in the current state and if the current goal is equivalent to the goal type of $\delta$. This relevance is defined with the indicator function $f$:
+state and goal to be solved in a planning problem, we can evaluate whether $\delta$
+is relevant by checking if the predicate of $\delta$ is true in the current state and if 
+the current goal is equivalent to the goal type of $\delta$. This relevance is defined with the indicator function $f$:
 % -- Equation: function f defn --
 \begin{equation}
 f(\delta, s, G) = 
@@ -254,8 +243,8 @@ distribution of action $a_i \in {\cal A}^*$. Henceforth, we abbreviate $a_i \in 
 % -- Subsection: Learning A* --
 \subsection{Learning $\mathcal{A}^*$}
 
-This distribution may be modeled in a number of ways making this approach quite flexible, though we have chosen to model it as a Naive-Bayes. 
-First we factor using Bayes' rule:
+This distribution may be modeled in a number of ways making this approach
+quite flexible, though we have chosen to model it as a Naive-Bayes. First we factor using Bayes' rule:
 % -- Equation: Bayes --
 \begin{equation}
 = \prod_{i=1}^{|\mathcal{A}|} \frac{\Pr(\phi_1, \ldots, \phi_{N}, \mid a_i, \theta) \Pr(a_i | \theta)}{\Pr(\phi_1, \ldots, \phi_{N} | \theta_i)}
@@ -269,7 +258,8 @@ Next we assume that each feature is conditionally independent of the others, giv
 \label{eq:final}
 \end{equation}
 
-Finally, we define the prior on the optimality of each action to be the fraction of the time each action was optimal during training. This distribution fully describes the model used by an affordance-aware planner. 
+Finally, we define the prior on the optimality of each action to be the fraction of the
+time each action was optimal during training. This distribution fully describes the model used by an affordance-aware planner. 
 
 To learn affordances, we input a set of training worlds ($W$) for which the optimal policy
 may be tractably computed. Then, we determine the parameter vector $\theta$ that 
@@ -298,17 +288,17 @@ set in each state based on the probability distribution. In this work we propose
 approaches to perform this pruning.
 
 % 1) Threshold
-The first method of pruning is to impose an expert defined threshold on the posterior. In this way, the affordances prune away any actions whose probability of being optimal is below the provided threshold for each state. For experiments, this method is denoted as \texttt{LARTDP}, and was set to $\frac{0.2}{|\mathcal{A}|}$, where $|\mathcal{A}|$ is the size of the full action space of the OO-MDP.
+The first method of pruning is to impose an expert defined threshold on the posterior. In this way, the affordances prune away any actions whose probability of being optimal is below the provided threshold for each state. For experiments, this method is denoted as \texttt{LRTDP}, and was set to $\frac{0.2}{|\mathcal{A}|}$, where $|\mathcal{A}|$ is the size of the full action space of the OO-MDP.
 
 % 2) Expert (discriminative or model)
-Affordances may also be specified by a domain expert using a discriminative-OR model in place of the Naive Bayes. In this method, the expert specifies a set of actions associated with a precondition-goal type pair. For instance, if an agent is standing above a block of buried gold and is trying to smelt a block of gold, then an expert may indicate that the agent should consider the actions of looking down and digging. Each active affordances contributes some set of actions to consider. During experiments, this method is denoted as \texttt{EARTDP}.
+Affordances may also be specified by a domain expert using a discriminative-OR model in place of the Naive Bayes. In this method, the expert specifies a set of actions associated with a precondition-goal type pair. For instance, if an agent is standing above a block of buried gold and is trying to smelt a block of gold, then an expert may indicate that the agent should consider the actions of looking down and digging. Each active affordances contributes to the set of actions to consider for each state. During experiments, this method is denoted as \texttt{ERTDP}.
 
 % 3) Sampling
 Additionally, actions may be pruned by sampling actions from the probability distribution over actions as specified by Equation~\ref{eq:final}. We treat each action's probability mass as a Bernouli trial and sample across the entire action set. In preliminary results, this method did not perform as well as baseline RTDP - likely because the weights associated with each action were too small. In future work, we are interested in investigating more sophisticated approaches to pruning actions with sampling. 
 
 Through the use of any of the above methods, an affordance-aware planner prunes actions
-on a state by state basis, focusing the agent on relevant action possibilities of the environment and
-speeding up planning.
+on a state by state basis, focusing the agent on relevant action possibilities of the environment,
+consequently reducing planning time.
 
 In a recent review on the theory of affordances,~\citet{chemero2003} suggests that an affordance
 is a relation between the features of an environment and an agent's abilities. Our approach
@@ -328,7 +318,7 @@ marginalizing over all the features not associated with $\delta_j$.
 As with human agents, multiple affordances often inform decision making at a given time.
 Thus, affordance-aware planning agents operating within an OO-MDP will rarely make specific
 reference to particular affordances, but will instead reason about the world using the relevant
-action possibilities identified by the distribution in Equation~\ref{eq:final}. 
+action possibilities identified by the distribution in Equation~\ref{eq:final}.
 
 % ====== Section: Results ======
 \section{Results}
@@ -351,14 +341,28 @@ problems.
 \subsection{Minecraft}
 We conducted a series of experiments in the Minecraft domain that
 compared the performance of Real Time Dynamic Programming (RTDP)~\citep{barto95}
-without affordances to its affordance-aware counterpart (ARTDP). We created a set of expert
+without affordances to its affordance-aware counterpart (LRTDP, ERTDP). We created a set of expert
 affordances from our background knowledge of the domain, which are
-listed in Figure \ref{fig:afford_kb_exp} \dnote{Figure coming soon}. Additionally, we ran our full
+listed in Figure \ref{fig:afford_kb_exp}. Additionally, we ran our full
 learning process and learned a single knowledge base of affordances for use in all tests. We compared
-RTDP with its expert-affordance-aware and learned-affordance-aware 
+RTDP with its expert-affordance-aware (ERTDP) and learned-affordance-aware (LRTDP)
 counterparts.
 
-Our experiments consisted of 5 common tasks in Minecraft, including
+% -- Table: Expert provided affordances --
+\begin{table}[b]
+\ra{1.4}
+\begin{tabular}{@{}llll@{}}\toprule
+Precondition & Goal Type & Actions \\ \midrule
+\texttt{lookingTowardGoal} & \texttt{atGoal} & \texttt{move} \\
+\texttt{lavaInFront} & \texttt{atGoal} & \texttt{rotate} \\
+\texttt{lookingAtGold} & \texttt{hasGoldOre} & \texttt{destroy} \\
+\bottomrule
+\end{tabular}
+\label{fig:afford_kb_exp}
+\caption{Examples of Expert Provided Affordances}
+\end{table}
+
+Our experiments consisted of five common tasks in Minecraft, including
 constructing bridges over trenches, smelting gold, tunneling
 through walls, basic path planning, and digging to find an object.  We tested on 
 randomized worlds of varying size and difficulty. The generated test
@@ -369,7 +373,7 @@ The training data consisted of 20 simple state spaces of each map type
 randomized features that mirrored the agent's actual state space. We conducted all tests
 with a single knowledge base.
 
-Our (A)RTDP and domain parameters are set as follows. We terminated each planner
+Our RTDP and domain parameters are set as follows. We terminated each planner
 when the maximum change in the value function was less than 0.01 for
 100 consecutive policy rollouts, or the planner failed to converge
 after 1500 rollouts.  We set the reward function to $-1$ for all
@@ -379,121 +383,110 @@ discount factor was set to $\lambda = 0.99$. For all experiments,
 movement actions (move, rotate, jump) had a small probability (0.05)
 of incorrectly applying a different movement action.
 
-\begin{table}[H]
-\centering
-\caption{RTDP vs. Affordance-Aware RTDP}
-\begin{tabular}{ c l  | l l l l}
-  State \\ Space	&	Planner 		&	Bellman			&	Reward 			& CPU \\ \hline
-Mine 	& \texttt{RTDP} 	& 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1) 		& {\bf 17.6s}   ($\pm$4) \\
-		& \texttt{LRTDP} 	& {\bf 12664.0} ($\pm$9340) 	& -12.7 ($\pm$5) 		& 33.1s   ($\pm$23) \\
-		& \texttt{ERTDP} 	& 14357.4 ($\pm$3275) 		& {\bf -6.5}   ($\pm$1) 	& 31.9s   ($\pm$8) \\ \hline
-Smelt 	& \texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) 	& 45.1s   ($\pm$14) \\
-		& \texttt{LHRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) 		& {\bf 7.5s}  ($\pm$2) \\
-		& \texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) 	& 72.6s   ($\pm$19) \\ \hline
-Wall 		& \texttt{RTDP} 	& 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) 		& {\bf 68.7s}   ($\pm$22) \\
-		& \texttt{LHRTDP} 	& {\bf 24020.8} ($\pm$9239) 	& {\bf -15.8}   ($\pm$5) 	& 80.5s   ($\pm$34) \\
-		& \texttt{ERTDP} 	& 32552.0 ($\pm$10794) 		& -34.5   ($\pm$25) 		& 96.5s   ($\pm$39) \\ \hline
-Trench 	& \texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& {\bf -8.1}   ($\pm$2) 	& 53.1s   ($\pm$22) \\
-		& \texttt{LHRTDP} 	& 11758.4 ($\pm$2815) 		& -8.7   ($\pm$1) 		& 57.9s   ($\pm$20) \\
-		& \texttt{ERTDP} 	& {\bf 8674.8} 	($\pm$2700) 	& -8.2   ($\pm$2) 		& {\bf 35.9s}   ($\pm$15) \\ \hline
-Plane 	& \texttt{RTDP} 	& 52407.8 ($\pm$18432) 		& -82.6   ($\pm$42) 		& 877.0s   ($\pm$381) \\
-		& \texttt{LHRTDP} 	& {\bf 19089.9} ($\pm$9158) 	& {\bf -7.5}   ($\pm$1) 	& {\bf 246.4s}   ($\pm$159) \\
-		& \texttt{ERTDP} 	& 32928.0 ($\pm$14997) 		& -44.9   ($\pm$34) 		& 505.3s   ($\pm$304) \\ \hline
-Average	& \texttt{RTDP}		& 34694.3	($\pm 3572$)		& -36.4 ($\pm 10$)		& 242.s ($\pm 66 $)	\\
-		& \texttt{LHRTDP}	& {\bf 14287.5} ($\pm 2131$)		& {\bf -10.6} ($\pm 1.0$)		& {\bf 93.1s} ($\pm 24$)	\\
-		& \texttt{ERTDP}	& 24804.1 ($\pm 2892$)		& -22.7 ($\pm 6.0$)		& 166.4s ($\pm 47$)					\\
+%\begin{table}[H]
+%\centering
+%\caption{RTDP vs. Affordance-Aware RTDP}
+%\begin{tabular}{ c l  | l l l l}
+%  State \\ Space	&	Planner 		&	Bellman			&	Reward 			& CPU \\ \hline
+%Mine 	& \texttt{RTDP} 	& 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1) 		& {\bf 17.6s}   ($\pm$4) \\
+%		& \texttt{LRTDP} 	& {\bf 12664.0} ($\pm$9340) 	& -12.7 ($\pm$5) 		& 33.1s   ($\pm$23) \\
+%		& \texttt{ERTDP} 	& 14357.4 ($\pm$3275) 		& {\bf -6.5}   ($\pm$1) 	& 31.9s   ($\pm$8) \\ \hline
+%Smelt 	& \texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) 	& 45.1s   ($\pm$14) \\
+%		& \texttt{LHRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) 		& {\bf 7.5s}  ($\pm$2) \\
+%		& \texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) 	& 72.6s   ($\pm$19) \\ \hline
+%Wall 		& \texttt{RTDP} 	& 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) 		& {\bf 68.7s}   ($\pm$22) \\
+%		& \texttt{LHRTDP} 	& {\bf 24020.8} ($\pm$9239) 	& {\bf -15.8}   ($\pm$5) 	& 80.5s   ($\pm$34) \\
+%		& \texttt{ERTDP} 	& 32552.0 ($\pm$10794) 		& -34.5   ($\pm$25) 		& 96.5s   ($\pm$39) \\ \hline
+%Trench 	& \texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& {\bf -8.1}   ($\pm$2) 	& 53.1s   ($\pm$22) \\
+%		& \texttt{LHRTDP} 	& 11758.4 ($\pm$2815) 		& -8.7   ($\pm$1) 		& 57.9s   ($\pm$20) \\
+%		& \texttt{ERTDP} 	& {\bf 8674.8} 	($\pm$2700) 	& -8.2   ($\pm$2) 		& {\bf 35.9s}   ($\pm$15) \\ \hline
+%Plane 	& \texttt{RTDP} 	& 52407.8 ($\pm$18432) 		& -82.6   ($\pm$42) 		& 877.0s   ($\pm$381) \\
+%		& \texttt{LHRTDP} 	& {\bf 19089.9} ($\pm$9158) 	& {\bf -7.5}   ($\pm$1) 	& {\bf 246.4s}   ($\pm$159) \\
+%		& \texttt{ERTDP} 	& 32928.0 ($\pm$14997) 		& -44.9   ($\pm$34) 		& 505.3s   ($\pm$304) \\ \hline
+%Average	& \texttt{RTDP}		& 34694.3	($\pm 3572$)		& -36.4 ($\pm 10$)		& 242.s ($\pm 66 $)	\\
+%		& \texttt{LHRTDP}	& {\bf 14287.5} ($\pm 2131$)		& {\bf -10.6} ($\pm 1.0$)		& {\bf 93.1s} ($\pm 24$)	\\
+%		& \texttt{ERTDP}	& 24804.1 ($\pm 2892$)		& -22.7 ($\pm 6.0$)		& 166.4s ($\pm 47$)					\\
+%\end{tabular}
+%\label{table:minecraft_results}
+%\end{table}
+
+\begin{table}
+\ra{1.4}
+\begin{tabular}{@{}llll@{}}\toprule
+Planner & Bellman & Reward & CPU \\ \midrule
+M \texttt{RTDP} & 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1) 		& {\bf 17.6s}   ($\pm$4) \\
+\texttt{LRTDP} 	& {\bf 12664.0} ($\pm$9340) 	& -12.7 ($\pm$5) 		& 33.1s   ($\pm$23) \\
+\texttt{ERTDP} 	& 14357.4 ($\pm$3275) 		& {\bf -6.5}   ($\pm$1) 	& 31.9s   ($\pm$8) \\ \hline
+S\texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) 	& 45.1s   ($\pm$14) \\
+\texttt{LRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) 		& {\bf 7.5s}  ($\pm$2) \\
+\texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) 	& 72.6s   ($\pm$19) \\ \hline
+W\texttt{RTDP} & 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) 		& {\bf 68.7s}   ($\pm$22) \\
+\texttt{LRTDP} 	& {\bf 24020.8} ($\pm$9239) 	& {\bf -15.8}   ($\pm$5) 	& 80.5s   ($\pm$34) \\
+\texttt{ERTDP} 	& 32552.0 ($\pm$10794) 		& -34.5   ($\pm$25) 		& 96.5s   ($\pm$39) \\ \hline
+T\texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& {\bf -8.1}   ($\pm$2) 	& 53.1s   ($\pm$22) \\
+\texttt{LRTDP} 	& 11758.4 ($\pm$2815) 		& -8.7   ($\pm$1) 		& 57.9s   ($\pm$20) \\
+\texttt{ERTDP} 	& {\bf 8674.8} 	($\pm$2700) 	& -8.2   ($\pm$2) 		& {\bf 35.9s}   ($\pm$15) \\ \hline
+P \texttt{RTDP} & 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) 	& 45.1s   ($\pm$14) \\
+\texttt{LRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) 		& {\bf 7.5s}  ($\pm$2) \\
+\texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) 	& 72.6s   ($\pm$19) \\
+\bottomrule
 \end{tabular}
 \label{table:minecraft_results}
+\caption{RTDP vs. Affordance-Aware RTDP}
+\end{table}
+
+\begin{table}[b]
+\ra{1.4}
+\begin{tabular}{@{}llll@{}}\toprule
+Planner & Bellman & Reward & CPU \\ \midrule
+\texttt{RTDP}   			&	27439($\pm$2348)	&	-22.6($\pm$9)	&	107($\pm$33)		\\
+\texttt{LRTDP} 			& 	{\bf 9935($\pm$1031)}	&	{\bf -12.4($\pm$1.0)}	&	\bf{53}($\pm$5.0)		\\ \hline
+\texttt{RTDP+Opt}  		&	26663($\pm$2298)	&	-17.4($\pm$4.0)	&	129($\pm$35)		\\
+\texttt{LRTDP+Opt} 		& 	\bf{9675}($\pm$953)	&	\bf{-11.5}($\pm$1.0)	&	{\bf 93($\pm$10)}	\\ \hline
+\texttt{RTDP+MA}  		&	31083($\pm$2468)	&	-21.7	($\pm$5.0)	&	336($\pm$28)		\\
+\texttt{LRTDP+MA}  		& 	{\bf 9854($\pm$1034)}	&	{\bf -11.7($\pm$1.0)}	&	{\bf 162($\pm$17)}		\\ %\hline
+%\texttt{RTDP+MA+Opt}  	&	27143($\pm$2380)	&	-16.9($\pm$3.0)	&	323($\pm$38)		\\ 
+%\texttt{LRTDP+MA+Opt}  	& 	{\bf 10622($\pm$1046)}	&	{\bf -13.4($\pm$1.0)}	&	{\bf 237($\pm$29)}		\\
+\bottomrule
+\end{tabular}
+\label{table:temp_ext_act_results}
+\caption{Affordances vs. Temporally Extended Actions}
 \end{table}
 
 The evaluation metric for each trial was the number of Bellman updates
 that were executed by each planning algorithm, the accumulated reward of the average plan,
 and the CPU time taken to find a plan. Table~\ref{table:minecraft_results} shows the average Bellman updates, accumulated reward, and CPU time
-for RTDP, learned affordance-aware RTDP (LARTDP) and expert affordance-aware RTDP (EARTDP) after planning in 20 different maps of each goal type (100 total). Because the planners were forced to terminate after only 1000 rollouts, they did not always converge to the optimal policy.
-In every task, affordance-aware-RTDP outperformed or performed comparably to RTDP. As the results suggest,
-LARTDP found a similar quality plan (-9.8 reward to -8.6 reward) in significantly fewer Bellman updates than RTDP in the gold smelting
-task (2822 Bellman updates to 30995), as well as the plane traversal task (19090 Bellman updates to 52408, with a reward of -7.5 to -82.6).
-Expert affordances outperformed both RTDP and LARTDP on the Trench task, finding a comparable plan in significantly fewer Bellman updates.
+for RTDP, LRTDP and ERTDP after planning in 20 different maps of each goal type (100 total). Figure~\ref{fig:average_results} shows the results averaged across all maps. Because the planners were forced to terminate after only 1000 rollouts, they did not always converge to the optimal policy. As the results suggest, LRTDP on average found a comparably better plan (10.6 cost to 22.7 and 36.4) than ERTDP and RTDP, found the plan in significantly fewer Bellman updates (14287 to 24804 and 34694) and in less CPU time (93s to 166s and 242s).
 
 \dnote{Put in a note about the threshold issues, maybe include the results below to reinforce threshold business}
 
-%In some cases, ARTDP found a less optimal plan than RTDP - this is likely due to 
-%the fact that the affordances pruned away actions that were optimal in some states. 
-%If this were to happen consistently, the expert defined threshold could be lowered to 
-%reduce the amount of pruning, raising the likelihood of finding the optimal policy. 
-%Conversely, though, this reduces the speedups of affordance-aware planning. In 
-%future work, we are considering an extension to our current sampling methods in 
-%which the threshold iteratively becomes less conservative until an optimal policy is found.
-
-%\begin{table}[H]
-%\centering
-%\begin{tabular}{ c l  || c c c c}
-%  State Space	&	Planner 				&	CPU	&	Reward 	& Bellman \\ \hline
-%  Mine 	& \texttt{RTDP}  			& 	129.1s	&	{\bf -33.55}	&	63291		\\
-%  		& \texttt{ARTDP}  			& 	{\bf 65.6s}	&	-99.5		&	{\bf 16917}		\\  \hline
-%  Smelt	&	\texttt{RTDP}  			& 	543.0s	&	-99.5		&	74260		\\
-%  		&	\texttt{ARTDP}  		& 	{\bf 6.3s}	&	{\bf -6.3}	&	{\bf 1845}		\\  \hline
-%  Wall	&	\texttt{RTDP}  			& 	55.4s		&	-8.6		&	29324		\\
-%  		&	\texttt{ARTDP}  		& 	{\bf 14.8s}	&	{\bf -11.4}	&	{\bf 3955}		\\  \hline
-%  Trench	&	\texttt{RTDP}  			& 	{\bf 30.2s}		&	{\bf -3.35}	&	{\bf 5070}		\\
-%  		&	\texttt{ARTDP}  		& 	600.1s	&	-89.8		&	67625		\\ \hline
-%Plane	&	\texttt{RTDP}  			& 	168.4s		&	-1.8		&	7954		\\
-%  		&	\texttt{ARTDP}  		& 	{\bf 17.5s}	&	-1.8		&	{\bf 830}		\\ 
-%\end{tabular}
-%\caption{RTDP vs. Learned Affordance-Aware RTDP}
-%\label{table:minecraft_results}
-%\end{table}
 
 % Averaged over all worlds
-\begin{table}[b]
-\centering
-\caption{Affordances vs. Temporally Extended Actions}
-\begin{tabular}{ l l  | l l l l}
-  Planner & TEAs 			&	Bellman	&	Reward 	& CPU \\ \hline
-RTDP &  \texttt{Vanilla}  			&	27439($\pm$2348)	&	-22.6($\pm$9)	&	107($\pm$33)		\\
- & \texttt{Opt}  				&	26663($\pm$2298)	&	-17.4($\pm$4.0)	&	129($\pm$35)		\\
- &\texttt{MA}  				&	31083($\pm$2468)	&	-21.7	($\pm$5.0)	&	336($\pm$28)		\\
- &\texttt{MA+Opt}  			&	27143($\pm$2380)	&	-16.9($\pm$3.0)	&	323($\pm$38)		\\ \hline
- LARTDP &\texttt{Vanilla}  	& 	9935($\pm$1031)&	-12.4($\pm$1.0)	&	\bf{53}($\pm$5.0)		\\
-  &\texttt{Opt}  				& 	\bf{9675}($\pm$953)	&	\bf{-11.5}($\pm$1.0)	&	93($\pm$10)		\\
-  &\texttt{MA}  				& 	9854($\pm$1034)	&	-11.7($\pm$1.0)		&	162($\pm$17)		\\
-  &\texttt{MA+Opt}  			& 	10622($\pm$1046)	&	-13.4($\pm$1.0)	&	237($\pm$29)		\\
-\end{tabular}
-\label{table:temp_ext_act_results}
-\end{table}
+%\begin{table}[b]
+%\centering
+%\caption{Affordances vs. Temporally Extended Actions}
+%\begin{tabular}{ l l  | l l l l}
+%  Planner & TEAs 			&	Bellman	&	Reward 	& CPU \\ \hline
+%RTDP &  \texttt{Vanilla}  			&	27439($\pm$2348)	&	-22.6($\pm$9)	&	107($\pm$33)		\\
+% & \texttt{Opt}  				&	26663($\pm$2298)	&	-17.4($\pm$4.0)	&	129($\pm$35)		\\
+% &\texttt{MA}  				&	31083($\pm$2468)	&	-21.7	($\pm$5.0)	&	336($\pm$28)		\\
+% &\texttt{MA+Opt}  			&	27143($\pm$2380)	&	-16.9($\pm$3.0)	&	323($\pm$38)		\\ \hline
+% LARTDP &\texttt{Vanilla}  	& 	9935($\pm$1031)&	-12.4($\pm$1.0)	&	\bf{53}($\pm$5.0)		\\
+%  &\texttt{Opt}  				& 	\bf{9675}($\pm$953)	&	\bf{-11.5}($\pm$1.0)	&	93($\pm$10)		\\
+%  &\texttt{MA}  				& 	9854($\pm$1034)	&	-11.7($\pm$1.0)		&	162($\pm$17)		\\
+%  &\texttt{MA+Opt}  			& 	10622($\pm$1046)	&	-13.4($\pm$1.0)	&	237($\pm$29)		\\
+%\end{tabular}
+%\label{table:temp_ext_act_results}
+%\end{table}
 
 
 % -- Subsection: Temporally Extended Actions --
 \subsection{Temporally Extended Actions and Affordances}
 Additionally, we compared our approach to Temporally Extended Actions: 
-macroactions and options. We compared RTDP with expert affordances, 
-expert macroactions, and expert options, as well as the combination of 
-affordances, macroactions, and options. We conducted these experiments 
+macroactions and options. We compared RTDP  to LRTDP with 
+macroactions and options. We conducted these experiments 
 with the same configurations as our Minecraft experiments. The option policies
 and macroactions provided were hand coded by domain experts.
-
-% -- Figure: Temporally Extended Actions Results --
-
-% - Fancy table (incoming) -
-%\begin{table*}\centering
-%\ra{1.3}
-%\begin{tabular}{@{}rrrrcrrrcrrr@{}}\toprule
-%& \multicolumn{3}{c}{$w = 8$} & \phantom{abc}& \multicolumn{3}{c}{$w = 16$} & 
-%\phantom{abc} & \multicolumn{3}{c}{$w = 32$}\\
-%\cmidrule{2-4} \cmidrule{6-8} \cmidrule{10-12}
-%& $t=0$ & $t=1$ & $t=2$ && $t=0$ & $t=1$ & $t=2$ && $t=0$ & $t=1$ & $t=2$\\ \midrule
-%$dir=1$\\
-%$c$ & 0.0790 & 0.1692 & 0.2945 && 0.3670 & 0.7187 & 3.1815 && -1.0032 & -1.7104 & -21.7969\\
-%$c$ & -0.8651& 50.0476& 5.9384&& -9.0714& 297.0923& 46.2143&& 4.3590& 34.5809& 76.9167\\
-%$c$ & 124.2756& -50.9612& -14.2721&& 128.2265& -630.5455& -381.0930&& -121.0518& -137.1210& -220.2500\\
-%$dir=0$\\
-%$c$ & 0.0357& 1.2473& 0.2119&& 0.3593& -0.2755& 2.1764&& -1.2998& -3.8202& -1.2784\\
-%$c$ & -17.9048& -37.1111& 8.8591&& -30.7381& -9.5952& -3.0000&& -11.1631& -5.7108& -15.6728\\
-%$c$ & 105.5518& 232.1160& -94.7351&& 100.2497& 141.2778& -259.7326&& 52.5745& 10.1098& -140.2130\\
-%\bottomrule
-%\end{tabular}
-%\caption{Caption}
-%\end{table*}
 
 Table~\ref{table:temp_ext_act_results} indicates the results of comparing RTDP
 equipped with macro actions, options, and affordances across 100 different executions
@@ -506,6 +499,15 @@ state-action space significantly increases when augmented with additional action
 planner to run for longer and perform more Bellman updates. With affordances, the planner found a better plan
 in less CPU time, and with fewer Bellman updates. This supports the claim that affordances can handle the augmented 
 action space provided by temporally extended actions by pruning away unnecessary actions.
+
+
+% -- Figure: Average results --
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.24]{figures/average_results.png}%
+  \caption{Average Results From All Maps}
+  \label{fig:average_results}
+\end{figure}
 
 % -- Subsection: Learning Rate --
 \subsection{Learning Rate}
@@ -552,6 +554,10 @@ designed for use with deterministic domains.
 
 % -- Subsection: Stochastic --
 \subsection{Stochastic Approaches}
+
+Here, we compare other approaches of action pruning and
+knowledge engineering that provide speedups to planners
+in stochastic domains.
 
 % --- Subsection: Temporally Extended Actions ---
 \subsubsection{Temporally Extended Actions}
@@ -628,16 +634,12 @@ a different problem from what we are interested in since they deal with non-stoc
 
 % --- Subsubsection: Hierarchical Task Networks ---
 \subsubsection{Hierarchical Task Networks}
-
-\dnote{I think we should have a shoutout to Branavan's Learning High Level Plans from Text paper in this section (and include subgoal planning as part of this section}
-
 Traditional Hierarchical Task Networks (HTNs) employ \textit{task decompositions} to aid in planning. The goal at hand is decomposed into smaller tasks which are in turn decomposed into smaller tasks. This decomposition continues until primitive tasks that are immediately achievable are derived. The current state of the task decomposition, in turn, informs constraints which reduce the space over which the planner searches. At a high level both HTNs and affordances fulfill the same role: both achieve action pruning by exploiting some form of supplied knowledge. 
 
 However there are two essential distinctions between affordances and traditional HTNs.  (1) HTNs do not incorporate reward into their planning. Consequently, they lack mathematical guarantees of optimal planning. (2) On a qualitative level, the degree of supplied knowledge in HTNs surpasses that of affordances: whereas affordances simply require relevant propositional functions, HTNs require not only constraints for sub-tasks but a hierarchical framework of arbitrary complexity. \enote{Need citations for HTNs}
 
 % --- Subsubsection: Temporal Logic ---
 \subsubsection{Temporal Logic}
-
 Bacchus and Kabanza~\cite{Bacchus95usingtemporal,Bacchus99usingtemporal} provided
 planners with domain dependent knowledge in the form of a first-order version of linear
 temporal logic (LTL), which they used for control of a forward-chaining planner. With this methodology, 
