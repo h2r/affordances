@@ -1,6 +1,6 @@
-\documentclass[conference]{IEEEtran}
-%\documentclass[letterpaper]{article}
-%\usepackage{aaai}
+%\documentclass[conference]{IEEEtran}
+\documentclass[letterpaper]{article}
+\usepackage{aaai}
 \usepackage{times}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -358,6 +358,20 @@ learning process and learned a single knowledge base of affordances for use in a
 RTDP with its expert-affordance-aware and learned-affordance-aware 
 counterparts.
 
+\begin{table}[b]
+\ra{1.4}
+\begin{tabular}{@{}llll@{}}\toprule
+Precondition & Goal Type & Actions \\ \midrule
+\texttt{lookingTowardGoal} & \texttt{atGoal} & \texttt{move} \\
+\texttt{lavaInFront} & \texttt{atGoal} & \texttt{rotate} \\
+\texttt{lookingAtGold} & \texttt{hasGoldOre} & \texttt{destroy} \\
+\bottomrule
+\end{tabular}
+\label{fig:afford_kb_exp}
+\caption{Examples of Expert Provided Affordances}
+\end{table}
+
+
 Our experiments consisted of 5 common tasks in Minecraft, including
 constructing bridges over trenches, smelting gold, tunneling
 through walls, basic path planning, and digging to find an object.  We tested on 
@@ -379,31 +393,74 @@ discount factor was set to $\lambda = 0.99$. For all experiments,
 movement actions (move, rotate, jump) had a small probability (0.05)
 of incorrectly applying a different movement action.
 
-\begin{table}[H]
-\centering
-\caption{RTDP vs. Affordance-Aware RTDP}
-\begin{tabular}{ c l  | l l l l}
-  State \\ Space	&	Planner 		&	Bellman			&	Reward 			& CPU \\ \hline
-Mine 	& \texttt{RTDP} 	& 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1) 		& {\bf 17.6s}   ($\pm$4) \\
-		& \texttt{LRTDP} 	& {\bf 12664.0} ($\pm$9340) 	& -12.7 ($\pm$5) 		& 33.1s   ($\pm$23) \\
-		& \texttt{ERTDP} 	& 14357.4 ($\pm$3275) 		& {\bf -6.5}   ($\pm$1) 	& 31.9s   ($\pm$8) \\ \hline
-Smelt 	& \texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) 	& 45.1s   ($\pm$14) \\
-		& \texttt{LHRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) 		& {\bf 7.5s}  ($\pm$2) \\
-		& \texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) 	& 72.6s   ($\pm$19) \\ \hline
-Wall 		& \texttt{RTDP} 	& 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) 		& {\bf 68.7s}   ($\pm$22) \\
-		& \texttt{LHRTDP} 	& {\bf 24020.8} ($\pm$9239) 	& {\bf -15.8}   ($\pm$5) 	& 80.5s   ($\pm$34) \\
-		& \texttt{ERTDP} 	& 32552.0 ($\pm$10794) 		& -34.5   ($\pm$25) 		& 96.5s   ($\pm$39) \\ \hline
-Trench 	& \texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& {\bf -8.1}   ($\pm$2) 	& 53.1s   ($\pm$22) \\
-		& \texttt{LHRTDP} 	& 11758.4 ($\pm$2815) 		& -8.7   ($\pm$1) 		& 57.9s   ($\pm$20) \\
-		& \texttt{ERTDP} 	& {\bf 8674.8} 	($\pm$2700) 	& -8.2   ($\pm$2) 		& {\bf 35.9s}   ($\pm$15) \\ \hline
-Plane 	& \texttt{RTDP} 	& 52407.8 ($\pm$18432) 		& -82.6   ($\pm$42) 		& 877.0s   ($\pm$381) \\
-		& \texttt{LHRTDP} 	& {\bf 19089.9} ($\pm$9158) 	& {\bf -7.5}   ($\pm$1) 	& {\bf 246.4s}   ($\pm$159) \\
-		& \texttt{ERTDP} 	& 32928.0 ($\pm$14997) 		& -44.9   ($\pm$34) 		& 505.3s   ($\pm$304) \\ \hline
-Average	& \texttt{RTDP}		& 34694.3	($\pm 3572$)		& -36.4 ($\pm 10$)		& 242.s ($\pm 66 $)	\\
-		& \texttt{LHRTDP}	& {\bf 14287.5} ($\pm 2131$)		& {\bf -10.6} ($\pm 1.0$)		& {\bf 93.1s} ($\pm 24$)	\\
-		& \texttt{ERTDP}	& 24804.1 ($\pm 2892$)		& -22.7 ($\pm 6.0$)		& 166.4s ($\pm 47$)					\\
+%\begin{table}[H]
+%\centering
+%\caption{RTDP vs. Affordance-Aware RTDP}
+%\begin{tabular}{ c l  | l l l l}
+%  State \\ Space	&	Planner 		&	Bellman			&	Reward 			& CPU \\ \hline
+%Mine 	& \texttt{RTDP} 	& 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1) 		& {\bf 17.6s}   ($\pm$4) \\
+%		& \texttt{LRTDP} 	& {\bf 12664.0} ($\pm$9340) 	& -12.7 ($\pm$5) 		& 33.1s   ($\pm$23) \\
+%		& \texttt{ERTDP} 	& 14357.4 ($\pm$3275) 		& {\bf -6.5}   ($\pm$1) 	& 31.9s   ($\pm$8) \\ \hline
+%Smelt 	& \texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) 	& 45.1s   ($\pm$14) \\
+%		& \texttt{LHRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) 		& {\bf 7.5s}  ($\pm$2) \\
+%		& \texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) 	& 72.6s   ($\pm$19) \\ \hline
+%Wall 		& \texttt{RTDP} 	& 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) 		& {\bf 68.7s}   ($\pm$22) \\
+%		& \texttt{LHRTDP} 	& {\bf 24020.8} ($\pm$9239) 	& {\bf -15.8}   ($\pm$5) 	& 80.5s   ($\pm$34) \\
+%		& \texttt{ERTDP} 	& 32552.0 ($\pm$10794) 		& -34.5   ($\pm$25) 		& 96.5s   ($\pm$39) \\ \hline
+%Trench 	& \texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& {\bf -8.1}   ($\pm$2) 	& 53.1s   ($\pm$22) \\
+%		& \texttt{LHRTDP} 	& 11758.4 ($\pm$2815) 		& -8.7   ($\pm$1) 		& 57.9s   ($\pm$20) \\
+%		& \texttt{ERTDP} 	& {\bf 8674.8} 	($\pm$2700) 	& -8.2   ($\pm$2) 		& {\bf 35.9s}   ($\pm$15) \\ \hline
+%Plane 	& \texttt{RTDP} 	& 52407.8 ($\pm$18432) 		& -82.6   ($\pm$42) 		& 877.0s   ($\pm$381) \\
+%		& \texttt{LHRTDP} 	& {\bf 19089.9} ($\pm$9158) 	& {\bf -7.5}   ($\pm$1) 	& {\bf 246.4s}   ($\pm$159) \\
+%		& \texttt{ERTDP} 	& 32928.0 ($\pm$14997) 		& -44.9   ($\pm$34) 		& 505.3s   ($\pm$304) \\ \hline
+%Average	& \texttt{RTDP}		& 34694.3	($\pm 3572$)		& -36.4 ($\pm 10$)		& 242.s ($\pm 66 $)	\\
+%		& \texttt{LHRTDP}	& {\bf 14287.5} ($\pm 2131$)		& {\bf -10.6} ($\pm 1.0$)		& {\bf 93.1s} ($\pm 24$)	\\
+%		& \texttt{ERTDP}	& 24804.1 ($\pm 2892$)		& -22.7 ($\pm 6.0$)		& 166.4s ($\pm 47$)					\\
+%\end{tabular}
+%\label{table:minecraft_results}
+%\end{table}
+
+\begin{table}
+\ra{1.4}
+\begin{tabular}{@{}llll@{}}\toprule
+Planner & Bellman & Reward & CPU \\ \midrule
+M \texttt{RTDP} 	& 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1) 		& {\bf 17.6s}   ($\pm$4) \\
+\texttt{LRTDP} 	& {\bf 12664.0} ($\pm$9340) 	& -12.7 ($\pm$5) 		& 33.1s   ($\pm$23) \\
+\texttt{ERTDP} 	& 14357.4 ($\pm$3275) 		& {\bf -6.5}   ($\pm$1) 	& 31.9s   ($\pm$8) \\ \hline
+S\texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) 	& 45.1s   ($\pm$14) \\
+\texttt{LRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) 		& {\bf 7.5s}  ($\pm$2) \\
+\texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) 	& 72.6s   ($\pm$19) \\ \hline
+W\texttt{RTDP} 	& 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) 		& {\bf 68.7s}   ($\pm$22) \\
+\texttt{LRTDP} 	& {\bf 24020.8} ($\pm$9239) 	& {\bf -15.8}   ($\pm$5) 	& 80.5s   ($\pm$34) \\
+\texttt{ERTDP} 	& 32552.0 ($\pm$10794) 		& -34.5   ($\pm$25) 		& 96.5s   ($\pm$39) \\ \hline
+T\texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& {\bf -8.1}   ($\pm$2) 	& 53.1s   ($\pm$22) \\
+\texttt{LRTDP} 	& 11758.4 ($\pm$2815) 		& -8.7   ($\pm$1) 		& 57.9s   ($\pm$20) \\
+\texttt{ERTDP} 	& {\bf 8674.8} 	($\pm$2700) 	& -8.2   ($\pm$2) 		& {\bf 35.9s}   ($\pm$15) \\ \hline
+P \texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) 	& 45.1s   ($\pm$14) \\
+\texttt{LRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) 		& {\bf 7.5s}  ($\pm$2) \\
+\texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) 	& 72.6s   ($\pm$19) \\
+\bottomrule
 \end{tabular}
 \label{table:minecraft_results}
+\caption{RTDP vs. Affordance-Aware RTDP}
+\end{table}
+
+\begin{table}[b]
+\ra{1.4}
+\begin{tabular}{@{}llll@{}}\toprule
+Planner & Bellman & Reward & CPU \\ \midrule
+\texttt{RTDP}   			&	27439($\pm$2348)	&	-22.6($\pm$9)	&	107($\pm$33)		\\
+\texttt{LRTDP} 			& 	{\bf 9935($\pm$1031)}	&	{\bf -12.4($\pm$1.0)}	&	\bf{53}($\pm$5.0)		\\ \hline
+\texttt{RTDP+Opt}  		&	26663($\pm$2298)	&	-17.4($\pm$4.0)	&	129($\pm$35)		\\
+\texttt{LRTDP+Opt} 		& 	\bf{9675}($\pm$953)	&	\bf{-11.5}($\pm$1.0)	&	{\bf 93($\pm$10)}	\\ \hline
+\texttt{RTDP+MA}  		&	31083($\pm$2468)	&	-21.7	($\pm$5.0)	&	336($\pm$28)		\\
+\texttt{LRTDP+MA}  		& 	{\bf 9854($\pm$1034)}	&	{\bf -11.7($\pm$1.0)}	&	{\bf 162($\pm$17)}		\\ %\hline
+%\texttt{RTDP+MA+Opt}  	&	27143($\pm$2380)	&	-16.9($\pm$3.0)	&	323($\pm$38)		\\ 
+%\texttt{LRTDP+MA+Opt}  	& 	{\bf 10622($\pm$1046)}	&	{\bf -13.4($\pm$1.0)}	&	{\bf 237($\pm$29)}		\\
+\bottomrule
+\end{tabular}
+\label{table:temp_ext_act_results}
+\caption{Affordances vs. Temporally Extended Actions}
 \end{table}
 
 The evaluation metric for each trial was the number of Bellman updates
@@ -415,85 +472,36 @@ LARTDP found a similar quality plan (-9.8 reward to -8.6 reward) in significantl
 task (2822 Bellman updates to 30995), as well as the plane traversal task (19090 Bellman updates to 52408, with a reward of -7.5 to -82.6).
 Expert affordances outperformed both RTDP and LARTDP on the Trench task, finding a comparable plan in significantly fewer Bellman updates.
 
+
 \dnote{Put in a note about the threshold issues, maybe include the results below to reinforce threshold business}
 
-%In some cases, ARTDP found a less optimal plan than RTDP - this is likely due to 
-%the fact that the affordances pruned away actions that were optimal in some states. 
-%If this were to happen consistently, the expert defined threshold could be lowered to 
-%reduce the amount of pruning, raising the likelihood of finding the optimal policy. 
-%Conversely, though, this reduces the speedups of affordance-aware planning. In 
-%future work, we are considering an extension to our current sampling methods in 
-%which the threshold iteratively becomes less conservative until an optimal policy is found.
-
-%\begin{table}[H]
-%\centering
-%\begin{tabular}{ c l  || c c c c}
-%  State Space	&	Planner 				&	CPU	&	Reward 	& Bellman \\ \hline
-%  Mine 	& \texttt{RTDP}  			& 	129.1s	&	{\bf -33.55}	&	63291		\\
-%  		& \texttt{ARTDP}  			& 	{\bf 65.6s}	&	-99.5		&	{\bf 16917}		\\  \hline
-%  Smelt	&	\texttt{RTDP}  			& 	543.0s	&	-99.5		&	74260		\\
-%  		&	\texttt{ARTDP}  		& 	{\bf 6.3s}	&	{\bf -6.3}	&	{\bf 1845}		\\  \hline
-%  Wall	&	\texttt{RTDP}  			& 	55.4s		&	-8.6		&	29324		\\
-%  		&	\texttt{ARTDP}  		& 	{\bf 14.8s}	&	{\bf -11.4}	&	{\bf 3955}		\\  \hline
-%  Trench	&	\texttt{RTDP}  			& 	{\bf 30.2s}		&	{\bf -3.35}	&	{\bf 5070}		\\
-%  		&	\texttt{ARTDP}  		& 	600.1s	&	-89.8		&	67625		\\ \hline
-%Plane	&	\texttt{RTDP}  			& 	168.4s		&	-1.8		&	7954		\\
-%  		&	\texttt{ARTDP}  		& 	{\bf 17.5s}	&	-1.8		&	{\bf 830}		\\ 
-%\end{tabular}
-%\caption{RTDP vs. Learned Affordance-Aware RTDP}
-%\label{table:minecraft_results}
-%\end{table}
 
 % Averaged over all worlds
-\begin{table}[b]
-\centering
-\caption{Affordances vs. Temporally Extended Actions}
-\begin{tabular}{ l l  | l l l l}
-  Planner & TEAs 			&	Bellman	&	Reward 	& CPU \\ \hline
-RTDP &  \texttt{Vanilla}  			&	27439($\pm$2348)	&	-22.6($\pm$9)	&	107($\pm$33)		\\
- & \texttt{Opt}  				&	26663($\pm$2298)	&	-17.4($\pm$4.0)	&	129($\pm$35)		\\
- &\texttt{MA}  				&	31083($\pm$2468)	&	-21.7	($\pm$5.0)	&	336($\pm$28)		\\
- &\texttt{MA+Opt}  			&	27143($\pm$2380)	&	-16.9($\pm$3.0)	&	323($\pm$38)		\\ \hline
- LARTDP &\texttt{Vanilla}  	& 	9935($\pm$1031)&	-12.4($\pm$1.0)	&	\bf{53}($\pm$5.0)		\\
-  &\texttt{Opt}  				& 	\bf{9675}($\pm$953)	&	\bf{-11.5}($\pm$1.0)	&	93($\pm$10)		\\
-  &\texttt{MA}  				& 	9854($\pm$1034)	&	-11.7($\pm$1.0)		&	162($\pm$17)		\\
-  &\texttt{MA+Opt}  			& 	10622($\pm$1046)	&	-13.4($\pm$1.0)	&	237($\pm$29)		\\
-\end{tabular}
-\label{table:temp_ext_act_results}
-\end{table}
+%\begin{table}[b]
+%\centering
+%\caption{Affordances vs. Temporally Extended Actions}
+%\begin{tabular}{ l l  | l l l l}
+%  Planner & TEAs 			&	Bellman	&	Reward 	& CPU \\ \hline
+%RTDP &  \texttt{Vanilla}  			&	27439($\pm$2348)	&	-22.6($\pm$9)	&	107($\pm$33)		\\
+% & \texttt{Opt}  				&	26663($\pm$2298)	&	-17.4($\pm$4.0)	&	129($\pm$35)		\\
+% &\texttt{MA}  				&	31083($\pm$2468)	&	-21.7	($\pm$5.0)	&	336($\pm$28)		\\
+% &\texttt{MA+Opt}  			&	27143($\pm$2380)	&	-16.9($\pm$3.0)	&	323($\pm$38)		\\ \hline
+% LARTDP &\texttt{Vanilla}  	& 	9935($\pm$1031)&	-12.4($\pm$1.0)	&	\bf{53}($\pm$5.0)		\\
+%  &\texttt{Opt}  				& 	\bf{9675}($\pm$953)	&	\bf{-11.5}($\pm$1.0)	&	93($\pm$10)		\\
+%  &\texttt{MA}  				& 	9854($\pm$1034)	&	-11.7($\pm$1.0)		&	162($\pm$17)		\\
+%  &\texttt{MA+Opt}  			& 	10622($\pm$1046)	&	-13.4($\pm$1.0)	&	237($\pm$29)		\\
+%\end{tabular}
+%\label{table:temp_ext_act_results}
+%\end{table}
 
 
 % -- Subsection: Temporally Extended Actions --
 \subsection{Temporally Extended Actions and Affordances}
 Additionally, we compared our approach to Temporally Extended Actions: 
-macroactions and options. We compared RTDP with expert affordances, 
-expert macroactions, and expert options, as well as the combination of 
-affordances, macroactions, and options. We conducted these experiments 
+macroactions and options. We compared RTDP  to LRTDP with 
+macroactions and options. We conducted these experiments 
 with the same configurations as our Minecraft experiments. The option policies
 and macroactions provided were hand coded by domain experts.
-
-% -- Figure: Temporally Extended Actions Results --
-
-% - Fancy table (incoming) -
-%\begin{table*}\centering
-%\ra{1.3}
-%\begin{tabular}{@{}rrrrcrrrcrrr@{}}\toprule
-%& \multicolumn{3}{c}{$w = 8$} & \phantom{abc}& \multicolumn{3}{c}{$w = 16$} & 
-%\phantom{abc} & \multicolumn{3}{c}{$w = 32$}\\
-%\cmidrule{2-4} \cmidrule{6-8} \cmidrule{10-12}
-%& $t=0$ & $t=1$ & $t=2$ && $t=0$ & $t=1$ & $t=2$ && $t=0$ & $t=1$ & $t=2$\\ \midrule
-%$dir=1$\\
-%$c$ & 0.0790 & 0.1692 & 0.2945 && 0.3670 & 0.7187 & 3.1815 && -1.0032 & -1.7104 & -21.7969\\
-%$c$ & -0.8651& 50.0476& 5.9384&& -9.0714& 297.0923& 46.2143&& 4.3590& 34.5809& 76.9167\\
-%$c$ & 124.2756& -50.9612& -14.2721&& 128.2265& -630.5455& -381.0930&& -121.0518& -137.1210& -220.2500\\
-%$dir=0$\\
-%$c$ & 0.0357& 1.2473& 0.2119&& 0.3593& -0.2755& 2.1764&& -1.2998& -3.8202& -1.2784\\
-%$c$ & -17.9048& -37.1111& 8.8591&& -30.7381& -9.5952& -3.0000&& -11.1631& -5.7108& -15.6728\\
-%$c$ & 105.5518& 232.1160& -94.7351&& 100.2497& 141.2778& -259.7326&& 52.5745& 10.1098& -140.2130\\
-%\bottomrule
-%\end{tabular}
-%\caption{Caption}
-%\end{table*}
 
 Table~\ref{table:temp_ext_act_results} indicates the results of comparing RTDP
 equipped with macro actions, options, and affordances across 100 different executions
@@ -506,6 +514,15 @@ state-action space significantly increases when augmented with additional action
 planner to run for longer and perform more Bellman updates. With affordances, the planner found a better plan
 in less CPU time, and with fewer Bellman updates. This supports the claim that affordances can handle the augmented 
 action space provided by temporally extended actions by pruning away unnecessary actions.
+
+
+% -- Figure: Average results --
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.24]{figures/average_results.png}%
+  \caption{Average Results From All Maps}
+  \label{fig:average_results}
+\end{figure}
 
 % -- Subsection: Learning Rate --
 \subsection{Learning Rate}
