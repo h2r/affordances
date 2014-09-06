@@ -1,9 +1,0 @@
-task :default do
-  sh "pdflatex aaai_2014.tex"
-  sh "pdflatex aaai_2014.tex"
-  sh "bibtex aaai_2014"
-  sh "pdflatex aaai_2014.tex"
-end
-task :clean do
-  sh "rm -rf *.aux *.bbl *.blg *.log"
-end
