@@ -114,8 +114,8 @@ provided to the planner by these methods is quite extensive, reducing the
 agent's autonomy. 
 
 Instead, we propose augmenting an MDP with a formalization of {\em
-  affordances}. \dnote{Should add a line here contextualizing affordance literature
-  (maybe Chemero or Gibson quote)}. An affordance~\cite{gibson77} focuses an agent's
+affordances}. \dnote{Should add a line here contextualizing affordance literature
+(maybe Chemero or Gibson quote)}. An affordance~\cite{gibson77} focuses an agent's
 attention on aspects of the environment that are most relevant to
 solving its current goal and avoid exploration of irrelevant parts of
 the world. Affordances are not specific to a particular reward
@@ -411,22 +411,27 @@ of incorrectly applying a different movement action.
 %\end{table}
 
 \begin{table}
-\ra{1.4}
+\ra{1.3}
 \begin{tabular}{@{}llll@{}}\toprule
 Planner & Bellman & Reward & CPU \\ \midrule
-M \texttt{RTDP} & 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1) 		& {\bf 17.6s}   ($\pm$4) \\
+&\hspace{-10mm}{\it Mining Task} \\
+\texttt{RTDP} & 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1) 		& {\bf 17.6s}   ($\pm$4) \\
 \texttt{LRTDP} 	& {\bf 12664.0} ($\pm$9340) 	& -12.7 ($\pm$5) 		& 33.1s   ($\pm$23) \\
 \texttt{ERTDP} 	& 14357.4 ($\pm$3275) 		& {\bf -6.5}   ($\pm$1) 	& 31.9s   ($\pm$8) \\ \hline
-S\texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) 	& 45.1s   ($\pm$14) \\
+&\hspace{-10mm}{\it Smelting Task} \\
+\texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) 	& 45.1s   ($\pm$14) \\
 \texttt{LRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) 		& {\bf 7.5s}  ($\pm$2) \\
 \texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) 	& 72.6s   ($\pm$19) \\ \hline
-W\texttt{RTDP} & 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) 		& {\bf 68.7s}   ($\pm$22) \\
+&\hspace{-10mm}{\it Wall Traversal Task} \\
+\texttt{RTDP} & 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) 		& {\bf 68.7s}   ($\pm$22) \\
 \texttt{LRTDP} 	& {\bf 24020.8} ($\pm$9239) 	& {\bf -15.8}   ($\pm$5) 	& 80.5s   ($\pm$34) \\
 \texttt{ERTDP} 	& 32552.0 ($\pm$10794) 		& -34.5   ($\pm$25) 		& 96.5s   ($\pm$39) \\ \hline
-T\texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& {\bf -8.1}   ($\pm$2) 	& 53.1s   ($\pm$22) \\
+&\hspace{-10mm}{\it Trench Traversal Task} \\
+\texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& {\bf -8.1}   ($\pm$2) 	& 53.1s   ($\pm$22) \\
 \texttt{LRTDP} 	& 11758.4 ($\pm$2815) 		& -8.7   ($\pm$1) 		& 57.9s   ($\pm$20) \\
 \texttt{ERTDP} 	& {\bf 8674.8} 	($\pm$2700) 	& -8.2   ($\pm$2) 		& {\bf 35.9s}   ($\pm$15) \\ \hline
-P \texttt{RTDP} & 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) 	& 45.1s   ($\pm$14) \\
+&\hspace{-10mm}{\it Plane Traversal Task} \\
+\texttt{RTDP} & 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) 	& 45.1s   ($\pm$14) \\
 \texttt{LRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) 		& {\bf 7.5s}  ($\pm$2) \\
 \texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) 	& 72.6s   ($\pm$19) \\
 \bottomrule
@@ -456,7 +461,7 @@ Planner & Bellman & Reward & CPU \\ \midrule
 The evaluation metric for each trial was the number of Bellman updates
 that were executed by each planning algorithm, the accumulated reward of the average plan,
 and the CPU time taken to find a plan. Table~\ref{table:minecraft_results} shows the average Bellman updates, accumulated reward, and CPU time
-for RTDP, LRTDP and ERTDP after planning in 20 different maps of each goal type (100 total). Figure~\ref{fig:average_results} shows the results averaged across all maps. Because the planners were forced to terminate after only 1000 rollouts, they did not always converge to the optimal policy. As the results suggest, LRTDP on average found a comparably better plan (10.6 cost to 22.7 and 36.4) than ERTDP and RTDP, found the plan in significantly fewer Bellman updates (14287 to 24804 and 34694) and in less CPU time (93s to 166s and 242s).
+for RTDP, LRTDP and ERTDP after planning in 20 different maps of each goal type (100 total). Figure~\ref{fig:average_results} shows the results averaged across all maps. Because the planners were forced to terminate after only 1000 rollouts, they did not always converge to the optimal policy. As the results suggest, LRTDP on average found a comparably better plan (11.36 cost to 13.2 and 17.56) than ERTDP and RTDP, found the plan in significantly fewer Bellman updates (10817 to 22534 and 28071) and in less CPU time (37.3s to 61.9s and 46s).
 
 \dnote{Put in a note about the threshold issues, maybe include the results below to reinforce threshold business}
 
