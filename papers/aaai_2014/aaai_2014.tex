@@ -415,25 +415,25 @@ of incorrectly applying a different movement action.
 \begin{tabular}{@{}llll@{}}\toprule
 Planner & Bellman & Reward & CPU \\ \midrule
 &\hspace{-10mm}{\it Mining Task} \\
-\texttt{RTDP} & 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1) 		& {\bf 17.6s}   ($\pm$4) \\
-\texttt{LRTDP} 	& {\bf 12664.0} ($\pm$9340) 	& -12.7 ($\pm$5) 		& 33.1s   ($\pm$23) \\
-\texttt{ERTDP} 	& 14357.4 ($\pm$3275) 		& {\bf -6.5}   ($\pm$1) 	& 31.9s   ($\pm$8) \\ \hline
+\texttt{RTDP} & 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1)  & {\bf 17.6s}   ($\pm$4) \\
+\texttt{ERTDP} 	& 14357.4 ($\pm$3275) 		& {\bf -6.5}   ($\pm$1) & 31.9s   ($\pm$8) \\
+\texttt{LRTDP} 	& {\bf 12664.0} ($\pm$9340) 	& -12.7 ($\pm$5) & 33.1s   ($\pm$23) \\\hline
 &\hspace{-10mm}{\it Smelting Task} \\
-\texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) 	& 45.1s   ($\pm$14) \\
-\texttt{LRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) 		& {\bf 7.5s}  ($\pm$2) \\
-\texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) 	& 72.6s   ($\pm$19) \\ \hline
+\texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) & 45.1s   ($\pm$14) \\
+\texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) & 72.6s   ($\pm$19) \\ 
+\texttt{LRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) & {\bf 7.5s}  ($\pm$2) \\ \hline
 &\hspace{-10mm}{\it Wall Traversal Task} \\
-\texttt{RTDP} & 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) 		& {\bf 68.7s}   ($\pm$22) \\
-\texttt{LRTDP} 	& {\bf 24020.8} ($\pm$9239) 	& {\bf -15.8}   ($\pm$5) 	& 80.5s   ($\pm$34) \\
-\texttt{ERTDP} 	& 32552.0 ($\pm$10794) 		& -34.5   ($\pm$25) 		& 96.5s   ($\pm$39) \\ \hline
+\texttt{RTDP} & 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) & {\bf 68.7s}   ($\pm$22) \\
+\texttt{ERTDP} 	& 32552.0 ($\pm$10794) 		& -34.5   ($\pm$25) & 96.5s   ($\pm$39) \\ 
+\texttt{LRTDP} 	& {\bf 24020.8} ($\pm$9239) 	& {\bf -15.8}   ($\pm$5) & 80.5s   ($\pm$34) \\ \hline
 &\hspace{-10mm}{\it Trench Traversal Task} \\
-\texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& {\bf -8.1}   ($\pm$2) 	& 53.1s   ($\pm$22) \\
-\texttt{LRTDP} 	& 11758.4 ($\pm$2815) 		& -8.7   ($\pm$1) 		& 57.9s   ($\pm$20) \\
-\texttt{ERTDP} 	& {\bf 8674.8} 	($\pm$2700) 	& -8.2   ($\pm$2) 		& {\bf 35.9s}   ($\pm$15) \\ \hline
+\texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& {\bf -8.1}   ($\pm$2) & 53.1s   ($\pm$22) \\
+\texttt{ERTDP} 	& {\bf 8674.8} 	($\pm$2700) 	& -8.2   ($\pm$2) & {\bf 35.9s}   ($\pm$15) \\ 
+\texttt{LRTDP} 	& 11758.4 ($\pm$2815) 		& -8.7   ($\pm$1) & 57.9s   ($\pm$20) \\ \hline
 &\hspace{-10mm}{\it Plane Traversal Task} \\
-\texttt{RTDP} & 52407 ($\pm$18432) 		& -82.6   ($\pm$42) 	& 877.0s   ($\pm$381) \\
-\texttt{LRTDP} 	& {\bf 19090} 	 ($\pm$9158) 	& {\bf-7.8}   ($\pm$1) 		& {\bf 246s}  ($\pm$159) \\
-\texttt{ERTDP} 	& 32928 ($\pm$14997) 		& -44.9   ($\pm$34) 	& 505.3s   ($\pm$304) \\
+\texttt{RTDP} & 52407 ($\pm$18432) 		& -82.6   ($\pm$42) & 877.0s   ($\pm$381) \\
+\texttt{ERTDP} 	& 32928 ($\pm$14997) 		& -44.9   ($\pm$34) & 505.3s   ($\pm$304) \\
+\texttt{LRTDP} 	& {\bf 19090} 	 ($\pm$9158) 	& {\bf-7.8}   ($\pm$1) & {\bf 246s}  ($\pm$159) \\
 \bottomrule
 \end{tabular}
 \label{table:minecraft_results}
@@ -441,15 +441,15 @@ Planner & Bellman & Reward & CPU \\ \midrule
 \end{table}
 
 \begin{table}[b]
-\ra{1.4}
+\ra{1.3}
 \begin{tabular}{@{}llll@{}}\toprule
 Planner & Bellman & Reward & CPU \\ \midrule
-\texttt{RTDP}   			&	27439($\pm$2348)	&	-22.6($\pm$9)	&	107($\pm$33)		\\
-\texttt{LRTDP} 			& 	{\bf 9935($\pm$1031)}	&	{\bf -12.4($\pm$1.0)}	&	\bf{53}($\pm$5.0)		\\ \hline
-\texttt{RTDP+Opt}  		&	26663($\pm$2298)	&	-17.4($\pm$4.0)	&	129($\pm$35)		\\
-\texttt{LRTDP+Opt} 		& 	\bf{9675}($\pm$953)	&	\bf{-11.5}($\pm$1.0)	&	{\bf 93($\pm$10)}	\\ \hline
-\texttt{RTDP+MA}  		&	31083($\pm$2468)	&	-21.7	($\pm$5.0)	&	336($\pm$28)		\\
-\texttt{LRTDP+MA}  		& 	{\bf 9854($\pm$1034)}	&	{\bf -11.7($\pm$1.0)}	&	{\bf 162($\pm$17)}		\\ %\hline
+\texttt{RTDP}   			&	27439($\pm$2348)	&	-22.6($\pm$9)& 107($\pm$33) \\
+\texttt{LRTDP} 			& 	{\bf 9935($\pm$1031)}	&	{\bf -12.4($\pm$1.0)}& \bf{53}($\pm$5.0) \\ \hline
+\texttt{RTDP+Opt}  		&	26663($\pm$2298)	&	-17.4($\pm$4.0) & 129($\pm$35) \\
+\texttt{LRTDP+Opt} 		& 	\bf{9675}($\pm$953)	&	\bf{-11.5}($\pm$1.0)&{\bf 93($\pm$10)} \\ \hline
+\texttt{RTDP+MA}  		&	31083($\pm$2468)	&	-21.7	($\pm$5.0)&336($\pm$28) \\
+\texttt{LRTDP+MA}  		& 	{\bf 9854($\pm$1034)}	&	{\bf -11.7($\pm$1.0)}&{\bf 162($\pm$17)} \\ %\hline
 %\texttt{RTDP+MA+Opt}  	&	27143($\pm$2380)	&	-16.9($\pm$3.0)	&	323($\pm$38)		\\ 
 %\texttt{LRTDP+MA+Opt}  	& 	{\bf 10622($\pm$1046)}	&	{\bf -13.4($\pm$1.0)}	&	{\bf 237($\pm$29)}		\\
 \bottomrule
@@ -509,7 +509,7 @@ action space provided by temporally extended actions by pruning away unnecessary
 % -- Figure: Average results --
 \begin{figure}[t]
 \centering
-\includegraphics[scale=0.24]{figures/average_results.png}%
+\includegraphics[scale=0.25]{figures/average_results.png}%
   \caption{Average Results From All Maps}
   \label{fig:average_results}
 \end{figure}
@@ -521,8 +521,6 @@ As in Table \ref{table:minecraft_results}, we randomly generated simple state sp
 containing several thousand states containing features that mirrored the agent's state
 space at test time. We then solved the OO-MDP with knowledge bases learned from 
 10 to 10000 states.\dnote{update when training complete}
-
-\dnote{Experiments have not yet finished for learning rate (underway)}
 
 % -- Figure: Learning rate results --
 \begin{figure}[H]
@@ -639,9 +637,9 @@ a different problem from what we are interested in since they deal with non-stoc
 
 % --- Subsubsection: Hierarchical Task Networks ---
 \subsubsection{Hierarchical Task Networks}
-Traditional Hierarchical Task Networks (HTNs) employ \textit{task decompositions} to aid in planning. The goal at hand is decomposed into smaller tasks which are in turn decomposed into smaller tasks. This decomposition continues until primitive tasks that are immediately achievable are derived. The current state of the task decomposition, in turn, informs constraints which reduce the space over which the planner searches. At a high level both HTNs and affordances fulfill the same role: both achieve action pruning by exploiting some form of supplied knowledge. 
+Traditional Hierarchical Task Networks (HTNs) employ \textit{task decompositions} to aid in planning~\cite{erol1994htn}. The goal at hand is decomposed into smaller tasks which are in turn decomposed into smaller tasks. This decomposition continues until primitive tasks that are immediately achievable are derived. The current state of the task decomposition, in turn, informs constraints which reduce the space over which the planner searches. At a high level both HTNs and affordances fulfill the same role: both achieve action pruning by exploiting some form of supplied knowledge. 
 
-However there are two essential distinctions between affordances and traditional HTNs.  (1) HTNs do not incorporate reward into their planning. Consequently, they lack mathematical guarantees of optimal planning. (2) On a qualitative level, the degree of supplied knowledge in HTNs surpasses that of affordances: whereas affordances simply require relevant propositional functions, HTNs require not only constraints for sub-tasks but a hierarchical framework of arbitrary complexity. \enote{Need citations for HTNs}
+However there are two essential distinctions between affordances and traditional HTNs.  (1) HTNs do not incorporate reward into their planning. Consequently, they lack mathematical guarantees of optimal planning. (2) On a qualitative level, the degree of supplied knowledge in HTNs surpasses that of affordances: whereas affordances simply require relevant propositional functions, HTNs require not only constraints for sub-tasks but a hierarchical framework of arbitrary complexity.
 
 % --- Subsubsection: Temporal Logic ---
 \subsubsection{Temporal Logic}
