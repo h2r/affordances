@@ -490,6 +490,15 @@ macroactions and options. We conducted these experiments
 with the same configurations as our Minecraft experiments. The option policies
 and macroactions provided were hand coded by domain experts.
 
+% -- Figure: Average results --
+\begin{figure}[t]
+\centering
+\includegraphics[scale=0.25]{figures/average_results.png}%
+  \caption{Average Results From All Maps}
+  \label{fig:average_results}
+\end{figure}
+
+
 Table~\ref{table:temp_ext_act_results} indicates the results of comparing RTDP
 equipped with macro actions, options, and affordances across 100 different executions
 in the same randomly generated Minecraft worlds. The results above are averaged across tasks of
@@ -501,15 +510,6 @@ state-action space significantly increases when augmented with additional action
 planner to run for longer and perform more Bellman updates. With affordances, the planner found a better plan
 in less CPU time, and with fewer Bellman updates. This supports the claim that affordances can handle the augmented 
 action space provided by temporally extended actions by pruning away unnecessary actions.
-
-
-% -- Figure: Average results --
-\begin{figure}[t]
-\centering
-\includegraphics[scale=0.25]{figures/average_results.png}%
-  \caption{Average Results From All Maps}
-  \label{fig:average_results}
-\end{figure}
 
 % -- Subsection: Learning Rate --
 \subsection{Learning Rate}
