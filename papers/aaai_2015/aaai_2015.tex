@@ -50,9 +50,9 @@ intractable in large state spaces due to the well-known curse of
 dimensionality. Existing approaches to planning in large stochastic
 state spaces fail to prevent autonomous agents from considering many
 actions that are obviously irrelevant to a human solving the same
-task. We propose a formalism of the notion of {\em affordances} as
+task. We formalize of the notion of {\em affordances} as
 goal-oriented knowledge added to an Object Oriented Markov Decision
-Process (OO-MDP).  Affordances prune actions based on the current
+Process (OO-MDP).  Affordances prune irrelevant actions based on the current
 state and the robot's goal, reducing the number of state-action pairs
 the planner must evaluate in order to synthesize a near optimal
 policy. We show that an agent can learn affordances through
@@ -182,8 +182,7 @@ value function, respectively.
 
 We aim to learn a probability distribution over the optimal action set
 for a given state ($s$), goal ($G$), and knowledge base ($K$) from
-which action pruning may be informed (see Section
-\ref{sec:action_pruning}):
+which action pruning may be informed:
 % -- Equation: Master Equation --
 \begin{equation}
 \Pr(\mathcal{A}^* \mid s, G, K)
@@ -287,7 +286,7 @@ approaches to perform this pruning.
 The first method of pruning is to impose an expert defined threshold on the posterior. In this way, the affordances prune away any actions whose probability of being optimal is below the provided threshold for each state. For experiments, this method is denoted as \texttt{LRTDP}, and was set to $\frac{0.2}{|\mathcal{A}|}$, where $|\mathcal{A}|$ is the size of the full action space of the OO-MDP.
 
 % 2) Expert (discriminative or model)
-Affordances may also be specified by a domain expert using a discriminative-OR model in place of the Naive Bayes. In this method, the expert specifies a set of actions associated with a precondition-goal type pair. For instance, if an agent is standing above a block of buried gold and is trying to smelt a block of gold, then an expert may indicate that the agent should consider the actions of looking down and digging. Each active affordances contributes to the set of actions to consider for each state. During experiments, this method is denoted as \texttt{ERTDP}.
+Affordances may also be specified by a domain expert using a discriminative-OR model in place of the Naive Bayes. In this method, the expert specifies a set of actions associated with a precondition-goal type pair. For instance, if an agent is standing above a block of buried gold and is trying to smelt a block of gold, then an expert may indicate that the agent should consider the actions of looking down and digging. Each active affordances contributes to the set of actions to consider for each state. During experiments, this method is denoted as \texttt{ERTDP}. Table~\ref{table:afford_kb_exp} shows a few example expert defined affordances.
 
 % 3) Sampling
 Additionally, actions may be pruned by sampling actions from the probability distribution over actions as specified by Equation~\ref{eq:final}. We treat each action's probability mass as a Bernouli trial and sample across the entire action set. In preliminary results, this method did not perform as well as baseline RTDP - likely because the weights associated with each action were too small. In future work, we are interested in investigating more sophisticated approaches to pruning actions with sampling. 
@@ -311,6 +310,7 @@ marginalizing over all the features not associated with $\delta_j$.
   \caption{A gold smelting task in the Minecraft domain}
   \label{fig:minecraft}
 \end{figure}
+
 As with human agents, multiple affordances often inform decision making at a given time.
 Thus, affordance-aware planning agents operating within an OO-MDP will rarely make specific
 reference to particular affordances, but will instead reason about the world using the relevant
@@ -354,7 +354,7 @@ Precondition & Goal Type & Actions \\ \midrule
 \texttt{lookingAtGold} & \texttt{hasGoldOre} & \texttt{destroy} \\
 \bottomrule
 \end{tabular}
-\label{fig:afford_kb_exp}
+\label{table:afford_kb_exp}
 \caption{Examples of Expert Provided Affordances}
 \end{table}
 
@@ -372,7 +372,7 @@ with a single knowledge base.
 Our RTDP and domain parameters are set as follows. We terminated each planner
 when the maximum change in the value function was less than 0.01 for
 100 consecutive policy rollouts, or the planner failed to converge
-after 1500 rollouts.  We set the reward function to $-1$ for all
+after 1000 rollouts.  We set the reward function to $-1$ for all
 transitions, except transitions to states in which the agent was on
 lava, which returned $-10$. The goal was set to be terminal. The
 discount factor was set to $\lambda = 0.99$. For all experiments,
@@ -496,7 +496,7 @@ in the same randomly generated Minecraft worlds. The results above are averaged 
 each type presented in Table~\ref{table:minecraft_results}. As the results 
 suggest, both macroactions and options add a significant amount of time to planning.
 This is due to the fact that it is computationally expensive to predict the expected reward
-associated with applying an option or a macro-actions. Furthermore, the branching factor of the
+associated with applying an option or a macroaction. Furthermore, the branching factor of the
 state-action space significantly increases when augmented with additional actions, causing the
 planner to run for longer and perform more Bellman updates. With affordances, the planner found a better plan
 in less CPU time, and with fewer Bellman updates. This supports the claim that affordances can handle the augmented 
@@ -513,11 +513,10 @@ action space provided by temporally extended actions by pruning away unnecessary
 
 % -- Subsection: Learning Rate --
 \subsection{Learning Rate}
-Additionally, we conducted experiments in which we varied the number of states visited at training time. 
+Additionally, we conducted experiments in which we varied the number of states used during training. 
 As in Table \ref{table:minecraft_results}, we randomly generated simple state spaces
-containing several thousand states containing features that mirrored the agent's state
-space at test time. We then solved the OO-MDP with knowledge bases learned from 
-10 to 10000 states.\dnote{update when training complete}
+containing several thousand states with features that mirrored the agent's state
+space at test time.
 
 % -- Figure: Learning rate results --
 \begin{figure}[H]
@@ -577,7 +576,7 @@ doors.
 Although the classic options framework is not generalizable to different state spaces,
 creating {\em portable} options is a topic of active research~\cite{konidaris07,konidaris2009efficient,Ravindran03analgebraic,croonenborghs2008learning,andre2002state,konidaris2012transfer}.
 
-Since temporally extended actions may negatively impact planning time~\cite{Jong:2008zr} by adding to the number of actions the agent can choose from in a given state, combining affordances with temporally extended actions allow for even further speedups in planning, as demonstrated in~\ref{table:temp_ext_act_results}. This suggests that affordances are complementary to macro actions and options.
+Since temporally extended actions may negatively impact planning time~\cite{Jong:2008zr} by adding to the number of actions the agent can choose from in a given state, combining affordances with temporally extended actions allow for even further speedups in planning, as demonstrated in~\ref{table:temp_ext_act_results}. This suggests that affordances are complementary to macroactions and options.
 
 % --- Subsection: Action Pruning ---
 \subsubsection{Action Pruning}
