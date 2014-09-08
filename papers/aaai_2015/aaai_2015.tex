@@ -424,15 +424,15 @@ randomized features that mirrored the agent's actual state
 space. \stnote{Not sure what this means.  Randomized features?} We
 conducted all tests with a single knowledge base.
 
-Our RTDP and domain parameters are set as follows. We terminated each planner
-when the maximum change in the value function was less than 0.01 for
-100 consecutive policy rollouts, or the planner failed to converge
-after 1000 rollouts.  We set the reward function to $-1$ for all
-transitions, except transitions to states in which the agent was on
-lava, which returned $-10$. The goal was set to be terminal. The
-discount factor was set to $\lambda = 0.99$. For all experiments,
-movement actions (move, rotate, jump) had a small probability (0.05)
-of incorrectly applying a different movement action.
+We terminated each planner when the maximum change in the value
+function was less than 0.01 for 100 consecutive policy rollouts, or
+the planner failed to converge after 1000 rollouts.  We set the reward
+function to $-1$ for all transitions, except transitions to states in
+which the agent was on lava, which returned $-10$. The goal was set to
+be terminal. The discount factor was set to $\lambda = 0.99$. For all
+experiments, movement actions (move, rotate, jump) had a small
+probability (0.05) of incorrectly applying a different movement
+action.
 
 %\begin{table}[H]
 %\centering
@@ -487,8 +487,8 @@ Planner & Bellman & Reward & CPU \\ \midrule
 \texttt{LRTDP} 	& {\bf 19090} 	 ($\pm$9158) 	& {\bf-7.8}   ($\pm$1) & {\bf 246s}  ($\pm$159) \\
 \bottomrule
 \end{tabular}
-\label{table:minecraft_results}
-\caption{RTDP vs. Affordance-Aware RTDP}
+
+\caption{RTDP vs. Affordance-Aware RTDP\label{table:minecraft_results}}
 \end{table}
 
 \begin{table}[b]
@@ -505,14 +505,28 @@ Planner & Bellman & Reward & CPU \\ \midrule
 %\texttt{LRTDP+MA+Opt}  	& 	{\bf 10622($\pm$1046)}	&	{\bf -13.4($\pm$1.0)}	&	{\bf 237($\pm$29)}		\\
 \bottomrule
 \end{tabular}
-\label{table:temp_ext_act_results}
-\caption{Affordances vs. Temporally Extended Actions}
+
+\caption{Affordances vs. Temporally Extended Actions\label{table:temp_ext_act_results}}
 \end{table}
 
 The evaluation metric for each trial was the number of Bellman updates
-that were executed by each planning algorithm, the accumulated reward of the average plan,
-and the CPU time taken to find a plan. Table~\ref{table:minecraft_results} shows the average Bellman updates, accumulated reward, and CPU time
-for RTDP, LRTDP and ERTDP after planning in 20 different maps of each goal type (100 total). Figure~\ref{fig:average_results} shows the results averaged across all maps. Because the planners were forced to terminate after only 1000 rollouts, they did not always converge to the optimal policy. As the results suggest, LRTDP on average found a comparably better plan (10.6 cost to 22.7 and 36.4) than ERTDP and RTDP, found the plan in significantly fewer Bellman updates (14287.5 to 24804.1 and 34694.3) and in less CPU time (93.1s to 166.4s and 242.0s).
+that were executed by each planning algorithm, the accumulated reward
+of the average plan, and the CPU time taken to find a
+plan. Table~\ref{table:minecraft_results} shows the average Bellman
+updates, accumulated reward, and CPU time for RTDP, LRTDP and ERTDP
+after planning in 20 different maps of each goal type (100
+total). Figure~\ref{fig:average_results} shows the results averaged
+across all maps. Because the planners were forced to terminate after
+only 1000 rollouts, they did not always converge to the optimal
+policy. As the results suggest, LRTDP on average found a comparably
+better plan (10.6 cost to 22.7 and 36.4) than ERTDP and RTDP, found
+the plan in significantly fewer Bellman updates (14287.5 to 24804.1
+and 34694.3) and in less CPU time (93.1s to 166.4s and 242.0s).  These
+results indicate that while learned affordances gave the largest
+improvements, expert-provided affordances can also significantly
+improve performance, and, depending on the domain, could add
+significant value in making large state-spaces tractable without the
+overhead of making a state generator for learning.
 
 \dnote{Put in a note about the threshold issues, maybe include the results below to reinforce threshold business}
 
@@ -539,39 +553,46 @@ for RTDP, LRTDP and ERTDP after planning in 20 different maps of each goal type 
 
 % -- Subsection: Temporally Extended Actions --
 \subsection{Temporally Extended Actions and Affordances}
-Additionally, we compared our approach to Temporally Extended Actions: 
-macroactions and options. We compared RTDP  to LRTDP with 
-macroactions and options. We conducted these experiments 
-with the same configurations as our Minecraft experiments. The option policies
-and macroactions provided were hand coded by domain experts.
+
+We compared our approach to Temporally Extended Actions: macroactions
+and options. We conducted these experiments with the same
+configurations as our Minecraft experiments. Domain experts provided
+the option policies and macroactions.
 
 % -- Figure: Average results --
 \begin{figure}[t]
 \centering
 \includegraphics[scale=0.25]{figures/average_results.png}%
-  \caption{Average Results From All Maps}
-  \label{fig:average_results}
+  \caption{Average Results From All Maps  \label{fig:average_results}}
+
 \end{figure}
 
 
-Table~\ref{table:temp_ext_act_results} indicates the results of comparing RTDP
-equipped with macro actions, options, and affordances across 100 different executions
-in the same randomly generated Minecraft worlds. The results above are averaged across tasks of
-each type presented in Table~\ref{table:minecraft_results}. As the results 
-suggest, both macroactions and options add a significant amount of time to planning.
-This is due to the fact that it is computationally expensive to predict the expected reward
-associated with applying an option or a macroaction. Furthermore, the branching factor of the
-state-action space significantly increases when augmented with additional actions, causing the
-planner to run for longer and perform more Bellman updates. With affordances, the planner found a better plan
-in less CPU time, and with fewer Bellman updates. This supports the claim that affordances can handle the augmented 
-action space provided by temporally extended actions by pruning away unnecessary actions.
+Table~\ref{table:temp_ext_act_results} indicates the results of
+comparing RTDP equipped with macro actions, options, and affordances
+across 100 different executions in the same randomly generated
+Minecraft worlds. The results above are averaged across tasks of each
+type presented in Table~\ref{table:minecraft_results}. As the results
+suggest, both macroactions and options add a significant amount of
+time to planning.  This increase is because it is computationally
+expensive to predict the expected reward associated with applying an
+option or a macroaction. Furthermore, the branching factor of the
+state-action space significantly increases when augmented with
+additional actions, causing the planner to run for longer and perform
+more Bellman updates. With affordances, the planner found a better
+plan in less CPU time, and with fewer Bellman updates. These results
+support the claim that affordances can handle the augmented action
+space provided by temporally extended actions by pruning away
+unnecessary actions.
 
 % -- Subsection: Learning Rate --
 \subsection{Learning Rate}
-Additionally, we conducted experiments in which we varied the number of states used during training. 
-As in Table \ref{table:minecraft_results}, we randomly generated simple state spaces
-containing several thousand states with features that mirrored the agent's state
-space at test time.
+Finally, we measured performance when varying the number of states
+used during training.  As in Table \ref{table:minecraft_results}, we
+randomly generated simple state spaces containing several thousand
+states with features that mirrored the agent's state space at test
+time.  Figure~\ref{fig:training_results} shows that as training data
+increases, our algorithm's performance 
 
 % -- Figure: Learning rate results --
 \begin{figure}[H]
@@ -615,76 +636,92 @@ in stochastic domains.
 
 % --- Subsection: Temporally Extended Actions ---
 \subsubsection{Temporally Extended Actions}
-Temporally extended actions are actions that the agent can
-select like any other action of the domain, except executing them
-results in multiple primitive actions being executed in
-succession. Two common forms of temporally extended actions are {\em
-  macro-actions}~\cite{hauskrecht98} ~and {\em options}~\cite{sutton99}. 
-Macro-actions are actions that always
+Temporally extended actions are actions that the agent can select like
+any other action of the domain, except executing them results in
+multiple primitive actions being executed in succession. Two common
+forms of temporally extended actions are {\em
+  macro-actions}~\cite{hauskrecht98} ~and {\em
+  options}~\cite{sutton99}.  Macro-actions are actions that always
 execute the same sequence of primitive actions. Options are defined
 with high-level policies that accomplish specific sub tasks. For
 instance, when an agent is near a door, the agent can engage the
 `door-opening-option-policy', which switches from the standard
 high-level planner to running a policy that is hand crafted to open
-doors. 
+doors.  Although the classic options framework is not generalizable to
+different state spaces, creating {\em portable} options is a topic of
+active
+research~\cite{konidaris07,konidaris2009efficient,Ravindran03analgebraic,croonenborghs2008learning,andre2002state,konidaris2012transfer}.
 
-Although the classic options framework is not generalizable to different state spaces,
-creating {\em portable} options is a topic of active research~\cite{konidaris07,konidaris2009efficient,Ravindran03analgebraic,croonenborghs2008learning,andre2002state,konidaris2012transfer}.
-
-Since temporally extended actions may negatively impact planning time~\cite{Jong:2008zr} by adding to the number of actions the agent can choose from in a given state, combining affordances with temporally extended actions allow for even further speedups in planning, as demonstrated in~\ref{table:temp_ext_act_results}. This suggests that affordances are complementary to macroactions and options.
+Since temporally extended actions may negatively impact planning
+time~\cite{Jong:2008zr} by adding to the number of actions the agent
+can choose from in a given state, combining affordances with
+temporally extended actions allows for even further speedups in
+planning, as demonstrated in~\ref{table:temp_ext_act_results}. In
+other words, affordances are complementary knowledge to options and
+macroactions.
 
 % --- Subsection: Action Pruning ---
 \subsubsection{Action Pruning}
 
-Sherstov and Stone~\cite{sherstov2005improving} considered MDPs with a very large 
-action set and for which the action set of the optimal policy of a source task could be 
-transferred to a new, but similar, target task to reduce the learning time required to find
-the optimal policy in the target task. The main difference between our affordance-based 
-action set pruning and this action transfer work is that affordances prune away actions on 
-a state by state basis, where as the learned action pruning is on per task level. Further, 
-with goal types, affordances may be attached to subgoal planning for a significant
-benefit in planning tasks where complete subgoal knowledge is known.
+Sherstov and Stone~\cite{sherstov2005improving} considered MDPs with a
+very large action set and for which the action set of the optimal
+policy of a source task could be transferred to a new, but similar,
+target task to reduce the learning time required to find the optimal
+policy in the target task. The main difference between our
+affordance-based action set pruning and this action transfer work is
+that affordances prune away actions on a state by state basis, whereas
+the learned action pruning is on per task level. Further, with goal
+types, affordances may be attached to subgoal planning for a
+significant benefit in planning tasks where complete subgoal knowledge
+is known.
 
 Rosman and Ramamoorthy~\cite{rosman2012good} provide a method for learning action
 priors over a set of related tasks. Specifically, they compute a Dirichlet distribution over 
 actions by extracting the frequency that each action was optimal in each state for each 
 previously solved task.
 
-There are a few limitations of the actions priors work that affordance-aware planning
-does not possess: (1) the action priors can only be used with planning/learning algorithms
-that work well with an $\epsilon$-greedy rollout policy; (2) the priors are only utilized for 
-fraction $\epsilon$ of the time steps, which is typically quite small; and (3) as variance in
-tasks explored increases, the priors will become more uniform. In contrast, affordance-aware
-planning can be used in a wide range of planning algorithms, benefits from the pruned action
-set in every time step, and can handle a wide variety of tasks in a single knowledge base,
-as demonstrated by Table~\ref{table:minecraft_results}
+Action priors can only be used with planning/learning algorithms that
+work well with an $\epsilon$-greedy rollout policy, while affordances
+can be applied to almost any planning algorithm.  In addition, action
+priors are only utilized for fraction $\epsilon$ of the time steps,
+which is typically quite small, limiting the improvement they can make
+to the planning speed.  Finally, as variance in tasks explored
+increases, the priors will become more uniform. In contrast,
+affordance-aware planning can handle a wide variety of tasks in a
+single knowledge base, as demonstrated by
+Table~\ref{table:minecraft_results}
 
 \dnote{Policy priors addition?}
 
 % --- Subsubsection: Heuristics ---
 \subsubsection{Heuristics}
-Heuristics in MDPs are used to convey information about the value of a given state-action
-pair with respect to the task being solved and typically take the form of either {\em value function initialization},
-or {\em reward shaping}. Initializing the value function to an admissible close approximation of the optimal
-value function has been shown to be effective for LAO* and RTDP~\cite{Hansen:1999qf}.
+Heuristics in MDPs are used to convey information about the value of a
+given state-action pair with respect to the task being solved and
+typically take the form of either {\em value function initialization},
+or {\em reward shaping}. Initializing the value function to an
+admissible close approximation of the optimal value function has been
+shown to be effective for LAO* and RTDP~\cite{Hansen:1999qf}.  Reward
+shaping is an alternative approach to providing heuristics. The
+planning algorithm uses a modified version of the reward function that
+returns larger rewards for state-action pairs that are expected to be
+useful, but does not guarantee convergence to an optimal policy unless
+certain properties of the shaped reward are satisfied~\cite{potshap}.
 
-Reward shaping is an alternative approach to providing heuristics. The planning algorithm
-uses a modified version of the reward function that returns larger rewards for state-action
-pairs that are expected to be useful, but does not guarantee convergence to an optimal
-policy unless certain properties of the shaped reward are satisfied~\cite{potshap}.
-
-A critical difference between heuristics and affordances is that heuristics are highly dependent
-on the reward function and state space of the task being solved, whereas affordances are state
-space independent and may be learned easily for different reward functions. However, if a heuristic
-can be provided, the combination of heuristics and affordances may even more greatly accelerate
-planning algorithms than either approach alone.
+However, heuristics are highly dependent on the reward function and
+state space of the task being solved, whereas affordances are state
+space independent and may be learned easily for different reward
+functions. If a heuristic can be provided, the combination of
+heuristics and affordances may even more greatly accelerate planning
+algorithms than either approach alone.
 
 % -- Subsection: Deterministic knowledge engineering approaches --
 \subsection{Deterministic Approaches}
 
-There have been several successful attempts at engineering knowledge to
-decrease planning time for deterministic planners. These are fundamentally solving
-a different problem from what we are interested in since they deal with non-stochastic problems, but there are a number of salient parallels and contrasts to be drawn nonetheless.
+There have been several successful attempts at engineering knowledge
+to decrease planning time for deterministic planners. These are
+fundamentally solving a different problem from what we are interested
+in since they deal with non-stochastic problems, but there are a
+number of salient parallels and contrasts to be drawn nonetheless.
 
 % --- Subsubsection: Hierarchical Task Networks ---
 \subsubsection{Hierarchical Task Networks}
