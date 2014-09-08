@@ -22,11 +22,11 @@
 \usepackage{pgfplots}
 
 % -- Comment commands --
- \newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{}}}
- \newcommand{\dnote}[1]{\textcolor{Green}{\textbf{}}}
- \newcommand{\enote}[1]{\textcolor{Red}{\textbf{}}}
- \newcommand{\gnote}[1]{\textcolor{Purple}{\textbf{}}}
- \newcommand{\jnote}[1]{\textcolor{Orange}{\textbf{}}}
+ \newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{stefie10: #1}}}
+ \newcommand{\dnote}[1]{\textcolor{Green}{\textbf{dable:  #1}}}
+ \newcommand{\enote}[1]{\textcolor{Red}{\textbf{ellis:  #1}}}
+ \newcommand{\gnote}[1]{\textcolor{Purple}{\textbf{gabe:  #1}}}
+ \newcommand{\jnote}[1]{\textcolor{Orange}{\textbf{james:  #1}}}
 
 % -- Misc. new commands --
 \newcommand{\argmax}{\operatornamewithlimits{argmax}} % argmax
@@ -110,20 +110,24 @@ provided to the planner by these methods is quite extensive, reducing the
 agent's autonomy. 
 
 Instead, we propose augmenting an MDP with a formalization of {\em
-affordances}. \dnote{Should add a line here contextualizing affordance literature
-(maybe Chemero or Gibson quote)}. An affordance~\cite{gibson77} focuses an agent's
-attention on aspects of the environment that are most relevant to
-solving its current goal and avoid exploration of irrelevant parts of
-the world. Affordances are not specific to a particular reward
-function or state space, and provide the agent with transferable
-knowledge that is effective in a wide variety of problems. Moreover,
-we show that an agent can learn affordances through experience, making
+  affordances}. Affordances, originally proposed by \citet{gibson77},
+are action possibilities latent in an environment, in relation to an
+agent and its capabilies.  Affordances focus an agent's attention on
+aspects of the environment that are most relevant to solving its
+current goal and avoid exploration of irrelevant parts of the
+world. Affordances are not specific to a particular reward function or
+state space, and provide the agent with transferable knowledge that is
+effective in a wide variety of problems.  Affordances can be specified
+by hand and also learned affordances through experience, making
 affordances a concise, transferable, and learnable means of
 representing useful planning knowledge.  Our experiments demonstrate
 that affordances provide dramatic speedups for a variety of planning
 tasks compared to baselines and apply across different state spaces.
-We conduct experiments in the game Minecraft, which has a very large
-state-action space, and on a real-world robotic cooking assistant.
+We see significant speedups from manually provided affordances, but
+even larger improvements from affordances that the agent learned
+through experience.  We conduct experiments in the game Minecraft,
+which has a very large state-action space, and on a real-world robotic
+cooking assistant.
 
 %% Because affordances define the {\em kind} of goals for which actions
 %% are useful, affordances also enable high-level reasoning that can be
@@ -147,22 +151,21 @@ and $\gamma \in [0, 1)$ is a discount factor that defines how much the
 agent prefers immediate rewards over future rewards (the agent
 prefers to maximize immediate rewards as $\gamma$ decreases).
 
-Our representation of affordances builds on an
-Object-Oriented MDPs (OO-MDP)~\citep{diuk08}.  An OO-MDP efficiently
-represents the state of an MDP through the use of objects and
-predicates.  An OO-MDP state is a collection of objects, $O = \{o_1,
-\ldots, o_o \}$.  Each object $o_i$ belongs to a class, $c_j \in
-\{c_1, \ldots, c_c\}$. Every class has a set of attributes, $Att(c) =
-\{c.a_1, \ldots, c.a_a \}$, each of which has a domain, $Dom(c.a)$, of
-possible values. OO-MDPs enable planners to use predicates over
-classes of objects. That is, the OO-MDP definition also includes a set
-of predicates $\mathcal{P}$ that operate on the state of objects to
-provide additional high-level information about the MDP state. We use
-OO-MDP predicates as features for action pruning, allowing for state
-space independence.
+Our representation of affordances builds on Object-Oriented MDPs
+(OO-MDP)~\citep{diuk08}.  An OO-MDP efficiently represents the state
+of an MDP through the use of objects and predicates.  An OO-MDP state
+is a collection of objects, $O = \{o_1, \ldots, o_o \}$.  Each object
+$o_i$ belongs to a class, $c_j \in \{c_1, \ldots, c_c\}$. Every class
+has a set of attributes, $Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of
+which has a domain, $Dom(c.a)$, of possible values. OO-MDPs enable
+planners to use predicates over classes of objects. That is, the
+OO-MDP definition also includes a set of predicates $\mathcal{P}$ that
+operate on the state of objects to provide additional high-level
+information about the MDP state. We use OO-MDP predicates as features
+for action pruning, allowing for state space independence.
 
 % -- Subsection: Affordances --
-\subsection{Modeling $\mathcal{A}^*$}
+\subsection{Modeling the Optimal Action Set}
 
 %% \citet{gibson77} proposed that an affordance is ``what [the
 %%   environment] offers [an] animal, what [the environment] provides or
@@ -189,14 +192,20 @@ which action pruning may be informed:
 \label{eq:master}
 \end{equation}
 
-We formalize our knowledge base, $K$, as a set of $N$ paired preconditions and goal types, $\{ (p_1, g_1) 
-\ldots (p_{N}, g_{N}) \}$. We abbreviate each pair $(p_j, g_j)$ to $\delta_j$ for simplicity. Each precondition $p \in \mathcal{P}$
-is a {\it predicate} in predicate space, $\mathcal{P}$, defined by the OO-MDP, and
-$g \in \mathcal{G}$ is a {\it goal type} in goal space. We assume that the goal space
-consists of logical expressions of state predicates. A goal type specifies the sort of
-problem the agent is trying to achieve. In the context of Minecraft, a goal type might refer
-to the agent retrieving an object of a certain type from the environment, reaching a particular
-location, or crafting a structure. The parameter vector, $\theta$ represents model parameters for the probability distribution.
+We formalize our knowledge base, $K$, as a set of $N$ paired
+preconditions and goal types, $\{ (p_1, g_1) \ldots (p_{N}, g_{N})\}$,
+along with a parameter vector, $\theta$. We abbreviate each pair
+$(p_j, g_j)$ to $\delta_j$ for simplicity. Each precondition $p \in
+\mathcal{P}$ is a {\it predicate} in predicate space, $\mathcal{P}$,
+defined by the OO-MDP, and $g \in \mathcal{G}$ is a {\it goal type} in
+goal space.  For example, a predicate might be $nearTrench(agent)$
+which is true when the agent is standing near a trench.  We assume
+that the goal space consists of logical expressions of state
+predicates. A goal type specifies the sort of problem the agent is
+trying to achieve. In the context of Minecraft, a goal type might
+refer to the agent retrieving an object of a certain type from the
+environment, reaching a particular location, or crafting a
+structure. 
 
 We rewrite Equation~\ref{eq:master} replacing $K$ with its constituents:
 % -- Equation: replace K --
@@ -214,7 +223,7 @@ f(\delta, s, G) =
 \begin{cases}
 1& \delta.p(s) \wedge G == \delta.g \\
 0& \text{otherwise}
-\end{cases}.
+\end{cases}
 \label{eq:f_func_def}
 \end{equation}
 
@@ -232,14 +241,17 @@ We assume each action's optimality is independent from all other actions':
 = \prod_{i=1}^{|\mathcal{A}|} \Pr(a_i \in \mathcal{A}^* \mid \phi_1, \ldots, \phi_{|K|}, \theta_i)
 \label{eq:action_independ}
 \end{equation}
-where $\theta_i$ represents the set of parameters relevant to modeling the probability
-distribution of action $a_i \in {\cal A}^*$. Henceforth, we abbreviate $a_i \in \mathcal{A}^*$ to $a_i$.
+where $\theta_i$ represents the set of parameters relevant to modeling
+the probability distribution of action $a_i \in {\cal
+  A}^*$. Henceforth, we abbreviate $a_i \in \mathcal{A}^*$ to $a_i$.
+This distribution may be modeled in a number of ways making this
+approach quite flexible.
 
 % -- Subsection: Learning A* --
-\subsection{Learning $\mathcal{A}^*$}
+\subsection{Learning the Optimal Action Set}
 
-This distribution may be modeled in a number of ways making this approach
-quite flexible, though we have chosen to model it as a Naive-Bayes. First we factor using Bayes' rule:
+To enable efficient learning, we model our distribution using Naive
+Bayes. First we factor using Bayes' rule:
 % -- Equation: Bayes --
 \begin{equation}
 = \prod_{i=1}^{|\mathcal{A}|} \frac{\Pr(\phi_1, \ldots, \phi_{N}, \mid a_i, \theta) \Pr(a_i | \theta)}{\Pr(\phi_1, \ldots, \phi_{N} | \theta_i)}
@@ -277,44 +289,86 @@ and $C(\phi_j, a_i)$ is the number of occurrences where $\phi=1$ and $a_i$ was o
 % -- Subsection: Action Pruning --
 \subsection{Affordance-Aware Planning}
 \label{sec:action_pruning}
-Given a probability distribution over the optimal action set, any typical
-planner can be made to be an affordance-aware planner by pruning its action
-set in each state based on the probability distribution. In this work we propose several
-approaches to perform this pruning.
-
-% 1) Threshold
-The first method of pruning is to impose an expert defined threshold on the posterior. In this way, the affordances prune away any actions whose probability of being optimal is below the provided threshold for each state. For experiments, this method is denoted as \texttt{LRTDP}, and was set to $\frac{0.2}{|\mathcal{A}|}$, where $|\mathcal{A}|$ is the size of the full action space of the OO-MDP.
+Given a probability distribution over the optimal action set, any
+typical planner can be made to be an affordance-aware planner by
+pruning its action set in each state based on the probability
+distribution. In our experiments, we use Real Time Dynamic Programming
+(RTDP) as our baseline planner, a sampling-based algorithm that does
+not require the planner to visit all states.
 
 % 2) Expert (discriminative or model)
-Affordances may also be specified by a domain expert using a discriminative-OR model in place of the Naive Bayes. In this method, the expert specifies a set of actions associated with a precondition-goal type pair. For instance, if an agent is standing above a block of buried gold and is trying to smelt a block of gold, then an expert may indicate that the agent should consider the actions of looking down and digging. Each active affordances contributes to the set of actions to consider for each state. During experiments, this method is denoted as \texttt{ERTDP}. Table~\ref{table:afford_kb_exp} shows a few example expert defined affordances.
+Affordances may be specified by a domain expert using a
+discriminative-OR model in place of the Naive Bayes. In this method,
+the expert specifies a set of actions associated with a
+precondition-goal type pair. For instance, if an agent is standing
+above a block of buried gold and is trying to smelt a block of gold,
+then an expert may indicate that the agent should consider the actions
+of looking down and digging. Each active affordances contributes to
+the set of actions to consider for each state. During experiments,
+this method is denoted as \texttt{ERTDP}, for Export
+RTDP. Table~\ref{table:afford_kb_exp} shows a few example expert
+defined affordances.
+
+
+% 1) Threshold
+Second, an algorithm may prune actions by using an expert-defined
+threshold on the posterior. In this way, the affordances remove any
+actions whose probability of being optimal is below the provided
+threshold for each state. For experiments, this method is denoted as
+\texttt{LRTDP}, for Learned RTDP, and was set to
+$\frac{0.2}{|\mathcal{A}|}$, where $|\mathcal{A}|$ is the size of the
+full action space of the OO-MDP.  This threshold is quite
+conservative, and means that our approach only prunes actions which
+are extremely improbable.
+
 
 % 3) Sampling
-Additionally, actions may be pruned by sampling actions from the probability distribution over actions as specified by Equation~\ref{eq:final}. We treat each action's probability mass as a Bernouli trial and sample across the entire action set. In preliminary results, this method did not perform as well as baseline RTDP - likely because the weights associated with each action were too small. In future work, we are interested in investigating more sophisticated approaches to pruning actions with sampling. 
+Additionally, actions may be pruned by sampling actions from the
+probability distribution over actions as specified by
+Equation~\ref{eq:final}. We treat each action's probability mass as a
+Bernouli trial and sample across the entire action set. In preliminary
+results, this method did not perform as well as baseline RTDP - likely
+because the weights associated with each action were too small. In
+future work, we are interested in investigating more sophisticated
+approaches to pruning actions with sampling.
 
-Through the use of any of the above methods, an affordance-aware planner prunes actions
-on a state by state basis, focusing the agent on relevant action possibilities of the environment,
-consequently reducing planning time.
+Through the use of any of the above methods, an affordance-aware
+planner prunes actions on a state by state basis, focusing the agent
+on relevant action possibilities of the environment, consequently
+reducing planning time.
 
-In a recent review on the theory of affordances,~\citet{chemero2003} suggests that an affordance
-is a relation between the features of an environment and an agent's abilities. Our approach
-grounds this interpretation, where the features of the environment correspond to the goal-dependent
-state features, $\phi$, and the agent's abilities correspond to the OO-MDP action set. In our model,
-there is an affordance for each $\delta_j$, with preconditions $\delta_j.p$, goal type $\delta_j.g$ and
-action distribution $\Pr({\cal A}^* | \phi_j, \theta)$, which is computed in our Naive Bayes model by
-marginalizing over all the features not associated with $\delta_j$.
+In a recent review on the theory of affordances,~\citet{chemero2003}
+suggests that an affordance is a relation between the features of an
+environment and an agent's abilities. Our approach grounds this
+interpretation, where the features of the environment correspond to
+the goal-dependent state features, $\phi$, and the agent's abilities
+correspond to the OO-MDP action set. In our model, there is an
+affordance for each $\delta_j$, with preconditions $\delta_j.p$, goal
+type $\delta_j.g$ and action distribution $\Pr({\cal A}^* | \phi_j,
+\theta)$, which is computed in our Naive Bayes model by marginalizing
+over all the features not associated with $\delta_j$.
+
+As with human agents, multiple affordances often inform decision
+making at a given time.  Thus, affordance-aware planning agents
+operating within an OO-MDP will rarely make specific reference to
+particular affordances, but will instead reason about the world using
+the relevant action possibilities identified by the distribution in
+Equation~\ref{eq:final}.  That said, individual affordances can still
+be specified by experts, providing a natural spectrum between
+expert-provided knowledge and soft learned knowledge.
+
   
 % -- Figure: Minecraft pic --
 \begin{figure}
 \centering
 \includegraphics[scale=0.11]{figures/smelting.png}%
-  \caption{A gold smelting task in the Minecraft domain}
+  \caption{A gold smelting task in the Minecraft domain.  The agent's
+    goal is to mine a block of gold, move to the forge and then smelt
+    the gold in the forge to produce gold ingots.  \stnote{Can you
+      label the goal and the forge in the picture?}  }
   \label{fig:minecraft}
 \end{figure}
 
-As with human agents, multiple affordances often inform decision making at a given time.
-Thus, affordance-aware planning agents operating within an OO-MDP will rarely make specific
-reference to particular affordances, but will instead reason about the world using the relevant
-action possibilities identified by the distribution in Equation~\ref{eq:final}.
 
 % ====== Section: Results ======
 \section{Results}
@@ -335,14 +389,14 @@ problems.
 
 % -- Subsection: Minecraft Tests --
 \subsection{Minecraft}
-We conducted a series of experiments in the Minecraft domain that
-compared the performance of Real Time Dynamic Programming (RTDP)~\citep{barto95}
-without affordances to its affordance-aware counterpart (LRTDP, ERTDP). We created a set of expert
-affordances from our background knowledge of the domain, which are
-listed in Figure \ref{fig:afford_kb_exp}. Additionally, we ran our full
-learning process and learned a single knowledge base of affordances for use in all tests. We compared
-RTDP with its expert-affordance-aware (ERTDP) and learned-affordance-aware (LRTDP)
-counterparts.
+%% We conducted a series of experiments in the Minecraft domain that
+%% compared the performance of Real Time Dynamic Programming (RTDP)~\citep{barto95}
+%% without affordances to its affordance-aware counterpart (LRTDP, ERTDP). We created a set of expert
+%% affordances from our background knowledge of the domain, which are
+%% listed in Table~\ref{table:afford_kb_exp}. Additionally, we ran our full
+%% learning process and learned a single knowledge base of affordances for use in all tests. We compared
+%% RTDP with its expert-affordance-aware (ERTDP) and learned-affordance-aware (LRTDP)
+%% counterparts.
 
 % -- Table: Expert provided affordances --
 \begin{table}[b]
@@ -354,8 +408,8 @@ Precondition & Goal Type & Actions \\ \midrule
 \texttt{lookingAtGold} & \texttt{hasGoldOre} & \texttt{destroy} \\
 \bottomrule
 \end{tabular}
-\label{table:afford_kb_exp}
-\caption{Examples of Expert Provided Affordances}
+
+\caption{Examples of Expert Provided Affordances\label{table:afford_kb_exp}}
 \end{table}
 
 Our experiments consisted of five common tasks in Minecraft, including
@@ -366,8 +420,9 @@ worlds varied in size from tens of thousands of states to hundreds of thousands 
 
 The training data consisted of 20 simple state spaces of each map type
 (100 total), each map approximately a 1,000-10,000 state world with
-randomized features that mirrored the agent's actual state space. We conducted all tests
-with a single knowledge base.
+randomized features that mirrored the agent's actual state
+space. \stnote{Not sure what this means.  Randomized features?} We
+conducted all tests with a single knowledge base.
 
 Our RTDP and domain parameters are set as follows. We terminated each planner
 when the maximum change in the value function was less than 0.01 for
