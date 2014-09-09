@@ -45,19 +45,17 @@ intractable in large state spaces due to the well-known curse of
 dimensionality. Existing approaches to planning in large stochastic
 state spaces fail to prevent autonomous agents from considering many
 actions that are obviously irrelevant to a human solving the same
-task. To prevent agents from applying irrelevant actions, we formalize the notion of {\em affordances} as
-goal-oriented knowledge added to an Object Oriented Markov Decision
-Process (OO-MDP).  Affordances prune irrelevant actions based on the current
-state and the robot's goal, reducing the number of state-action pairs
-the planner must evaluate in order to synthesize a near optimal
-policy. We show that an agent can learn affordances through
-experience, and that learned affordances can equal or surpass the
-performance of those provided by experts.
+task. To prevent agents from applying irrelevant actions we formalize the notion of {\em affordances} as
+state space independent, goal-oriented knowledge added to an Object Oriented Markov Decision
+Process (OO-MDP).  Affordances prune irrelevant actions based on the agent's goal and
+the current state, reducing the number of state-action pairs
+the planner must evaluate in order to formulate a near optimal
+policy. Moreover, affordances may be provided by an expert or may be learned without supervision.
 We demonstrate our approach in the state-rich Minecraft domain, showing significant increases in
-speed and reductions in state space exploration during planning, with
-minimal loss in quality of the synthesized policy.  Additionally, we
-employ affordance-aware planning on a Baxter robot, demonstrating it
-is able to assist a person performing a collaborative cooking task.
+speed, reductions in state space exploration, and improvements in the quality of the synthesized policy.
+Additionally, we show that learned affordances often surpass the
+performance of those provided by experts. We also demonstrate that
+affordance-aware planning enables a Baxter robot to assist a person performing a cooking task.
 \end{abstract}
 
 %\maketitle
