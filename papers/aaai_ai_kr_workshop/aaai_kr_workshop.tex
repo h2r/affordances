@@ -1,5 +1,5 @@
-%File: aaai_kr_workshop.tex
 \documentclass[letterpaper]{article}
+% Required Packages
 \usepackage{aaai}
 \usepackage{times}
 \usepackage{helvet}
@@ -24,23 +24,28 @@
 
 \newcommand*\samethanks[1][\value{footnote}]{\footnotemark[#1]}
 \newcommand{\gnote}[1]{\textcolor{Red}{\textbf{G: #1}}}
-
-\begin{document}
+%%%%%%%%%%
+% PDFINFO for PDFLATEX
 \pdfinfo{
-   /Author (Gabriel Barth-Maron \& David Abel, James MacGlashan, Stefanie Tellex)
+   /Author (Gabriel Barth-Maron, David Abel, James MacGlashan, Stefanie Tellex)
    /Title  (Affordances as Transferable Knowledge for Planning Agents)
    /CreationDate (D:20101201120000)
    /Subject (Robotics, Planning, Affordances, Knowledge)
    /Keywords (Planning, Affordance, MDP, Learning)
 }
-
+%%%%%%%%%%
+% Title, Author, and Address Information
 \title{Affordances as Transferable Knowledge for Planning Agents}
-\author{Gabriel Barth-Maron\thanks{The first two authors contributed equally to this paper.}, David Abel\samethanks, James MacGlashan, Stefanie Tellex\\
+\author{Gabriel Barth-Maron\thanks{The first two authors contributed equally to this paper.} \and David Abel\samethanks
+\and James MacGlashan
+\and Stefanie Tellex\\
+\{gabriel\_barth-maron, david\_abel, james\_macglashan, stefanie\_tellex\}@brown.edu\\
 Brown University, Computer Science Dept. \\
 115 Waterman Street, 4th floor \\
 Providence, RI 02912-1910}
-
-
+%%%%%%%%%%
+% Body of Paper Begins
+\begin{document}
 \maketitle
 \begin{abstract}
 Robotic agents often map perceptual input to simplified
@@ -79,10 +84,8 @@ policy (a mapping from states to actions) for some subset of the state
 space that enables the agent to achieve a goal from some initial
 state, while minimizing any costs along the way.
 Increases in planning problem size and complexity directly correspond
-to an explosion in the state-action space, restricting extensions to large state-spaces
-such as robotic applications. Current approaches to solving 
-sequential decision making problems in the face of uncertainty cannot tackle these problems 
-as the state-action space becomes too large~\cite{grounds05}.
+to an explosion in the state-action space, restricting extensions to large state-spaces such as robotic applications. Current approaches to solving 
+sequential decision making problems in the face of uncertainty cannot tackle these problems as the state-action space becomes too large~\cite{grounds05}.
 
 To address this state-space explosion, prior work has explored adding
 knowledge to the planner to solve problems in these
@@ -111,7 +114,6 @@ with transferable knowledge that is effective in a wide variety of
 problems. We call any planner that uses affordances an {\it
   affordance-aware} planner.
 
-
 Because affordances define the {\em kind} of goals for which actions
 are useful, affordances also enable high-level reasoning that can be
 combined with approaches like high-level subgoal planning for even
@@ -133,10 +135,7 @@ of our framework.
 %% the perception and sensing pipeline to endow robotic agents with
 %% substantial reasoning and sensing capabilities.
 
-
-
 \subsection{Minecraft}
-
 We use Minecraft as our planning and evaluation domain. Minecraft is a
 3-D blocks world game in which the user can place and destroy blocks
 of different types.   It serves as a model for a variety of robotic tasks involving assembly and construction.  Minecraft's physics and action space are expressive
@@ -295,20 +294,6 @@ or {\em reward shaping}. Initializing the value function to an admissible close 
 Reward shaping is an alternative approach to providing heuristics. The planning algorithm uses a modified version of the reward function that returns larger rewards for state-action pairs that are expected to be useful, but does not guarantee convergence to an optimal policy unless certain properties of the shaped reward are satisfied~\cite{potshap}.
 
 A critical difference between heuristics and affordances is that heuristics are highly dependent on the reward function and state space of the task being solved, whereas affordances are state space independent and transferable between different reward functions. However, if a heuristic can be provided, the combination of heuristics and affordances may even more greatly accelerate planning algorithms than either approach alone.
-
-%% --- Subsection: Affordances ---
-%\subsection{Affordances}
-%Affordances have been used throughout Artificial Intelligence and Robotics
-%for a variety of applications. \citep{steedman02} performed work in formalizing affordances through the 
-%Linear Dynamic Event Calculus (LDEC). This work was aimed at linking events and 
-%objects in the context of language and prelinguistic cognitive apparatuses. ~\citep{koppula13a} 
-%developed an inference algorithm that enables a robotic agent to anticipate a human partner's 
-%actions based on the robots perceived affordances. Additionally, ~\citep{koppula13c} 
-%performed work in predicting object affordances by treating humans as a latent variable in a given scene. 
-%~\citep{gorniak05} proposed the Affordance-Based-Concept, which targeted using the perception 
-%of affordances as a means of determining the set of possible interactions an agent may engage with in a given context.
-%This was then applied toward situated-language understanding and language-generating agents. Lastly, 
-%many have used affordances as a paradigm for solving table top grasping problems ~\citep{pas13,sweeney07,detry09,montesano09}.
 
 \begin{figure*}
 \centering
@@ -587,8 +572,8 @@ the agent with extensive state-space-specific subgoal knowledge that is essentia
 We hope to automatically discover useful subgoals - a topic of some active research \cite{Mcgovern01automaticdiscovery,Simsek:2005:IUS:1102351.1102454}.
 This will allow for affordances to reduce the size of the explored state-action space without requiring knowledge from an expert, increasing transferability across task types.
 
-\bibliographystyle{aaai}
+%%%%%%%%%%
+% References and End of Paper
 \bibliography{main}
-
-
+\bibliographystyle{aaai}
 \end{document}
