@@ -51,8 +51,8 @@ Process (OO-MDP).  Affordances prune irrelevant actions based on the agent's goa
 the current state, reducing the number of state-action pairs
 the planner must evaluate in order to formulate a near optimal
 policy. Moreover, affordances may be provided by an expert or may be learned without supervision.
-We demonstrate our approach in the state-rich Minecraft domain, showing significant increases in
-speed, reductions in state space exploration, and improvements in the quality of the synthesized policy during planning.
+We demonstrate our approach planning in the state-rich Minecraft domain, showing significant increases in
+speed, reductions in state space exploration, and improvements in the quality of the synthesized policy.
 Additionally, we show that learned affordances often surpass the
 performance of those provided by experts. We also demonstrate that
 affordance-aware planning enables a Baxter robot to assist a person performing a cooking task.
@@ -190,6 +190,7 @@ for each action's optimality:
 \end{equation}
 
 \noindent for $i \in \{1, \ldots, |\mathcal{A}|\}$, where $\mathcal{A}$ is the OO-MDP action space.
+%Henceforth, we simplify the event $a_i \in \mathcal{A}^*$ to $a_i$, and $a_i \not\in \mathcal{A}^*$ to $\neg a_i$. 
 
 We formalize our knowledge base, $K$, as a set of $n$ paired
 preconditions and goal types, $\{ (p_1, g_1) \ldots (p_{n}, g_{n})\}$,
@@ -203,16 +204,18 @@ that the goal space consists of logical expressions of state
 predicates. A goal type specifies the sort of problem the agent is
 trying to achieve. In the context of Minecraft, a goal type might
 refer to the agent retrieving an object of a certain type from the
-environment, reaching a particular location, or crafting an object or structure. 
+environment, reaching a particular location, or crafting an object or structure.
+Depending on the agent's current goal, the relevance of each action changes
+dramatically.
 
 We rewrite Equation~\ref{eq:master} replacing $K$ with its constituents:
 % -- Equation: replace K --
 \begin{multline}
-\Pr(a_i \in \mathcal{A}^* \mid s, G, K) \\
+\Pr(a_i \mid s, G, K) \\
 = \Pr(a_i \in \mathcal{A}^* \mid s, G, \delta_1 \ldots \delta_n, \theta_i)
 \end{multline}
 \noindent where $\theta_i$ represents the set of parameters relevant to modeling
-the probability of action $a_i \in {\cal A}^*$.
+the probability of action $a_i \in {\cal A}^*$. 
 
 We introduce the indicator function $f$, which returns 1 if and only if $\delta_j$'s predicate is true in the provided state $s$, and $\delta_j$'s goal type matches the agent's current goal, $G$:
 % -- Equation: function f defn --
@@ -225,16 +228,14 @@ f(\delta, s, G) =
 \label{eq:f_func_def}
 \end{equation}
 
-
 Evaluating $f$ for each $\delta_j$ given the current state and goal gives rise to a set of binary features,
 $\phi_j = f(\delta_j, s, G)$, which we use to reformulate our probability distribution.
 % -- Equation: replace deltas with phi --
 \begin{multline}
-\Pr(a_i \in \mathcal{A}^* \mid s, G, \delta_1 \ldots \delta_n, \theta_i) \\
-= \Pr(a_i \in \mathcal{A}^* \mid \phi_1, \ldots, \phi_n, \theta_i)
+\Pr(a_i \in \mathcal{A}^*  \mid s, G, \delta_1 \ldots \delta_n, \theta_i) \\
+= \Pr(a_i \in \mathcal{A}^*  \mid \phi_1, \ldots, \phi_n, \theta_i)
 \label{eq:feature_rep}
 \end{multline}
-
 
 This distribution may be modeled in a number of ways making this
 approach quite flexible. However, to enable efficient learning, we model our distribution using Naive
@@ -242,6 +243,7 @@ Bayes. First we factor using Bayes' rule:
 % -- Equation: Bayes --
 \begin{equation}
 = \frac{\Pr(\phi_1, \ldots, \phi_{n}, \mid a_i \in \mathcal{A}^*, \theta_i) \Pr(a_i \in \mathcal{A}^* \mid \theta_i)}{\Pr(\phi_1, \ldots, \phi_{n} | \theta_i)}
+%= \frac{\Pr(\phi_1, \ldots, \phi_{n}, \mid a_i, \theta_i) \Pr(a_i \mid \theta_i)}{\Pr(\phi_1, \ldots, \phi_{n} | \theta_i)}
 \label{eq:bayes}
 \end{equation}
 
@@ -274,14 +276,15 @@ $\theta_{i,0} = \Pr(a_i)$ and $\theta_{i,j} = \Pr(\phi_j | a_i)$, for $j \in \{1
 
 Here, $C(a_i)$ is the number of observed occurrences where $a_i$ was optimal across all worlds $W$,
 $C(\bar{a_i})$ is the number of observed occurrences where $a_i$ was not optimal,
-and $C(\phi_j, a_i)$ is the number of occurrences where $\phi_j=1$ and $a_i$ was optimal. In all cases,
-optimality was determined according to $\pi$.
+and $C(\phi_j, a_i)$ is the number of occurrences where $\phi_j=1$ and $a_i$ was optimal.
 
 \begin{align}
 C(a_i) &= \sum_{w \in W} \sum_{s \in w} (\pi(s) == a_i) \\
 C(\bar{a_i}) &= \sum_{w \in W} \sum_{s \in w} (\pi(s) \not= a_i) \\
 C(\phi_j, a_i) &= \sum_{w \in W} (\sum_{s \in w} \pi(s) == a_i \wedge \phi_j == 1)
 \end{align}
+
+In all cases, optimality was determined according to $\pi$.
 
 % -- Subsection: Action Pruning --
 \subsection{Affordance-Aware Planning}
@@ -329,7 +332,7 @@ affordance-aware with this approach.
 
 % -- Table: Expert provided affordances --
 \begin{table}[b]
-\ra{1.4}
+\ra{1.35}
 \begin{tabular}{@{}llll@{}}\toprule
 Precondition & Goal Type & Actions \\ \midrule
 \texttt{lookingTowardGoal} & \texttt{atLocation} & \texttt{\{move\}} \\
@@ -364,11 +367,10 @@ over all the features not associated with $\phi_j$.
 % -- Figure: Minecraft pic --
 \begin{figure}
 \centering
-\includegraphics[scale=0.09]{figures/smelting.png}%
+\includegraphics[scale=0.08]{figures/smelting_labeled.png}%
   \caption{A gold smelting task in the Minecraft domain.  The agent's
     goal is to mine a block of gold, move to the forge and then smelt
-    the gold in the forge to produce gold ingots.  \stnote{Can you
-      label the goal and the forge in the picture?}  }
+    the gold in the forge to produce gold ingots.}
   \label{fig:minecraft}
 \end{figure}
 
@@ -379,7 +381,7 @@ over all the features not associated with $\phi_j$.
 % -- Figure: Average results --
 \begin{figure*}
 \centering
-\includegraphics[scale=0.06,width=\textwidth]{figures/average_results.png}%
+\includegraphics[scale=0.18]{figures/average_results_cropped.png}%
 \caption{Average Results From All Maps}
 \label{fig:average_results}
 \end{figure*}
@@ -433,7 +435,7 @@ after planning in 20 different maps of each goal type (100
 total). 
 
 \begin{table}[H]
-\ra{1.3}
+\ra{1.25}
 \begin{tabular}{@{}llll@{}}\toprule
 Planner & Bellman & Reward & CPU \\ \midrule
 \texttt{RTDP}   			&	27439 ($\pm$2348)		&	-22.6 ($\pm$9)		& 107 ($\pm$33) \\
@@ -492,7 +494,7 @@ unnecessary actions.
 % -- Subsection: Baxter --
 \subsection{ARTDP and Baxter}
 
-\dnote{Insert description of baxter stuff here}
+\dnote{Stephen: Insert description of baxter stuff here}
 
 % -- Figure: Baxter results/image
 \begin{figure}[H]
@@ -517,7 +519,7 @@ designed for use with deterministic domains.
 
 
 \begin{table}[t]
-\ra{1.3}
+\ra{1.2}
 \begin{tabular}{@{}llll@{}}\toprule
 Planner & Bellman & Reward & CPU \\ \midrule
 &\hspace{-10mm}{\it Mining Task} \\
@@ -652,8 +654,6 @@ a \textsc{Strips} style planner may be guided through the search space by checki
 whether candidate plans do not falsify a given knowledge base of LTL formulas, often
 achieving polynomial time planning in exponential space.
 
-\enote{Maybe add how LTL is similar to what we are doing?}
-
 The primary difference between this body of work and affordance-aware planning is that
 affordances may be learned increasing autonomy of the agent and flexibility of the approach, while LTL formulas are far
 too complicated to learn effectively, placing dependence on an expert.
@@ -661,7 +661,6 @@ too complicated to learn effectively, placing dependence on an expert.
 % ====== Section: Conclusion ======
 \section{Conclusion}
 \label{sec:conclusion}
-\dnote{Conclusion could use some work/rewriting}
 We proposed a novel approach to represent transferable knowledge in terms of
 {\em affordances}~\cite{gibson77}. Our affordances allow an agent to efficiently prune actions 
 based on learned knowledge, providing a significant reduction in the number of state-action
@@ -673,26 +672,23 @@ across a variety of task types, reward functions, and state spaces, allowing for
 to robotic applications.
 
 Additionally, we compared the effectiveness of augmenting planners with affordances, with 
-temporally extended actions, and both. The results suggest that affordances may be combined with 
-temporally extended actions to provide improvements in planning, since affordances can handle the 
-extended action space.
+temporally extended actions, and the combination of the two. The results suggest that affordances may be combined with 
+temporally extended actions to provide improvements in planning.
 
 Lastly, we deployed an affordance-aware planner on a robot in a collaborative cooking task with a massive 
-state space. \dnote{More baxter details here}.
+state space. \dnote{Stephen: more baxter details here}.
 
 In the future, we hope to automatically discover useful state space specific subgoals online 
 - a topic of some active research \cite{Mcgovern01automaticdiscovery,Simsek:2005:IUS:1102351.1102454}.
-Since affordances are goal specific, they will plug easily into high-level subgoal planning. Automatic discovery of subgoals
-would allow affordance-aware planners to take advantage of this connection, and would further reduce the size of the 
-explored state-action space by improving the effectiveness of action pruning. 
+Automatic discovery of subgoals would allow affordance-aware planners to take advantage of the goal-oriented
+focus of affordances, and would further reduce the size of the explored state-action space by improving the effectiveness of action pruning. 
 
 Additionally, we hope to explore additional methods that capitalize on the distribution over optimal actions,
 such as incorporating affordances with a forward search sparse sampling algorithm~\cite{walsh2010integrating},
 or replacing the Naive Bayes model with a more sophisticated model, such as Logistic Regression or a Noisy-OR.
 We are also investigating methods of learning the thresholded value in a more principled way - one such
 approach is to initialize the planner with a strict threshold, and slowly relax the threshold until a near optimal
-policy is found. We are also interested in updating model parameters on-line by using planning data to update
-the distribution over optimal actions.
+policy is found.
 
 {\small
 \bibliographystyle{plainnat}
