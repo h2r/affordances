@@ -281,7 +281,7 @@ and $C(\phi_j, a_i)$ is the number of occurrences where $\phi_j=1$ and $a_i$ was
 \begin{align}
 C(a_i) &= \sum_{w \in W} \sum_{s \in w} (\pi(s) == a_i) \\
 C(\bar{a_i}) &= \sum_{w \in W} \sum_{s \in w} (\pi(s) \not= a_i) \\
-C(\phi_j, a_i) &= \sum_{w \in W} (\sum_{s \in w} \pi(s) == a_i \wedge \phi_j == 1)
+C(\phi_j, a_i) &= \sum_{w \in W} \sum_{s \in w} (\pi(s) == a_i \wedge \phi_j == 1)
 \end{align}
 
 In all cases, optimality was determined according to $\pi$.
