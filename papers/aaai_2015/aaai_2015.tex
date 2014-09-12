@@ -114,7 +114,7 @@ Our affordances can be specified by hand and also learned through experience,
 making them a concise, transferable, and learnable means of
 representing useful planning knowledge. Our experiments demonstrate
 that affordances provide dramatic improvements for a variety of planning
-tasks compared to baselines, and apply across different state spaces.
+tasks compared to baselines, and are applicable across different state spaces.
 Moreover, while manually provided affordances outperform baselines, affordances
 learned through experience yield even greater improvements. 
 We conduct experiments in the game Minecraft, which has a very
@@ -136,7 +136,7 @@ $\mathcal{T}$ denotes $\mathcal{T}(s' \mid s,a)$, the transition
 probability of an agent applying action $a \in \mathcal{A}$ in state
 $s \in \mathcal{S}$ and arriving in $s' \in \mathcal{S}$;
 $\mathcal{R}(s,a,s')$ denotes the reward received by the agent for
-applying action $a$ in state $s$ and and transitioning to state $s'$;
+applying action $a$ in state $s$ and transitioning to state $s'$;
 and $\gamma \in [0, 1)$ is a discount factor that defines how much the
 agent prefers immediate rewards over future rewards (the agent
 prefers to maximize immediate rewards as $\gamma$ decreases).
@@ -182,7 +182,7 @@ value function, respectively.
 We aim to learn a probability distribution over the optimality of each action
 for a given state ($s$), goal ($G$), and knowledge base ($K$) from
 which action pruning may be informed. Thus, we want to infer a Bernouli
-for each action's optimality:
+distribution for each action's optimality:
 % -- Equation: Master Equation --
 \begin{equation}
 \Pr(a_i \in \mathcal{A}^* \mid s, G, K)
@@ -202,7 +202,7 @@ goal space.  For example, a predicate might be $nearTrench(agent)$
 which is true when the agent is standing near a trench. We assume
 that the goal space consists of logical expressions of state
 predicates. A goal type specifies the sort of problem the agent is
-trying to achieve. In the context of Minecraft, a goal type might
+trying to solve. In the context of Minecraft, a goal type might
 refer to the agent retrieving an object of a certain type from the
 environment, reaching a particular location, or crafting an object or structure.
 Depending on the agent's current goal, the relevance of each action changes
@@ -211,7 +211,7 @@ dramatically.
 We rewrite Equation~\ref{eq:master} replacing $K$ with its constituents:
 % -- Equation: replace K --
 \begin{multline}
-\Pr(a_i \mid s, G, K) \\
+\Pr(a_i \mid s, G, K)
 = \Pr(a_i \in \mathcal{A}^* \mid s, G, \delta_1 \ldots \delta_n, \theta_i)
 \end{multline}
 \noindent where $\theta_i$ represents the set of parameters relevant to modeling
@@ -493,6 +493,8 @@ unnecessary actions.
 
 % -- Subsection: Baxter --
 \subsection{ARTDP and Baxter}
+
+\gnote{Should ARTDP be ERTDP?}
 
 \dnote{Stephen: Insert description of baxter stuff here}
 
