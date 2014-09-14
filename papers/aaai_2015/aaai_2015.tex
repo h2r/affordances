@@ -88,7 +88,7 @@ different set of objects and actions are relevant.
 
 To address this state-action space explosion, prior work has explored
 adding knowledge to the planner, such as options~\cite{sutton99} and
-macroactions~\cite{Botea:2005kx,Newton:2005vn}.  However, while these
+macro-actions~\cite{Botea:2005kx,Newton:2005vn}.  However, while these
 methods allow the agent to search more deeply in the state space, they
 add non-primitive actions to the planner which {\em increase} the size of
 the state-action space.  The resulting augmented space is even larger,
@@ -118,12 +118,134 @@ tasks compared to baselines, and are applicable across different state spaces.
 Moreover, while manually provided affordances outperform baselines, affordances
 learned through experience yield even greater improvements. 
 We conduct experiments in the game Minecraft, which has a very
-large state-action space, and on a real-world robotic cooking assistant.
+large state-action space, and on a real-world robotic cooking assistant. We plan
+to release all associated code along with a list of predicates/goal types 
 
 %% Because affordances define the {\em kind} of goals for which actions
 %% are useful, affordances also enable high-level reasoning that can be
 %% combined with approaches like subgoal planning for even
 %% greater performance gains. 
+
+% ====== Section: Related Work ======
+\section{Related Work}
+\label{sec:related-work}
+
+In this section, we discuss the differences between
+affordance-aware planning and other forms of knowledge engineering that
+have been used to accelerate planning. We divide these approaches
+into those that are built to plan in stochastic domains, and those that are
+designed for use with deterministic domains. This paper builds on previous work
+published at two workshops (citation removed for blind review).
+
+% -- Subsection: Stochastic --
+\subsection{Stochastic Approaches}
+
+Here, we compare other approaches of action pruning and
+knowledge engineering that provide speedups to planners
+in stochastic domains.
+
+% --- Subsection: Temporally Extended Actions ---
+\subsubsection{Temporally Extended Actions}
+Temporally extended actions are actions that the agent can select like
+any other action of the domain, except executing them results in
+multiple primitive actions being executed in succession. Two common
+forms of temporally extended actions are {\em
+  macro-actions}~\cite{hauskrecht98} ~and {\em
+  options}~\cite{sutton99}.  Macro-actions are actions that always
+execute the same sequence of primitive actions. Options are defined
+with high-level policies that accomplish specific sub tasks. For
+instance, when an agent is near a door, the agent can engage the
+`door-opening-option-policy', which switches from the standard
+high-level planner to running a policy that is crafted to open
+doors.  Although the classic options framework is not generalizable to
+different state spaces, creating {\em portable} options is a topic of
+active
+research~\cite{konidaris07,konidaris2009efficient,Ravindran03analgebraic,croonenborghs2008learning,andre2002state,konidaris2012transfer}.
+
+Since temporally extended actions may negatively impact planning
+time~\cite{Jong:2008zr} by adding to the number of actions the agent
+can choose from in a given state, combining affordances with
+temporally extended actions allows for even further speedups in
+planning, as demonstrated in Table~\ref{table:temp_ext_act_results}. In
+other words, affordances are complementary knowledge to options and
+macro-actions.
+
+% --- Subsection: Action Pruning ---
+\subsubsection{Action Pruning}
+
+Sherstov and Stone~\cite{sherstov2005improving} considered MDPs 
+for which the action set of the optimal
+policy of a source task could be transferred to a new, but similar,
+target task to reduce the learning time required to find the optimal
+policy in the target task. The main difference between our
+affordance-based action set pruning and this action transfer work is
+that affordances prune away actions on a state by state basis, whereas
+the learned action pruning is on per task level.
+
+Rosman and Ramamoorthy~\cite{rosman2012good} provide a method for learning action
+priors over a set of related tasks. Specifically, they compute a Dirichlet distribution over 
+actions by extracting the frequency that each action was optimal in each state for each 
+previously solved task.
+
+Action priors can only be used with planning/learning algorithms that
+work well with an $\epsilon$-greedy rollout policy, while affordances
+can be applied to almost any MDP solver.  In addition, action
+priors are only utilized for fraction $\epsilon$ of the time steps,
+which is quite small, limiting the improvement they can make
+to the planning speed.  Finally, as variance in tasks explored
+increases, the priors will become more uniform. In contrast,
+affordance-aware planning can handle a wide variety of tasks in a
+single knowledge base, as demonstrated by
+Table~\ref{table:minecraft_results}.
+
+% --- Subsubsection: Heuristics ---
+\subsubsection{Heuristics}
+Heuristics in MDPs are used to convey information about the value of a
+given state-action pair with respect to the task being solved and
+typically take the form of either {\em value function initialization},
+or {\em reward shaping}. Initializing the value function to an
+admissible close approximation of the optimal value function has been
+shown to be effective for LAO* and RTDP~\cite{Hansen:1999qf}.  Reward
+shaping is an alternative approach to providing heuristics. The
+planning algorithm uses a modified version of the reward function that
+returns larger rewards for state-action pairs that are expected to be
+useful, but does not guarantee convergence to an optimal policy unless
+certain properties of the shaped reward are satisfied~\cite{potshap}.
+
+However, heuristics are highly dependent on the reward function and
+state space of the task being solved, whereas affordances are state
+space independent and may be learned easily for different reward
+functions. If a heuristic can be provided, the combination of
+heuristics and affordances may even more greatly accelerate planning
+algorithms than either approach alone.
+
+% -- Subsection: Deterministic knowledge engineering approaches --
+\subsection{Deterministic Approaches}
+
+There have been several attempts at engineering knowledge
+to decrease planning time for deterministic planners. These are
+fundamentally solving a different problem from what we are interested
+in since they deal with non-stochastic problems, but there are
+interesting parallels nonetheless.
+
+% --- Subsubsection: Hierarchical Task Networks ---
+\subsubsection{Hierarchical Task Networks}
+Traditional Hierarchical Task Networks (HTNs) employ \textit{task decompositions} to aid in planning~\cite{erol1994htn}. The goal at hand is decomposed into smaller tasks which are in turn decomposed into smaller tasks. This decomposition continues until immediately achievable primitive tasks are derived. The current state of the task decomposition, in turn, informs constraints which reduce the space over which the planner searches. At a high level both HTNs and affordances both achieve action pruning by exploiting some form of supplied knowledge. 
+
+However there are two key differences between affordances and traditional HTNs.  (1) HTNs do not incorporate reward into their planning. Consequently, they lack any guarantees of the quality of any induced plan. (2) On a qualitative level, the degree of supplied knowledge in HTNs far exceeds that of affordances: HTNs require not only constraints for sub-tasks but a hierarchical framework of arbitrary complexity. Affordances require either simple symbolic knowledge, as illustrated in Table ~\ref{table:afford_kb_exp}, or a set of predicates for use as features and a means of generating candidate state spaces.
+
+% --- Subsubsection: Temporal Logic ---
+\subsubsection{Temporal Logic}
+Bacchus and Kabanza~\cite{Bacchus95usingtemporal,Bacchus99usingtemporal} provided
+planners with domain dependent knowledge in the form of a first-order version of linear
+temporal logic (LTL), which they used for control of a forward-chaining planner. With this methodology, 
+a \textsc{Strips} style planner may be guided through the search space by pruning
+candidate plans that falsify the given knowledge base of LTL formulas, often
+achieving polynomial time planning in exponential space.
+
+The primary difference between this body of work and affordance-aware planning is that
+affordances may be learned, increasing autonomy of the agent and flexibility of the approach, while LTL formulas are far
+too complicated to learn effectively, placing dependence on an expert.
 
 % ====== Affordances ======
 \section{Technical Approach}
@@ -276,7 +398,7 @@ $\theta_{i,0} = \Pr(a_i)$ and $\theta_{i,j} = \Pr(\phi_j | a_i)$, for $j \in \{1
 
 Here, $C(a_i)$ is the number of observed occurrences where $a_i$ was optimal across all worlds $W$,
 $C(\bar{a_i})$ is the number of observed occurrences where $a_i$ was not optimal,
-and $C(\phi_j, a_i)$ is the number of occurrences where $\phi_j=1$ and $a_i$ was optimal.
+and $C(\phi_j, a_i)$ is the number of occurrences where $\phi_j=1$ and $a_i$ was optimal. More formally:
 
 \begin{align}
 C(a_i) &= \sum_{w \in W} \sum_{s \in w} (\pi(s) == a_i) \\
@@ -387,7 +509,7 @@ over all the features not associated with $\phi_j$.
 \end{figure*}
 
 We evaluate our approach using the game Minecraft and a
-collaborative robotic cooking task.  Minecraft is a 3-D blocks game in which
+collaborative robotic cooking task\footnote{We plan to release all of our code on notification of acceptance, along with the full list of expert affordances and feature predicates used.}.  Minecraft is a 3-D blocks game in which
 the user can place, craft, and destroy blocks of different types.
 Minecraft's physics and action space allow users to create complex
 systems, including logic gates and functional scientific graphing
@@ -434,7 +556,7 @@ updates, accumulated reward, and CPU time for RTDP, LRTDP and ERTDP
 after planning in 20 different maps of each goal type (100
 total). 
 
-\begin{table}[H]
+\begin{table}[b]
 \ra{1.25}
 \begin{tabular}{@{}llll@{}}\toprule
 Planner & Bellman & Reward & CPU \\ \midrule
@@ -469,20 +591,20 @@ overhead of supplying training worlds.
 % -- Subsection: Temporally Extended Actions --
 \subsection{Temporally Extended Actions and Affordances}
 
-We compared our approach to Temporally Extended Actions: macroactions
+We compared our approach to Temporally Extended Actions: macro-actions
 and options. We conducted these experiments with the same
 configurations as our Minecraft experiments. Domain experts provided
-the option policies and macroactions.
+the option policies and macro-actions.
 
 Table~\ref{table:temp_ext_act_results} indicates the results of
 comparing RTDP equipped with macro actions, options, and affordances
 across 100 different executions in the same randomly generated
 Minecraft worlds. The results are averaged across tasks of each
 type presented in Table~\ref{table:minecraft_results}. As the results
-suggest, both macroactions and options add a significant amount of
+suggest, both macro-actions and options add a significant amount of
 time to planning.  This increase is because it is computationally
 expensive to predict the expected reward associated with applying an
-option or a macroaction. Furthermore, the branching factor of the
+option or a macro-action. Furthermore, the branching factor of the
 state-action space significantly increases when augmented with
 additional actions, causing the planner to run for longer and perform
 more Bellman updates. With affordances, the planner found a better
@@ -492,9 +614,7 @@ space provided by temporally extended actions by pruning away
 unnecessary actions.
 
 % -- Subsection: Baxter --
-\subsection{ARTDP and Baxter}
-
-\gnote{Should ARTDP be ERTDP?}
+\subsection{ERTDP and Baxter}
 
 \dnote{Stephen: Insert description of baxter stuff here}
 
@@ -506,18 +626,6 @@ unnecessary actions.
   \label{fig:baxter_results}
 \end{figure}
 
-% ====== Section: Related Work ======
-\section{Related Work}
-\label{sec:related-work}
-
-In this section, we discuss the differences between
-affordance-aware planning and other forms of knowledge engineering that
-have been used to accelerate planning. We divide these approaches
-into those that are built to plan in stochastic domains, and those that are
-designed for use with deterministic domains.
-
-% -- Subsection: Stochastic --
-\subsection{Stochastic Approaches}
 
 
 \begin{table}[t]
@@ -550,122 +658,12 @@ Planner & Bellman & Reward & CPU \\ \midrule
 \label{table:minecraft_results}
 \end{table}
 
-Here, we compare other approaches of action pruning and
-knowledge engineering that provide speedups to planners
-in stochastic domains.
-
-% --- Subsection: Temporally Extended Actions ---
-\subsubsection{Temporally Extended Actions}
-Temporally extended actions are actions that the agent can select like
-any other action of the domain, except executing them results in
-multiple primitive actions being executed in succession. Two common
-forms of temporally extended actions are {\em
-  macro-actions}~\cite{hauskrecht98} ~and {\em
-  options}~\cite{sutton99}.  Macro-actions are actions that always
-execute the same sequence of primitive actions. Options are defined
-with high-level policies that accomplish specific sub tasks. For
-instance, when an agent is near a door, the agent can engage the
-`door-opening-option-policy', which switches from the standard
-high-level planner to running a policy that is hand crafted to open
-doors.  Although the classic options framework is not generalizable to
-different state spaces, creating {\em portable} options is a topic of
-active
-research~\cite{konidaris07,konidaris2009efficient,Ravindran03analgebraic,croonenborghs2008learning,andre2002state,konidaris2012transfer}.
-
-Since temporally extended actions may negatively impact planning
-time~\cite{Jong:2008zr} by adding to the number of actions the agent
-can choose from in a given state, combining affordances with
-temporally extended actions allows for even further speedups in
-planning, as demonstrated in Table~\ref{table:temp_ext_act_results}. In
-other words, affordances are complementary knowledge to options and
-macroactions.
-
-% --- Subsection: Action Pruning ---
-\subsubsection{Action Pruning}
-
-Sherstov and Stone~\cite{sherstov2005improving} considered MDPs with a
-very large action set and for which the action set of the optimal
-policy of a source task could be transferred to a new, but similar,
-target task to reduce the learning time required to find the optimal
-policy in the target task. The main difference between our
-affordance-based action set pruning and this action transfer work is
-that affordances prune away actions on a state by state basis, whereas
-the learned action pruning is on per task level. Further, with goal
-types, affordances may be attached to subgoal planning for a
-significant benefit in planning tasks where complete subgoal knowledge
-is known.
-
-Rosman and Ramamoorthy~\cite{rosman2012good} provide a method for learning action
-priors over a set of related tasks. Specifically, they compute a Dirichlet distribution over 
-actions by extracting the frequency that each action was optimal in each state for each 
-previously solved task.
-
-Action priors can only be used with planning/learning algorithms that
-work well with an $\epsilon$-greedy rollout policy, while affordances
-can be applied to almost any planning algorithm.  In addition, action
-priors are only utilized for fraction $\epsilon$ of the time steps,
-which is typically quite small, limiting the improvement they can make
-to the planning speed.  Finally, as variance in tasks explored
-increases, the priors will become more uniform. In contrast,
-affordance-aware planning can handle a wide variety of tasks in a
-single knowledge base, as demonstrated by
-Table~\ref{table:minecraft_results}.
-
-% --- Subsubsection: Heuristics ---
-\subsubsection{Heuristics}
-Heuristics in MDPs are used to convey information about the value of a
-given state-action pair with respect to the task being solved and
-typically take the form of either {\em value function initialization},
-or {\em reward shaping}. Initializing the value function to an
-admissible close approximation of the optimal value function has been
-shown to be effective for LAO* and RTDP~\cite{Hansen:1999qf}.  Reward
-shaping is an alternative approach to providing heuristics. The
-planning algorithm uses a modified version of the reward function that
-returns larger rewards for state-action pairs that are expected to be
-useful, but does not guarantee convergence to an optimal policy unless
-certain properties of the shaped reward are satisfied~\cite{potshap}.
-
-However, heuristics are highly dependent on the reward function and
-state space of the task being solved, whereas affordances are state
-space independent and may be learned easily for different reward
-functions. If a heuristic can be provided, the combination of
-heuristics and affordances may even more greatly accelerate planning
-algorithms than either approach alone.
-
-% -- Subsection: Deterministic knowledge engineering approaches --
-\subsection{Deterministic Approaches}
-
-There have been several successful attempts at engineering knowledge
-to decrease planning time for deterministic planners. These are
-fundamentally solving a different problem from what we are interested
-in since they deal with non-stochastic problems, but there are a
-number of salient parallels and contrasts to be drawn nonetheless.
-
-% --- Subsubsection: Hierarchical Task Networks ---
-\subsubsection{Hierarchical Task Networks}
-Traditional Hierarchical Task Networks (HTNs) employ \textit{task decompositions} to aid in planning~\cite{erol1994htn}. The goal at hand is decomposed into smaller tasks which are in turn decomposed into smaller tasks. This decomposition continues until primitive tasks that are immediately achievable are derived. The current state of the task decomposition, in turn, informs constraints which reduce the space over which the planner searches. At a high level both HTNs and affordances fulfill the same role: both achieve action pruning by exploiting some form of supplied knowledge. 
-
-However there are two essential distinctions between affordances and traditional HTNs.  (1) HTNs do not incorporate reward into their planning. Consequently, they lack mathematical guarantees of optimal planning. (2) On a qualitative level, the degree of supplied knowledge in HTNs surpasses that of affordances: whereas affordances simply require relevant propositional functions, HTNs require not only constraints for sub-tasks but a hierarchical framework of arbitrary complexity.
-
-% --- Subsubsection: Temporal Logic ---
-\subsubsection{Temporal Logic}
-Bacchus and Kabanza~\cite{Bacchus95usingtemporal,Bacchus99usingtemporal} provided
-planners with domain dependent knowledge in the form of a first-order version of linear
-temporal logic (LTL), which they used for control of a forward-chaining planner. With this methodology, 
-a \textsc{Strips} style planner may be guided through the search space by checking 
-whether candidate plans do not falsify a given knowledge base of LTL formulas, often
-achieving polynomial time planning in exponential space.
-
-The primary difference between this body of work and affordance-aware planning is that
-affordances may be learned increasing autonomy of the agent and flexibility of the approach, while LTL formulas are far
-too complicated to learn effectively, placing dependence on an expert.
-
 % ====== Section: Conclusion ======
 \section{Conclusion}
 \label{sec:conclusion}
 We proposed a novel approach to represent transferable knowledge in terms of
 {\em affordances}~\cite{gibson77}. Our affordances allow an agent to efficiently prune actions 
-based on learned knowledge, providing a significant reduction in the number of state-action
+based on learned or expert provided knowledge, significantly reducing the number of state-action
 pairs the agent needs to evaluate in order to act near optimally. We demonstrated the 
 effectiveness of the affordance model by comparing RTDP to its affordance-aware
 equivalents in a series of challenging planning tasks in the Minecraft domain. Further, we designed
