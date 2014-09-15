@@ -18,6 +18,7 @@
 \usepackage[usenames,dvipsnames]{color}
 \usepackage{tikz}
 \usepackage{pgfplots}
+\usepackage[scientific-notation=true]{siunitx}
 
 % -- Comment commands --
  \newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{stefie10: #1}}}
@@ -678,10 +679,10 @@ that options and affordances provide complementary information.
 
 To assess affordances applied to a real-world robotic task, we devised
 a cooking domain that requires the robot to choose helpful actions for
-a personf ollowing a recipe.  The robot reasons over ingredients,
+a person following a recipe.  The robot reasons over ingredients,
 containers, appliances, working spaces and utensils. The action set
-consists of pouring containers, mixing ingredients, moving containers,
-and using utensils, encapsulating a large set of grounded actions for
+consists of pouring containers, mixing ingredients and moving containers and tools, 
+encapsulating a large set of grounded actions for
 the objects in a kitchen.
 
 % -- Figure: Baxter results/image
@@ -690,20 +691,50 @@ To help a person cook, a robot needs to plan across possible actions a
 person might take as well as possible actions the robot could take.
 Coupled with the large number of items in a kitchen, a planner in this
 complicated world must take advantage of knowledge inherent to the
-domain and to the recipe with which it is working.  Our simplified
-cooking state space has \stnote{FILL IN} states.  We divided a brownie
-recipe into three subgoals: combining and mixing the dry ingredients,
+domain and to the recipe with which it is working. Using four ingredients 
+required for brownies and the containers necessary for the ingredients, our
+cooking state space has $\num[round-precision=3, round-mode=figures]{47258883}$ states.  
+To remove a large number of self-transitions, we provided affordances for each
+action. For example, one affordance specified that mixing should only occur 
+in containers that contain ingredients. An affordance for pouring required 
+the container being poured to contain ingredients. 
+
+We divided a brownie recipe into three subgoals: combining and mixing the dry ingredients,
 combining and mixing the wet ingredients, and combining these two
-mixtures into a batter. For each subgoal, we provided a set of
-affordances specific to the objects used in that subgoal.  For
-example, one affordance specified that the human needed a whisk to mix
-the wet ingredients.  We used ERTDP to search for the least-cost plan
+mixtures into a batter. For each subgoal, we provided more
+affordances specific to the objects used in that subgoal, like a whisk should
+only be used to mix wet ingredients.  
+We used ERTDP to search for the least-cost plan
 to complete the recipe.  The robot inferred actions such as handing
 off the whisk to the person to mix the wet ingredients.
-\stnote{Results}
 
-\stnote{Link to video}
-We provide a video showing how this affordance-based planner running
+\begin{table}[t]
+\ra{1.2}
+\small
+\begin{tabular}{@{}llll@{}}\toprule
+Planner & Bellman & Reward & CPU \\ \midrule
+&\hspace{-10mm}{\it Dry Ingredients} \\
+\texttt{RTDP} 	& 20000 ($\pm$0) 			& {-123.1} ($\pm$0)  & {56.0s}   ($\pm$2.9) \\
+\texttt{ERTDP} 	& {\bf 2457.2} ($\pm$53.2) 		& {\bf -6.5}   ($\pm$0) & {\bf 10.1s}   ($\pm$0.3) \\  \hline
+&\hspace{-10mm}{\it Wet Ingredients} \\
+\texttt{RTDP} 	& 19964 ($\pm$14.1) 			& { -123.0}   ($\pm$0) & 66.6s   ($\pm$9.9) \\
+\texttt{ERTDP} 	& {\bf 5873.5} ($\pm$53.7) 		& {\bf -6.5}   ($\pm$0) & {\bf 15.6s}   ($\pm$1.2) \\ \hline
+&\hspace{-10mm}{\it Brownie Batter} \\
+\texttt{RTDP} 	& 20000 ($\pm$0) 			& -123.4   ($\pm$0.7) & { 53.3s}   ($\pm$2.4) \\
+\texttt{ERTDP} 	& {\bf 6642.4} ($\pm$36.4) 		& {\bf -7.0}   ($\pm$0) & {\bf 31.9s}   ($\pm$0.4) \\ 
+\bottomrule
+\end{tabular}
+\caption{RTDP vs. Affordance-aware ERTDP for robotic kitchen tasks}
+\label{table:baxter_results}
+\end{table}
+
+In table~\ref{table:baxter_results} we show the comparison between
+standard RTDP and ERTDP for the three subgoals. Because the number of
+states and actions is reduced significantly,
+ERTDP can plan successfully in a short amount of time. Standard RTDP always encountered
+the maximum number of rollouts specified at the maximum depth each time.
+
+We provide a video \cite{ERTDP_baxter_kitchen} showing how this affordance-based planner running
 on a robot can help a person cook by dynamically replanning through
 constant observations. After observing the placement of a cocoa
 container in the robot's workspace, the robot fetches a wooden spoon
