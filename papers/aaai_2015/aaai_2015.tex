@@ -617,11 +617,41 @@ support the claim that affordances can handle the augmented action
 space provided by temporally extended actions by pruning away
 unnecessary actions.
 
+\begin{table}[t]
+\ra{1.2}
+\begin{tabular}{@{}llll@{}}\toprule
+Planner & Bellman & Reward & CPU \\ \midrule
+&\hspace{-10mm}{\it Mining Task} \\
+\texttt{RTDP} & 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1)  & {\bf 17.6s}   ($\pm$4) \\
+\texttt{ERTDP} 	& 14357.4 ($\pm$3275) 		& {\bf -6.5}   ($\pm$1) & 31.9s   ($\pm$8) \\
+\texttt{LRTDP} 	& {\bf 12664.0} ($\pm$9340) 	& -12.7 ($\pm$5) & 33.1s   ($\pm$23) \\\hline
+&\hspace{-10mm}{\it Smelting Task} \\
+\texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) & 45.1s   ($\pm$14) \\
+\texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) & 72.6s   ($\pm$19) \\ 
+\texttt{LRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) & {\bf 7.5s}  ($\pm$2) \\ \hline
+&\hspace{-10mm}{\it Wall Traversal Task} \\
+\texttt{RTDP} & 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) & {\bf 68.7s}   ($\pm$22) \\
+\texttt{ERTDP} 	& 32552.0 ($\pm$10794) 		& -34.5   ($\pm$25) & 96.5s   ($\pm$39) \\ 
+\texttt{LRTDP} 	& {\bf 24020.8} ($\pm$9239) 	& {\bf -15.8}   ($\pm$5) & 80.5s   ($\pm$34) \\ \hline
+&\hspace{-10mm}{\it Trench Traversal Task} \\
+\texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& {\bf -8.1}   ($\pm$2) & 53.1s   ($\pm$22) \\
+\texttt{ERTDP} 	& {\bf 8674.8} 	($\pm$2700) 	& -8.2   ($\pm$2) & {\bf 35.9s}   ($\pm$15) \\ 
+\texttt{LRTDP} 	& 11758.4 ($\pm$2815) 		& -8.7   ($\pm$1) & 57.9s   ($\pm$20) \\ \hline
+&\hspace{-10mm}{\it Plane Traversal Task} \\
+\texttt{RTDP} & 52407 ($\pm$18432) 		& -82.6   ($\pm$42) & 877.0s   ($\pm$381) \\
+\texttt{ERTDP} 	& 32928 ($\pm$14997) 		& -44.9   ($\pm$34) & 505.3s   ($\pm$304) \\
+\texttt{LRTDP} 	& {\bf 19090} 	 ($\pm$9158) 	& {\bf-7.8}   ($\pm$1) & {\bf 246s}  ($\pm$159) \\
+\bottomrule
+\end{tabular}
+\caption{RTDP vs. Affordance-Aware RTDP}
+\label{table:minecraft_results}
+\end{table}
+
 % -- Subsection: Baxter --
 \subsection{ERTDP and Baxter}
 
 % -- Figure: Baxter results/image
-\begin{figure}[H]
+\begin{figure}
 \centering
 \includegraphics[scale=0.195]{figures/baxter.png}%
   \caption{Rethink Robotics Baxter robot helping in a culinary task}
