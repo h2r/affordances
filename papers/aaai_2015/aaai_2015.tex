@@ -519,7 +519,9 @@ assistance, assembling items in a factory, object retrieval, and
 complex terrain traversal.  As in these tasks, the agent operates in a
 very large state-action space in an uncertain environment.
 Figure~\ref{fig:minecraft} shows a scene from one of our Minecraft
-problems. \dnote{Stephen: describe your domain here}
+problems.
+
+We implemented an affordance based planner to make it possible for a Rethink Robotics Baxter robot to provide helpful actions in response to a person working on a kitchen task. We devised a cooking domain that requires choosing the correct actions by reasoning over ingredients, containers, appliances, working spaces and utensils. The set of actions, `pouring' containers, `mixing' ingredients, `moving' containers, and `using' utensils encapsulates a large set of grounded actions for the objects in a kitchen.
 
 % -- Subsection: Minecraft Tests --
 \subsection{Minecraft Tests}
@@ -616,47 +618,17 @@ unnecessary actions.
 % -- Subsection: Baxter --
 \subsection{ERTDP and Baxter}
 
-\dnote{Stephen: Insert description of baxter stuff here}
-
 % -- Figure: Baxter results/image
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.195]{figures/baxter_temp.jpg}%
+\includegraphics[scale=0.195]{figures/baxter.png}%
   \caption{Placeholder for baxter results/image}
   \label{fig:baxter_results}
 \end{figure}
 
+To help a person cook, a robot needs to plan with both the possible actions a person might take and the possible actions the robot might take, together. Coupled with the large number of items in a kitchen, a planner in this complicated world must take advantage of knowledge inherent to the domain and to the recipe with which it is working. People commonly utilize recipes to separate a complicated culinary process into a set of smaller tasks. For a simple brownie recipe, we divided the recipe into three subgoals: combining and mixing the dry ingredients, combining and mixing the wet ingredients, and combining these two mixtures into a batter. For each subgoal, we devised a set of affordances specific to the objects used in that subgoal. We used a real-time dynamic programming algorithm to search for the least-cost plan to complete the recipe. To aid the collaborator in cooking, the robot needed to hand off the wooden spoon and the metal whisk for mixing the dry ingredients and the wet ingredients respectively. 
 
-
-\begin{table}[t]
-\ra{1.2}
-\begin{tabular}{@{}llll@{}}\toprule
-Planner & Bellman & Reward & CPU \\ \midrule
-&\hspace{-10mm}{\it Mining Task} \\
-\texttt{RTDP} & 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1)  & {\bf 17.6s}   ($\pm$4) \\
-\texttt{ERTDP} 	& 14357.4 ($\pm$3275) 		& {\bf -6.5}   ($\pm$1) & 31.9s   ($\pm$8) \\
-\texttt{LRTDP} 	& {\bf 12664.0} ($\pm$9340) 	& -12.7 ($\pm$5) & 33.1s   ($\pm$23) \\\hline
-&\hspace{-10mm}{\it Smelting Task} \\
-\texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) & 45.1s   ($\pm$14) \\
-\texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) & 72.6s   ($\pm$19) \\ 
-\texttt{LRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) & {\bf 7.5s}  ($\pm$2) \\ \hline
-&\hspace{-10mm}{\it Wall Traversal Task} \\
-\texttt{RTDP} & 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) & {\bf 68.7s}   ($\pm$22) \\
-\texttt{ERTDP} 	& 32552.0 ($\pm$10794) 		& -34.5   ($\pm$25) & 96.5s   ($\pm$39) \\ 
-\texttt{LRTDP} 	& {\bf 24020.8} ($\pm$9239) 	& {\bf -15.8}   ($\pm$5) & 80.5s   ($\pm$34) \\ \hline
-&\hspace{-10mm}{\it Trench Traversal Task} \\
-\texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& {\bf -8.1}   ($\pm$2) & 53.1s   ($\pm$22) \\
-\texttt{ERTDP} 	& {\bf 8674.8} 	($\pm$2700) 	& -8.2   ($\pm$2) & {\bf 35.9s}   ($\pm$15) \\ 
-\texttt{LRTDP} 	& 11758.4 ($\pm$2815) 		& -8.7   ($\pm$1) & 57.9s   ($\pm$20) \\ \hline
-&\hspace{-10mm}{\it Plane Traversal Task} \\
-\texttt{RTDP} & 52407 ($\pm$18432) 		& -82.6   ($\pm$42) & 877.0s   ($\pm$381) \\
-\texttt{ERTDP} 	& 32928 ($\pm$14997) 		& -44.9   ($\pm$34) & 505.3s   ($\pm$304) \\
-\texttt{LRTDP} 	& {\bf 19090} 	 ($\pm$9158) 	& {\bf-7.8}   ($\pm$1) & {\bf 246s}  ($\pm$159) \\
-\bottomrule
-\end{tabular}
-\caption{RTDP vs. Affordance-Aware RTDP}
-\label{table:minecraft_results}
-\end{table}
+We provide a video showing how this affordance-based planner running on a robot can help a person cook by dynamically replanning through constant observations. After observing the placement of a cocoa container in the robot's workspace, the robot fetches a wooden spoon to allow the person to mix. After observing an egg container, the robot fetches a whisk to help beat the eggs. Because we modeled the culinary world as an MDP and replanned at every observation, the robot dynamically resolved failures, and accounted for unpredictable user actions. In the video, the robot fails to grasp the wooden spoon on the first attempt and must retry the grasp after it observed no state change.
 
 % ====== Section: Conclusion ======
 \section{Conclusion}
