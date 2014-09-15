@@ -51,7 +51,7 @@ Process (OO-MDP).  Affordances prune irrelevant actions based on the agent's goa
 the current state, reducing the number of state-action pairs
 the planner must evaluate in order to formulate a near optimal
 policy. Moreover, affordances may be provided by an expert or may be learned without supervision.
-We demonstrate our approach planning in the state-rich Minecraft domain, showing significant increases in
+We demonstrate our approach by planning in the state-rich Minecraft domain, showing significant increases in
 speed, reductions in state space exploration, and improvements in the quality of the synthesized policy.
 Additionally, we show that learned affordances often surpass the
 performance of those provided by experts. We also demonstrate that
@@ -89,7 +89,7 @@ different set of objects and actions are relevant.
 To address this state-action space explosion, prior work has explored
 adding knowledge to the planner, such as options~\cite{sutton99} and
 macro-actions~\cite{Botea:2005kx,Newton:2005vn}.  However, while these
-methods allow the agent to search more deeply in the state space, they
+methods can allow the agent to search more deeply in the state space, they
 add non-primitive actions to the planner which {\em increase} the size of
 the state-action space.  The resulting augmented space is even larger,
 which can have the paradoxical effect of increasing the search time
@@ -109,17 +109,18 @@ action possibilities prescribed by an agent's capabilities in an environment.
 %are most relevant to solving its current goal and avoid exploration of irrelevant parts of the
 %world.
 We rigorously formalize the notion of an affordance as knowledge added
-to an OO-MDP that prunes irrelevant actions on a state by state basis.
-Our affordances can be specified by hand and also learned through experience,
-making them a concise, transferable, and learnable means of
-representing useful planning knowledge. Our experiments demonstrate
-that affordances provide dramatic improvements for a variety of planning
-tasks compared to baselines, and are applicable across different state spaces.
-Moreover, while manually provided affordances outperform baselines, affordances
-learned through experience yield even greater improvements. 
-We conduct experiments in the game Minecraft, which has a very
-large state-action space, and on a real-world robotic cooking assistant. We plan
-to release all associated code along with a list of predicates/goal types 
+to an OO-MDP that prunes irrelevant actions on a state-by-state basis.
+Our affordances can be specified by hand and also learned through
+experience, making them a concise, transferable, and learnable means
+of representing useful planning knowledge. Our experiments demonstrate
+that affordances provide dramatic improvements for a variety of
+planning tasks compared to baselines, and are applicable across
+different state spaces.  Moreover, while manually provided affordances
+outperform baselines, affordances learned through experience yield
+even greater improvements.  We conduct experiments in the game
+Minecraft, which has a very large state-action space, and on a
+real-world robotic cooking assistant.  All associated code with this
+paper may be found at (redacted for review).
 
 %% Because affordances define the {\em kind} of goals for which actions
 %% are useful, affordances also enable high-level reasoning that can be
@@ -179,8 +180,8 @@ policy of a source task could be transferred to a new, but similar,
 target task to reduce the learning time required to find the optimal
 policy in the target task. The main difference between our
 affordance-based action set pruning and this action transfer work is
-that affordances prune away actions on a state by state basis, whereas
-the learned action pruning is on per task level.
+that affordances prune away actions on a state-by-state basis, whereas
+the learned action pruning is on per-task level.
 
 Rosman and Ramamoorthy~\cite{rosman2012good} provide a method for learning action
 priors over a set of related tasks. Specifically, they compute a Dirichlet distribution over 
@@ -190,7 +191,7 @@ previously solved task.
 Action priors can only be used with planning/learning algorithms that
 work well with an $\epsilon$-greedy rollout policy, while affordances
 can be applied to almost any MDP solver.  In addition, action
-priors are only utilized for fraction $\epsilon$ of the time steps,
+priors are only utilized for a fraction $\epsilon$ of the time steps,
 which is quite small, limiting the improvement they can make
 to the planning speed.  Finally, as variance in tasks explored
 increases, the priors will become more uniform. In contrast,
@@ -230,7 +231,7 @@ interesting parallels nonetheless.
 
 % --- Subsubsection: Hierarchical Task Networks ---
 \subsubsection{Hierarchical Task Networks}
-Traditional Hierarchical Task Networks (HTNs) employ \textit{task decompositions} to aid in planning~\cite{erol1994htn}. The goal at hand is decomposed into smaller tasks which are in turn decomposed into smaller tasks. This decomposition continues until immediately achievable primitive tasks are derived. The current state of the task decomposition, in turn, informs constraints which reduce the space over which the planner searches. At a high level both HTNs and affordances both achieve action pruning by exploiting some form of supplied knowledge. 
+Traditional Hierarchical Task Networks (HTNs) employ \textit{task decompositions} to aid in planning~\cite{erol1994htn}. The goal at hand is decomposed into smaller tasks which are in turn decomposed into smaller tasks. This decomposition continues until immediately achievable primitive tasks are derived. The current state of the task decomposition, in turn, informs constraints which reduce the space over which the planner searches. At a high level HTNs and affordances both achieve action pruning by exploiting some form of supplied knowledge. 
 
 However there are two key differences between affordances and traditional HTNs.  (1) HTNs do not incorporate reward into their planning. Consequently, they lack any guarantees of the quality of any induced plan. (2) On a qualitative level, the degree of supplied knowledge in HTNs far exceeds that of affordances: HTNs require not only constraints for sub-tasks but a hierarchical framework of arbitrary complexity. Affordances require either simple symbolic knowledge, as illustrated in Table ~\ref{table:afford_kb_exp}, or a set of predicates for use as features and a means of generating candidate state spaces.
 
@@ -264,7 +265,7 @@ agent prefers immediate rewards over future rewards (the agent
 prefers to maximize immediate rewards as $\gamma$ decreases).
 
 Our representation of affordances builds on Object-Oriented MDPs
-(OO-MDP)~\citep{diuk08}.  An OO-MDP efficiently represents the state
+(OO-MDPs)~\citep{diuk08}.  An OO-MDP efficiently represents the state
 of an MDP through the use of objects and predicates.  An OO-MDP state
 is a collection of objects, $O = \{o_1, \ldots, o_o \}$.  Each object
 $o_i$ belongs to a class, $c_j \in \{c_1, \ldots, c_c\}$. Every class
@@ -298,12 +299,11 @@ goal $G$ as:
 \mathcal{A}^* = \left\{ a \mid Q^*_G(s,a) = V^*_G(s) \right\}, 
 \label{eq:opt_act_set}
 \end{equation}
-where, $Q^*_G(s,a)$ and $V^*_G(s)$ represent the optimal Q function and 
+where $Q^*_G(s,a)$ and $V^*_G(s)$ represent the optimal Q function and 
 value function, respectively.
 
 We aim to learn a probability distribution over the optimality of each action
-for a given state ($s$), goal ($G$), and knowledge base ($K$) from
-which action pruning may be informed. Thus, we want to infer a Bernouli
+for a given state ($s$), goal ($G$), and knowledge base ($K$) by which action pruning may be informed. Thus, we want to infer a Bernouli
 distribution for each action's optimality:
 % -- Equation: Master Equation --
 \begin{equation}
@@ -345,13 +345,13 @@ We introduce the indicator function $f$, which returns 1 if and only if $\delta_
 f(\delta, s, G) = 
 \begin{cases}
 1& \delta.p(s) \wedge (G == \delta.g) \\
-0& \text{otherwise}
+0& \text{otherwise.}
 \end{cases}
 \label{eq:f_func_def}
 \end{equation}
 
 Evaluating $f$ for each $\delta_j$ given the current state and goal gives rise to a set of binary features,
-$\phi_j = f(\delta_j, s, G)$, which we use to reformulate our probability distribution.
+$\phi_j = f(\delta_j, s, G)$, which we use to reformulate our probability distribution:
 % -- Equation: replace deltas with phi --
 \begin{multline}
 \Pr(a_i \in \mathcal{A}^*  \mid s, G, \delta_1 \ldots \delta_n, \theta_i) \\
@@ -427,7 +427,7 @@ defined affordances. All actions contributed by active affordances are
 grouped to yield the set of actions to consider for each state.
 
 % 2) Threshold
-Second, actions may pruned by thresholding the posterior.
+Second, actions may be pruned by thresholding the posterior.
 In this method, the affordances remove any
 actions whose probability of being optimal is below the provided
 threshold for each state. The threshold was determined empirically, and was set to
@@ -447,7 +447,7 @@ future work, we are interested in investigating more sophisticated
 approaches to pruning actions with sampling.
 
 Through the use of any of the above methods, an affordance-aware
-planner prunes actions on a state by state basis, focusing the agent
+planner prunes actions on a state-by-state basis, focusing the agent
 on relevant action possibilities of the environment, consequently
 reducing planning time. Any planner operating in an OO-MDP may be made
 affordance-aware with this approach.
@@ -536,19 +536,21 @@ For learned affordances, a knowledge base was derived from the training data, wh
 (100 total maps), each approximately a 1,000-10,000 state world. We
 conducted all tests with a single knowledge base. 
 
-We use Real Time Dynamic Programming
-(RTDP)~\cite{barto95} as our baseline planner, a sampling-based algorithm that does
-not require the planner to visit all states. We compare RTDP with learned affordance-aware RTDP (LRTDP), and
-expert-defined affordance-aware RTDP (ERTDP). LRTDP pruned actions according to the thresholded pruning method.
-We terminated each planner when the maximum change in the value
-function was less than 0.01 for 100 consecutive policy rollouts, or
-the planner failed to converge after 1000 rollouts.  We set the reward
-function to $-1$ for all transitions, except transitions to states in
-which the agent was in lava, where we set the reward to $-10$. The goal was set to
-be terminal. The discount factor was set to $\lambda = 0.99$. For all
-experiments, movement actions (move, rotate, jump) had a small
-probability (0.05) of incorrectly applying a different movement
-action.
+We use Real Time Dynamic Programming (RTDP)~\cite{barto95} as our
+baseline planner, a sampling-based algorithm that does not require the
+planner to visit all states. We compare RTDP with learned
+affordance-aware RTDP (LRTDP), and expert-defined affordance-aware
+RTDP (ERTDP). LRTDP pruned actions according to the thresholded
+pruning method.  We terminated each planner when the maximum change in
+the value function was less than 0.01 for 100 consecutive policy
+rollouts, or the planner failed to converge after 1000 rollouts.  We
+set the reward function to $-1$ for all transitions, except
+transitions to states in which the agent was in lava, where we set the
+reward to $-10$. The goal was set to be terminal. The discount factor
+was set to $\lambda = 0.99$.  To introduce nondterinism into our
+problem, for all experiments, movement actions (move, rotate, jump)
+had a small probability (0.05) of incorrectly applying a different
+movement action.  This noise factor approximates noise faced by a physical robot that attempts to execute actions in a real-world domain. 
 
 The evaluation metrics for each trial were the number of Bellman updates
 executed by each planning algorithm, the accumulated reward
@@ -626,41 +628,52 @@ unnecessary actions.
   \label{fig:baxter_results}
 \end{figure}
 
-To help a person cook, a robot needs to plan with both the possible actions a person might take and the possible actions the robot might take, together. Coupled with the large number of items in a kitchen, a planner in this complicated world must take advantage of knowledge inherent to the domain and to the recipe with which it is working. People commonly utilize recipes to separate a complicated culinary process into a set of smaller tasks. For a simple brownie recipe, we divided the recipe into three subgoals: combining and mixing the dry ingredients, combining and mixing the wet ingredients, and combining these two mixtures into a batter. For each subgoal, we devised a set of affordances specific to the objects used in that subgoal. We used a real-time dynamic programming algorithm to search for the least-cost plan to complete the recipe. To aid the collaborator in cooking, the robot needed to hand off the wooden spoon and the metal whisk for mixing the dry ingredients and the wet ingredients respectively. 
+To help a person cook, a robot needs to plan with both the possible actions a person might take and the possible actions the robot might take, together. Coupled with the large number of items in a kitchen, a planner in this complicated world must take advantage of knowledge inherent to the domain and to the recipe with which it is working. People commonly utilize recipes to separate a complicated culinary process into a set of smaller tasks. For a simple brownie recipe, we divided the recipe into three subgoals: combining and mixing the dry ingredients, combining and mixing the wet ingredients, and combining these two mixtures into a batter. For each subgoal, we devised a set of affordances specific to the objects used in that subgoal. We used a real-time dynamic programming algorithm to search for the least-cost plan to complete the recipe. To aid the collaborator in cooking, the robot needed to hand off the wooden spoon and the metal whisk for mixing the dry ingredients and the wet ingredients, respectively. 
 
 We provide a video showing how this affordance-based planner running on a robot can help a person cook by dynamically replanning through constant observations. After observing the placement of a cocoa container in the robot's workspace, the robot fetches a wooden spoon to allow the person to mix. After observing an egg container, the robot fetches a whisk to help beat the eggs. Because we modeled the culinary world as an MDP and replanned at every observation, the robot dynamically resolved failures, and accounted for unpredictable user actions. In the video, the robot fails to grasp the wooden spoon on the first attempt and must retry the grasp after it observed no state change.
 
 % ====== Section: Conclusion ======
 \section{Conclusion}
 \label{sec:conclusion}
-We proposed a novel approach to represent transferable knowledge in terms of
-{\em affordances}~\cite{gibson77}. Our affordances allow an agent to efficiently prune actions 
-based on learned or expert provided knowledge, significantly reducing the number of state-action
-pairs the agent needs to evaluate in order to act near optimally. We demonstrated the 
-effectiveness of the affordance model by comparing RTDP to its affordance-aware
-equivalents in a series of challenging planning tasks in the Minecraft domain. Further, we designed
-a full learning process that allows an agent to autonomously learn useful affordances that may be used
-across a variety of task types, reward functions, and state spaces, allowing for convenient extensions 
-to robotic applications.
+We proposed a novel approach to represent transferable planning
+knowledge in terms of {\em affordances}~\cite{gibson77}. Our
+affordances allow an agent to efficiently prune actions based on
+learned or expert provided knowledge, significantly reducing the
+number of state-action pairs the agent needs to evaluate in order to
+act near optimally. We demonstrated the effectiveness of the
+affordance model by comparing RTDP to its affordance-aware equivalents
+in a series of challenging planning tasks in the Minecraft
+domain. Further, we designed a full learning process that allows an
+agent to autonomously learn useful affordances that may be used across
+a variety of task types, reward functions, and state spaces, allowing
+for convenient extensions to robotic applications.
 
-Additionally, we compared the effectiveness of augmenting planners with affordances, with 
-temporally extended actions, and the combination of the two. The results suggest that affordances may be combined with 
-temporally extended actions to provide improvements in planning.
+Additionally, we compared the effectiveness of augmenting planners
+with affordances with temporally extended actions, and the
+combination of the two. The results suggest that affordances may be
+combined with temporally extended actions to provide improvements in
+planning.
 
 Lastly, we deployed an affordance-aware planner on a robot in a collaborative cooking task with a massive 
 state space. \dnote{Stephen: more baxter details here}.
 
-In the future, we hope to automatically discover useful state space specific subgoals online 
-- a topic of some active research \cite{Mcgovern01automaticdiscovery,Simsek:2005:IUS:1102351.1102454}.
-Automatic discovery of subgoals would allow affordance-aware planners to take advantage of the goal-oriented
-focus of affordances, and would further reduce the size of the explored state-action space by improving the effectiveness of action pruning. 
+In the future, we hope to automatically discover useful state space
+specific subgoals online - a topic of some active research
+\cite{Mcgovern01automaticdiscovery,Simsek:2005:IUS:1102351.1102454}.
+Automatic discovery of subgoals would allow affordance-aware planners
+to take advantage of the goal-oriented focus of affordances, and would
+further reduce the size of the explored state-action space by
+improving the effectiveness of action pruning.
 
-Additionally, we hope to explore additional methods that capitalize on the distribution over optimal actions,
-such as incorporating affordances with a forward search sparse sampling algorithm~\cite{walsh2010integrating},
-or replacing the Naive Bayes model with a more sophisticated model, such as Logistic Regression or a Noisy-OR.
-We are also investigating methods of learning the thresholded value in a more principled way - one such
-approach is to initialize the planner with a strict threshold, and slowly relax the threshold until a near optimal
-policy is found.
+Additionally, we hope to explore additional methods that capitalize on
+the distribution over optimal actions, such as incorporating
+affordances with a forward search sparse sampling
+algorithm~\cite{walsh2010integrating}, or replacing the Naive Bayes
+model with a more sophisticated model, such as Logistic Regression or
+a Noisy-OR.  We are also investigating methods of learning the
+threshold value in a more principled way - one such approach is to
+initialize the planner with a strict threshold, and slowly relax the
+threshold until a near optimal policy is found.
 
 {\small
 \bibliographystyle{plainnat}
