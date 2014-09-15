@@ -178,9 +178,7 @@ planning, as demonstrated in Table~\ref{table:temp_ext_act_results}. In
 other words, affordances are complementary knowledge to options and
 macro-actions.
 
-% --- Subsection: Action Pruning ---
-
-
+% --- Action Pruning ---
 Sherstov and Stone~\cite{sherstov2005improving} considered MDPs for
 which the action set of the optimal policy of a source task could be
 transferred to a new, but similar, target task to reduce the learning
@@ -204,7 +202,7 @@ affordance-aware planning can handle a wide variety of tasks in a
 single knowledge base, as demonstrated by
 Table~\ref{table:minecraft_results}.
 
-% --- Subsubsection: Heuristics ---
+% --- Heuristics ---
 
 Heuristics in MDPs are used to convey information about the value of a
 given state-action pair with respect to the task being solved and
@@ -226,7 +224,7 @@ fundamentally solving a different problem from what we are interested
 in since they deal with non-stochastic problems, but there are
 interesting parallels nonetheless.
 
-% --- Subsubsection: Hierarchical Task Networks ---
+% --- Hierarchical Task Networks ---
 
 Hierarchical Task Networks (HTNs) employ \textit{task decompositions}
 to aid in planning~\cite{erol1994htn}. The agent decomposes the goal
@@ -248,7 +246,7 @@ illustrated in Table ~\ref{table:afford_kb_exp}, or a set of
 predicates for use as features and a means of generating candidate
 state spaces.
 
-% --- Subsubsection: Temporal Logic ---
+% --- Temporal Logic ---
 
 Bacchus and
 Kabanza~\cite{Bacchus95usingtemporal,Bacchus99usingtemporal} provided
@@ -301,10 +299,6 @@ independence by using OO-MDP predicates as features for action pruning.
 % -- Subsection: Modeling the Optimal Actions --
 \subsection{Modeling the Optimal Actions}
 
-%% \citet{gibson77} proposed that an affordance is ``what [the
-%%   environment] offers [an] animal, what [the environment] provides or
-%% furnishes, either for good or ill.''  
-
 Our goal is to formalize affordances in a way that enables a planning
 algorithm to prune away suboptimal actions in each state. We define
 the optimal action set, $\mathcal{A}^*$, for a given state $s$ and
@@ -318,7 +312,8 @@ where $Q^*_G(s,a)$ and $V^*_G(s)$ represent the optimal Q function and
 value function, respectively.
 
 We aim to learn a probability distribution over the optimality of each action
-for a given state ($s$), goal ($G$), and knowledge base ($K$) by which action pruning may be informed. Thus, we want to infer a Bernouli
+for a given state ($s$), goal ($G$), and knowledge base ($K$) by which
+action pruning may be informed. Thus, we want to infer a Bernouli
 distribution for each action's optimality:
 % -- Equation: Master Equation --
 \begin{equation}
@@ -327,18 +322,16 @@ distribution for each action's optimality:
 \end{equation}
 
 \noindent for $i \in \{1, \ldots, |\mathcal{A}|\}$, where $\mathcal{A}$ is the OO-MDP action space.
-%Henceforth, we simplify the event $a_i \in \mathcal{A}^*$ to $a_i$, and $a_i \not\in \mathcal{A}^*$ to $\neg a_i$. 
 
 We formalize our knowledge base, $K$, as a set of $n$ paired
-preconditions and goal types, $\{ (p_1, g_1) \ldots (p_{n}, g_{n})\}$,
+preconditions and goal types, $\{ (p_1, g_1) \ldots (p_{n}, g_{n}) \}$,
 along with a parameter vector, $\theta$. We abbreviate each pair
 $(p_j, g_j)$ to $\delta_j$ for simplicity. Each precondition $p \in
 \mathcal{P}$ is a {\it predicate} in predicate space, $\mathcal{P}$,
 defined by the OO-MDP, and $g$ is a {\it goal type}
-which is a logical expression that defines a subset of goals.  For example, a
+which is a logical expression that defines a subset of goals. For example, a
 predicate might be $nearTrench(agent)$ which is true when the agent is
-standing near a trench. We assume that the goal space consists of
-logical expressions of state predicates. A goal type specifies the
+standing near a trench. A goal type specifies the
 sort of problem the agent is trying to solve. In the context of
 Minecraft, a goal type might refer to the agent retrieving an object
 of a certain type from the environment, reaching a particular
@@ -355,7 +348,7 @@ We rewrite Equation~\ref{eq:master} replacing $K$ with its constituents:
 \noindent where $\theta_i$ represents the set of parameters relevant to modeling
 the probability of action $a_i \in {\cal A}^*$. 
 
-We introduce the indicator function $f$, which returns 1 if and only if $\delta_j$'s predicate is true in the provided state $s$, and $\delta_j$'s goal type matches the agent's current goal, $G$:
+We introduce the indicator function $f$, which returns 1 if and only if $\delta_j$'s predicate is true in the provided state $s$, and $\delta_j$'s goal type is entailed by the agent's current goal, $G$:
 % -- Equation: function f defn --
 \begin{equation}
 f(\delta, s, G) = 
@@ -381,7 +374,6 @@ distribution using Naive Bayes. First we factor using Bayes' rule:
 % -- Equation: Bayes --
 \begin{equation}
 = \frac{\Pr(\phi_1, \ldots, \phi_{n}, \mid a_i \in \mathcal{A}^*, \theta_i) \Pr(a_i \in \mathcal{A}^* \mid \theta_i)}{\Pr(\phi_1, \ldots, \phi_{n} | \theta_i)}
-%= \frac{\Pr(\phi_1, \ldots, \phi_{n}, \mid a_i, \theta_i) \Pr(a_i \mid \theta_i)}{\Pr(\phi_1, \ldots, \phi_{n} | \theta_i)}
 \label{eq:bayes}
 \end{equation}
 
@@ -399,11 +391,7 @@ the fraction of the time each action was optimal during training.
 \subsection{Learning the Optimal Actions}
 Our approach to modeling the optimality of each action allows affordances to be learned through unsupervised experience.
 To learn affordances, we provide a set of training worlds ($W$) for which the optimal policy, $\pi$,
-may be tractably computed. Then, we compute the maximimum likelihood estimate of the parameter vector $\theta_i$ for each action.
-%\begin{equation}
-%\argmax_{\theta_i} \sum_{w \in W} \sum_{s \in w} \Pr( a_i \mid s, w.G, \pi, \theta_i)
-%\end{equation}
-%where $w.G$ is the goal that was solved in world $w$.
+may be tractably computed. Then, we compute the maximum likelihood estimate of the parameter vector $\theta_i$ for each action.
 
 Under our Bernouli Naive Bayes model, we estimate the parameters
 $\theta_{i,0} = \Pr(a_i)$ and $\theta_{i,j} = \Pr(\phi_j | a_i)$, for $j \in \{1, \ldots, n \}$, where the maximum likelihood estimates are:
@@ -417,12 +405,48 @@ $C(\bar{a_i})$ is the number of observed occurrences where $a_i$ was not optimal
 and $C(\phi_j, a_i)$ is the number of occurrences where $\phi_j=1$ and $a_i$ was optimal. More formally:
 
 \begin{align}
-C(a_i) &= \sum_{w \in W} \sum_{s \in w} (\pi(s) == a_i) \\
-C(\bar{a_i}) &= \sum_{w \in W} \sum_{s \in w} (\pi(s) \not= a_i) \\
-C(\phi_j, a_i) &= \sum_{w \in W} \sum_{s \in w} (\pi(s) == a_i \wedge \phi_j == 1)
+C(a_i) &= \sum_{w \in W} \sum_{s \in w} (a_i \in \pi(s)) \\
+C(\bar{a_i}) &= \sum_{w \in W} \sum_{s \in w} (a_i \not \in \pi(s) ) \\
+C(\phi_j, a_i) &= \sum_{w \in W} \sum_{s \in w} (a_i  \in \pi(s) \wedge \phi_j == 1)
 \end{align}
 
 \noindent We determined optimality using the inferred policy, $\pi$.
+
+%Todo: Make this sound better
+During the learning phase, the agent learns which actions are useful under different conditions. More formally,
+it learns the model parameter $\theta$ for the distribution
+on the optimality of each action (i.e. Equation ~\ref{eq:feature_rep}), given the features $\phi_1, \ldots, \phi_n$.
+For example, consider the smelting task pictured in Figure~\ref{fig:minecraft}.
+During training, we observe that the \texttt{destroyBlock} action is often optimal when the agent is looking
+at a block of gold and the agent was trying to smelt gold.
+Likewise, when the agent was {\it not} looking at a block of gold or was attempting to satisfy a different goal, then the \texttt{destroyBlock}
+action was generally not optimal. This information informs the distribution over the optimality of the \texttt{destroyBlock} action given the set
+of features, which is used at test time to suggest that the agent ought to destroy gold blocks (when trying to smelt gold), but not arbitrary other blocks.
+
+%determine which actions are likely to be relevant in the present
+%state, and ignore those that are unlikely to be optimal.
+%Each feature $\phi_j$ effects the planner's belief about the optimality of
+%each action -- thus, with 16 predicates and 4 goal types, the planner is capable of making these inferences
+%in a variety of scenarios. To generalize further, we may easily add additional predicates and goal types
+%to the learning process. The difficulty here is creating a means of generating state-spaces in which each provided goal type may be satisfied.
+
+
+% -- Figure: Minecraft pic --
+\begin{figure}[b]
+\centering
+\includegraphics[scale=0.08]{figures/smelting_labeled.png}%
+  \caption{A gold smelting task in the Minecraft domain.  The agent's
+    goal is to mine a block of gold, move to the forge and then smelt
+    the gold in the forge to produce gold ingots.}
+  \label{fig:minecraft}
+\end{figure}
+
+%which actions were taken in each state. At test time, 
+%when the agent is on a flat plane and needs to move to the gold ore, LRTDP will have learned
+%that movement actions are useful (i.e. when the feature $\delta_j = (lookingAtGoldOre, smeltGold)$ is 0 (i.e. the agent is not looking
+%at a block of gold ore or is trying to something other than smelt gold), then the probability
+%that the destroy . Thus, the agent will apply the \texttt{destroyBlock}
+%action when it is trying to smelt gold and is looking at gold.
 
 % -- Subsection: Action Pruning --
 \subsection{Affordance-Aware Planning}
@@ -467,40 +491,9 @@ on relevant action possibilities of the environment, consequently
 reducing planning time. Any planner operating in an OO-MDP may be made
 affordance-aware with this approach.
 
-\begin{table}[t]
-\ra{1.2}
-\small
-\begin{tabular}{@{}llll@{}}\toprule
-Planner & Bellman & Reward & CPU \\ \midrule
-&\hspace{-10mm}{\it Mining Task} \\
-\texttt{RTDP} & 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1)  & {\bf 17.6s}   ($\pm$4) \\
-\texttt{ERTDP} 	& 14357.4 ($\pm$3275) 		& {\bf -6.5}   ($\pm$1) & 31.9s   ($\pm$8) \\
-\texttt{LRTDP} 	& {\bf 12664.0} ($\pm$9340) 	& -12.7 ($\pm$5) & 33.1s   ($\pm$23) \\\hline
-&\hspace{-10mm}{\it Smelting Task} \\
-\texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) & 45.1s   ($\pm$14) \\
-\texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) & 72.6s   ($\pm$19) \\ 
-\texttt{LRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) & {\bf 7.5s}  ($\pm$2) \\ \hline
-&\hspace{-10mm}{\it Wall Traversal Task} \\
-\texttt{RTDP} & 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) & {\bf 68.7s}   ($\pm$22) \\
-\texttt{ERTDP} 	& 32552.0 ($\pm$10794) 		& -34.5   ($\pm$25) & 96.5s   ($\pm$39) \\ 
-\texttt{LRTDP} 	& {\bf 24020.8} ($\pm$9239) 	& {\bf -15.8}   ($\pm$5) & 80.5s   ($\pm$34) \\ \hline
-&\hspace{-10mm}{\it Trench Traversal Task} \\
-\texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& {\bf -8.1}   ($\pm$2) & 53.1s   ($\pm$22) \\
-\texttt{ERTDP} 	& {\bf 8674.8} 	($\pm$2700) 	& -8.2   ($\pm$2) & {\bf 35.9s}   ($\pm$15) \\ 
-\texttt{LRTDP} 	& 11758.4 ($\pm$2815) 		& -8.7   ($\pm$1) & 57.9s   ($\pm$20) \\ \hline
-&\hspace{-10mm}{\it Plane Traversal Task} \\
-\texttt{RTDP} & 52407 ($\pm$18432) 		& -82.6   ($\pm$42) & 877.0s   ($\pm$381) \\
-\texttt{ERTDP} 	& 32928 ($\pm$14997) 		& -44.9   ($\pm$34) & 505.3s   ($\pm$304) \\
-\texttt{LRTDP} 	& {\bf 19090} 	 ($\pm$9158) 	& {\bf-7.8}   ($\pm$1) & {\bf 246s}  ($\pm$159) \\
-\bottomrule
-\end{tabular}
-\caption{RTDP vs. affordance-aware alternatives.}
-\label{table:minecraft_results}
-\end{table}
-
 
 % -- Table: Expert provided affordances --
-\begin{table}[b]
+\begin{table}[t]
 \ra{1.35}
 \small
 \begin{tabular}{@{}llll@{}}\toprule
@@ -534,27 +527,11 @@ over all the features not associated with $\phi_j$.
 %be specified by experts, providing a natural spectrum between
 %expert-provided knowledge and learned knowledge.
 
-% -- Figure: Minecraft pic --
-\begin{figure}
-\centering
-\includegraphics[scale=0.08]{figures/smelting_labeled.png}%
-  \caption{A gold smelting task in the Minecraft domain.  The agent's
-    goal is to mine a block of gold, move to the forge and then smelt
-    the gold in the forge to produce gold ingots.}
-  \label{fig:minecraft}
-\end{figure}
-
 % ====== Section: Results ======
 \section{Results}
 \label{sec:results}
 
-% -- Figure: Average results --
-\begin{figure}
-\centering
-\includegraphics[width=1\linewidth]{figures/average_results_cropped.png}%
-\caption{Average results from all maps.}
-\label{fig:average_results}
-\end{figure}
+% Move average results HERE if want to go back to old method
 
 We evaluate our approach using the game Minecraft and a collaborative
 robotic cooking task.  Minecraft is a 3-D blocks game in which the
@@ -595,11 +572,22 @@ rollouts, or the planner failed to converge after 1000 rollouts.  The
 reward function was $-1$ for all transitions, except transitions to
 states in which the agent was in lava, where we set the reward to
 $-10$. The goal was set to be terminal. The discount factor was
-$\lambda = 0.99$.  To introduce nondterinism into our problem, for all
-experiments, movement actions (move, rotate, jump) had a small
+$\lambda = 0.99$.  To introduce nondeterminism into our problem,
+movement actions (move, rotate, jump) in all experiments had a small
 probability (0.05) of incorrectly applying a different movement
 action.  This noise factor approximates noise faced by a physical
 robot that attempts to execute actions in a real-world domain.
+
+% -- Figure: Average results --
+\begin{figure}[H]
+%\begin{figure}
+\centering
+\includegraphics[width=1\linewidth]{figures/average_results_cropped.png}%
+%\includegraphics[scale=0.18]{figures/average_results_cropped.png}%
+\caption{Average results from all maps.}
+\label{fig:average_results}
+\end{figure}
+%\end{figure}
 
 We report the number of Bellman updates executed by each planning
 algorithm, the accumulated reward of the average plan, and the CPU
@@ -608,6 +596,38 @@ the average Bellman updates, accumulated reward, and CPU time for
 RTDP, LRTDP and ERTDP after planning in 20 different maps of each goal
 type (100 total). Figure~\ref{fig:average_results} shows the results
 averaged across all maps.
+
+
+\begin{table}[t]
+\ra{1.2}
+\small
+\begin{tabular}{@{}llll@{}}\toprule
+Planner & Bellman & Reward & CPU \\ \midrule
+&\hspace{-10mm}{\it Mining Task} \\
+\texttt{RTDP} & 17142.1 ($\pm$3843) 		& {\bf -6.5} ($\pm$1)  & {\bf 17.6s}   ($\pm$4) \\
+\texttt{ERTDP} 	& 14357.4 ($\pm$3275) 		& {\bf -6.5}   ($\pm$1) & 31.9s   ($\pm$8) \\
+\texttt{LRTDP} 	& {\bf 12664.0} ($\pm$9340) 	& -12.7 ($\pm$5) & 33.1s   ($\pm$23) \\\hline
+&\hspace{-10mm}{\it Smelting Task} \\
+\texttt{RTDP} 	& 30995.0 ($\pm$6730) 		& {\bf -8.6}   ($\pm$1) & 45.1s   ($\pm$14) \\
+\texttt{ERTDP} 	& 28544.0 ($\pm$5909) 		& {\bf -8.6}   ($\pm$1) & 72.6s   ($\pm$19) \\ 
+\texttt{LRTDP} 	& {\bf 2821.9} 	 ($\pm$662) 	& -9.8   ($\pm$2) & {\bf 7.5s}  ($\pm$2) \\ \hline
+&\hspace{-10mm}{\it Wall Traversal Task} \\
+\texttt{RTDP} & 45041.7 ($\pm$11816) 		& -56.0   ($\pm$51) & {\bf 68.7s}   ($\pm$22) \\
+\texttt{ERTDP} 	& 32552.0 ($\pm$10794) 		& -34.5   ($\pm$25) & 96.5s   ($\pm$39) \\ 
+\texttt{LRTDP} 	& {\bf 24020.8} ($\pm$9239) 	& {\bf -15.8}   ($\pm$5) & 80.5s   ($\pm$34) \\ \hline
+&\hspace{-10mm}{\it Trench Traversal Task} \\
+\texttt{RTDP}  	& 16183.5 ($\pm$4509) 		& {\bf -8.1}   ($\pm$2) & 53.1s   ($\pm$22) \\
+\texttt{ERTDP} 	& {\bf 8674.8} 	($\pm$2700) 	& -8.2   ($\pm$2) & {\bf 35.9s}   ($\pm$15) \\ 
+\texttt{LRTDP} 	& 11758.4 ($\pm$2815) 		& -8.7   ($\pm$1) & 57.9s   ($\pm$20) \\ \hline
+&\hspace{-10mm}{\it Plane Traversal Task} \\
+\texttt{RTDP} & 52407 ($\pm$18432) 		& -82.6   ($\pm$42) & 877.0s   ($\pm$381) \\
+\texttt{ERTDP} 	& 32928 ($\pm$14997) 		& -44.9   ($\pm$34) & 505.3s   ($\pm$304) \\
+\texttt{LRTDP} 	& {\bf 19090} 	 ($\pm$9158) 	& {\bf-7.8}   ($\pm$1) & {\bf 246s}  ($\pm$159) \\
+\bottomrule
+\end{tabular}
+\caption{RTDP vs. affordance-aware alternatives.}
+\label{table:minecraft_results}
+\end{table}
 
 Because the planners were forced to terminate after only 1000
 rollouts, they did not always converge to the optimal policy. LRTDP on
@@ -621,10 +641,18 @@ enhance performance, and, depending on the domain, could add
 significant value in making large state-spaces tractable without the
 overhead of supplying training worlds.
 
-\stnote{We need to explain the results in Table 3 about why
-  affordances don't always help.  Why is the reward sometimes worse
-  with affordances?  Why is the runtime sometimes worse? W hat is
-  special about the domains where that is happening?}
+%Todo: Make this paragraph better
+For some task types, LRTDP found a slightly worse plan on average than
+vanilla RTDP (e.g. the mining task). This is likely due to the fact that LRTDP
+occasionally prunes away actions that are essential for solving a particular problem.
+To fix this, we could lower the threshold to allow for even more conservative action pruning
+at the cost of performance. In future work, we plan on investigating more principled approaches to dynamically
+adjusting the threshold based on planning feedback.
+
+%\stnote{We need to explain the results in Table 3 about why
+%  affordances don't always help.  Why is the reward sometimes worse
+%  with affordances?  Why is the runtime sometimes worse? W hat is
+%  special about the domains where that is happening?}
 
 
 \begin{table}[b]
