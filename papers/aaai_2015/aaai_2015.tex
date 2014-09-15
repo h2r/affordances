@@ -46,7 +46,7 @@ intractable in large state spaces due to the well-known curse of
 dimensionality. Existing approaches to planning in large stochastic
 state spaces fail to prevent autonomous agents from considering many
 actions that are obviously irrelevant to a human solving the same
-task. To prevent agents from applying irrelevant actions we formalize the notion of {\em affordances} as
+task. To prevent agents from exploring irrelevant action applications we formalize the notion of {\em affordances} as
 state space independent, goal-oriented knowledge added to an Object Oriented Markov Decision
 Process (OO-MDP).  Affordances prune irrelevant actions based on the agent's goal and
 the current state, reducing the number of state-action pairs
@@ -95,7 +95,6 @@ different set of objects and actions must be inferred.
   \label{fig:baxter_results}
 \end{figure}
 
-
 To address this state-action space explosion, prior work has explored
 adding knowledge to the planner, such as options~\cite{sutton99} and
 macro-actions~\cite{Botea:2005kx,Newton:2005vn}.  However, while these
@@ -143,7 +142,8 @@ paper may be found at (redacted for review).
 
 In this section, we discuss the differences between affordance-aware
 planning and other forms of knowledge engineering that have been used
-to accelerate planning.  This paper builds on previous work published
+to accelerate planning.  This paper builds on previous work\footnote{A previous version
+of the proposed approach may be seen planning in Minecraft at https://vimeo.com/88689171} published
 at two workshops (redacted for review).
 
 % -- Subsection: Stochastic --
@@ -184,7 +184,7 @@ Sherstov and Stone~\cite{sherstov2005improving} considered MDPs for
 which the action set of the optimal policy of a source task could be
 transferred to a new, but similar, target task to reduce the learning
 time required to find the optimal policy in the target task.
-Aaffordances prune away actions on a state-by-state basis, enabling
+Affordances prune away actions on a state-by-state basis, enabling
 more aggressive pruning whereas the learned action pruning is on per-task
 level.
 
@@ -403,39 +403,30 @@ $\theta_{i,0} = \Pr(a_i)$ and $\theta_{i,j} = \Pr(\phi_j | a_i)$, for $j \in \{1
 
 Here, $C(a_i)$ is the number of observed occurrences where $a_i$ was optimal across all worlds $W$,
 $C(\bar{a_i})$ is the number of observed occurrences where $a_i$ was not optimal,
-and $C(\phi_j, a_i)$ is the number of occurrences where $\phi_j=1$ and $a_i$ was optimal. More formally:
+and $C(\phi_j, a_i)$ is the number of occurrences where $\phi_j=1$ and $a_i$ was optimal.
+We determined optimality using the synthesized policy for each training world, $\pi_w$. More formally:
 
 \begin{align}
-C(a_i) &= \sum_{w \in W} \sum_{s \in w} (a_i \in \pi(s)) \\
-C(\bar{a_i}) &= \sum_{w \in W} \sum_{s \in w} (a_i \not \in \pi(s) ) \\
-C(\phi_j, a_i) &= \sum_{w \in W} \sum_{s \in w} (a_i  \in \pi(s) \wedge \phi_j == 1)
+C(a_i) &= \sum_{w \in W} \sum_{s \in w} (a_i \in \pi_w(s)) \\
+C(\bar{a_i}) &= \sum_{w \in W} \sum_{s \in w} (a_i \not \in \pi_w(s) ) \\
+C(\phi_j, a_i) &= \sum_{w \in W} \sum_{s \in w} (a_i  \in \pi_w(s) \wedge \phi_j == 1)
 \end{align}
 
-\noindent We determined optimality using the inferred policy, $\pi$.
-
 %Todo: Make this sound better
-During the learning phase, the agent learns which actions are useful under different conditions. More formally,
-it learns the model parameter $\theta$ for the distribution
-on the optimality of each action (i.e. Equation ~\ref{eq:feature_rep}), given the features $\phi_1, \ldots, \phi_n$.
+During the learning phase, the agent learns which actions are useful under different conditions. 
 For example, consider the smelting task pictured in Figure~\ref{fig:minecraft}.
 During training, we observe that the \texttt{destroyBlock} action is often optimal when the agent is looking
 at a block of gold and the agent was trying to smelt gold.
-Likewise, when the agent was {\it not} looking at a block of gold or was attempting to satisfy a different goal, then the \texttt{destroyBlock}
-action was generally not optimal. This information informs the distribution over the optimality of the \texttt{destroyBlock} action given the set
-of features, which is used at test time to suggest that the agent ought to destroy gold blocks (when trying to smelt gold), but not arbitrary other blocks.
-
-%determine which actions are likely to be relevant in the present
-%state, and ignore those that are unlikely to be optimal.
-%Each feature $\phi_j$ effects the planner's belief about the optimality of
-%each action -- thus, with 16 predicates and 4 goal types, the planner is capable of making these inferences
-%in a variety of scenarios. To generalize further, we may easily add additional predicates and goal types
-%to the learning process. The difficulty here is creating a means of generating state-spaces in which each provided goal type may be satisfied.
-
+Likewise, when the agent is attempting to satisfy a different goal or is {\it not} looking at a block of gold, then the \texttt{destroyBlock}
+action is generally not optimal (i.e. destroying grass blocks is typically irrelevant to the smelting task). 
+This information informs the distribution over the optimality of the \texttt{destroyBlock} action given the set
+of features, which is used at test time to prune the action set so that the agent explores destroying blocks
+when trying to smelt gold and looking at gold ore, but not in other situations (unless another affordance happens to suggest it).
 
 % -- Figure: Minecraft pic --
 \begin{figure}[b]
 \centering
-\includegraphics[scale=0.08]{figures/smelting_labeled.png}%
+\includegraphics[scale=0.08]{figures/smelting_labeled_2.png}%
   \caption{A gold smelting task in the Minecraft domain.  The agent's
     goal is to mine a block of gold, move to the forge and then smelt
     the gold in the forge to produce gold ingots.}
@@ -495,7 +486,7 @@ affordance-aware with this approach.
 
 % -- Table: Expert provided affordances --
 \begin{table}[t]
-\ra{1.35}
+\ra{1.15}
 \small
 \begin{tabular}{@{}llll@{}}\toprule
 Precondition & Goal Type & Actions \\ \midrule
@@ -547,8 +538,7 @@ very large state-action space in an uncertain environment.
 Figure~\ref{fig:minecraft} shows a scene from one of our Minecraft
 problems.  Additionally, we implemented an affordance based planner to
 enable a manipulator robot to infer helpful actions in response to a
-person working on a kitchen task, shown in
-Figure~\ref{fig:baxter_results}.
+person working on a kitchen task, shown in Figure~\ref{fig:baxter_results}.
 
 % -- Subsection: Minecraft Tests --
 \subsection{Minecraft Tests}
@@ -580,7 +570,7 @@ action.  This noise factor approximates noise faced by a physical
 robot that attempts to execute actions in a real-world domain.
 
 % -- Figure: Average results --
-\begin{figure}[H]
+\begin{figure}[t]
 %\begin{figure}
 \centering
 \includegraphics[width=1\linewidth]{figures/average_results_cropped.png}%
@@ -598,9 +588,9 @@ RTDP, LRTDP and ERTDP after planning in 20 different maps of each goal
 type (100 total). Figure~\ref{fig:average_results} shows the results
 averaged across all maps.
 
-
+% -- Table: Minecraft results --
 \begin{table}[t]
-\ra{1.2}
+\ra{1.15}
 \small
 \begin{tabular}{@{}llll@{}}\toprule
 Planner & Bellman & Reward & CPU \\ \midrule
@@ -644,11 +634,12 @@ overhead of supplying training worlds.
 
 %Todo: Make this paragraph better
 For some task types, LRTDP found a slightly worse plan on average than
-vanilla RTDP (e.g. the mining task). This is likely due to the fact that LRTDP
-occasionally prunes away actions that are essential for solving a particular problem.
+vanilla RTDP (e.g. the mining task). This is due to the fact that LRTDP
+occasionally prunes actions that are essential for solving a particular problem (such as
+pruning the \texttt{destroyBlock} action in certain states of the mining task).
 To fix this, we could lower the threshold to allow for even more conservative action pruning
-at the cost of performance. In future work, we plan on investigating more principled approaches to dynamically
-adjusting the threshold based on planning feedback.
+at the cost of additional computation. In future work, we plan on investigating approaches
+to dynamically adjusting the threshold based on planning feedback.
 
 %\stnote{We need to explain the results in Table 3 about why
 %  affordances don't always help.  Why is the reward sometimes worse
@@ -657,7 +648,7 @@ adjusting the threshold based on planning feedback.
 
 
 \begin{table}[b]
-\ra{1.25}
+\ra{1.15}
 \small
 \begin{tabular}{@{}llll@{}}\toprule
 Planner & Bellman & Reward & CPU \\ \midrule
@@ -701,7 +692,6 @@ that affordances can handle the augmented action space provided by
 temporally extended actions by pruning away unnecessary actions, and
 that options and affordances provide complementary information.
 
-
 % -- Subsection: Baxter --
 \subsection{ERTDP and Baxter}
 
@@ -722,10 +712,10 @@ complicated world must take advantage of knowledge inherent to the
 domain and to the recipe with which it is working. Using four ingredients 
 required for brownies and the containers necessary for the ingredients, our
 cooking state space has $\num[round-precision=3, round-mode=figures]{47258883}$ states.  
-To remove a large number of self-transitions, we provided affordances for each
-action. For example, one affordance specified that mixing should only occur 
-in containers that contain ingredients. An affordance for pouring required 
-the container being poured to contain ingredients. 
+%To remove a large number of self-transitions, we provided affordances for each
+%action. For example, one affordance specified that mixing should only occur 
+%in containers that contain ingredients. An affordance for pouring required 
+%the container being poured to contain ingredients. 
 
 We divided a brownie recipe into three subgoals: combining and mixing the dry ingredients,
 combining and mixing the wet ingredients, and combining these two
@@ -737,7 +727,7 @@ to complete the recipe.  The robot inferred actions such as handing
 off the whisk to the person to mix the wet ingredients.
 
 \begin{table}[t]
-\ra{1.2}
+\ra{1.1}
 \small
 \begin{tabular}{@{}llll@{}}\toprule
 Planner & Bellman & Reward & CPU \\ \midrule
@@ -752,18 +742,18 @@ Planner & Bellman & Reward & CPU \\ \midrule
 \texttt{ERTDP} 	& {\bf 6642.4} ($\pm$36.4) 		& {\bf -7.0}   ($\pm$0) & {\bf 31.9s}   ($\pm$0.4) \\ 
 \bottomrule
 \end{tabular}
-\caption{RTDP vs. Affordance-aware ERTDP for robotic kitchen tasks}
+\caption{RTDP vs. ERTDP for robotic kitchen tasks}
 \label{table:baxter_results}
 \end{table}
 
 In table~\ref{table:baxter_results} we show the comparison between
-standard RTDP and ERTDP for the three subgoals. Because the number of
-states and actions is reduced significantly,
+standard RTDP and ERTDP for the three subgoals. Because the
+state-action space is reduced significantly,
 ERTDP can plan successfully in a short amount of time. Standard RTDP always encountered
 the maximum number of rollouts specified at the maximum depth each time.
 
-We provide a video \footnote{See at https://vimeo.com/106226282} 
-showing how this affordance-based planner running
+We provide a video\footnote{Watch at https://vimeo.com/106226282} 
+showing how this affordance-aware planner running
 on a robot can help a person cook by dynamically replanning through
 constant observations. After observing the placement of a cocoa
 container in the robot's workspace, the robot fetches a wooden spoon
