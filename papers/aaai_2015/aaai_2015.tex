@@ -416,15 +416,13 @@ C(\bar{a_i}) &= \sum_{w \in W} \sum_{s \in w} (a_i \not \in \pi_w(s) ) \\
 C(\phi_j, a_i) &= \sum_{w \in W} \sum_{s \in w} (a_i  \in \pi_w(s) \wedge \phi_j == 1)
 \end{align}
 
-%Todo: Make this sound better
 During the learning phase, the agent learns which actions are useful under different conditions. 
 For example, consider the smelting task pictured in Figure~\ref{fig:minecraft}.
 During training, we observe that the \texttt{destroy} action is often optimal when the agent is looking
 at a block of gold and the agent was trying to smelt gold.
-Likewise, when the agent is attempting to satisfy a different goal or is {\it not} looking at a block of gold, then the \texttt{destroy}
-action is generally not optimal (i.e. destroying grass blocks is typically irrelevant to the smelting task). 
-This information informs the distribution over the optimality of the \texttt{destroy} action given the set
-of features, which is used at test time to prune the action set so that the agent explores destroying blocks
+Likewise, when the agent is not looking at a block of gold in the smelting task, then the \texttt{destroy}
+action is generally not optimal (i.e. destroying grass blocks is typically irrelevant to smelting). 
+This information informs the distribution over the optimality of the \texttt{destroy} action, which is used at test time to encourage the agent to destroy blocks
 when trying to smelt gold and looking at gold ore, but not in other situations (unless another affordance happens to suggest it).
 
 % -- Figure: Minecraft pic --
@@ -642,11 +640,8 @@ For some task types, LRTDP found a slightly worse plan on average than
 RTDP (e.g. the mining task). This is due to the fact that LRTDP
 occasionally prunes actions that are essential for solving a particular problem (such as
 pruning the \texttt{destroy} action in certain states of the mining task).
-To fix this, we could lower the threshold to allow for even more conservative action pruning at the cost
-of additional exploration of the state-action space. In future work, we plan on investigating approaches
-to dynamically adjusting the threshold based on planning feedback. 
-%Additionally, RTDP often achieved a faster clock time because the affordance approaches evaluate the predicates associated with the affordances in each state.
-%ToDo: put in a note about time!!!
+To fix this, we could lower the threshold to allow for even more conservative action pruning. In future work, we plan on investigating approaches
+to dynamically adjusting the threshold based on planning feedback. Additionally, RTDP occasionally achieved a faster clock time because ERTDP and LRTDP also evaluate the affordance predicates in every state, adding a small amount of time to planning.
 
 %\stnote{We need to explain the results in Table 3 about why
 %  affordances don't always help.  Why is the reward sometimes worse
@@ -746,7 +741,7 @@ cooking state space has $\num[round-precision=3, round-mode=figures]{47258883}$ 
 % -- Figure: Baxter results/image
 \begin{figure}[b]
 \centering
-\includegraphics[width=0.7\linewidth]{figures/baxter.png}%
+\includegraphics[width=0.75\linewidth]{figures/baxter.jpg}%
   \caption{Affordances enable a robot to efficiently infer helpful actions in
     very large state spaces, such as a kitchen.}
   \label{fig:baxter_results}
