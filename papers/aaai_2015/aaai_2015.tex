@@ -26,6 +26,7 @@
  \newcommand{\enote}[1]{\textcolor{Red}{\textbf{ellis:  #1}}}
  \newcommand{\gnote}[1]{\textcolor{Purple}{\textbf{gabe:  #1}}}
  \newcommand{\jnote}[1]{\textcolor{Orange}{\textbf{james:  #1}}}
+%	\raggedbottom
 
 % -- Misc. new commands --
 \newcommand{\argmax}{\operatornamewithlimits{argmax}} % argmax
@@ -46,7 +47,7 @@ intractable in large state spaces due to the well-known curse of
 dimensionality. Existing approaches to planning in large stochastic
 state spaces fail to prevent autonomous agents from considering many
 actions that are obviously irrelevant to a human solving the same
-task. To prevent agents from exploring irrelevant action applications we formalize the notion of {\em affordances} as
+task. To prevent agents from exploring irrelevant action applications, we formalize the notion of {\em affordances} as
 state space independent, goal-oriented knowledge added to an Object Oriented Markov Decision
 Process (OO-MDP).  Affordances prune irrelevant actions based on the agent's goal and
 the current state, reducing the number of state-action pairs
@@ -77,9 +78,12 @@ state space that enables the agent to achieve a goal while minimizing
 costs along the way. However, many robotics tasks are so complex that
 modeling them as an MDP results in a massive state-action space, which
 in turn restricts the types of robotics problems that are
-computationally tractable. For example, when a robot is manipulating
+computationally tractable. 
+
+Planning tasks involving a large number of objects are especially challenging. 
+For example, when a robot is manipulating
 objects in an environment, an object can be placed anywhere in a large
-set of locations. The size of the state space increases exponentially
+set of locations.  The size of the state space increases exponentially
 with the number of objects, which bounds the placement problems that
 the robot is able to expediently solve. The difficulty of the task is compounded
 by the fact that most of these objects and locations are irrelevant given a specific goal. For instance, when making brownies,
@@ -87,15 +91,15 @@ the oven and flour are important, while the soy sauce and saut\'{e}
 pan are not.  For a different task, such as stir-frying broccoli, a
 different set of objects and actions must be inferred.
 
-\begin{figure}
-\centering
-\includegraphics[width=0.75\linewidth]{figures/baxter.png}%
-  \caption{Affordances enable a robot to efficiently infer helpful actions in
-    very large state spaces, such as a kitchen.}
-  \label{fig:baxter_results}
-\end{figure}
+%\begin{figure}
+%\centering
+%\includegraphics[width=0.75\linewidth]{figures/baxter.png}%
+%  \caption{Affordances enable a robot to efficiently infer helpful actions in
+%    very large state spaces, such as a kitchen.}
+%  \label{fig:baxter_results}
+%\end{figure}
 
-To address this state-action space explosion, prior work has explored
+To confront this state-action space explosion, prior work has explored
 adding knowledge to the planner, such as options~\cite{sutton99} and
 macro-actions~\cite{Botea:2005kx,Newton:2005vn}.  However, while these
 methods can allow the agent to search more deeply in the state space, they
@@ -415,11 +419,11 @@ C(\phi_j, a_i) &= \sum_{w \in W} \sum_{s \in w} (a_i  \in \pi_w(s) \wedge \phi_j
 %Todo: Make this sound better
 During the learning phase, the agent learns which actions are useful under different conditions. 
 For example, consider the smelting task pictured in Figure~\ref{fig:minecraft}.
-During training, we observe that the \texttt{destroyBlock} action is often optimal when the agent is looking
+During training, we observe that the \texttt{destroy} action is often optimal when the agent is looking
 at a block of gold and the agent was trying to smelt gold.
-Likewise, when the agent is attempting to satisfy a different goal or is {\it not} looking at a block of gold, then the \texttt{destroyBlock}
+Likewise, when the agent is attempting to satisfy a different goal or is {\it not} looking at a block of gold, then the \texttt{destroy}
 action is generally not optimal (i.e. destroying grass blocks is typically irrelevant to the smelting task). 
-This information informs the distribution over the optimality of the \texttt{destroyBlock} action given the set
+This information informs the distribution over the optimality of the \texttt{destroy} action given the set
 of features, which is used at test time to prune the action set so that the agent explores destroying blocks
 when trying to smelt gold and looking at gold ore, but not in other situations (unless another affordance happens to suggest it).
 
@@ -488,7 +492,7 @@ affordance-aware with this approach.
 \begin{table}[t]
 \ra{1.15}
 \small
-\begin{tabular}{@{}llll@{}}\toprule
+\begin{tabular}{@{}lll}\toprule
 Precondition & Goal Type & Actions \\ \midrule
 \texttt{lookingTowardGoal} & \texttt{atLocation} & \texttt{\{move\}} \\
 \texttt{lavaInFront} & \texttt{atLocation} & \texttt{\{rotate\}} \\
@@ -562,8 +566,8 @@ the value function was less than 0.01 for 100 consecutive policy
 rollouts, or the planner failed to converge after 1000 rollouts.  The
 reward function was $-1$ for all transitions, except transitions to
 states in which the agent was in lava, where we set the reward to
-$-10$. The goal was set to be terminal. The discount factor was
-$\lambda = 0.99$.  To introduce nondeterminism into our problem,
+$-10$. The goal was set to be terminal and the discount factor was
+$\lambda = 0.99$.  To introduce non-determinism into our problem,
 movement actions (move, rotate, jump) in all experiments had a small
 probability (0.05) of incorrectly applying a different movement
 action.  This noise factor approximates noise faced by a physical
@@ -587,6 +591,18 @@ the average Bellman updates, accumulated reward, and CPU time for
 RTDP, LRTDP and ERTDP after planning in 20 different maps of each goal
 type (100 total). Figure~\ref{fig:average_results} shows the results
 averaged across all maps.
+
+Because the planners were forced to terminate after only 1000
+rollouts, they did not always converge to the optimal policy. LRTDP on
+average found a comparably better plan (10.6 cost) than ERTDP (22.7
+cost) and RTDP (36.4 cost), found the plan in significantly fewer
+Bellman updates (14287.5 to ERTDP's 24804.1 and RTDP's 34694.3) and in
+less CPU time (93.1s to ERTDP's 166.4s and RTDP's 242.0s).  These
+results indicate that while learned affordances gave the largest
+improvements, expert-provided affordances can also significantly
+enhance performance, and, depending on the domain, could add
+significant value in making large state-spaces tractable without the
+overhead of supplying training worlds.
 
 % -- Table: Minecraft results --
 \begin{table}[t]
@@ -620,26 +636,17 @@ Planner & Bellman & Reward & CPU \\ \midrule
 \label{table:minecraft_results}
 \end{table}
 
-Because the planners were forced to terminate after only 1000
-rollouts, they did not always converge to the optimal policy. LRTDP on
-average found a comparably better plan (10.6 cost) than ERTDP (22.7
-cost) and RTDP (36.4 cost), found the plan in significantly fewer
-Bellman updates (14287.5 to ERTDP's 24804.1 and RTDP's 34694.3) and in
-less CPU time (93.1s to ERTDP's 166.4s and RTDP's 242.0s).  These
-results indicate that while learned affordances gave the largest
-improvements, expert-provided affordances can also significantly
-enhance performance, and, depending on the domain, could add
-significant value in making large state-spaces tractable without the
-overhead of supplying training worlds.
 
 %Todo: Make this paragraph better
 For some task types, LRTDP found a slightly worse plan on average than
-vanilla RTDP (e.g. the mining task). This is due to the fact that LRTDP
+RTDP (e.g. the mining task). This is due to the fact that LRTDP
 occasionally prunes actions that are essential for solving a particular problem (such as
-pruning the \texttt{destroyBlock} action in certain states of the mining task).
-To fix this, we could lower the threshold to allow for even more conservative action pruning
-at the cost of additional computation. In future work, we plan on investigating approaches
-to dynamically adjusting the threshold based on planning feedback.
+pruning the \texttt{destroy} action in certain states of the mining task).
+To fix this, we could lower the threshold to allow for even more conservative action pruning at the cost
+of additional exploration of the state-action space. In future work, we plan on investigating approaches
+to dynamically adjusting the threshold based on planning feedback. 
+%Additionally, RTDP often achieved a faster clock time because the affordance approaches evaluate the predicates associated with the affordances in each state.
+%ToDo: put in a note about time!!!
 
 %\stnote{We need to explain the results in Table 3 about why
 %  affordances don't always help.  Why is the reward sometimes worse
@@ -648,7 +655,7 @@ to dynamically adjusting the threshold based on planning feedback.
 
 
 \begin{table}[b]
-\ra{1.15}
+\ra{1.1}
 \small
 \begin{tabular}{@{}llll@{}}\toprule
 Planner & Bellman & Reward & CPU \\ \midrule
@@ -676,15 +683,15 @@ configurations as our Minecraft experiments. Domain experts provided
 the option policies and macro-actions.
 
 Table~\ref{table:temp_ext_act_results} indicates the results of
-comparing RTDP equipped with macro actions, options, and affordances
+comparing RTDP equipped with macro-actions, options, and affordances
 across 100 different executions in the same randomly generated
 Minecraft worlds. The results are averaged across tasks of each type
 presented in Table~\ref{table:minecraft_results}. Both macro-actions
-and options add a significant amount of time to planning.  This
-increase is because it is computationally expensive to predict the
+and options add a significant amount of time to planning due to the fact that
+it is computationally expensive to predict the
 expected reward associated with applying an option or a
 macro-action. Furthermore, the branching factor of the state-action
-space significantly increases when augmented with additional actions,
+space significantly increases with additional actions,
 causing the planner to run for longer and perform more Bellman
 updates. With affordances, the planner found a better plan in less CPU
 time, and with fewer Bellman updates. These results support the claim
@@ -702,29 +709,6 @@ containers, appliances, working spaces and utensils. The action set
 consists of pouring containers, mixing ingredients and moving containers and tools, 
 encapsulating a large set of grounded actions for
 the objects in a kitchen.
-
-% -- Figure: Baxter results/image
-
-To help a person cook, a robot needs to plan across possible actions a
-person might take as well as possible actions the robot could take.
-Coupled with the large number of items in a kitchen, a planner in this
-complicated world must take advantage of knowledge inherent to the
-domain and to the recipe with which it is working. Using four ingredients 
-required for brownies and the containers necessary for the ingredients, our
-cooking state space has $\num[round-precision=3, round-mode=figures]{47258883}$ states.  
-%To remove a large number of self-transitions, we provided affordances for each
-%action. For example, one affordance specified that mixing should only occur 
-%in containers that contain ingredients. An affordance for pouring required 
-%the container being poured to contain ingredients. 
-
-We divided a brownie recipe into three subgoals: combining and mixing the dry ingredients,
-combining and mixing the wet ingredients, and combining these two
-mixtures into a batter. For each subgoal, we provided more
-affordances specific to the objects used in that subgoal, like a whisk should
-only be used to mix wet ingredients.  
-We used ERTDP to search for the least-cost plan
-to complete the recipe.  The robot inferred actions such as handing
-off the whisk to the person to mix the wet ingredients.
 
 \begin{table}[t]
 \ra{1.1}
@@ -746,8 +730,39 @@ Planner & Bellman & Reward & CPU \\ \midrule
 \label{table:baxter_results}
 \end{table}
 
-In table~\ref{table:baxter_results} we show the comparison between
-standard RTDP and ERTDP for the three subgoals. Because the
+
+To help a person cook, a robot needs to plan across possible actions a
+person might take as well as possible actions the robot could take.
+Coupled with the large number of items in a kitchen, a planner in this
+complicated world must take advantage of knowledge inherent to the
+domain and to the recipe with which it is working. Using four ingredients 
+required for brownies and the containers necessary for the ingredients, our
+cooking state space has $\num[round-precision=3, round-mode=figures]{47258883}$ states.  
+%To remove a large number of self-transitions, we provided affordances for each
+%action. For example, one affordance specified that mixing should only occur 
+%in containers that contain ingredients. An affordance for pouring required 
+%the container being poured to contain ingredients. 
+
+% -- Figure: Baxter results/image
+\begin{figure}[b]
+\centering
+\includegraphics[width=0.7\linewidth]{figures/baxter.png}%
+  \caption{Affordances enable a robot to efficiently infer helpful actions in
+    very large state spaces, such as a kitchen.}
+  \label{fig:baxter_results}
+\end{figure}
+
+We divided a brownie recipe into three subgoals: combining and mixing the dry ingredients,
+combining and mixing the wet ingredients, and combining these two
+mixtures into a batter. For each subgoal, we provided affordances specific
+to the objects used in that subgoal, like a whisk should only be used to mix wet ingredients.  
+We used ERTDP to search for the least-cost plan
+to complete the recipe.  The robot inferred actions such as handing
+off the whisk to the person to mix the wet ingredients.
+
+
+In table~\ref{table:baxter_results} we compare between
+standard RTDP and ERTDP planning for each of the three subgoals. Because the
 state-action space is reduced significantly,
 ERTDP can plan successfully in a short amount of time. Standard RTDP always encountered
 the maximum number of rollouts specified at the maximum depth each time.
@@ -758,17 +773,20 @@ on a robot can help a person cook by dynamically replanning through
 constant observations. After observing the placement of a cocoa
 container in the robot's workspace, the robot fetches a wooden spoon
 to allow the person to mix. After observing an egg container, the
-robot fetches a whisk to help beat the eggs. Because we modeled the
-culinary world as an MDP and replanned at every observation, the robot
-dynamically resolves failures and accounts for unpredictable user
-actions. In the video, the robot fails to grasp the wooden spoon on
+robot fetches a whisk to help beat the eggs. 
+%Because we modeled the
+%culinary world as an MDP and replanned at every observation, the robot
+%dynamically resolves failures and accounts for unpredictable user
+%actions.
+The robot dynamically resolves failures and accounts for unpredictable
+user actions; in the video, the robot fails to grasp the wooden spoon on
 the first attempt and must retry the grasp after it observed no state
 change.
 
 % ====== Section: Conclusion ======
 \section{Conclusion}
 \label{sec:conclusion}
-We proposed a novel approach to represent transferable planning
+We proposed a novel approach to representing transferable planning
 knowledge in terms of {\em affordances}~\cite{gibson77}. Affordances
 allow an agent to efficiently prune actions based on learned or expert
 provided knowledge, significantly reducing the number of state-action
