@@ -419,11 +419,11 @@ C(\phi_j, a_i) &= \sum_{w \in W} \sum_{s \in w} (a_i  \in \pi_w(s) \wedge \phi_j
 During the learning phase, the agent learns which actions are useful under different conditions. 
 For example, consider the smelting task pictured in Figure~\ref{fig:minecraft}.
 During training, we observe that the \texttt{destroy} action is often optimal when the agent is looking
-at a block of gold and the agent was trying to smelt gold.
-Likewise, when the agent is not looking at a block of gold in the smelting task, then the \texttt{destroy}
+at a block of gold ore and the agent is trying to smelt gold ingots.
+Likewise, when the agent is not looking at a block of gold ore in the smelting task we observe that the \texttt{destroy}
 action is generally not optimal (i.e. destroying grass blocks is typically irrelevant to smelting). 
 This information informs the distribution over the optimality of the \texttt{destroy} action, which is used at test time to encourage the agent to destroy blocks
-when trying to smelt gold and looking at gold ore, but not in other situations (unless another affordance happens to suggest it).
+when trying to smelt gold and looking at gold ore, but not in other situations (unless another affordance suggests using \texttt{destroy}).
 
 % -- Figure: Minecraft pic --
 \begin{figure}[b]
