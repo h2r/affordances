@@ -103,19 +103,20 @@ public class MinecraftBehavior {
 	public PropositionalFunction 		pfAgentLookDestWall;
 	public PropositionalFunction 		pfAgentLookIndWall;
 	public PropositionalFunction 		pfAgentLookLava;
+	public PropositionalFunction 		pfIndBlockFrontOfAgent;
 	
 	//Params for Planners
 	public double						gamma = 0.99;
 	public double						minDelta = .01;
 	public int							maxSteps = 200;
 
-	public int 							numRollouts = 1500; // RTDP
-	public int							maxDepth = 50; // RTDP
+	public int 							numRollouts = 1000; // RTDP
+	public int							maxDepth = 100; // RTDP
 	public int 							vInit = 1; // RTDP
-	public int 							numRolloutsWithSmallChangeToConverge = 10; // RTDP
+	public int 							numRolloutsWithSmallChangeToConverge = 100; // RTDP
 	public double						boltzmannTemperature = 0.5;
 	public double						lavaReward = -10.0;
-	private PropositionalFunction pfIndBlockFrontOfAgent;
+
 
 	// ----- CLASS METHODS -----
 	
@@ -301,7 +302,7 @@ public class MinecraftBehavior {
 		// Print out some infos
 		EpisodeAnalysis ea = p.evaluateBehavior(initialState, this.rewardFunction, this.terminalFunction, maxSteps);
 		
-		System.out.println(ea.getActionSequenceString());
+//		System.out.println(ea.getActionSequenceString());
 
 		return p;
 	}
@@ -314,10 +315,7 @@ public class MinecraftBehavior {
 	}
 	
 	public static void main(String[] args) {
-//		String mapsPath = System.getProperty("user.dir") + "/maps/";
-		
 		String mapName = "src/minecraft/maps/test/PlaneWorld0.map";
-		
 		MinecraftBehavior mcBeh = new MinecraftBehavior(mapName);
 		double [] results;
 		
@@ -330,20 +328,15 @@ public class MinecraftBehavior {
 //		RTDPPlanner rtdpPlanner = new RTDPPlanner(mcBeh, false, false);
 //		results = rtdpPlanner.runPlanner();
 //		System.out.println("(minecraftBehavior) results [rtdp]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
-		
-		//BFSRTDP
-//		BFSRTDPPlanner BFSRTDPPlanner = new BFSRTDPPlanner(mcBeh, false, false);
-//		results = BFSRTDPPlanner.runPlanner();
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
-		
+
 		//AFFRTDP
 		boolean useOptions = false;
 		boolean useMAs = false;
 		boolean hardFlag = true;
-		boolean expert = false;
+		boolean expertFlag = false;
 		
 		String kbName = "";
-		if(expert) kbName += "expert/expert";
+		if(expertFlag) kbName += "expert/expert";
 		else kbName += "learned/grid";
 		
 		if(useMAs) kbName += "_ma";
@@ -353,45 +346,11 @@ public class MinecraftBehavior {
 		
 		// Load knowledge base
 		KnowledgeBase affKB = new KnowledgeBase();
-		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), kbName, hardFlag);
+
+		affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), kbName, hardFlag, expertFlag);
 		AffordanceRTDPPlanner affRTDPPlanner = new AffordanceRTDPPlanner(mcBeh, useOptions, useMAs, affKB);
 		results = affRTDPPlanner.runPlanner();
-		System.out.println("(minecraftBehavior) results expert(" + expert + ") : " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
-
-		//VI
-//		VIPlanner viPlan = new VIPlanner(mcBeh, false, false);
-//		results = viPlan.runPlanner();
-//		System.out.println("(minecraftBehavior) results [VI]: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
-
-		// Affordance VI
-//		AffordanceVIPlanner affVIPlan = new AffordanceVIPlanner(mcBeh, true, true, "somekb.kb");
-//		results = affVIPlan.runPlanner();
-//		System.out.println("(minecraftBehavior) results: " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
-
-		
-		// Subgoal Planner
-//		OOMDPPlanner lowLevelPlanner = new RTDP(mcBeh.domain, mcBeh.rewardFunction, mcBeh.terminalFunction, mcBeh.gamma, mcBeh.hashingFactory, mcBeh.vInit, mcBeh.numRollouts, mcBeh.minDelta, mcBeh.maxDepth);
-//		mcBeh.SubgoalPlanner(lowLevelPlanner);
-		
-		//		SubgoalKnowledgeBase subgoalKB = new SubgoalKnowledgeBase(mapName, mcBeh.domain);
-//		List<Subgoal> highLevelPlan = subgoalKB.generateSubgoalKB(mapName);
-//		SubgoalPlanner sgp = new SubgoalPlanner(mcBeh.domain, mcBeh.getInitialState(), mcBeh.rewardFunction, mcBeh.terminalFunction, lowLevelPlanner, highLevelPlan);
-//		sgp.solve();
-		
-		// Collect results and write to file
-		File resultsFile = new File("src/tests/results/mcBeh_results.result");
-		BufferedWriter bw;
-		FileWriter fw;
-		try {
-			fw = new FileWriter(resultsFile.getAbsoluteFile());
-			bw = new BufferedWriter(fw);
-			bw.write("(minecraftBehavior) results: LRTDP " + results[0] + "," + results[1] + "," + results[2] + "," + String.format("%.2f", results[3] / 1000) + "s");
-			bw.flush();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		System.out.println("(minecraftBehavior) results expert(" + expertFlag + ") : " + results[0] + "," + results[1] + "," + results[2] + "," + results[3]);
 	}
 	
 	

@@ -144,17 +144,16 @@ public class NameSpace {
 
 	//----------DIRECTORIES---------
 	// Grid changes
-//	public static final String				PATHMAPS = "src/minecraft/maps/";
-	public static final String				PATHMAPS = "maps/";
-//	public static final String				PATHKB = "src/minecraft/kb/";
-	public static final String				PATHKB = "kb/";
-//	public static final String				PATHTEMPLATEMAP = "src/minecraft/maps/template.map";
-	public static final String				PATHTEMPLATEMAP = "maps/template.map";
+	public static final String				PATHMAPS = "src/minecraft/maps/";
+	public static final String				PATHKB = "src/minecraft/kb/";
+//	public static final String				PATHMAPS = "maps/";
+//	public static final String				PATHKB = "kb/";
+	public static final String				PATHTEMPLATEMAP = PATHMAPS + "template.map";
 	public static final String				PATHRESULTS = "src/tests/results/";
 	
 	//-------------MISC-------------
-	public static final String				DOUBLEFORMAT = "%.3f";
-
+	public static final String				DOUBLEFORMAT = "%.2f";
+	
 	//-------------ENUMS-------------
 	public enum RotDirection {
 		NORTH(0), EAST(1), SOUTH(2), WEST(3);
