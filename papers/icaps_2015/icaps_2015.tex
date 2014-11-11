@@ -35,7 +35,7 @@
 \begin{document}
 
 % paper title
-\title{Affordance-Aware Planning}
+\title{Affordances as Goal-Based Action Priors}
 
 % Author info:
 \author{David Abel, Gabriel Barth-Maron, D. Ellis Hershkowitz, \\ {\Large {\bf Stephen Brawner, Kevin O'Farrel, James MacGlashan, Stefanie Tellex}}\\
@@ -47,22 +47,26 @@ Providence, RI 02912
 \maketitle
 
 \begin{abstract}
-Planning algorithms for non-deterministic domains are often
-intractable in large state spaces due to the well-known curse of
-dimensionality. Existing approaches to planning in large stochastic
-state spaces fail to prevent autonomous agents from considering many
-actions that are obviously irrelevant to a human solving the same
-task. To prevent agents from exploring irrelevant action applications, we formalize the notion of {\em affordances} as
-state space independent, goal-oriented knowledge added to an Object Oriented Markov Decision
-Process (OO-MDP).  Affordances prune irrelevant actions based on the agent's goal and
-the current state, reducing the number of state-action pairs
-the planner must evaluate in order to formulate a near optimal
-policy. Affordances may be provided by an expert or may be learned without supervision.
-We demonstrate our approach by planning in the state-rich Minecraft domain, showing significant increases in
-speed, reductions in state space exploration, and improvements in the quality of the synthesized policy.
-Additionally, we show that learned affordances often surpass the
-performance of those provided by experts. Finally, we demonstrate that
-affordance-aware planning enables a robot to assist a person performing a cooking task.
+Robots that interact with people must flexibly respond to their
+requests by planning complex actions in very large state spaces, where
+the reward function may not be known in advance.  However, by
+providing the robot a large range of capabilities that are necessary
+for solving a variety of problems, planning problems become
+prohibitively difficult because of the exponential number of ways the
+robot can affect the world.  In this work, we develop a framework for
+goal and state dependent action priors that can be used to prune away
+irrelevant actions in the current situation, thereby greatly
+accelerating planning in a variety complex stochastic environments.
+Because these action priors depend on the current state and the goal,
+we refer to them as {\em affordances}.  Our framework allows
+affordances to be easily specified by an expert or to be learned from
+prior experience in related problems. Due to the large complexity of
+the space, we use the video game Minecraft as a robot simulator in
+which an agent learns useful action priors from a set of training
+worlds and then uses those priors to successfully find solutions to
+otherwise intractable problems without the priors. We also use
+expert-provided priors to accelerate planning in a robot cooking
+domain that is executed on a two-handed manipulator robot.
 \end{abstract}
 
 %\maketitle
@@ -73,28 +77,32 @@ affordance-aware planning enables a robot to assist a person performing a cookin
 
 Robots operating in unstructured, stochastic environments such as a
 factory floor or a kitchen face a difficult planning problem due to
-the large state space and inherent uncertainty due to unreliable
-perception and actuation~\citep{bollini12,knepper13}.  Robotic
-planning tasks are often formalized as a stochastic sequential
-decision making problem, modeled as a Markov Decision Process
-(MDP)~\citep{thrun2008probabilistic}. In these problems, the agent
-must find a mapping from states to actions for some subset of the
-state space that enables the agent to achieve a goal while minimizing
-costs along the way. However, many robotics tasks are so complex that
-modeling them as an MDP results in a massive state-action space, which
-in turn restricts the types of robotics problems that are
-computationally tractable. 
+the large state space and the very large set of possible
+tasks~\citep{bollini12,knepper13}.  Robotic planning tasks are often
+formalized as a stochastic sequential decision making problem, modeled
+as a Markov Decision Process (MDP)~\citep{thrun2008probabilistic}. In
+these problems, the agent must find a mapping from states to actions
+for some subset of the state space that enables the agent to achieve a
+goal while minimizing costs along the way.  However, many robotics
+problem correspond to a family of related MDPs; following STRIPs
+terminology, these problems come from the same domain, but each task
+may have a different reward function or goal condition.  For example,
+the reward function for a cooking robot looks very different when it
+is making brownies vs. stir-frying broccoli.
 
-Planning tasks involving a large number of objects are especially challenging. 
-For example, when a robot is manipulating
-objects in an environment, an object can be placed anywhere in a large
-set of locations.  The size of the state space increases exponentially
-with the number of objects, which bounds the placement problems that
-the robot is able to expediently solve. The difficulty of the task is compounded
-by the fact that most of these objects and locations are irrelevant given a specific goal. For instance, when making brownies,
-the oven and flour are important, while the soy sauce and saut\'{e}
-pan are not.  For a different task, such as stir-frying broccoli, a
-different set of objects and actions must be inferred.
+The robot may be endowed with a very large set of possible actions,
+any of which may be relevant depend on the current goal.  For example,
+when a robot is manipulating objects in an environment, an object can
+be placed anywhere in a large set of locations.  The size of the state
+space increases exponentially with the number of objects, which bounds
+the placement problems that the robot is able to expediently solve.
+Depending on the reward function (which is unknown a priori), any of
+these states and actions may be relevant to the solution, but for any
+specific reward function, most of them are irrelevant.  For instance,
+when making brownies, the oven and flour are important, while the soy
+sauce and saut\'{e} pan are not.  For a different task, such as
+stir-frying broccoli, a different set of objects and actions must be
+inferred.
 
 %\begin{figure}
 %\centering
@@ -107,38 +115,46 @@ different set of objects and actions must be inferred.
 To confront this state-action space explosion, prior work has explored
 adding knowledge to the planner, such as options~\cite{sutton99} and
 macro-actions~\cite{Botea:2005kx,Newton:2005vn}.  However, while these
-methods can allow the agent to search more deeply in the state space, they
-add non-primitive actions to the planner which {\em increase} the size of
-the state-action space.  The resulting augmented space is even larger,
-which can have the paradoxical effect of increasing the search time
-for a good policy~\cite{Jong:2008zr}.  
+methods can allow the agent to search more deeply in the state space,
+they add non-primitive actions to the planner which {\em increase} the
+branching factor of the state-action space.  The resulting augmented
+space is even larger, which can have the paradoxical effect of
+increasing the search time for a good policy~\cite{Jong:2008zr}.
 Deterministic forward-search algorithms like hierarchical task
 networks (HTNs)~\citep{Nau:1999:SSH:1624312.1624357}, and temporal
-logical planning (TLPlan)~\citep{Bacchus95usingtemporal,Bacchus99usingtemporal},
-add knowledge to the planner that greatly increases planning speed, but do
+logical planning
+(TLPlan)~\citep{Bacchus95usingtemporal,Bacchus99usingtemporal}, add
+knowledge to the planner that greatly increases planning speed, but do
 not generalize to stochastic domains. Additionally, the knowledge
-provided to the planner by these methods is quite extensive, reducing the
-agent's autonomy.
+provided to the planner by these methods is quite extensive, reducing
+the agent's autonomy and must be manually supplied by the designer.
 
-To address these issues, we augment an Object Oriented Markov Decision Process (OO-MDP) with a formalization of {\em
-  affordances}. Affordances were originally proposed by \citet{gibson77} as
-action possibilities prescribed by an agent's capabilities in an environment.
+To address these issues, we augment an Object Oriented Markov Decision
+Process (OO-MDP) with a specific type of action prior conditioned on
+the current state and an abstract goal description.  Because we
+condition on both the state and goal description, we refer to this
+type of action prior as a knowlege base of {\em affordances}.
+Affordances were originally proposed by \citet{gibson77} as action
+possibilities prescribed by an agent's capabilities in an environment.
 %Affordances focus an agent's attention on aspects of the environment that
 %are most relevant to solving its current goal and avoid exploration of irrelevant parts of the
 %world.
-We rigorously formalize the notion of an affordance as knowledge added
-to an OO-MDP that prunes irrelevant actions on a state-by-state basis based on the agent's current goal.
-Affordances can be specified by hand and also learned through
-experience, making them a concise, transferable, and learnable means
-of representing useful planning knowledge. Our experiments demonstrate
-that affordances provide dramatic improvements for a variety of
-planning tasks compared to baselines, and are applicable across
-different state spaces.  Moreover, while manually provided affordances
-outperform baselines, affordances learned through experience yield
-even greater improvements.  We conduct experiments in the game
-Minecraft, which has a very large state-action space, and on a
-real-world robotic cooking assistant.  All associated code with this
-paper may be found at (redacted for review).
+We rigorously formalize the notion of an affordance as a prior on
+actions conditioned on features of the current state as well as the
+robot's goal.  Affordance enable the robot to prune irrelevant actions
+on a state-by-state basis based on the agent's current goal and focus
+on the most promising parts of the state space.  Affordances can be
+specified by hand and also learned through experience, making them a
+concise, transferable, and learnable means of representing useful
+planning knowledge. Our experiments demonstrate that affordances
+provide dramatic improvements for a variety of planning tasks compared
+to baselines in simulation, and are applicable across different state spaces.
+Moreover, while manually provided affordances outperform baselines,
+affordances learned through experience yield even greater
+improvements.  We conduct experiments in the game Minecraft, which has
+a very large state-action space, and on a real-world robotic cooking
+assistant.  All associated code with this paper may be found at
+(redacted for review).
 
 %% Because affordances define the {\em kind} of goals for which actions
 %% are useful, affordances also enable high-level reasoning that can be
