@@ -19,3 +19,4 @@ minecraft_api/world_the_end/
 src/NewMineCraftDomain/src/minecraft/MinecraftDomain/Options/TrenchBuildDetOption.java
 
 *.kb
+#*

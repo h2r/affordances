@@ -88,7 +88,9 @@ problem correspond to a family of related MDPs; following STRIPs
 terminology, these problems come from the same domain, but each task
 may have a different reward function or goal condition.  For example,
 the reward function for a cooking robot looks very different when it
-is making brownies vs. stir-frying broccoli.
+is making brownies vs. stir-frying broccoli.  Figure~\ref{fig:example}
+shows an example of two problems from the same domain in the game
+Minecraft.
 
 The robot may be endowed with a very large set of possible actions,
 any of which may be relevant depending on the current goal.  For
@@ -111,6 +113,19 @@ different set of objects and actions.
 %    very large state spaces, such as a kitchen.}
 %  \label{fig:baxter_results}
 %\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.49\linewidth]{figures/smelt_small.png}
+\includegraphics[width=0.49\linewidth]{figures/smelt_large.png}
+\caption{Two different problems from the same domain, where the
+  agent's goal is to smelt the gold in the furnace while avoiding the
+  lava.  Our agent is unable to solve the problem on the right before
+  learning because the state/action space is too large (since it can
+  place the gold block anywhere).  After learning, it can quickly
+  solve the larger problem.\label{fig:example}}
+\end{figure}
+
 
 To confront this state-action space explosion, prior work has explored
 adding knowledge to the planner, such as options~\cite{sutton99} and
@@ -151,11 +166,14 @@ experiments demonstrate that affordances provide dramatic improvements
 for a variety of planning tasks compared to baselines in simulation,
 and are applicable across different state spaces.  Moreover, while
 manually provided affordances outperform baselines, affordances
-learned through experience yield even greater improvements.  We
-conduct experiments in the game Minecraft, which has a very large
-state-action space, and on a real-world robotic cooking assistant.
-All associated code with this paper may be found at (redacted for
-review).
+learned through experience yield even greater improvements.
+Figure~\ref{fig:example} shows an example of two problems from the
+same domain in the game Minecraft; the agent learns on randomly
+generated problems and tests on new problems from the same domain that
+it has never previously encountered.  We conduct experiments in the
+game Minecraft, which has a very large state-action space, and on a
+real-world robotic cooking assistant.  All associated code with this
+paper may be found at (redacted for review).
 
 %% Because affordances define the {\em kind} of goals for which actions
 %% are useful, affordances also enable high-level reasoning that can be
@@ -181,9 +199,7 @@ reward received by the agent for applying action $a$ in state $s$ and
 transitioning to state $s'$; and $\gamma \in [0, 1)$ is a discount
   factor that defines how much the agent prefers immediate rewards
   over future rewards (the agent prefers to maximize immediate rewards
-  as $\gamma$ decreases).  Following STRIPs terminology, we define a
-  domain as a family of related MDPs with the same state space, action
-  space, and transition dynamics, but different reward functions.
+  as $\gamma$ decreases). 
 
 Our representation of affordances builds on Object-Oriented MDPs
 (OO-MDPs)~\citep{diuk08}.  An OO-MDP efficiently represents the state
@@ -206,13 +222,26 @@ beyond any particular Minecraft task. We capitalize on this state
 space independence by using OO-MDP predicates as features for action
 pruning.
 
+Following STRIPs terminology, we define a domain as a family of
+related MDPs with the same state space, action space, and transition
+dynamics, but different reward functions and terminal states.  Then a
+STRIPs problem is a specific MDP with a known reward function.  We are
+concerned with MDPs where the reward function is goal-directed, that
+is the agent receives a negative reward at each timestep, and a large
+positive reward when it reaches a terminal state.  A goal, $G$ is
+defined by a reward function plus the set of terminal states.  The aim
+of our approach is to learn knowledge about a domain from experience
+that enables an agent to quickly infer a solution to a new problem in
+the same domain that it has never encountered before.
+
+
 % -- Subsection: Modeling the Optimal Actions --
 \subsection{Modeling the Optimal Actions}
 
 Our goal is to formalize affordances in a way that enables a planning
-algorithm to prune away suboptimal actions in each state. We define
-the optimal action set, $\mathcal{A}^*$, for a given state $s$ and
-goal $G$ as:
+algorithm to prune away suboptimal actions in each state based on the
+agent's current goal. We define the optimal action set,
+$\mathcal{A}^*$, for a given state $s$ and goal $G$ as:
 % -- Equation: Optimal Action Set --
 \begin{equation}
 \mathcal{A}^* = \left\{ a \mid Q^*_G(s,a) = V^*_G(s) \right\}, 
@@ -231,32 +260,29 @@ distribution for each action's optimality:
 \label{eq:master}
 \end{equation}
 
-\noindent for $i \in \{1, \ldots, |\mathcal{A}|\}$, where $\mathcal{A}$ is the OO-MDP action space.
+\noindent for $i \in \{1, \ldots, |\mathcal{A}|\}$, where
+$\mathcal{A}$ is the OO-MDP action space for the domain.
 
 We formalize our knowledge base, $K$, as a set of $n$ paired
-preconditions and goal types, $\{ (p_1, g_1) \ldots (p_{n}, g_{n}) \}$,
-along with a parameter vector, $\theta$. We abbreviate each pair
-$(p_j, g_j)$ to $\delta_j$ for simplicity. Each precondition $p \in
-\mathcal{P}$ is a {\it predicate} in predicate space, $\mathcal{P}$,
-defined by the OO-MDP, and $g$ is a {\it goal type}
-which is a logical expression that defines a subset of goals. For example, a
-predicate might be $nearTrench(agent)$ which is true when the agent is
-standing near a trench. A goal type specifies the
-sort of problem the agent is trying to solve. In the context of
-Minecraft, a goal type might refer to the agent retrieving an object
-of a certain type from the environment, reaching a particular
-location, or crafting an object or structure.  Depending on the
-agent's current goal, the relevance of each action changes
-dramatically.
+preconditions and goal types, $\{ (p_1, g_1) \ldots (p_{n}, g_{n})
+\}$. We abbreviate each pair $(p_j, g_j)$ to $\delta_j$ for
+simplicity. Each precondition $p \in \mathcal{P}$ is a {\it predicate}
+in predicate space, $\mathcal{P}$, defined by the OO-MDP domain, and
+$g$ is a {\it goal type} which is a logical expression that defines a
+subset of goals. For example, a predicate might be $nearTrench(agent)$
+which is true when the agent is standing near a trench. A goal type
+specifies the sort of problem the agent is trying to solve, such as
+the agent retrieving an object of a certain type from the environment,
+reaching a particular location, or creating a new structure.
+Depending on the agent's current goal, the relevance of each action
+changes dramatically.
 
 We rewrite Equation~\ref{eq:master} replacing $K$ with its constituents:
 % -- Equation: replace K --
 \begin{multline}
 \Pr(a_i \mid s, G, K)
-= \Pr(a_i \in \mathcal{A}^* \mid s, G, \delta_1 \ldots \delta_n, \theta_i)
+= \Pr(a_i \in \mathcal{A}^* \mid s, G, \delta_1 \ldots \delta_n).
 \end{multline}
-\noindent where $\theta_i$ represents the set of parameters relevant to modeling
-the probability of action $a_i \in {\cal A}^*$. 
 
 We introduce the indicator function $f$, which returns 1 if and only if $\delta_j$'s predicate is true in the provided state $s$, and $\delta_j$'s goal type is entailed by the agent's current goal, $G$:
 % -- Equation: function f defn --
@@ -273,14 +299,16 @@ Evaluating $f$ for each $\delta_j$ given the current state and goal gives rise t
 $\phi_j = f(\delta_j, s, G)$, which we use to reformulate our probability distribution:
 % -- Equation: replace deltas with phi --
 \begin{multline}
-\Pr(a_i \in \mathcal{A}^*  \mid s, G, \delta_1 \ldots \delta_n, \theta_i) \\
-= \Pr(a_i \in \mathcal{A}^*  \mid \phi_1, \ldots, \phi_n, \theta_i)
+\Pr(a_i \in \mathcal{A}^*  \mid s, G, \delta_1 \ldots \delta_n) \\
+= \Pr(a_i \in \mathcal{A}^*  \mid \phi_1, \ldots, \phi_n)
 \label{eq:feature_rep}
 \end{multline}
 
+
 This distribution may be modeled in a number of ways making this
 approach quite flexible. To enable efficient learning, we model our
-distribution using Naive Bayes. First we factor using Bayes' rule:
+distribution using Naive Bayes. First we factor using Bayes' rule,
+introducing a parameter vector $\theta_i$ of feature weights:
 % -- Equation: Bayes --
 \begin{equation}
 = \frac{\Pr(\phi_1, \ldots, \phi_{n}, \mid a_i \in \mathcal{A}^*, \theta_i) \Pr(a_i \in \mathcal{A}^* \mid \theta_i)}{\Pr(\phi_1, \ldots, \phi_{n} | \theta_i)}
@@ -299,9 +327,12 @@ the fraction of the time each action was optimal during training.
 
 % -- Subsection: Learning the Optimal Actions--
 \subsection{Learning the Optimal Actions}
-Our approach to modeling the optimality of each action allows affordances to be learned through unsupervised experience.
-To learn affordances, we provide a set of training worlds ($W$) for which the optimal policy, $\pi$,
-may be tractably computed. Then, we compute the maximum likelihood estimate of the parameter vector $\theta_i$ for each action.
+Our approach to modeling the optimality of each action allows
+affordances to be learned through experience.  To learn affordances,
+we provide a set of training worlds from the domain, ($W$) for which
+the optimal policy, $\pi$, may be tractably computed using existing
+methods. Then, we compute the maximum likelihood estimate of the
+parameter vector $\theta_i$ for each action using the policy.
 
 Under our Bernouli Naive Bayes model, we estimate the parameters
 $\theta_{i,0} = \Pr(a_i)$ and $\theta_{i,j} = \Pr(\phi_j | a_i)$, for $j \in \{1, \ldots, n \}$, where the maximum likelihood estimates are:
@@ -321,24 +352,53 @@ C(\bar{a_i}) &= \sum_{w \in W} \sum_{s \in w} (a_i \not \in \pi_w(s) ) \\
 C(\phi_j, a_i) &= \sum_{w \in W} \sum_{s \in w} (a_i  \in \pi_w(s) \wedge \phi_j == 1)
 \end{align}
 
-During the learning phase, the agent learns which actions are useful under different conditions. 
-For example, consider the smelting task pictured in Figure~\ref{fig:minecraft}.
-During training, we observe that the \texttt{destroy} action is often optimal when the agent is looking
-at a block of gold ore and the agent is trying to smelt gold ingots.
-Likewise, when the agent is not looking at a block of gold ore in the smelting task we observe that the \texttt{destroy}
-action is generally not optimal (i.e. destroying grass blocks is typically irrelevant to smelting). 
-This information informs the distribution over the optimality of the \texttt{destroy} action, which is used at test time to encourage the agent to destroy blocks
-when trying to smelt gold and looking at gold ore, but not in other situations (unless another affordance suggests using \texttt{destroy}).
+During the learning phase, the agent learns which actions are useful
+under different conditions.  For example, consider the three different
+problems shown in Figure~\ref{fig:minecraft}.  During training, we observe
+that the \texttt{destroy} action is often optimal when the agent is
+looking at a block of gold ore and the agent is trying to smelt gold
+ingots.  Likewise, when the agent is not looking at a block of gold
+ore in the smelting task we observe that the \texttt{destroy} action
+is generally not optimal (i.e. destroying grass blocks is typically
+irrelevant to smelting).  This information informs the distribution
+over the optimality of the \texttt{destroy} action, which is used at
+test time to encourage the agent to destroy blocks when trying to
+smelt gold and looking at gold ore, but not in other situations
+(unless another affordance suggests using \texttt{destroy}).
+
+At test time, the agent will see different, randomly generated worlds
+from the same domain, and use the learned affordances to increase its
+speed at inferring a plan.
+
 
 % -- Figure: Minecraft pic --
-\begin{figure}[b]
+\begin{figure}
 \centering
-\includegraphics[scale=0.08]{figures/smelting_labeled.png}%
-  \caption{A gold smelting task in the Minecraft domain.  The agent's
-    goal is to mine a block of gold, move to the forge and then smelt
-    the gold in the forge to produce gold ingots.}
+\subfigure[Mine the gold and smelt it in the furnace]{
+\includegraphics[width=0.3\linewidth]{figures/smelting_labeled.png}}
+\subfigure[Dig down to the gold and mine it, avoiding lava.]{
+\includegraphics[width=0.3\linewidth]{figures/mining_labeled.png}}
+\subfigure[Navigate to the goal location, avoiding lava.]{
+\includegraphics[width=0.3\linewidth]{figures/plane.png}}
+  \caption{Three different problems from the Minecraft domain}
   \label{fig:minecraft}
 \end{figure}
+
+In a recent review on the theory of affordances,~\citet{chemero2003}
+suggests that an affordance is a relation between the features of an
+environment and an agent's abilities. Our approach grounds this
+interpretation, where the features of the environment correspond to
+the goal-dependent state features, $\phi$, and the agent's abilities
+correspond to the OO-MDP action set.  We define an affordance, $A$, 
+\begin{align}
+A \equiv \left< \delta_j, Pr(a_i \in \mathcal{A}^* |
+\phi_j; \theta) \right>
+\end{align}
+We can compute this term in our Naive Bayes model by marginalizing
+over all the features not associated with $\phi_j$.  Alternatively,
+hard affordances may be specified by an expert by setting this
+distribution to zero or one. 
+
 
 %which actions were taken in each state. At test time, 
 %when the agent is on a flat plane and needs to move to the gold ore, LRTDP will have learned
@@ -406,16 +466,6 @@ Precondition & Goal Type & Actions \\ \midrule
 \caption{Examples of expert-provided affordances.\label{table:afford_kb_exp}}
 \end{table}
 
-In a recent review on the theory of affordances,~\citet{chemero2003}
-suggests that an affordance is a relation between the features of an
-environment and an agent's abilities. Our approach grounds this
-interpretation, where the features of the environment correspond to
-the goal-dependent state features, $\phi$, and the agent's abilities
-correspond to the OO-MDP action set. In our model, there is an
-affordance for each $\delta_j$, with preconditions $\delta_j.p$, goal
-type $\delta_j.g$ and action distribution $\Pr(a_i \in \mathcal{A}^* | \phi_j,
-\theta)$, which is computed in our Naive Bayes model by marginalizing
-over all the features not associated with $\phi_j$.
 
 %As with human agents, multiple affordances often inform decision
 %making at a given time.  Thus, affordance-aware planning agents
