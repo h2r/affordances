@@ -12,7 +12,19 @@ Quality of Presentation: 6 (+ (slightly positive))
 SUMMARY RATING: -1 (- (slightly negative))
 
 ----------- COMMENTS FOR THE AUTHORS -----------
-This paper describes the concept of affordances for pruning irrelevant actions on a state-based and goal oriented OO-MDP. An affordance take the form of a pair {cond, goal} that learns which actions are relevant when a goal is active and the condition holds in a state. It could be understood as learning relevant actions for partial states and specific goals. An action is deemed to be relevant with respect of the percentage of times that the action has been optimal within a policy over a certain training set. The authors then tests the performance of the learned affordances compared with a baselined RTDP algorithm and a variant where this affordances are defined by a domain expert. 2 domains are tested, minecraft with noise on the action outcomes to simulate non-determinism, and a robot-assistant cooking problem.
+
+This paper describes the concept of affordances for pruning irrelevant
+actions on a state-based and goal oriented OO-MDP. An affordance take
+the form of a pair {cond, goal} that learns which actions are relevant
+when a goal is active and the condition holds in a state. It could be
+understood as learning relevant actions for partial states and
+specific goals. An action is deemed to be relevant with respect of the
+percentage of times that the action has been optimal within a policy
+over a certain training set. The authors then tests the performance of
+the learned affordances compared with a baselined RTDP algorithm and a
+variant where this affordances are defined by a domain expert. 2
+domains are tested, minecraft with noise on the action outcomes to
+simulate non-determinism, and a robot-assistant cooking problem.
 
 
 The technique seems interesting, as it’s necessary to focus on the relevant area of the search space if any RL technique that wants to scale-up. Affordances offer a framework to incorporate and learn knowledge to help the algorithm reduce the branching factor and hence the convergence time. Many technique on AI share similar scope, within the hope to prune the irrelevant areas.

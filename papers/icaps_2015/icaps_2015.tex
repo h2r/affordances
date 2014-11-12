@@ -213,6 +213,48 @@ OO-MDP definition also includes a set of predicates $\mathcal{P}$ that
 operate on the state of objects to provide additional high-level
 information about the MDP state.
 
+\begin{figure}
+\subfigure[Domain]{
+\fbox{\small
+\parbox{0.47\linewidth}{
+\begin{itemize}
+  \item Object Classes:
+    \begin{itemize}
+    \item Agent
+      \begin{itemize}
+      \item Location (x, y, z)
+      \item Inventory
+      \end{itemize}
+    \item Block
+      \begin{itemize}
+      \item Type (Wood, Lava, ...)
+      \item Location (x, y, z)
+      \end{itemize}
+    \end{itemize}
+  \item Actions:
+    \begin{itemize}
+    \item Destroy Block
+    \item Turn left/right
+    \item Move forward
+    \item Place Block
+    \item Jump
+    \end{itemize}
+  \item Transition Dynamics:
+    \begin{itemize}
+    \item Moves fail x\% of the time.
+    \end{itemize}
+    \end{itemize}
+}}}%
+\subfigure[Example goals.]{
+\fbox{\parbox{0.47\linewidth}{\small
+Robot is standing at x, y, z.\\
+Robot has smelted gold.\\
+Robot has acquired ore. \\
+}}
+}
+\caption{Part of the OO-MDP Domain for the Minecraft.}
+\end{figure}
+
 OO-MDP predicates provide state space independence. For a given
 planning domain, OO-MDP objects often appear across tasks. Since
 predicates operate on collections of objects, they generalize beyond
