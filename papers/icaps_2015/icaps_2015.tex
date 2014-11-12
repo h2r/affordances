@@ -229,19 +229,23 @@ information about the MDP state.
       \begin{itemize}
       \item Type (Wood, Lava, ...)
       \item Location (x, y, z)
+      \item Destructible (True, False)
+      \item LeavesItemBehind (True, False)
       \end{itemize}
     \end{itemize}
   \item Actions:
     \begin{itemize}
     \item Destroy Block
+    \item Use Block
     \item Turn left/right
     \item Move forward
+    \item Look up/down
     \item Place Block
     \item Jump
     \end{itemize}
   \item Transition Dynamics:
     \begin{itemize}
-    \item Moves fail x\% of the time.
+    \item Movement actions (Look, Turn, Move) incorrectly apply a different move action 5\% of the time. % This was done because effectively "null" action applications are uninteresting and do not affect planning at all (presence of lava is irrelevant). With this style, if we are facing lava and try to turn away, we might walk into it.
     \end{itemize}
     \end{itemize}
 }}}%
