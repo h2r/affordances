@@ -167,18 +167,13 @@ assistant.  All associated code with this paper may be found at
 
 In this section, we discuss the differences between affordance-aware
 planning and other forms of knowledge engineering that have been used
-to accelerate planning.  This paper builds on previous work\footnote{A previous version
-of the proposed approach may be seen planning in Minecraft at https://vimeo.com/88689171} published
-at two workshops (redacted for review).
+to accelerate planning.  This paper builds on previous work\footnote{A
+  previous version of the proposed approach may be seen planning in
+  Minecraft at https://vimeo.com/88689171} published at two workshops
+(redacted for review).
 
 % -- Subsection: Stochastic --
 \subsection{Stochastic Approaches}
-
-Here, we compare other approaches of action pruning and
-knowledge engineering that provide speedups to planners
-in stochastic domains.
-
-% --- Subsection: Temporally Extended Actions ---
 
 Temporally extended actions are actions that the agent can select like
 any other action of the domain, except executing them results in
@@ -190,8 +185,8 @@ execute the same sequence of primitive actions. Options are defined
 with high-level policies that accomplish specific sub tasks. For
 instance, when an agent is near a door, the agent can engage the
 `door-opening-option-policy', which switches from the standard
-high-level planner to running a policy that is crafted to open
-doors.  Although the classic options framework is not generalizable to
+high-level planner to running a policy that is crafted to open doors.
+Although the classic options framework is not generalizable to
 different state spaces, creating {\em portable} options is a topic of
 active
 research~\cite{konidaris07,konidaris2009efficient,Ravindran03analgebraic,croonenborghs2008learning,andre2002state,konidaris2012transfer}.
