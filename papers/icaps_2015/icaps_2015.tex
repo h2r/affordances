@@ -90,7 +90,7 @@ may have a different reward function or goal condition.  For example,
 the reward function for a cooking robot looks very different when it
 is making brownies vs. stir-frying broccoli.  Figure~\ref{fig:example}
 shows an example of two problems from the same domain in the game
-Minecraft.
+Minecraft~\citep{minecraft}.
 
 The robot may be endowed with a very large set of possible actions,
 any of which may be relevant depending on the current goal.  For
@@ -540,7 +540,7 @@ enable a manipulator robot to infer helpful actions in response to a
 person working on a kitchen task, shown in Figure~\ref{fig:baxter_results}.
 
 % -- Subsection: Minecraft Tests --
-\subsection{Minecraft Tests}
+\subsection{Minecraft}
 
 Our experiments consisted of five common tasks in Minecraft, including
 constructing bridges over trenches, smelting gold, tunneling through
@@ -692,15 +692,19 @@ temporally extended actions by pruning away unnecessary actions, and
 that options and affordances provide complementary information.
 
 % -- Subsection: Baxter --
-\subsection{ERTDP and Baxter}
+\subsection{Cooking Robot}
 
-To assess affordances applied to a real-world robotic task, we devised
+To assess affordances applied to a real-world robotic task, we created
 a cooking domain that requires the robot to choose helpful actions for
 a person following a recipe.  The robot reasons over ingredients,
-containers, appliances, working spaces and utensils. The action set
-consists of pouring containers, mixing ingredients and moving containers and tools, 
-encapsulating a large set of grounded actions for
-the objects in a kitchen.
+containers, appliances, working spaces and utensils for a potentially
+large set of recipes. The action set consists of pouring containers,
+mixing ingredients and moving containers and tools, encapsulating a
+large set of grounded actions for the objects in a kitchen.  Using
+four ingredients required for brownies and the containers necessary
+for the ingredients, our cooking state space has
+$\num[round-precision=3, round-mode=figures]{47258883}$ states.
+\stnote{Justify why the state space is so large.  (I mailed Stephen with some questions.}
 
 \begin{table}[t]
 \ra{1.1}
@@ -723,13 +727,7 @@ Planner & Bellman & Reward & CPU \\ \midrule
 \end{table}
 
 
-To help a person cook, a robot needs to plan across possible actions a
-person might take as well as possible actions the robot could take.
-Coupled with the large number of items in a kitchen, a planner in this
-complicated world must take advantage of knowledge inherent to the
-domain and to the recipe with which it is working. Using four ingredients 
-required for brownies and the containers necessary for the ingredients, our
-cooking state space has $\num[round-precision=3, round-mode=figures]{47258883}$ states.  
+
 %To remove a large number of self-transitions, we provided affordances for each
 %action. For example, one affordance specified that mixing should only occur 
 %in containers that contain ingredients. An affordance for pouring required 
@@ -744,20 +742,22 @@ cooking state space has $\num[round-precision=3, round-mode=figures]{47258883}$ 
   \label{fig:baxter_results}
 \end{figure}
 
-We divided a brownie recipe into three subgoals: combining and mixing the dry ingredients,
-combining and mixing the wet ingredients, and combining these two
-mixtures into a batter. For each subgoal, we provided affordances specific
-to the objects used in that subgoal, like a whisk should only be used to mix wet ingredients.  
-We used ERTDP to search for the least-cost plan
-to complete the recipe.  The robot inferred actions such as handing
-off the whisk to the person to mix the wet ingredients.
+We divided a brownie recipe into three subgoals: combining and mixing
+the dry ingredients, combining and mixing the wet ingredients, and
+combining these two mixtures into a batter. For each subgoal, we
+provided affordances specific to the objects used in that subgoal,
+like a whisk should only be used to mix wet ingredients.  We used
+ERTDP to search for the least-cost plan to complete the recipe.  The
+robot inferred actions such as handing off the whisk to the person to
+mix the wet ingredients.
 
 
-In table~\ref{table:baxter_results} we compare between
-standard RTDP and ERTDP planning for each of the three subgoals. Because the
-state-action space is reduced significantly,
-ERTDP can plan successfully in a short amount of time. Standard RTDP always encountered
-the maximum number of rollouts specified at the maximum depth each time.
+In table~\ref{table:baxter_results} we compare between standard RTDP
+and ERTDP planning for each of the three subgoals. Because the
+state-action space is reduced significantly, ERTDP can plan
+successfully in a short amount of time. Standard RTDP always
+encountered the maximum number of rollouts specified at the maximum
+depth each time, even with a relatively small number of objects.
 
 We provide a video\footnote{Watch at https://vimeo.com/106226282} 
 showing how this affordance-aware planner running
@@ -894,6 +894,13 @@ often achieving polynomial time planning in exponential space.  LTL
 formulas are difficult to learn, placing dependence on an expert,
 while we demonstrate that affordances can be automatically learned
 from experience.
+
+Our approach is related to preferred actions used by
+LAMA~\citep{richter10} in that our agent learns actions which are
+useful for a specific problem and expands those actions first.
+However our approach differsn in that it generalizes this knowledge
+across different planning problems, so that the preferred actions in
+one problem influence search in subsequant problems in the domain.
 
 
 

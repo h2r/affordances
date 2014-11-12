@@ -1,0 +1,57 @@
+
+Do you incorporate the affordances incrementally in the training set?
+Moreover, consider you have just 1 problem, What happens if you run
+RTDP, you add the affordances you learned over this problem, run again
+on the same problem, and try to learn new affordances. Will it
+converge to a point where it won’t learn anything new unless you
+change problem? Is there any convergence guarantee given the threshold
+you choose? any bound on the number of affordances you can learn?
+
+
+On the experimental and theoretical side, It’s not clear whether the
+incorporation of affordances prunes optimal solutions until you
+explain the experimental section.
+
+
+It would be interesting to mention that if you learn all the
+affordances where each cond is a full state, <cond-full-state,g>,
+you’ll end up adding as many affordances as states in the policy. This
+leads me to another question, how many affordances do you learn so you
+don’t over fit with affordance “features”? Is there a maximum size on
+the specifically on the conditions, i.e. condition can be a set of
+predicates of bounded size?
+
+
+Since you are testing a single domain, you can add a table containing
+data specifically about the affordances and how it changes the
+branching factor to relate the effect of using them. As you mention,
+in some cases it can prune all applicable actions if the test suit
+have high variance or the threshold is not properly adjusted.
+
+Just as a side note, There’s a very known algorithm called already
+LRTDP, this lead me to some confusion at first sight.
+
+
+Which problems are helpful, do we need to run lots of training
+examples. I am curious about transferring this method to MDP domain
+such that the algorithm learns likely actions at certain states and
+the goal. Another suggestion is using an online method in
+training. While the algorithm is learning affordances, it may also act
+on the currently learned ones.
+
+
+I am curious about transferring this method to MDP domain such that
+the algorithm learns likely actions at certain states and the
+goal. Another suggestion is using an online method in training. While
+the algorithm is learning affordances, it may also act on the
+currently learned ones.
+
+
+However, the time required for learning has not been taken in account
+when comparing this method against the other MDP­based planners. I
+suspect that this time is actually considerable for a rich
+state-­space like the ones on the tested scenarios, and that is why
+autonomous affordance learning has been left out of the real­ robot
+scenario. For sake of completeness, authors should also include how
+long the learning process required, and accordingly comment on its
+feasibility on real­ robot scenarios.
