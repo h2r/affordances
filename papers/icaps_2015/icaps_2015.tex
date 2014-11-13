@@ -273,8 +273,8 @@ related MDPs with the same state space, action space, and transition
 dynamics, but different reward functions and terminal states.  Then a
 STRIPs problem is a specific MDP with a known reward function.  We are
 concerned with MDPs where the reward function is goal-directed, that
-is the agent receives a negative reward at each timestep, and a large
-positive reward when it reaches a terminal state.  A goal, $G$ is
+is the agent receives a negative reward at each timestep that motivates
+it to reach the goal terminal state.  A goal, $G$ is
 defined by a reward function plus the set of terminal states.  The aim
 of our approach is to learn knowledge about a domain from experience
 that enables an agent to quickly infer a solution to a new problem in
@@ -540,8 +540,8 @@ Minecraft serves as a model for robotic tasks such as cooking
 assistance, assembling items in a factory, object retrieval, and
 complex terrain traversal.  As in these tasks, the agent operates in a
 very large state-action space in an uncertain environment.
-Figure~\ref{fig:minecraft} shows a scene from one of our Minecraft
-problems.  Additionally, we implemented an affordance based planner to
+Figure~\ref{fig:minecraft} shows three examples scenes from Minecraft
+problems that we explore.  Additionally, we implemented an affordance based planner to
 enable a manipulator robot to infer helpful actions in response to a
 person working on a kitchen task, shown in Figure~\ref{fig:baxter_results}.
 
@@ -696,9 +696,11 @@ across 100 different executions in the same randomly generated
 Minecraft worlds. The results are averaged across tasks of each type
 presented in Table~\ref{table:minecraft_results}. Both macro-actions
 and options add a significant amount of time to planning due to the fact that
-it is computationally expensive to predict the
-expected reward associated with applying an option or a
-macro-action. Furthermore, the branching factor of the state-action
+that the options and macro-actions are being reused in multiple MDPs
+that each require recomputing the resulting
+transition dynamics and expected cumulative reward when applying each 
+option/macro-action.
+Furthermore, the branching factor of the state-action
 space significantly increases with additional actions,
 causing the planner to run for longer and perform more Bellman
 updates. With affordances, the planner found a better plan in less CPU
@@ -954,10 +956,9 @@ the distribution over optimal actions, such as incorporating
 affordances with a forward search sparse sampling
 algorithm~\cite{walsh2010integrating}, or replacing the Naive Bayes
 model with a more sophisticated model, such as Logistic Regression or
-a Noisy-OR.  We are also investigating methods of learning the
-threshold value in a more principled way - one such approach is to
-initialize the planner with a strict threshold, and slowly relax the
-threshold until a near optimal policy is found.  These methods will
+a Noisy-OR.  We are also investigating methods to stochastically
+prune actions rather than requiring a hard threshold parameter
+to be defined (or estimated).  These methods will
 enable agents to acquire and leverage general planning knowledge to
 infer actions in very large state spaces.
 
