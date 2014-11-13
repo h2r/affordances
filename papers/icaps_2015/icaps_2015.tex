@@ -62,10 +62,10 @@ we refer to them as {\em affordances}.  Our framework allows
 affordances to be easily specified by an expert or to be learned from
 prior experience in related problems. Due to the large complexity of
 the space, we use the video game Minecraft as a robot simulator in
-which an agent learns useful action priors from a set of training
-worlds and then uses those priors to successfully find solutions to
-otherwise intractable problems without the priors. We also use
-expert-provided priors to accelerate planning in a robot cooking
+which an agent learns useful affordances from a set of training
+worlds and then uses those affordances to successfully find solutions to
+otherwise intractable problems without them. We also use
+expert-provided affordances to accelerate planning in a robot cooking
 domain that is executed on a two-handed manipulator robot.
 \end{abstract}
 
@@ -84,7 +84,7 @@ as a Markov Decision Process (MDP)~\citep{thrun2008probabilistic}. In
 these problems, the agent must find a mapping from states to actions
 for some subset of the state space that enables the agent to achieve a
 goal while minimizing costs along the way.  However, many robotics
-problem correspond to a family of related MDPs; following STRIPs
+problems correspond to a family of related MDPs; following STRIPs
 terminology, these problems come from the same domain, but each task
 may have a different reward function or goal condition.  For example,
 the reward function for a cooking robot looks very different when it
@@ -154,7 +154,7 @@ possibilities prescribed by an agent's capabilities in an environment.
 %Affordances focus an agent's attention on aspects of the environment that
 %are most relevant to solving its current goal and avoid exploration of irrelevant parts of the
 %world.
-We rigorously formalize the notion of an affordance as a prior on
+We rigorously formalize the notion of affordances as a prior on
 actions conditioned on features of the current state as well as the
 robot's goal.  Affordances enable the robot to prune irrelevant
 actions on a state-by-state basis based on the agent's current goal
@@ -354,8 +354,37 @@ $\phi_j = f(\delta_j, s, G)$, which we use to reformulate our probability distri
 
 
 This distribution may be modeled in a number of ways making this
-approach quite flexible. To enable efficient learning, we model our
-distribution using Naive Bayes. First we factor using Bayes' rule,
+approach quite flexible. One model that can be easily specified by
+an expert is an OR model that we refer to as {\em hard affordances}.
+In the hard affordance model some subset of the features 
+($\phi^i \subset \phi$) are
+assumed to cause action $a_i$ to be optimal; as long as one of
+the features is on, the probability that $a_i$ is optimal is one.
+If none of the features are on, then the probability that $a_i$ is 
+optimal is zero. More formally,
+\begin{equation}
+\Pr(a_i \in \mathcal{A}^*  \mid \phi_1, \ldots, \phi_n) = \phi_1^i \lor ... \lor \phi_m^i,
+\end{equation}
+where $m$ is the number of features that can cause $a_i$ to be optimal ($m = |\phi^i|$).
+
+In practice, we don't expect such a distribution to be reflective of
+reality; if it were, then no planning would be needed because a full
+policy would have been specified. However, it does provide a
+convenient way for a designer to provide conservative background
+knowledge. Specifically, a designer can consider each precondition-goal
+pair and specify the actions that could be optimal in that context, ruling
+out actions that would be known to be irrelevant or dependent on other
+state features being true. For example,
+Table~\ref{table:afford_kb_exp} shows example expert-provided
+hard affordances that we used in our Minecraft domain.
+
+Because the hard affordance model is not expected to be
+reflective of reality and because of other limitations (such as
+not allowing support for an action to be provided when
+a feature is off), the model is not practical for 
+learning. An alternative more expressive model
+that does lend itself to learning is Naive Bayes. 
+To implement a Naive Bayes affordance model, we first factor using Bayes' rule,
 introducing a parameter vector $\theta_i$ of feature weights:
 % -- Equation: Bayes --
 \begin{equation}
@@ -373,9 +402,30 @@ Next we assume that each feature is conditionally independent of the others, giv
 Finally, we define the prior on the optimality of each action to be
 the fraction of the time each action was optimal during training.
 
+Although we only explore hard affordance and Naive Bayes
+models in this work, other affordance models, like logistic
+regression and Noisy-Or, could also be used.
+
+
+%In a recent review on the theory of affordances,~\citet{chemero2003}
+%suggests that an affordance is a relation between the features of an
+%environment and an agent's abilities. Our approach grounds this
+%interpretation, where the features of the environment correspond to
+%the goal-dependent state features, $\phi$, and the agent's abilities
+%correspond to the OO-MDP action set.  We define an affordance, $A$, 
+%\begin{align}
+%A \equiv \left< \delta_j, Pr(a_i \in \mathcal{A}^* |
+%\phi_j; \theta) \right>
+%\end{align}
+%We can compute this term in our Naive Bayes model by marginalizing
+%over all the features not associated with $\phi_j$.  Alternatively,
+%hard affordances may be specified by an expert by setting this
+%distribution to zero or one. 
+
+
 % -- Subsection: Learning the Optimal Actions--
 \subsection{Learning the Optimal Actions}
-Our approach to modeling the optimality of each action allows
+Our Naive Bayes affordance model allows
 affordances to be learned through experience.  To learn affordances,
 we provide a set of training worlds from the domain, ($W$) for which
 the optimal policy, $\pi$, may be tractably computed using existing
@@ -432,20 +482,7 @@ speed at inferring a plan.
   \label{fig:minecraft}
 \end{figure}
 
-In a recent review on the theory of affordances,~\citet{chemero2003}
-suggests that an affordance is a relation between the features of an
-environment and an agent's abilities. Our approach grounds this
-interpretation, where the features of the environment correspond to
-the goal-dependent state features, $\phi$, and the agent's abilities
-correspond to the OO-MDP action set.  We define an affordance, $A$, 
-\begin{align}
-A \equiv \left< \delta_j, Pr(a_i \in \mathcal{A}^* |
-\phi_j; \theta) \right>
-\end{align}
-We can compute this term in our Naive Bayes model by marginalizing
-over all the features not associated with $\phi_j$.  Alternatively,
-hard affordances may be specified by an expert by setting this
-distribution to zero or one. 
+
 
 
 %which actions were taken in each state. At test time, 
@@ -458,30 +495,55 @@ distribution to zero or one.
 % -- Subsection: Action Pruning --
 \subsection{Affordance-Aware Planning}
 \label{sec:action_pruning}
-A planner uses affordances to prune actions in a state- and
-goal-specific way.
+An {\em affordance-aware planner} uses affordances 
+to prune actions from the action set under consideration 
+by the planner on a state and
+goal-specific basis. When a hard affordance model is used, defining
+the action pruning method is trivial; when
+$\Pr(a_i \in \mathcal{A}^*  \mid \phi_1, \ldots, \phi_n) = 0$
+action $a_i$ is pruned from the planner's consideration. When
+$\Pr(a_i \in \mathcal{A}^*  \mid \phi_1, \ldots, \phi_n) = 1$,
+action $a_i$ remains in the action set to be searched by the planner.
 
-% 1) Expert (discriminative or model)
-First, affordances may be specified by a domain expert.  The expert
-specifies a set of actions associated with a precondition-goal type
-pair. When the affordance is active, the actions suggested by the
-affordance are included in the agent's action set. For instance, if an
-agent is standing above a block of buried gold and is trying to smelt
-a block of gold, then an expert may indicate that the agent should
-consider the actions of looking down and digging.  All actions
-contributed by active affordances are grouped to yield the set of
-actions to consider for each state. Table~\ref{table:afford_kb_exp}
-shows several examples of expert-defined affordances.
+When a non-deterministic affordance model, like Naive Bayes, is used,
+a less restrictive approach must be taken. In this work,
+we prune actions whose probability is below some threshold and
+keep the rest. Empirically, we found the heuristic
+of setting the threshold to $\frac{0.2}{|\mathcal{A}|}$ to
+be effective (where $|\mathcal{A}|$ is the size
+of the full action space of the OO-MDP). This threshold is
+quite conservative and means that only actions
+that are extremely unlikely to be optimal are pruned. 
+In the future, we plan on exploring
+stochastic action pruning methods with anytime planning
+algorithms, but an advantage to this threshold pruning
+approach is that it can be used in a large range of different
+planning algorithms including A* (for deterministic domains),
+Value Iteration, and Real-time
+Dynamic Programming (RTDP)~\cite{barto95}. In this work, we present results 
+using RTDP.
 
-% 2) Threshold
-Second, actions may be pruned by thresholding the posterior in
-Equation~\ref{eq:feature_rep}.  In this method, the affordances remove
-any actions whose probability of being optimal is below the provided
-threshold for each state. The threshold was determined empirically,
-and was set to $\frac{0.2}{|\mathcal{A}|}$, where $|\mathcal{A}|$ is
-the size of the full action space of the OO-MDP.  This threshold is
-quite conservative, and means that our approach only prunes actions
-which are extremely unlikely to be optimal.
+%% 1) Expert (discriminative or model)
+%First, affordances may be specified by a domain expert.  The expert
+%specifies a set of actions associated with a precondition-goal type
+%pair. When the affordance is active, the actions suggested by the
+%affordance are included in the agent's action set. For instance, if an
+%agent is standing above a block of buried gold and is trying to smelt
+%a block of gold, then an expert may indicate that the agent should
+%consider the actions of looking down and digging.  All actions
+%contributed by active affordances are grouped to yield the set of
+%actions to consider for each state. Table~\ref{table:afford_kb_exp}
+%shows several examples of expert-defined affordances.%
+
+%% 2) Threshold
+%Second, actions may be pruned by thresholding the posterior in
+%Equation~\ref{eq:feature_rep}.  In this method, the affordances remove
+%any actions whose probability of being optimal is below the provided
+%threshold for each state. The threshold was determined empirically,
+%and was set to $\frac{0.2}{|\mathcal{A}|}$, where $|\mathcal{A}|$ is
+%the size of the full action space of the OO-MDP.  This threshold is
+%quite conservative, and means that our approach only prunes actions
+%which are extremely unlikely to be optimal.
 
 % 3) Sampling
 %% Lastly, actions may be pruned by sampling actions from the posterior,
@@ -492,11 +554,11 @@ which are extremely unlikely to be optimal.
 %% are interested in investigating more sophisticated approaches to
 %% pruning actions with sampling.
 
-Through the use of any of the above methods, an affordance-aware
-planner prunes actions on a state-by-state basis, focusing the agent
-on relevant action possibilities of the environment, consequently
-reducing planning time. Any planner operating in an OO-MDP may be made
-affordance-aware with this approach.
+%Through the use of any of the above methods, an affordance-aware
+%planner prunes actions on a state-by-state basis, focusing the agent
+%on relevant action possibilities of the environment, consequently
+%reducing planning time. Any planner operating in an OO-MDP may be made
+%affordance-aware with this approach.
 
 
 % -- Table: Expert provided affordances --
@@ -540,7 +602,7 @@ Minecraft serves as a model for robotic tasks such as cooking
 assistance, assembling items in a factory, object retrieval, and
 complex terrain traversal.  As in these tasks, the agent operates in a
 very large state-action space in an uncertain environment.
-Figure~\ref{fig:minecraft} shows three examples scenes from Minecraft
+Figure~\ref{fig:minecraft} shows three example scenes from Minecraft
 problems that we explore.  Additionally, we implemented an affordance based planner to
 enable a manipulator robot to infer helpful actions in response to a
 person working on a kitchen task, shown in Figure~\ref{fig:baxter_results}.
@@ -568,7 +630,7 @@ significantly smaller than the size of the state/action space, the
 agent learns general knowledge that is not specific to a single
 problem.   
 
-We use Real Time Dynamic Programming (RTDP)~\cite{barto95} as our
+We use Real-Time Dynamic Programming (RTDP)~\cite{barto95} as our
 baseline planner, a sampling-based algorithm that does not require the
 planner to visit all states. We compare RTDP with learned
 affordance-aware RTDP (LA-RTDP), and expert-defined affordance-aware
@@ -578,11 +640,13 @@ rollouts, or the planner failed to converge after 1000 rollouts.  The
 reward function was $-1$ for all transitions, except transitions to
 states in which the agent was in lava, where we set the reward to
 $-10$. The goal was set to be terminal and the discount factor was
-$\lambda = 0.99$.  To introduce non-determinism into our problem,
+$\gamma = 0.99$.  To introduce non-determinism into our problem,
 movement actions (move, rotate, jump) in all experiments had a small
 probability (0.05) of incorrectly applying a different movement
 action.  This noise factor approximates noise faced by a physical
-robot that attempts to execute actions in a real-world domain.
+robot that attempts to execute actions in a real-world domain and
+can affect the optimal policy due to the existence of lava pits
+that the agent can fall into.
 
 % -- Figure: Average results --
 \begin{figure}[t]
@@ -650,11 +714,12 @@ Planner & Bellman & Reward & CPU \\ \midrule
 
 %Todo: Make this paragraph better
 For some task types, LA-RTDP found a slightly worse plan on average than
-RTDP (e.g. the mining task). This is due to the fact that LA-RTDP
-occasionally prunes actions that are essential for solving a particular problem (such as
+RTDP ({\em e.g.} the mining task). This worse convergence is due to the fact that LA-RTDP
+occasionally prunes actions that are in fact optimal (such as
 pruning the \texttt{destroy} action in certain states of the mining task).
-To fix this, we could lower the threshold to allow for even more conservative action pruning. In future work, we plan on investigating approaches
-to dynamically adjusting the threshold based on planning feedback. Additionally, RTDP occasionally achieved a faster clock time because EA-RTDP and LA-RTDP also evaluate the affordance predicates in every state, adding a small amount of time to planning.
+%To fix this, we could lower the threshold to allow for even more conservative action pruning. In future work, we plan on investigating approaches
+%to dynamically adjusting the threshold based on planning feedback. 
+Additionally, RTDP occasionally achieved a faster clock time because EA-RTDP and LA-RTDP also evaluate the affordance predicates in every state, adding a small amount of time to planning.
 
 %\stnote{We need to explain the results in Table 3 about why
 %  affordances don't always help.  Why is the reward sometimes worse
@@ -699,7 +764,11 @@ and options add a significant amount of time to planning due to the fact that
 that the options and macro-actions are being reused in multiple MDPs
 that each require recomputing the resulting
 transition dynamics and expected cumulative reward when applying each 
-option/macro-action.
+option/macro-action (a cost that is typically amortized in classic
+options work where the same MDP state space and transition dynamics
+are used). This computational cost might be reduced when using
+a Monte Carlo planning algorithm that does not need the full transition
+dynamics and expected cumulative reward.
 Furthermore, the branching factor of the state-action
 space significantly increases with additional actions,
 causing the planner to run for longer and perform more Bellman
@@ -770,7 +839,7 @@ robot inferred actions such as handing off the whisk to the person to
 mix the wet ingredients.
 
 
-In table~\ref{table:baxter_results} we compare between standard RTDP
+In Table~\ref{table:baxter_results} we compare between standard RTDP
 and EA-RTDP planning for each of the three subgoals. Because the
 state-action space is reduced significantly, EA-RTDP can plan
 successfully in a short amount of time. Standard RTDP always
@@ -944,7 +1013,7 @@ improvements in planning.  Lastly, we deployed an affordance-aware
 planner on a robot in a collaborative cooking task.
 
 In the future, we hope to automatically discover useful state space
-specific subgoals online - a topic of some active research
+specific subgoals online---a topic of some active research
 \cite{Mcgovern01automaticdiscovery,Simsek:2005:IUS:1102351.1102454}.
 Automatic discovery of subgoals would allow affordance-aware planners
 to take advantage of the goal-oriented focus of affordances, and would
