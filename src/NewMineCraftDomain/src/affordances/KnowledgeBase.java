@@ -30,6 +30,7 @@ import burlap.oomdp.singleagent.Action;
 public class KnowledgeBase {
 	private List<AffordanceDelegate>			affDelegateList;
 	private AffordancesController				affController;
+	private String								filename;
 
 	public KnowledgeBase() {
 		this.affDelegateList = new ArrayList<AffordanceDelegate>();
@@ -52,32 +53,40 @@ public class KnowledgeBase {
 		}
 	}
 	
-	public void save(String filename) {
-
+	public String getName() {
+		return this.filename;
+	}
+	
+	public void setName(String filename) {
+		this.filename = filename;
+	}
+	
+	public void print() {
 		// -- GRID --
 		for (AffordanceDelegate aff: this.affDelegateList) {
-
 			System.out.println(aff.toFile());
 		}
-		
+	}
+	
+	public void save() {
 		// -- NON GRID --
-//		String fpath = NameSpace.PATHKB + "/" + filename;
-//		
-//		try {
-//			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(fpath)));
-//			
-//			// For grid
-////			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-//			
-//			for (AffordanceDelegate aff: this.affDelegateList) {
-//				bw.write(aff.toFile());
-//			}
-//			bw.close();
-//		} catch (IOException e) {
-//			System.out.println("ERROR");
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		String fpath = NameSpace.PATHKB + "/" + filename;
+		
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(fpath)));
+			
+			// For grid
+//			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+			
+			for (AffordanceDelegate aff: this.affDelegateList) {
+				bw.write(aff.toFile());
+			}
+			bw.close();
+		} catch (IOException e) {
+			System.out.println("ERROR");
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -119,7 +128,8 @@ public class KnowledgeBase {
 			e.printStackTrace();
 		}
 		
-		this.affController = new AffordancesController(this.affDelegateList, hardFlag);
+		boolean expertFlag = false;
+		this.affController = new AffordancesController(this.affDelegateList, hardFlag, expertFlag);
 	}
 	
 	// --- ACCESSORS ---
