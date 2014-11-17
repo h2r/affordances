@@ -2,15 +2,20 @@ package minecraft.MinecraftBehavior.Planners;
 
 import burlap.behavior.singleagent.EpisodeAnalysis;
 import burlap.behavior.singleagent.Policy;
+import burlap.behavior.singleagent.ValueFunctionInitialization;
+import burlap.behavior.singleagent.ValueFunctionInitialization.ConstantValueFunctionInitialization;
 import burlap.behavior.singleagent.planning.OOMDPPlanner;
 import burlap.behavior.singleagent.planning.QComputablePlanner;
 import burlap.behavior.singleagent.planning.commonpolicies.GreedyQPolicy;
+import burlap.behavior.singleagent.planning.stochastic.rtdp.BoundedRTDP;
 import burlap.behavior.singleagent.planning.stochastic.rtdp.RTDP;
 import burlap.oomdp.core.State;
 import minecraft.MinecraftBehavior.MinecraftBehavior;
 
-public class RTDPPlanner extends MinecraftPlanner{
-	private int vInit;
+public class BoundedRTDPPlanner extends MinecraftPlanner{
+	private ValueFunctionInitialization lowerVInit;
+	private ValueFunctionInitialization upperVInit;
+
 	private int numRollouts;
 	private double minDelta;
 	private int maxDepth;
@@ -23,28 +28,30 @@ public class RTDPPlanner extends MinecraftPlanner{
 	 * @param addOptions
 	 * @param addMacroActions
 	 */
-	public RTDPPlanner(MinecraftBehavior mcBeh, boolean addOptions,
+	public BoundedRTDPPlanner(MinecraftBehavior mcBeh, boolean addOptions,
 			boolean addMacroActions) {
 		super(mcBeh, addOptions, addMacroActions);
-		this.vInit = mcBeh.vInit;
+//		System.out.println(mcBeh.vInit - 4);
+		this.lowerVInit = new ConstantValueFunctionInitialization(mcBeh.lowerVInit);
+		this.upperVInit = new ConstantValueFunctionInitialization(mcBeh.upperVInit);
+		
+
 		this.numRollouts = mcBeh.numRollouts;
 		this.minDelta = mcBeh.minDelta;
 		this.maxDepth = mcBeh.maxDepth;
 		this.maxSteps = mcBeh.maxSteps;
-		this.numRolloutsWithSmallChangeToConverge = mcBeh.numRolloutsWithSmallChangeToConverge;
 	}
 
 	@Override
 	protected OOMDPPlanner getPlanner() {
-		RTDP planner = new RTDP(domain, this.rf, this.tf, this.gamma, this.hashingFactory,
-				this.vInit, this.numRollouts, this.minDelta, this.maxDepth);
+		BoundedRTDP planner = new BoundedRTDP(domain, this.rf, this.tf, this.gamma, this.hashingFactory,
+				this.lowerVInit, this.upperVInit, this.minDelta, this.numRollouts);
 		return planner;
 	}
 
 	@Override
 	protected double[] runPlannerHelper(OOMDPPlanner planner) {
-		RTDP rPlanner = (RTDP) planner;
-		rPlanner.setMinNumRolloutsWithSmallValueChange(this.numRolloutsWithSmallChangeToConverge);
+		BoundedRTDP rPlanner = (BoundedRTDP) planner;
 		
 		long startTime = System.currentTimeMillis( );
 		

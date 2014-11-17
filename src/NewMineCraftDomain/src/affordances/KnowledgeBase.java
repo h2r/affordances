@@ -30,6 +30,7 @@ import burlap.oomdp.singleagent.Action;
 public class KnowledgeBase {
 	private List<AffordanceDelegate>			affDelegateList;
 	private AffordancesController				affController;
+	private String								filename;
 
 	public KnowledgeBase() {
 		this.affDelegateList = new ArrayList<AffordanceDelegate>();
@@ -52,14 +53,22 @@ public class KnowledgeBase {
 		}
 	}
 	
-	public void save(String filename) {
-
+	public String getName() {
+		return this.filename;
+	}
+	
+	public void setName(String filename) {
+		this.filename = filename;
+	}
+	
+	public void print() {
 		// -- GRID --
-//		for (AffordanceDelegate aff: this.affDelegateList) {
-//
-//			System.out.println(aff.toFile());
-//		}
-		
+		for (AffordanceDelegate aff: this.affDelegateList) {
+			System.out.println(aff.toFile());
+		}
+	}
+	
+	public void save() {
 		// -- NON GRID --
 		String fpath = NameSpace.PATHKB + "/" + filename;
 		
@@ -118,7 +127,7 @@ public class KnowledgeBase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			
+		
 		this.affController = new AffordancesController(this.affDelegateList, hardFlag, expertFlag);
 	}
 	

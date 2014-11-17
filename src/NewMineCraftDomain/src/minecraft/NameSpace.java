@@ -1,5 +1,7 @@
 package minecraft;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.util.List;
 
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldBarPF;
@@ -141,19 +143,30 @@ public class NameSpace {
 	public static final String				ExpertVI = "EVI";
 	public static final String				LearnedHardVI = "LHVI";
 	public static final String				LearnedSoftVI = "LSVI";
+	public static final String				BRTDP = "BoundedRTDP";
+	public static final String				BAFFRTDP = "BoundedAffordanceRTDP";
 
+	//------VM ARGS-------
+	public static RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+	public static List<String> arguments = runtimeMxBean.getInputArguments();
+	
 	//----------DIRECTORIES---------
 	// Grid changes
-	public static final String				PATHMAPS = "src/minecraft/maps/";
-	public static final String				PATHKB = "src/minecraft/kb/";
-//	public static final String				PATHMAPS = "maps/";
-//	public static final String				PATHKB = "kb/";
-	public static final String				PATHTEMPLATEMAP = PATHMAPS + "template.map";
-	public static final String				PATHRESULTS = "src/tests/results/";
+	public static String				PATHMAPS = "src/minecraft/maps/";
+	public static String				PATHKB = "src/minecraft/kb/";
+	public static String				PATHTEMPLATEMAP = "src/minecraft/maps/template.map";
+	public static String				PATHRESULTS = "src/tests/results/";
+	
+	public static void setGridPaths() {
+		PATHMAPS = "grid/maps/";
+		PATHKB = "grid/kb/";
+		PATHTEMPLATEMAP = "grid/maps/template.map";
+		PATHRESULTS = "grid/results/";
+	}
 	
 	//-------------MISC-------------
-	public static final String				DOUBLEFORMAT = "%.2f";
-	
+	public static final String				DOUBLEFORMAT = "%.3f";
+
 	//-------------ENUMS-------------
 	public enum RotDirection {
 		NORTH(0), EAST(1), SOUTH(2), WEST(3);

@@ -38,7 +38,7 @@ public class Result {
 		if(numTrials == 1) {
 			this.avgBellmanUpdates = this.bellmanUpdateTrials.get(0);
 			this.avgReward = this.rewardTrials.get(0);
-			this.avgCpuTime = this.cpuTrials.get(0) / 1000.0;
+			this.avgCpuTime = this.cpuTrials.get(0);
 			return;
 		}
 		
@@ -185,14 +185,13 @@ public class Result {
 	public String toString() {
 		computeAverages();
 		computeDeviations();
-		String result = plannerName + " "
-		+ String.format(NameSpace.DOUBLEFORMAT, this.avgBellmanUpdates) + " " 
-//		+ String.format(NameSpace.DOUBLEFORMAT, this.bellmanDeviation) + ") , " 
-		+ String.format(NameSpace.DOUBLEFORMAT, this.avgReward) + " " 
-//		+ String.format(NameSpace.DOUBLEFORMAT, this.rewardDeviation) + ") , "  
-		+ String.format(NameSpace.DOUBLEFORMAT, this.avgCpuTime);
-//		+ String.format(NameSpace.DOUBLEFORMAT, this.cpuDeviation) + ") , "
-//		+ String.format(NameSpace.DOUBLEFORMAT, this.completedRate);
+		String result = plannerName + " " + this.avgBellmanUpdates + ".(" 
+		+ String.format(NameSpace.DOUBLEFORMAT, this.bellmanDeviation) + ") , " 
+		+ String.format(NameSpace.DOUBLEFORMAT, this.avgReward) + ".(" 
+		+ String.format(NameSpace.DOUBLEFORMAT, this.rewardDeviation) + ") , "  
+		+ String.format(NameSpace.DOUBLEFORMAT, this.avgCpuTime) + "s.(" 
+		+ String.format(NameSpace.DOUBLEFORMAT, this.cpuDeviation) + ") , "
+		+ String.format(NameSpace.DOUBLEFORMAT, this.completedRate);
 		
 		return result;
 	}

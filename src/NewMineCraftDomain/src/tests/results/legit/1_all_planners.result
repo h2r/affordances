@@ -4,25 +4,21 @@ Bellman: 41516.00,
 Reward: -8.00,
 Completed: 1.00,
 CPU: 257.853s,
-AVERAGES: RTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 	ERTDP
 Bellman: 9245.00,
 Reward: -15.00,
 Completed: 1.00,
 CPU: 22.845s,
-AVERAGES: ERTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 	LHRTDP
 Bellman: 5073.00,
 Reward: -8.00,
 Completed: 1.00,
 CPU: 12.895s,
-AVERAGES: LHRTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 	LSRTDP
 Bellman: null,
 Reward: null,
 Completed: 0.00,
 CPU: null,
-AVERAGES: LSRTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 
 map: PlaneGoldMineWorldstateSpace=0.0
 	RTDP
@@ -30,25 +26,21 @@ Bellman: 8633.00,
 Reward: -4.00,
 Completed: 1.00,
 CPU: 12.81s,
-AVERAGES: RTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 	ERTDP
 Bellman: 4680.00,
 Reward: -4.00,
 Completed: 1.00,
 CPU: 6.132s,
-AVERAGES: ERTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 	LHRTDP
 Bellman: 7542.00,
 Reward: -4.00,
 Completed: 1.00,
 CPU: 10.451s,
-AVERAGES: LHRTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 	LSRTDP
 Bellman: 6137.00,
 Reward: -4.00,
 Completed: 1.00,
 CPU: 9.348s,
-AVERAGES: LSRTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 
 map: PlaneGoldSmeltWorldstateSpace=0.0
 	RTDP
@@ -56,25 +48,21 @@ Bellman: null,
 Reward: null,
 Completed: 0.00,
 CPU: null,
-AVERAGES: RTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 	ERTDP
 Bellman: 6214.00,
 Reward: -10.00,
 Completed: 1.00,
 CPU: 5.195s,
-AVERAGES: ERTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 	LHRTDP
 Bellman: null,
 Reward: null,
 Completed: 0.00,
 CPU: null,
-AVERAGES: LHRTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 	LSRTDP
 Bellman: null,
 Reward: null,
 Completed: 0.00,
 CPU: null,
-AVERAGES: LSRTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 
 map: PlaneWallWorldstateSpace=0.0
 	RTDP
@@ -82,25 +70,21 @@ Bellman: null,
 Reward: null,
 Completed: 0.00,
 CPU: null,
-AVERAGES: RTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 	ERTDP
 Bellman: 40761.00,
 Reward: -14.00,
 Completed: 1.00,
 CPU: 93.386s,
-AVERAGES: ERTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 	LHRTDP
 Bellman: 25900.00,
 Reward: -9.00,
 Completed: 1.00,
 CPU: 42.326s,
-AVERAGES: LHRTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 	LSRTDP
 Bellman: 57609.00,
 Reward: -9.00,
 Completed: 1.00,
 CPU: 103.91s,
-AVERAGES: LSRTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 
 map: PlaneWorldstateSpace=0.0
 	RTDP
@@ -108,22 +92,18 @@ Bellman: 546.00,
 Reward: -2.00,
 Completed: 1.00,
 CPU: 1.477s,
-AVERAGES: RTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 	ERTDP
 Bellman: 353.00,
 Reward: -2.00,
 Completed: 1.00,
 CPU: 0.886s,
-AVERAGES: ERTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 	LHRTDP
 Bellman: 431.00,
 Reward: -2.00,
 Completed: 1.00,
 CPU: 1.049s,
-AVERAGES: LHRTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
 	LSRTDP
 Bellman: 476.00,
 Reward: -2.00,
 Completed: 1.00,
 CPU: 1.372s,
-AVERAGES: LSRTDP 0.0.(0.000) , 0.000.(0.000) , 0.000.(0.000) , 0.000s.(0.000)
