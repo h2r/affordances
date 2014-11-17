@@ -50,7 +50,7 @@ public class VIPlanner extends MinecraftPlanner{
 		EpisodeAnalysis ea = p.evaluateBehavior(initialState, this.rf, this.tf, this.maxSteps);
 
 		long totalPlanningTime  = System.currentTimeMillis( ) - startTime;
-		System.out.println(ea.getActionSequenceString());
+//		System.out.println(ea.getActionSequenceString());
 		// Count reward.
 		double totalReward = 0.;
 		for(Double d : ea.rewardSequence){

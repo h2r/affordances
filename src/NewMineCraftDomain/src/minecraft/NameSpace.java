@@ -6,7 +6,7 @@ import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldBarP
 import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldOrePF;
 import minecraft.MinecraftDomain.PropositionalFunctions.AtGoalPF;
 import minecraft.MinecraftDomain.PropositionalFunctions.TowerInMapPF;
-import affordances.AffordanceLearner;
+import affordances.AffordanceLearnerSokoban;
 import burlap.oomdp.logicalexpressions.LogicalExpression;
 
 public class NameSpace {

@@ -26,7 +26,7 @@ import minecraft.WorldGenerator.WorldTypes.PlaneGoldMineWorld;
 import minecraft.WorldGenerator.WorldTypes.PlaneGoldSmeltWorld;
 import minecraft.WorldGenerator.WorldTypes.PlaneWallWorld;
 import minecraft.WorldGenerator.WorldTypes.PlaneWorld;
-import affordances.AffordanceLearner;
+import affordances.AffordanceLearnerSokoban;
 import affordances.KnowledgeBase;
 
 public class MinecraftTestPipeline {
@@ -298,7 +298,7 @@ public class MinecraftTestPipeline {
 			// --- Create Knowledge Bases ---
 			for(double fractOfStateSpace = minFractOfStateSpace; fractOfStateSpace <= maxFractOfStateSpace; fractOfStateSpace = fractOfStateSpace + increment) {
 				// Learn if we're supposed to learn a new KB
-				String learnedKBName = AffordanceLearner.generateMinecraftKB(mcBeh, numLearningMapsPerLGD, true, false, false, fractOfStateSpace, jobID);
+				String learnedKBName = AffordanceLearnerSokoban.generateSokobanKB(mcBeh, numLearningMapsPerLGD, true, false, false, fractOfStateSpace, jobID);
 				kbNames.add(learnedKBName);
 			}
 		}
