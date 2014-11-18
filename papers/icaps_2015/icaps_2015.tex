@@ -459,7 +459,9 @@ smelt gold and looking at gold ore, but not in other situations
 
 At test time, the agent will see different, randomly generated worlds
 from the same domain, and use the learned affordances to increase its
-speed at inferring a plan.
+speed at inferring a plan.  For simplicity, our learning process uses
+a strict separation between training and test; after learning is
+complete our model parameters remain fixed. 
 
 
 % -- Figure: Minecraft pic --
@@ -1031,18 +1033,27 @@ specific subgoals online---a topic of some active research
 Automatic discovery of subgoals would allow affordance-aware planners
 to take advantage of the goal-oriented focus of affordances, and would
 further reduce the size of the explored state-action space by
-improving the effectiveness of action pruning.
+improving the effectiveness of action pruning. Finally we are excited
+to explore learning affordances from other sources besides learning
+from policies.  For example, learning from human feedback via
+imitation learning or reinforcement learning could allow our agent to
+bias its actions in promising directions by following a person's
+example.  Another promising direction is to explore continuous
+learning.  In this mode, the agent uses affordances as it learns,
+allowing it to build a knowledge base that expands as it goes.
 
 Additionally, we hope to explore additional methods that capitalize on
 the distribution over optimal actions, such as incorporating
 affordances with a forward search sparse sampling
 algorithm~\cite{walsh2010integrating}, or replacing the Naive Bayes
 model with a more sophisticated model, such as Logistic Regression or
-a Noisy-OR.  We are also investigating methods to stochastically
-prune actions rather than requiring a hard threshold parameter
-to be defined (or estimated).  These methods will
-enable agents to acquire and leverage general planning knowledge to
-infer actions in very large state spaces.
+a Noisy-OR.  We are also investigating methods to stochastically prune
+actions rather than requiring a hard threshold parameter to be defined
+(or estimated).  These methods will enable agents to acquire and
+leverage general planning knowledge to infer actions in very large
+state spaces.
+
+
 
 {\small
 \bibliographystyle{plainnat}

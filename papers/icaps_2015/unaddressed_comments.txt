@@ -119,10 +119,17 @@ The paper compares the method with macro-actions and options
 variations, but it is not stated which macro-actions and options are
 used. Since design of macro-actions and options determines the
 solution quality, we cannot deduce the success of the
-algorithm. Cooking domain experiment seems an easy problem. When you
+algorithm. 
+
+-- Added more about why the threshold.
+
+Cooking domain experiment seems an easy problem. When you
 abstract the problem of cooking in terms ingredients and tools, it is
 very easy to learn these plans. The paper should present the
 complexity of cooking problem.
+
+-- Gave more details about the cooking problem explaining why it is
+   hard.
 
 The proposed method seems promising since it provides a easy way to
 add expert knowledge, but this is highly depended on the granularity
@@ -133,6 +140,9 @@ to MDP domain such that the algorithm learns likely actions at certain
 states and the goal. Another suggestion is using an online method in
 training. While the algorithm is learning affordances, it may also act
 on the currently learned ones.
+
+-- Added more text to make it clear about training and added the cycle
+   idea to future work.
 
 
 ----------------------- REVIEW 3 ---------------------
@@ -147,7 +157,10 @@ Quality of Presentation: 7 (++)
 SUMMARY RATING: 3 (+++)
 
 ----------- COMMENTS FOR THE AUTHORS -----------
-In general, the article is very well structured, providing a clear and organized presentation of previous works as well as the methods presented. 
+
+In general, the article is very well structured, providing a clear and
+organized presentation of previous works as well as the methods
+presented.
 
 More importantly, the numerical results and videos provided support
 the claim that the proposed method constitutes an improvement over
@@ -167,6 +180,8 @@ related and necessary concepts (Optimal actions, Knowledge base,
 indicator function, features, etc.) are precisely stated, but not what
 the authors formally mean by “affordances”. I suggest that authors
 clarify this point.
+
+-- added a formal definition of affordances as well as examples.
 
 On the other hand, it is shown that after the learning, the knowledge
 about the agent’s affordances leads to more accurate and faster
