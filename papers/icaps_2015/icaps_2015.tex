@@ -38,11 +38,13 @@
 \title{Affordances as Goal-Based Action Priors}
 
 % Author info:
-\author{David Abel, Gabriel Barth-Maron, D. Ellis Hershkowitz, \\ {\Large {\bf Stephen Brawner, Kevin O'Farrel, James MacGlashan, Stefanie Tellex}}\\
-Brown University, Computer Science Department\\
-115 Waterman Street, 4th floor
-Providence, RI 02912
-}
+%\author{David Abel, Gabriel Barth-Maron, D. Ellis Hershkowitz, \\ {\Large {\bf Stephen Brawner, Kevin O'Farrel, James MacGlashan, Stefanie Tellex}}\\
+%Brown University, Computer Science Department\\
+%115 Waterman Street, 4th floor
+%Providence, RI 02912
+%}
+
+\author{Paper ID: 85}
 
 \maketitle
 
@@ -243,9 +245,12 @@ information about the MDP state.
 }}}%
 \subfigure[Example goals.]{
   \fbox{\parbox{0.47\linewidth}{\tiny
-Robot is standing at x, y, z.\\
+Robot is standing at (x, y, z).\\
 Robot has smelted gold.\\
-Robot has acquired ore. 
+Robot has acquired ore.\\
+Robot has constructed a tower of height K.\\
+Robot has built a cube with edge length K.\\
+Robot has destroyed K blocks.\\
 }}
 }
 \caption{Part of the OO-MDP Domain for the Minecraft.\label{fig:oomdp}}
@@ -434,6 +439,16 @@ $\theta_{i,0} = \Pr(a_i)$ and $\theta_{i,j} = \Pr(\phi_j | a_i)$, for $j \in \{1
 \theta_{i,j} &= \frac{C(\phi_j, a_i)}{C(a_i)}
 \end{align}
 
+\begin{figure}[H]
+\centering
+\subfigure[agentLookTowardGoal]{
+\includegraphics[scale=0.17]{figures/plane_aff.png}}
+\subfigure[trenchInFrontOfAgent]{
+\includegraphics[scale=0.17]{figures/trench_aff.png}}
+\label{fig:example_affs}
+\caption{When the agent is looking toward the goal, it is generally better to move forward than do anything else. Alternatively, when the agent is faced with a trench, the agent should walk along the trench to look for gaps, or build a bridge across by looking down and placing blocks.}
+\end{figure}
+
 Here, $C(a_i)$ is the number of observed occurrences where $a_i$ was optimal across all worlds $W$,
 $C(\bar{a_i})$ is the number of observed occurrences where $a_i$ was not optimal,
 and $C(\phi_j, a_i)$ is the number of occurrences where $\phi_j=1$ and $a_i$ was optimal.
@@ -457,7 +472,8 @@ irrelevant to smelting).  This information informs the distribution
 over the optimality of the \texttt{destroy} action, which is used at
 test time to encourage the agent to destroy blocks when trying to
 smelt gold and looking at gold ore, but not in other situations
-(unless another affordance suggests using \texttt{destroy}).
+(unless another affordance suggests using \texttt{destroy}). Example
+learned affordances are shown in \ref{fig:example_affs}.
 
 At test time, the agent will see different, randomly generated worlds
 from the same domain, and use the learned affordances to increase its
@@ -478,7 +494,6 @@ complete our model parameters remain fixed.
   \caption{Three different problems from the Minecraft domain}
   \label{fig:minecraft}
 \end{figure}
-
 
 
 
@@ -608,84 +623,8 @@ person working on a kitchen task, shown in Figure~\ref{fig:baxter_results}.
 % -- Subsection: Minecraft Tests --
 \subsection{Minecraft}
 
-Our experiments consisted of five common tasks in Minecraft, including
-constructing bridges over trenches, smelting gold, tunneling through
-walls, basic path planning, and digging to find an object.  We tested
-on randomized worlds of varying size and difficulty. The generated
-test worlds varied in size from tens of thousands of states to
-hundreds of thousands of states.  The agent learned affordances from a
-training set consisting of 20 simple state spaces of each map type
-(100 total maps), each approximately a 1,000-10,000 state world. We
-conducted all tests with a single knowledge base.  
-
-We fix the number of features at the start of training based on the
-predicates, $|P|$ and goal types, $|G|$; we had a total of 51
-features.  In the limit, if there was a feature for each state, it
-would learn an affordance for each state in the space, corresponding
-to a policy for the entire domain (since affordances are conditioned
-on goal descriptions).  Because the number of features we are using is
-significantly smaller than the size of the state/action space, the
-agent learns general knowledge that is not specific to a single
-problem.   
-
-We use Real-Time Dynamic Programming (RTDP)~\cite{barto95} as our
-baseline planner, a sampling-based algorithm that does not require the
-planner to visit all states. We compare RTDP with learned
-affordance-aware RTDP (LA-RTDP), and expert-defined affordance-aware
-RTDP (EA-RTDP). We terminated each planner when the maximum change in
-the value function was less than 0.01 for 100 consecutive policy
-rollouts, or the planner failed to converge after 1000 rollouts.  The
-reward function was $-1$ for all transitions, except transitions to
-states in which the agent was in lava, where we set the reward to
-$-10$. The goal was set to be terminal and the discount factor was
-$\gamma = 0.99$.  To introduce non-determinism into our problem,
-movement actions (move, rotate, jump) in all experiments had a small
-probability (0.05) of incorrectly applying a different movement
-action.  This noise factor approximates noise faced by a physical
-robot that attempts to execute actions in a real-world domain and
-can affect the optimal policy due to the existence of lava pits
-that the agent can fall into.
-
-% -- Figure: Average results --
-\begin{figure}[t]
-%\begin{figure}
-\centering
-\includegraphics[width=1\linewidth]{figures/average_results_cropped.png}%
-%\includegraphics[scale=0.18]{figures/average_results_cropped.png}%
-\caption{Average results from all maps.}
-\label{fig:average_results}
-\end{figure}
-%\end{figure}
-
-We report the number of Bellman updates executed by each planning
-algorithm, the accumulated reward of the average plan, and the CPU
-time taken to find a plan. Table~\ref{table:minecraft_results} shows
-the average Bellman updates, accumulated reward, and CPU time for
-RTDP, LA-RTDP and EA-RTDP after planning in 20 different maps of each
-goal type (100 total). Figure~\ref{fig:average_results} shows the
-results averaged across all maps.  We report CPU time for
-completeness, but our results were run on a networked cluster where
-each node had differing computer and memory resources. As a result,
-the CPU results have some variance not consistent with the number of
-Bellman updates in Table~\ref{table:minecraft_results}.  Despite this
-noise, overall the average CPU time shows statistically significant
-improvement overall with affordances, as shown in
-Figure~\ref{fig:average_results}.
-
-Because the planners were forced to terminate after only 1000
-rollouts, they did not always converge to the optimal policy. LA-RTDP on
-average found a comparably better plan (10.6 cost) than EA-RTDP (22.7
-cost) and RTDP (36.4 cost), found the plan in significantly fewer
-Bellman updates (14287.5 to EA-RTDP's 24804.1 and RTDP's 34694.3) and in
-less CPU time (93.1s to EA-RTDP's 166.4s and RTDP's 242.0s).  These
-results indicate that while learned affordances gave the largest
-improvements, expert-provided affordances can also significantly
-enhance performance, and, depending on the domain, could add
-significant value in making large state-spaces tractable without the
-overhead of supplying training worlds.
-
 % -- Table: Minecraft results --
-\begin{table}[t]
+\begin{table}
 \ra{1.15}
 \small
 \begin{tabular}{@{}llll@{}}\toprule
@@ -715,6 +654,94 @@ Planner & Bellman & Reward & CPU \\ \midrule
 \caption{RTDP vs. affordance-aware alternatives.}
 \label{table:minecraft_results}
 \end{table}
+
+Our experiments consisted of five common tasks in Minecraft, including
+constructing bridges over trenches, smelting gold, tunneling through
+walls, basic path planning, and digging to find an object.  We tested
+on randomized worlds of varying size and difficulty. The generated
+test worlds varied in size from tens of thousands of states to
+hundreds of thousands of states.  The agent learned affordances from a
+training set consisting of 25 simple state spaces of each map type
+(100 total maps), each approximately a 1,000-10,000 state world. We
+conducted all tests with a single knowledge base. Learning this knowledge base
+took approximately one hour run in parallel on a computing grid. 
+%Figure~\ref{fig:learning_rate}
+%shows the added effect of more training data.
+
+%\begin{figure}
+%\centering
+%\includegraphics[width=1\linewidth]{figures/training_results.png}%
+%\caption{The added effect of additional training data}
+%\label{fig:learning_rate}
+%\end{figure}
+
+We fix the number of features at the start of training based on the
+predicates, $|P|$ and goal types, $|G|$; we had a total of 51
+features.  In the limit, if there was a feature for each state, it
+would learn an affordance for each state in the space, corresponding
+to a policy for the entire domain (since affordances are conditioned
+on goal descriptions).  Because the number of features we are using is
+significantly smaller than the size of the state/action space, the
+agent learns general knowledge that is not specific to a single
+problem.
+
+We use Real-Time Dynamic Programming (RTDP)~\cite{barto95} as our
+baseline planner, a sampling-based algorithm that does not require the
+planner to visit all states. We compare RTDP with learned
+affordance-aware RTDP (LA-RTDP), and expert-defined affordance-aware
+RTDP (EA-RTDP). We terminated each planner when the maximum change in
+the value function was less than 0.01 for 100 consecutive policy
+rollouts, or the planner failed to converge after 1000 rollouts.  The
+reward function was $-1$ for all transitions, except transitions to
+states in which the agent was in lava, where we set the reward to
+$-10$. The goal was set to be terminal and the discount factor was
+$\gamma = 0.99$.  To introduce non-determinism into our problem,
+movement actions (move, rotate, jump) in all experiments had a small
+probability (0.05) of incorrectly applying a different movement
+action.  This noise factor approximates noise faced by a physical
+robot that attempts to execute actions in a real-world domain and
+can affect the optimal policy due to the existence of lava pits
+that the agent can fall into. 
+
+% -- Figure: Average results --
+\begin{figure}[t]
+%\begin{figure}
+\centering
+\includegraphics[width=1\linewidth]{figures/average_results_cropped.png}%
+%\includegraphics[scale=0.18]{figures/average_results_cropped.png}%
+\caption{Average results from all maps.}
+\label{fig:average_results}
+\end{figure}
+%\end{figure}
+
+We report the number of Bellman updates executed by each planning
+algorithm, the accumulated reward of the average plan, and the CPU
+time taken to find a plan. Table~\ref{table:minecraft_results} shows
+the average Bellman updates, accumulated reward, and CPU time for
+RTDP, LA-RTDP and EA-RTDP after planning in 25 different maps of each
+goal type (100 total). Figure~\ref{fig:average_results} shows the
+results averaged across all maps.  We report CPU time for
+completeness, but our results were run on a networked cluster where
+each node had differing computer and memory resources. As a result,
+the CPU results have some variance not consistent with the number of
+Bellman updates in Table~\ref{table:minecraft_results}.  Despite this
+noise, overall the average CPU time shows statistically significant
+improvement overall with affordances, as shown in
+Figure~\ref{fig:average_results}. Furthermore, we reevaluate each
+predicate every time the agent visits a state, which could be optimized by caching predicate evaluations, further
+reducing the CPU time taken for EA-RTDP and LA-RTDP.
+
+Because the planners were forced to terminate after only 1000
+rollouts, they did not always converge to the optimal policy. LA-RTDP on
+average found a comparably better plan (10.6 cost) than EA-RTDP (22.7
+cost) and RTDP (36.4 cost), found the plan in significantly fewer
+Bellman updates (14287.5 to EA-RTDP's 24804.1 and RTDP's 34694.3) and in
+less CPU time (93.1s to EA-RTDP's 166.4s and RTDP's 242.0s).  These
+results indicate that while learned affordances gave the largest
+improvements, expert-provided affordances can also significantly
+enhance performance, and, depending on the domain, could add
+significant value in making large state-spaces tractable without the
+overhead of supplying training worlds.
 
 
 %Todo: Make this paragraph better
