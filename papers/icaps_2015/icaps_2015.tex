@@ -261,17 +261,19 @@ space independence by using OO-MDP predicates as features for action
 pruning.  Figure~\ref{fig:oomdp} shows part of the definition of our
 OO-MDP for the Minecraft domain.
 
-Following STRIPs terminology, we define a domain as a family of
+Following STRIPs-like terminology, we define a domain as a family of
 related MDPs with the same state space, action space, and transition
-dynamics, but different reward functions and terminal states.  Then a
-STRIPs problem is a specific MDP with a known reward function.  We are
+dynamics, but different reward functions, terminal states, and initial
+states.  Analogously, a
+STRIPs problem is a specific MDP with a known reward function, set
+of terminal states, and an initial state.  We are
 concerned with MDPs where the reward function is goal-directed, that
 is the agent receives a negative reward at each timestep that motivates
 it to reach the goal terminal state.  A goal, $G$ is
 defined by a reward function plus the set of terminal states.  The aim
 of our approach is to learn knowledge about a domain from experience
 that enables an agent to quickly infer a solution to a new problem in
-the same domain that it has never encountered before.
+the same domain that it has never previously encountered.
 
 
 % -- Subsection: Modeling the Optimal Actions --
@@ -309,7 +311,7 @@ g_j)$ to $\delta_j$ for simplicity. Each precondition $p \in
 defined by the OO-MDP domain, and $g$ is a {\it goal type} which is a
 logical expression that defines a subset of goals. For example, a
 predicate might be $nearTrench(agent)$ which is true when the agent is
-standing near a trench.  In general a predicate could be an arbitrary
+standing near a trench.  In general a precondition could be an arbitrary
 logical expression of the state; in our experiments we used unary
 predicates defined in the OO-MDP domain.  A goal type specifies the
 sort of problem the agent is trying to solve, such as the agent
@@ -319,7 +321,7 @@ agent's current goal, the relevance of each action changes
 dramatically.  We rewrite Equation~\ref{eq:master}:
 % -- Equation: replace K --
 \begin{multline}
-\Pr(a_i \mid s, G)
+\Pr(a_i \in \mathcal{A}^* \mid s, G)
 = \Pr(a_i \in \mathcal{A}^* \mid \delta_1 \ldots \delta_n).
 \end{multline}
 
@@ -420,9 +422,9 @@ and Noisy-Or, could also be used.
 \subsection{Learning the Optimal Actions}
 Our Naive Bayes affordance model allows
 affordances to be learned through experience.  To learn affordances,
-we provide a set of training worlds from the domain, ($W$) for which
+we provide a set of training worlds from the domain ($W$), for which
 the optimal policy, $\pi$, may be tractably computed using existing
-methods. Then, we compute the maximum likelihood estimate of the
+planning methods. Then, we compute the maximum likelihood estimate of the
 parameter vector $\theta_i$ for each action using the policy.
 
 Under our Bernouli Naive Bayes model, we estimate the parameters
@@ -599,7 +601,7 @@ assistance, assembling items in a factory, object retrieval, and
 complex terrain traversal.  As in these tasks, the agent operates in a
 very large state-action space in an uncertain environment.
 Figure~\ref{fig:minecraft} shows three example scenes from Minecraft
-problems that we explore.  Additionally, we implemented an affordance based planner to
+problems that we explore.  Additionally, we used expert-provided affordances to
 enable a manipulator robot to infer helpful actions in response to a
 person working on a kitchen task, shown in Figure~\ref{fig:baxter_results}.
 
@@ -745,7 +747,7 @@ Planner & Bellman & Reward & CPU \\ \midrule
 %\texttt{LA-RTDP+MA+Opt} & 	{\bf 10622($\pm$1046)}	&	{\bf -13.4($\pm$1.0)}	&	{\bf 237($\pm$29)}		\\
 \bottomrule
 \end{tabular}
-\caption{Affordances vs. Temporally Extended Actions}
+\caption{Affordances with Temporally Extended Actions}
 \label{table:temp_ext_act_results}
 \end{table}
 
@@ -1042,7 +1044,7 @@ example.  Another promising direction is to explore continuous
 learning.  In this mode, the agent uses affordances as it learns,
 allowing it to build a knowledge base that expands as it goes.
 
-Additionally, we hope to explore additional methods that capitalize on
+Additionally, we hope to explore methods that capitalize on
 the distribution over optimal actions, such as incorporating
 affordances with a forward search sparse sampling
 algorithm~\cite{walsh2010integrating}, or replacing the Naive Bayes
