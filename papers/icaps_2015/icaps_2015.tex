@@ -78,33 +78,36 @@ domain that is executed on a two-handed manipulator robot.
 Robots operating in unstructured, stochastic environments such as a
 factory floor or a kitchen face a difficult planning problem due to
 the large state space and the very large set of possible
-tasks~\citep{bollini12,knepper13}.  Robotic planning tasks are often
-formalized as a stochastic sequential decision making problem, modeled
-as a Markov Decision Process (MDP)~\citep{thrun2008probabilistic}. In
-these problems, the agent must find a mapping from states to actions
-for some subset of the state space that enables the agent to achieve a
-goal while minimizing costs along the way.  However, many robotics
-problems correspond to a family of related MDPs; following STRIPs
-terminology, these problems come from the same domain, but each task
-may have a different reward function or goal condition.  For example,
-the reward function for a cooking robot looks very different when it
-is making brownies vs. stir-frying broccoli.  Figure~\ref{fig:example}
+tasks~\citep{bollini12,knepper13}.  A powerful and flexible robot such
+as a mobile manipulator in the home has a very large set of possible
+actions, any of which may be relevant depending on the current goal
+(for example, robots assembling furinture~\citep{knepper13} or baking
+cookies~\citep{bollini12}.)  When a robot is manipulating objects in
+an environment, an object can be placed anywhere in a large set of
+locations.  The size of the state space increases exponentially with
+the number of objects, which bounds the placement problems that the
+robot is able to expediently solve.  Depending on the reward function
+(which is unknown before runtime), any of these states and actions may
+be relevant to the solution, but for any specific reward function,
+most of them are irrelevant.  For instance, when making brownies, the
+oven and flour are important, while the soy sauce and saut\'{e} pan
+are not.  For a different task, such as stir-frying broccoli, the
+robot must use a different set of objects and
+actions. 
+
+Robotic planning tasks are often formalized as a stochastic sequential
+decision making problem, modeled as a Markov Decision Process
+(MDP)~\citep{thrun2008probabilistic}. In these problems, the agent
+must find a mapping from states to actions for some subset of the
+state space that enables the agent to achieve a goal while minimizing
+costs along the way.  However, many robotics problems correspond to a
+family of related MDPs; following STRIPs terminology, these problems
+come from the same domain, but each task may have a different reward
+function or goal condition.  For example, figure~\ref{fig:example}
 shows an example of two problems from the same domain in the game
 Minecraft~\citep{minecraft}.
 
-The robot may be endowed with a very large set of possible actions,
-any of which may be relevant depending on the current goal.  For
-example, when a robot is manipulating objects in an environment, an
-object can be placed anywhere in a large set of locations.  The size
-of the state space increases exponentially with the number of objects,
-which bounds the placement problems that the robot is able to
-expediently solve.  Depending on the reward function (which is unknown
-before runtime), any of these states and actions may be relevant to
-the solution, but for any specific reward function, most of them are
-irrelevant.  For instance, when making brownies, the oven and flour
-are important, while the soy sauce and saut\'{e} pan are not.  For a
-different task, such as stir-frying broccoli, the robot must use a
-different set of objects and actions.
+
 
 %\begin{figure}
 %\centering
@@ -166,13 +169,13 @@ experiments demonstrate that affordances provide dramatic improvements
 for a variety of planning tasks compared to baselines in simulation,
 and are applicable across different state spaces.  Moreover, while
 manually provided affordances outperform baselines, affordances
-learned through experience yield even greater improvements.
+learned through experience yield even greater improvements.We conduct
+experiments in the game Minecraft, which has a very large state-action
+space, and on a real-world robotic cooking assistant.
 Figure~\ref{fig:example} shows an example of two problems from the
 same domain in the game Minecraft; the agent learns on randomly
 generated problems and tests on new problems from the same domain that
-it has never previously encountered.  We conduct experiments in the
-game Minecraft, which has a very large state-action space, and on a
-real-world robotic cooking assistant.  All associated code with this
+it has never previously encountered.  All associated code with this
 paper may be found at (redacted for review).
 
 %% Because affordances define the {\em kind} of goals for which actions
@@ -215,8 +218,8 @@ information about the MDP state.
 
 \begin{figure}
 \subfigure[Domain]{
-\fbox{\small
-\parbox{0.47\linewidth}{
+\fbox{
+\parbox{0.47\linewidth}{\tiny
 \begin{itemize}
   \item Object Classes:
     \begin{itemize}
@@ -230,33 +233,22 @@ information about the MDP state.
       \item Type (Wood, Lava, ...)
       \item Location (x, y, z)
       \item Destructible (True, False)
-      \item LeavesItemBehind (True, False)
+%      \item LeavesItemBehind (True, False)
       \end{itemize}
     \end{itemize}
-  \item Actions:
-    \begin{itemize}
-    \item Destroy Block
-    \item Use Block
-    \item Turn left/right
-    \item Move forward
-    \item Look up/down
-    \item Place Block
-    \item Jump
-    \end{itemize}
-  \item Transition Dynamics:
-    \begin{itemize}
-    \item Movement actions (Look, Turn, Move) incorrectly apply a different move action 5\% of the time. % This was done because effectively "null" action applications are uninteresting and do not affect planning at all (presence of lava is irrelevant). With this style, if we are facing lava and try to turn away, we might walk into it.
-    \end{itemize}
+  \item Actions: {\sf DestroyBlock}, {\sf UseBlock}, {\sf TurnLeft},
+    {\sf TurnRight}, {\sf MoveForward}, {\sf LookUp}, {\sf LookDown}, {\sf PlaceBlock}, {\sf Jump}
+  \item Transition Dynamics: Movement actions (Look, Turn, Move) incorrectly apply a different move action 5\% of the time. % This was done because effectively "null" action applications are uninteresting and do not affect planning at all (presence of lava is irrelevant). With this style, if we are facing lava and try to turn away, we might walk into it.
     \end{itemize}
 }}}%
 \subfigure[Example goals.]{
-\fbox{\parbox{0.47\linewidth}{\small
+  \fbox{\parbox{0.47\linewidth}{\tiny
 Robot is standing at x, y, z.\\
 Robot has smelted gold.\\
-Robot has acquired ore. \\
+Robot has acquired ore. 
 }}
 }
-\caption{Part of the OO-MDP Domain for the Minecraft.}
+\caption{Part of the OO-MDP Domain for the Minecraft.\label{fig:oomdp}}
 \end{figure}
 
 OO-MDP predicates provide state space independence. For a given
@@ -266,7 +258,8 @@ specific state spaces within the domain.  For instance, in Minecraft,
 a predicate checking the contents of the agent's inventory generalizes
 beyond any particular Minecraft task. We capitalize on this state
 space independence by using OO-MDP predicates as features for action
-pruning.
+pruning.  Figure~\ref{fig:oomdp} shows part of the definition of our
+OO-MDP for the Minecraft domain.
 
 Following STRIPs terminology, we define a domain as a family of
 related MDPs with the same state space, action space, and transition
@@ -297,39 +290,37 @@ where $Q^*_G(s,a)$ and $V^*_G(s)$ represent the optimal Q function and
 value function, respectively.
 
 We aim to learn a probability distribution over the optimality of each action
-for a given state ($s$), goal ($G$), and knowledge base ($K$) by which
-action pruning may be informed. Thus, we want to infer a Bernouli
+for a given state ($s$), goal ($G$). Thus, we want to infer a Bernouli
 distribution for each action's optimality:
 % -- Equation: Master Equation --
 \begin{equation}
-\Pr(a_i \in \mathcal{A}^* \mid s, G, K)
+\Pr(a_i \in \mathcal{A}^* \mid s, G)
 \label{eq:master}
 \end{equation}
 
 \noindent for $i \in \{1, \ldots, |\mathcal{A}|\}$, where
 $\mathcal{A}$ is the OO-MDP action space for the domain.
 
-We formalize our knowledge base, $K$, as a set of $n$ paired
-preconditions and goal types, $\{ (p_1, g_1) \ldots (p_{n}, g_{n})
-\}$. We abbreviate each pair $(p_j, g_j)$ to $\delta_j$ for
-simplicity. Each precondition $p \in \mathcal{P}$ is a {\it predicate}
-in predicate space, $\mathcal{P}$, defined by the OO-MDP domain, and
-$g$ is a {\it goal type} which is a logical expression that defines a
-subset of goals. For example, a predicate might be $nearTrench(agent)$
-which is true when the agent is standing near a trench.  In general a
-predicate could be an arbitrary logical expression of the state; in
-our experiments we used unary predicates defined in the OO-MDP domain.
-A goal type specifies the sort of problem the agent is trying to
-solve, such as the agent retrieving an object of a certain type from
-the environment, reaching a particular location, or creating a new
-structure.  Depending on the agent's current goal, the relevance of
-each action changes dramatically.
-
-We rewrite Equation~\ref{eq:master} replacing $K$ with its constituents:
+To generalize across specific low-level states, we abstract the state
+and goal into a set of $n$ paired preconditions and goal types, $\{
+(p_1, g_1) \ldots (p_{n}, g_{n}) \}$. We abbreviate each pair $(p_j,
+g_j)$ to $\delta_j$ for simplicity. Each precondition $p \in
+\mathcal{P}$ is a {\it predicate} in predicate space, $\mathcal{P}$,
+defined by the OO-MDP domain, and $g$ is a {\it goal type} which is a
+logical expression that defines a subset of goals. For example, a
+predicate might be $nearTrench(agent)$ which is true when the agent is
+standing near a trench.  In general a predicate could be an arbitrary
+logical expression of the state; in our experiments we used unary
+predicates defined in the OO-MDP domain.  A goal type specifies the
+sort of problem the agent is trying to solve, such as the agent
+retrieving an object of a certain type from the environment, reaching
+a particular location, or creating a new structure.  Depending on the
+agent's current goal, the relevance of each action changes
+dramatically.  We rewrite Equation~\ref{eq:master}:
 % -- Equation: replace K --
 \begin{multline}
-\Pr(a_i \mid s, G, K)
-= \Pr(a_i \in \mathcal{A}^* \mid s, G, \delta_1 \ldots \delta_n).
+\Pr(a_i \mid s, G)
+= \Pr(a_i \in \mathcal{A}^* \mid \delta_1 \ldots \delta_n).
 \end{multline}
 
 We introduce the indicator function $f$, which returns 1 if and only if $\delta_j$'s predicate is true in the provided state $s$, and $\delta_j$'s goal type is entailed by the agent's current goal, $G$:
@@ -367,7 +358,7 @@ optimal is zero. More formally,
 \end{equation}
 where $m$ is the number of features that can cause $a_i$ to be optimal ($m = |\phi^i|$).
 
-In practice, we don't expect such a distribution to be reflective of
+In practice, we do not expect such a distribution to be reflective of
 reality; if it were, then no planning would be needed because a full
 policy would have been specified. However, it does provide a
 convenient way for a designer to provide conservative background
@@ -401,10 +392,12 @@ Next we assume that each feature is conditionally independent of the others, giv
 
 Finally, we define the prior on the optimality of each action to be
 the fraction of the time each action was optimal during training.
-
-Although we only explore hard affordance and Naive Bayes
-models in this work, other affordance models, like logistic
-regression and Noisy-Or, could also be used.
+This approach allows model parameters to be learned from optimal
+policies during training, and information from different state
+precondition functions to be combined to infer a distribution on
+affordances.  Although we only explore hard affordance and Naive Bayes
+models in this work, other affordance models, like logistic regression
+and Noisy-Or, could also be used.
 
 
 %In a recent review on the theory of affordances,~\citet{chemero2003}
@@ -565,6 +558,7 @@ using RTDP.
 \begin{table}[t]
 \ra{1.15}
 \small
+\centering
 \begin{tabular}{@{}lll}\toprule
 Precondition & Goal Type & Actions \\ \midrule
 \texttt{lookingTowardGoal} & \texttt{atLocation} & \texttt{\{move\}} \\
@@ -663,9 +657,16 @@ We report the number of Bellman updates executed by each planning
 algorithm, the accumulated reward of the average plan, and the CPU
 time taken to find a plan. Table~\ref{table:minecraft_results} shows
 the average Bellman updates, accumulated reward, and CPU time for
-RTDP, LA-RTDP and EA-RTDP after planning in 20 different maps of each goal
-type (100 total). Figure~\ref{fig:average_results} shows the results
-averaged across all maps.
+RTDP, LA-RTDP and EA-RTDP after planning in 20 different maps of each
+goal type (100 total). Figure~\ref{fig:average_results} shows the
+results averaged across all maps.  We report CPU time for
+completeness, but our results were run on a networked cluster where
+each node had differing computer and memory resources. As a result,
+the CPU results have some variance not consistent with the number of
+Bellman updates in Table~\ref{table:minecraft_results}.  Despite this
+noise, overall the average CPU time shows statistically significant
+improvement overall with affordances, as shown in
+Figure~\ref{fig:average_results}.
 
 Because the planners were forced to terminate after only 1000
 rollouts, they did not always converge to the optimal policy. LA-RTDP on
@@ -760,21 +761,24 @@ comparing RTDP equipped with macro-actions, options, and affordances
 across 100 different executions in the same randomly generated
 Minecraft worlds. The results are averaged across tasks of each type
 presented in Table~\ref{table:minecraft_results}. Both macro-actions
-and options add a significant amount of time to planning due to the fact that
-that the options and macro-actions are being reused in multiple MDPs
-that each require recomputing the resulting
-transition dynamics and expected cumulative reward when applying each 
+and options add a significant amount of time to planning due to the
+fact that that the options and macro-actions are being reused in
+multiple MDPs that each require recomputing the resulting transition
+dynamics and expected cumulative reward when applying each
 option/macro-action (a cost that is typically amortized in classic
 options work where the same MDP state space and transition dynamics
-are used). This computational cost might be reduced when using
-a Monte Carlo planning algorithm that does not need the full transition
-dynamics and expected cumulative reward.
-Furthermore, the branching factor of the state-action
-space significantly increases with additional actions,
-causing the planner to run for longer and perform more Bellman
-updates. With affordances, the planner found a better plan in less CPU
-time, and with fewer Bellman updates. These results support the claim
-that affordances can handle the augmented action space provided by
+are used). This computational cost might be reduced when using a Monte
+Carlo planning algorithm that does not need the full transition
+dynamics and expected cumulative reward.  Furthermore, the branching
+factor of the state-action space significantly increases with
+additional actions, causing the planner to run for longer and perform
+more Bellman updates.  Despite these extra costs in planning time,
+earned reward with options was higher than without, demonstrating that
+our expert-provided options add value to the system.
+
+With affordances, the planner found a better plan in less CPU time,
+and with fewer Bellman updates. These results support the claim that
+affordances can handle the augmented action space provided by
 temporally extended actions by pruning away unnecessary actions, and
 that options and affordances provide complementary information.
 
@@ -783,15 +787,22 @@ that options and affordances provide complementary information.
 
 To assess affordances applied to a real-world robotic task, we created
 a cooking domain that requires the robot to choose helpful actions for
-a person following a recipe.  The robot reasons over ingredients,
-containers, appliances, working spaces and utensils for a potentially
-large set of recipes. The action set consists of pouring containers,
-mixing ingredients and moving containers and tools, encapsulating a
-large set of grounded actions for the objects in a kitchen.  Using
-four ingredients required for brownies and the containers necessary
-for the ingredients, our cooking state space has
-$\num[round-precision=3, round-mode=figures]{47258883}$ states.
-\stnote{Justify why the state space is so large.  (I mailed Stephen with some questions.}
+a person following a recipe.  
+
+There were three spaces: human counter, robot counter, sink.  We had
+four ingredient bowls, two mixing bowls, and two tools that could be
+in any of the three spaces, in any configuration.  There were four
+ingredients: cocoa powder, sugar, eggs, and flour.  Each
+container/tool could be on one of three spaces, and each ingredient in
+one of the containers in an either mixed or unmixed state.  (e.g., the
+state of all the ingredients in a mixing bowl is different than the
+state of the dries mixed with the wets mixed individually in a bowl.)
+Althoug this fine-grained state-space is much larger than needed for
+any one recipe, it enables support for a variety of different recipes,
+ranging from brownies to mashed potatoes.  Because of its
+fine-grained nature, our cooking state space has
+$\num[round-precision=3, round-mode=figures]{47258883}$ states when
+configured with the ingredients and tools necessary to make brownies.
 
 \begin{table}[t]
 \ra{1.1}
@@ -832,8 +843,8 @@ Planner & Bellman & Reward & CPU \\ \midrule
 We divided a brownie recipe into three subgoals: combining and mixing
 the dry ingredients, combining and mixing the wet ingredients, and
 combining these two mixtures into a batter. For each subgoal, we
-provided affordances specific to the objects used in that subgoal,
-like a whisk should only be used to mix wet ingredients.  We used
+provided affordances specific to the objects used in that subgoal; for
+example, a whisk should only be used to mix wet ingredients.  We used
 EA-RTDP to search for the least-cost plan to complete the recipe.  The
 robot inferred actions such as handing off the whisk to the person to
 mix the wet ingredients.
@@ -845,6 +856,8 @@ state-action space is reduced significantly, EA-RTDP can plan
 successfully in a short amount of time. Standard RTDP always
 encountered the maximum number of rollouts specified at the maximum
 depth each time, even with a relatively small number of objects.
+(Unlike our previous CPU time results, these results took place on the
+same multi-core computer.)
 
 We provide a video\footnote{Watch at https://vimeo.com/106226282} 
 showing how this affordance-aware planner running
