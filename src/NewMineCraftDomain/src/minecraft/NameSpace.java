@@ -4,6 +4,13 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.List;
 
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldBarPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.AgentHasAtLeastXGoldOrePF;
+import minecraft.MinecraftDomain.PropositionalFunctions.AtGoalPF;
+import minecraft.MinecraftDomain.PropositionalFunctions.TowerInMapPF;
+import affordances.AffordanceLearnerSokoban;
+import burlap.oomdp.logicalexpressions.LogicalExpression;
+
 public class NameSpace {
 	//-------------ATTRIBUTE STRINGS-------------
 	public static final String							ATX = "x";

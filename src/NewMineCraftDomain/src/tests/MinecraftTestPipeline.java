@@ -13,8 +13,6 @@ import minecraft.NameSpace;
 import minecraft.MinecraftBehavior.MinecraftBehavior;
 import minecraft.MinecraftBehavior.Planners.AffordanceRTDPPlanner;
 import minecraft.MinecraftBehavior.Planners.AffordanceVIPlanner;
-import minecraft.MinecraftBehavior.Planners.BoundedAffordanceRTDPPlanner;
-import minecraft.MinecraftBehavior.Planners.BoundedRTDPPlanner;
 import minecraft.MinecraftBehavior.Planners.MinecraftPlanner;
 import minecraft.MinecraftBehavior.Planners.RTDPPlanner;
 import minecraft.MinecraftBehavior.Planners.VIPlanner;
@@ -25,7 +23,7 @@ import minecraft.WorldGenerator.WorldTypes.PlaneGoldMineWorld;
 import minecraft.WorldGenerator.WorldTypes.PlaneGoldSmeltWorld;
 import minecraft.WorldGenerator.WorldTypes.PlaneWallWorld;
 import minecraft.WorldGenerator.WorldTypes.PlaneWorld;
-import affordances.AffordanceLearner;
+import affordances.AffordanceLearnerSokoban;
 import affordances.KnowledgeBase;
 
 public class MinecraftTestPipeline {
@@ -98,7 +96,7 @@ public class MinecraftTestPipeline {
 		// Load Affordance Knowledge base
 		KnowledgeBase affKB = new KnowledgeBase();;
 		if(planners.contains(NameSpace.BAFFRTDP)) {
-			affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), learnedKBName, false);
+			affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs), learnedKBName, false, countStateSpaceSize);
 		}
 		
 		// --- FILE WRITER SETUP ---
@@ -146,8 +144,8 @@ public class MinecraftTestPipeline {
 			if(planners.contains(NameSpace.BRTDP)) {
 					statusBW.write("\t...boundedRTDP");
 					statusBW.flush();
-				BoundedRTDPPlanner rtdp = new BoundedRTDPPlanner(mcBeh, false, false);
-				BRTDPResults.addTrial(rtdp.runPlanner());
+//				BoundedRTDPPlanner rtdp = new BoundedRTDPPlanner(mcBeh, false, false);
+//				BRTDPResults.addTrial(rtdp.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
 			}
@@ -156,9 +154,9 @@ public class MinecraftTestPipeline {
 			if(planners.contains(NameSpace.BAFFRTDP)) {
 					statusBW.write("\t...Learned Soft RTDP");
 					statusBW.flush();
-				BoundedAffordanceRTDPPlanner affRTDP = new BoundedAffordanceRTDPPlanner(mcBeh, useOptions, useMAs, affKB);
-				affRTDP.updateKB(affKB);
-				learnedAffBRTDPResults.addTrial(affRTDP.runPlanner());
+//				BoundedAffordanceRTDPPlanner affRTDP = new BoundedAffordanceRTDPPlanner(mcBeh, useOptions, useMAs, affKB);
+//				affRTDP.updateKB(affKB);
+//				learnedAffBRTDPResults.addTrial(affRTDP.runPlanner());
 					statusBW.write(" Finished\n");
 					statusBW.flush();
 			}
@@ -202,8 +200,78 @@ public class MinecraftTestPipeline {
 		
 	}
 	
+	/**
+	 * Run tests on all world types, for each of the 3 planners and record results
+	 * @param numIterations: the number of times to perform testing
+	 * @param nametag: a flag for the name of the results file
+	 * @throws IOException 
+	 */
+	public static void runLearningRateTests(String nametag, int numLearningMapsPerLGD, int numTestingMaps, double minFractOfStateSpace, double maxFractOfStateSpace, double increment, boolean shouldLearn, boolean countStateSpaceSize, boolean useOptions, boolean useMAs, String jobID) throws IOException {
+		// Generate Behavior and test maps
+		MinecraftBehavior mcBeh = new MinecraftBehavior();
+		String testMapDir = NameSpace.PATHMAPS + "/" + jobID + "/learningRateTest/";
+		generateTestMaps(mcBeh, testMapDir, numTestingMaps);
+		
+		File testDir = new File(testMapDir);
+		String[] testMaps = testDir.list();
+		
+		List<String> kbNames = new ArrayList<String>();
+		
+		if(shouldLearn){
+			// --- Create Knowledge Bases ---
+			for(double fractOfStateSpace = minFractOfStateSpace; fractOfStateSpace <= maxFractOfStateSpace; fractOfStateSpace = fractOfStateSpace + increment) {
+				// Learn if we're supposed to learn a new KB
+//				String learnedKBName = AffordanceLearnerSokoban.generateSokobanKB(mcBeh, numLearningMapsPerLGD, true, false, false, fractOfStateSpace, jobID);
+//				kbNames.add(learnedKBName);
+			}
+		}
+		else{
+			// If we're not learning new knowledge bases, use the existing ones.
+			kbNames = new ArrayList<String>();
+			for(double fractOfStateSpace = minFractOfStateSpace; fractOfStateSpace <= maxFractOfStateSpace; fractOfStateSpace = fractOfStateSpace + increment) {
+				String newKB = "lr_" + String.format("%.2f", fractOfStateSpace) + ".kb";
+				kbNames.add(newKB);
+			}
+//			File learningRateKBDir = new File("src/minecraft/kb/learning_rate/");
+//			String[] kbsToUse = learningRateKBDir.list();
+//			kbNames = new ArrayList<String>(Arrays.asList(kbsToUse));
+		}
+		
+		// Make knowledge base and result objects
+		KnowledgeBase affKB = new KnowledgeBase();
+		LearningRateResult learnedHardRTDPResults = new LearningRateResult(NameSpace.LearnedHardRTDP);
+		
+		// Run learning planners with varied size KBs
+		for(String kbName : kbNames) {
+			System.out.println("(MCTP) starting on kb: " + kbName);
+			for (String map : testMaps) {
+				System.out.println("(MCTP) starting on map: " + map);
+				MapIO mapIO = new MapIO(testMapDir + map);
+				mcBeh.updateMap(mapIO);
+				
+				// Hard
+				affKB.load(mcBeh.getDomain(), MinecraftPlanner.getMapOfMAsAndOptions(mcBeh, useOptions, useMAs),  "learning_rate/" + kbName, false, true);
+				AffordanceRTDPPlanner affHardRTDP = new AffordanceRTDPPlanner(mcBeh, false, false, affKB);
+				learnedHardRTDPResults.addTrialForKB(kbName, affHardRTDP.runPlanner());
+			}
+		}
+		
+//		String outputFileName= NameSpace.PATHRESULTS + "learning_rate/lr.results";
+//		File resultsFile = new File(outputFileName);
+//		FileWriter resultsFW = new FileWriter(resultsFile.getAbsoluteFile());
+//		BufferedWriter resultsBW = new BufferedWriter(resultsFW);
+		
+//		resultsBW.write("Learning Rate Results: " + minFractOfStateSpace + "-" + maxFractOfStateSpace + "\n");
+		System.out.println("Learning Rate Results: " + minFractOfStateSpace + "-" + maxFractOfStateSpace + "\n");
+		for(String kbName : learnedHardRTDPResults.getResults().keySet()) {
+//			resultsBW.write("\t [" + kbName + "]\t" + learnedHardRTDPResults.getResults().get(kbName).toString() + "\n");
+			System.out.println("\t [" + kbName + "]\t" + learnedHardRTDPResults.getResults().get(kbName).toString() + "\n");
+		}
+//		resultsBW.flush();
+	}
+	
 	public static void main(String[] args) {
-//		System.out.close();
+
 		
 		// --- Basic Minecraft Results ---
 		boolean learningFlag = false;

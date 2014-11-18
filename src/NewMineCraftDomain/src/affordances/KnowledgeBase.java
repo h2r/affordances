@@ -91,12 +91,12 @@ public class KnowledgeBase {
 	
 	
 	
-	public void load(Domain d, Map<String,Action> temporallyExtActions, String filename, boolean hardFlag) {
+	public void load(Domain d, Map<String,Action> temporallyExtActions, String filename, boolean hardFlag, boolean expertFlag) {
 		AffordanceDelegate aff = null;
 		
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(NameSpace.PATHKB + filename));
-			//new BufferedReader( //resLoader.getBufferedReader(basePath + filename);
+//			BufferedReader reader = new BufferedReader(new FileReader(NameSpace.PATHKB + filename));
+			BufferedReader reader = new BufferedReader(new FileReader(filename));
 			
 			StringBuilder sBuilder = new StringBuilder();
 			String nextLine = reader.readLine();
@@ -108,7 +108,7 @@ public class KnowledgeBase {
 			
 			String[] kbStrings = sBuilder.toString().split("===");
 			
-			String[] processedStrings = new String[kbStrings.length - 1];
+			String[] processedStrings = new String[kbStrings.length];
 			
 			// Remove the last element from KBString (closing equals signs)
 			for(int i = 0; i < processedStrings.length; i++) {
@@ -118,7 +118,7 @@ public class KnowledgeBase {
 			for(String affString : processedStrings) {
 				// Remove the final newline character from the affordance
 				String slicedString = affString.substring(0, affString.length() - 1);
-				aff = AffordanceDelegate.load(d, temporallyExtActions, slicedString);
+				aff = AffordanceDelegate.load(d, temporallyExtActions, slicedString, expertFlag);
 				this.affDelegateList.add(aff);
 				reader.close();
 			}
@@ -128,7 +128,6 @@ public class KnowledgeBase {
 			e.printStackTrace();
 		}
 		
-		boolean expertFlag = false;
 		this.affController = new AffordancesController(this.affDelegateList, hardFlag, expertFlag);
 	}
 	
