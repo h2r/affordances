@@ -121,8 +121,8 @@ Minecraft~\citep{minecraft}.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.49\linewidth]{figures/smelt_small.png}
-\includegraphics[width=0.49\linewidth]{figures/smelt_large.png}
+\includegraphics[width=0.49\linewidth]{figures/smelt_small.jpg}
+\includegraphics[width=0.49\linewidth]{figures/smelt_large.jpg}
 \caption{Two different problems from the same domain, where the
   agent's goal is to smelt the gold in the furnace while avoiding the
   lava.  Our agent is unable to solve the problem on the right before
@@ -266,6 +266,19 @@ space independence by using OO-MDP predicates as features for action
 pruning.  Figure~\ref{fig:oomdp} shows part of the definition of our
 OO-MDP for the Minecraft domain.
 
+% -- Figure: Minecraft pic --
+\begin{figure}[b]
+\centering
+\subfigure[Mine the gold and smelt it in the furnace]{
+\includegraphics[width=0.3\linewidth]{figures/smelt_labeled.jpg}}
+\subfigure[Dig down to the gold and mine it, avoiding lava.]{
+\includegraphics[width=0.3\linewidth]{figures/mining_labeled.jpg}}
+\subfigure[Navigate to the goal location, avoiding lava.]{
+\includegraphics[width=0.3\linewidth]{figures/plane.jpg}}
+  \caption{Three different problems from the Minecraft domain}
+  \label{fig:minecraft}
+\end{figure}
+
 Following STRIPs-like terminology, we define a domain as a family of
 related MDPs with the same state space, action space, and transition
 dynamics, but different reward functions, terminal states, and initial
@@ -407,6 +420,8 @@ models in this work, other affordance models, like logistic regression
 and Noisy-Or, could also be used.
 
 
+
+
 %In a recent review on the theory of affordances,~\citet{chemero2003}
 %suggests that an affordance is a relation between the features of an
 %environment and an agent's abilities. Our approach grounds this
@@ -480,20 +495,6 @@ from the same domain, and use the learned affordances to increase its
 speed at inferring a plan.  For simplicity, our learning process uses
 a strict separation between training and test; after learning is
 complete our model parameters remain fixed. 
-
-
-% -- Figure: Minecraft pic --
-\begin{figure}
-\centering
-\subfigure[Mine the gold and smelt it in the furnace]{
-\includegraphics[width=0.3\linewidth]{figures/smelting_labeled.png}}
-\subfigure[Dig down to the gold and mine it, avoiding lava.]{
-\includegraphics[width=0.3\linewidth]{figures/mining_labeled.png}}
-\subfigure[Navigate to the goal location, avoiding lava.]{
-\includegraphics[width=0.3\linewidth]{figures/plane.png}}
-  \caption{Three different problems from the Minecraft domain}
-  \label{fig:minecraft}
-\end{figure}
 
 
 
