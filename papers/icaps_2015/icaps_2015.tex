@@ -35,7 +35,7 @@
 \begin{document}
 
 % paper title
-\title{Affordances as Goal-Based Action Priors}
+\title{Goal-Based Action Priors}
 
 % Author info:
 %\author{David Abel, Gabriel Barth-Maron, D. Ellis Hershkowitz, \\ {\Large {\bf Stephen Brawner, Kevin O'Farrel, James MacGlashan, Stefanie Tellex}}\\
@@ -58,14 +58,14 @@ prohibitively difficult because of the exponential number of ways the
 robot can affect the world.  In this work, we develop a framework for
 goal and state dependent action priors that can be used to prune away
 irrelevant actions based on the robot's current goal, thereby greatly
-accelerating planning in a variety complex stochastic environments.
+accelerating planning in a variety of complex stochastic environments.
 Because these action priors depend on the current state and the goal,
 we refer to them as {\em affordances}.  Our framework allows
 affordances to be easily specified by an expert or to be learned from
 prior experience in related problems. Due to the large complexity of
 the space, we use the video game Minecraft as a robot simulator in
-which an agent learns useful affordances from a set of training
-worlds and then uses those affordances to successfully find solutions to
+which an agent learns useful affordances from a set of training worlds
+and then uses those affordances to successfully find solutions to
 otherwise intractable problems without them. We also use
 expert-provided affordances to accelerate planning in a robot cooking
 domain that is executed on a two-handed manipulator robot.
@@ -151,34 +151,31 @@ the agent's autonomy and must be manually supplied by the designer.
 
 To address these issues, we augment an Object Oriented Markov Decision
 Process (OO-MDP) with a specific type of action prior conditioned on
-the current state and an abstract goal description.  Because we
-condition on both the state and goal description, we refer to this
-type of action prior as a knowlege base of {\em affordances}.
-Affordances were originally proposed by \citet{gibson77} as action
-possibilities prescribed by an agent's capabilities in an environment.
-%Affordances focus an agent's attention on aspects of the environment that
-%are most relevant to solving its current goal and avoid exploration of irrelevant parts of the
-%world.
-We rigorously formalize the notion of affordances as a prior on
-actions conditioned on features of the current state as well as the
-robot's goal.  Affordances enable the robot to prune irrelevant
-actions on a state-by-state basis based on the agent's current goal
-and focus on the most promising parts of the state space.  Affordances
-can be specified by hand or alternatively learned through experience
-in related problems, making them a concise, transferable, and
-learnable means of representing useful planning knowledge. Our
-experiments demonstrate that affordances provide dramatic improvements
-for a variety of planning tasks compared to baselines in simulation,
-and are applicable across different state spaces.  Moreover, while
-manually provided affordances outperform baselines, affordances
-learned through experience yield even greater improvements.We conduct
-experiments in the game Minecraft, which has a very large state-action
-space, and on a real-world robotic cooking assistant.
-Figure~\ref{fig:example} shows an example of two problems from the
-same domain in the game Minecraft; the agent learns on randomly
-generated problems and tests on new problems from the same domain that
-it has never previously encountered.  All associated code with this
-paper may be found at (redacted for review).
+the current state and an abstract goal description.  This goal-based
+action prior enables the robot to prune irrelevant actions on a
+state-by-state basis based on the agent's current goal and focus on
+the most promising parts of the state space.  Because we condition on
+both the state and goal description, we refer to this type of action
+prior as a knowlege base of {\em affordances}.  Affordances were
+originally proposed by \citet{gibson77} as action possibilities
+prescribed by an agent's capabilities in an environment. \stnote{Talk
+  about Chemmaro here.}  Our goal-based action priors can be specified
+by hand or alternatively learned through experience in related
+problems, making them a concise, transferable, and learnable means of
+representing useful planning knowledge. Our experiments demonstrate
+that affordances provide dramatic improvements for a variety of
+planning tasks compared to baselines in simulation, and are applicable
+across different state spaces.  Moreover, while manually provided
+affordances outperform baselines, affordances learned through
+experience yield even greater improvements.  We conduct experiments in
+the game Minecraft, which has a very large state-action space, and on
+a real-world robotic cooking assistant.  Figure~\ref{fig:example}
+shows an example of two problems from the same domain in the game
+Minecraft; the agent learns on randomly generated problems and tests
+on new problems from the same domain that it has never previously
+encountered.  All associated code with this paper may be found at
+\url{http://h2r.cs.brown.edu/affordances}.  \stnote{Make this link
+  real.}
 
 %% Because affordances define the {\em kind} of goals for which actions
 %% are useful, affordances also enable high-level reasoning that can be
@@ -270,7 +267,7 @@ OO-MDP for the Minecraft domain.
 \begin{figure}[b]
 \centering
 \subfigure[Mine the gold and smelt it in the furnace]{
-\includegraphics[width=0.3\linewidth]{figures/smelt_labeled.jpg}}
+\includegraphics[width=0.3\linewidth]{figures/smelt_labeled_small.jpg}}
 \subfigure[Dig down to the gold and mine it, avoiding lava.]{
 \includegraphics[width=0.3\linewidth]{figures/mining_labeled.jpg}}
 \subfigure[Navigate to the goal location, avoiding lava.]{
@@ -297,10 +294,10 @@ the same domain that it has never previously encountered.
 % -- Subsection: Modeling the Optimal Actions --
 \subsection{Modeling the Optimal Actions}
 
-Our goal is to formalize affordances in a way that enables a planning
-algorithm to prune away suboptimal actions in each state based on the
-agent's current goal. We define the optimal action set,
-$\mathcal{A}^*$, for a given state $s$ and goal $G$ as:
+Our goal is to formalize planning knowledge that allows an agent to
+avoid searching suboptimal actions in each state based on the agent's
+current goal. We define the optimal action set, $\mathcal{A}^*$, for a
+given state $s$ and goal $G$ as:
 % -- Equation: Optimal Action Set --
 \begin{equation}
 \mathcal{A}^* = \left\{ a \mid Q^*_G(s,a) = V^*_G(s) \right\}, 
@@ -389,14 +386,17 @@ state features being true. For example,
 Table~\ref{table:afford_kb_exp} shows example expert-provided
 hard affordances that we used in our Minecraft domain.
 
-Because the hard affordance model is not expected to be
-reflective of reality and because of other limitations (such as
-not allowing support for an action to be provided when
-a feature is off), the model is not practical for 
-learning. An alternative more expressive model
-that does lend itself to learning is Naive Bayes. 
-To implement a Naive Bayes affordance model, we first factor using Bayes' rule,
-introducing a parameter vector $\theta_i$ of feature weights:
+Because the hard affordance model is not expected to be reflective of
+reality and because of other limitations (such as not allowing support
+for an action to be provided when a feature is off), the model is not
+practical for learning.  Learning has the potential to outperform
+hand-coded affordances by more flexibly adapting itself to the
+features that predict optimal actions over a large training set.  An
+alternative more expressive model that does lend itself to learning is
+Naive Bayes.  To implement a Naive Bayes affordance model, we first
+factor using Bayes' rule, introducing a parameter vector $\theta_i$ of
+feature weights:
+
 % -- Equation: Bayes --
 \begin{equation}
 = \frac{\Pr(\phi_1, \ldots, \phi_{n}, \mid a_i \in \mathcal{A}^*, \theta_i) \Pr(a_i \in \mathcal{A}^* \mid \theta_i)}{\Pr(\phi_1, \ldots, \phi_{n} | \theta_i)}
@@ -440,12 +440,15 @@ and Noisy-Or, could also be used.
 
 % -- Subsection: Learning the Optimal Actions--
 \subsection{Learning the Optimal Actions}
-Our Naive Bayes affordance model allows
-affordances to be learned through experience.  To learn affordances,
-we provide a set of training worlds from the domain ($W$), for which
-the optimal policy, $\pi$, may be tractably computed using existing
-planning methods. Then, we compute the maximum likelihood estimate of the
-parameter vector $\theta_i$ for each action using the policy.
+Our Naive Bayes affordance model allows affordances to be learned
+through experience.  To learn affordances, we provide a set of
+training worlds from the domain ($W$), for which the optimal policy,
+$\pi$, may be tractably computed using existing planning methods.  We
+compute model parameters using the small training worlds, and then
+evaluate performance on a different set of much harder problems at
+test time.  To compute model parameters using Naive Bayes, we compute
+the maximum likelihood estimate of the parameter vector $\theta_i$ for
+each action using the policy.
 
 Under our Bernouli Naive Bayes model, we estimate the parameters
 $\theta_{i,0} = \Pr(a_i)$ and $\theta_{i,j} = \Pr(\phi_j | a_i)$, for $j \in \{1, \ldots, n \}$, where the maximum likelihood estimates are:
@@ -866,7 +869,7 @@ Planner & Bellman & Reward & CPU \\ \midrule
 % -- Figure: Baxter results/image
 \begin{figure}[b]
 \centering
-\includegraphics[width=0.75\linewidth]{figures/baxter.jpg}%
+\includegraphics[width=0.75\linewidth]{figures/baxter_scaled.jpg}%
   \caption{Affordances enable a robot to efficiently infer helpful actions in
     very large state spaces, such as a kitchen.}
   \label{fig:baxter_results}
