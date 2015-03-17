@@ -83,7 +83,7 @@ the large state space and the very large set of possible
 tasks~\citep{bollini12,knepper13}.  A powerful and flexible robot such
 as a mobile manipulator in the home has a very large set of possible
 actions, any of which may be relevant depending on the current goal
-(for example, robots assembling furinture~\citep{knepper13} or baking
+(for example, robots assembling furniture~\citep{knepper13} or baking
 cookies~\citep{bollini12}.)  When a robot is manipulating objects in
 an environment, an object can be placed anywhere in a large set of
 locations.  The size of the state space increases exponentially with
@@ -215,6 +215,7 @@ OO-MDP definition also includes a set of predicates $\mathcal{P}$ that
 operate on the state of objects to provide additional high-level
 information about the MDP state.
 
+
 \begin{figure}
 \subfigure[Domain]{
 \fbox{
@@ -307,7 +308,7 @@ where $Q^*_G(s,a)$ and $V^*_G(s)$ represent the optimal Q function and
 value function, respectively.
 
 We aim to learn a probability distribution over the optimality of each action
-for a given state ($s$), goal ($G$). Thus, we want to infer a Bernouli
+for a given state ($s$), goal ($G$). Thus, we want to infer a Bernoulli
 distribution for each action's optimality:
 % -- Equation: Master Equation --
 \begin{equation}
@@ -491,7 +492,7 @@ over the optimality of the \texttt{destroy} action, which is used at
 test time to encourage the agent to destroy blocks when trying to
 smelt gold and looking at gold ore, but not in other situations
 (unless another affordance suggests using \texttt{destroy}). Example
-learned affordances are shown in \ref{fig:example_affs}.
+learned affordances are shown in~\ref{fig:example_affs}.
 
 At test time, the agent will see different, randomly generated worlds
 from the same domain, and use the learned affordances to increase its
@@ -680,8 +681,9 @@ took approximately one hour run in parallel on a computing grid.
 %\end{figure}
 
 We fix the number of features at the start of training based on the
-predicates, $|P|$ and goal types, $|G|$; we had a total of 51
-features.  In the limit, if there was a feature for each state, it
+predicates, $|P|$ and goal types, $|G|$. We provided our system with a set of 51
+features that were likely to aid in predicting the correct action according to preliminary tests.
+In the limit, if there was a feature for each state, it
 would learn an affordance for each state in the space, corresponding
 to a policy for the entire domain (since affordances are conditioned
 on goal descriptions).  Because the number of features we are using is
@@ -797,7 +799,7 @@ across 100 different executions in the same randomly generated
 Minecraft worlds. The results are averaged across tasks of each type
 presented in Table~\ref{table:minecraft_results}. Both macro-actions
 and options add a significant amount of time to planning due to the
-fact that that the options and macro-actions are being reused in
+fact that the options and macro-actions are being reused in
 multiple MDPs that each require recomputing the resulting transition
 dynamics and expected cumulative reward when applying each
 option/macro-action (a cost that is typically amortized in classic
@@ -822,7 +824,9 @@ that options and affordances provide complementary information.
 
 To assess affordances applied to a real-world robotic task, we created
 a cooking domain that requires the robot to choose helpful actions for
-a person following a recipe.  
+a person following a recipe. The human participant and the robotic companion are each modeled as separate
+OO-MDPs. From the robot?s perspective, the human is just a stochastic element of its OO-MDP's
+transition dynamics.
 
 There were three spaces: human counter, robot counter, sink.  We had
 four ingredient bowls, two mixing bowls, and two tools that could be
@@ -831,8 +835,8 @@ ingredients: cocoa powder, sugar, eggs, and flour.  Each
 container/tool could be on one of three spaces, and each ingredient in
 one of the containers in an either mixed or unmixed state.  (e.g., the
 state of all the ingredients in a mixing bowl is different than the
-state of the dries mixed with the wets mixed individually in a bowl.)
-Althoug this fine-grained state-space is much larger than needed for
+state of the drys mixed with the wets mixed individually in a bowl.)
+Although this fine-grained state-space is much larger than needed for
 any one recipe, it enables support for a variety of different recipes,
 ranging from brownies to mashed potatoes.  Because of its
 fine-grained nature, our cooking state space has
@@ -973,7 +977,6 @@ single knowledge base, as demonstrated by
 Table~\ref{table:minecraft_results}.
 
 % --- Heuristics ---
-
 Heuristics in MDPs are used to convey information about the value of a
 given state-action pair with respect to the task being solved and
 typically take the form of either value function
@@ -984,6 +987,9 @@ space independent and may be learned easily for different reward
 functions. If a heuristic can be provided, the combination of
 heuristics and affordances may even more greatly accelerate planning
 algorithms than either approach alone.
+
+% -- KnowRob --
+Previous approaches, such as KnowRob~\citep{tenorth2012knowledge,tenorth2009knowrob} have developed complex reasoning systems designed to integrate existing forms of knowledge from a variety of sources for use in robotics applications. These systems emphasize knowledge representation and processing rather than planning. KnowRob, in particular, works ``by exploiting existing sources of knowledge as much as possible?, as opposed to learning through simulation.
 
 % -- Subsection: Deterministic knowledge engineering approaches --
 \subsection{Deterministic Approaches}
@@ -1004,17 +1010,21 @@ primitive tasks are derived. The current state of the task
 decomposition, in turn, informs constraints which reduce the space
 over which the planner searches. At a high level HTNs and affordances
 both achieve action pruning by exploiting some form of supplied
-knowledge.
+knowledge. We speculate that the additional action pruning provided by our affordances
+is complementary to the pruning offered by HTNs.
 
-However HTNs do not incorporate reward into their
-planning. Consequently, they lack any guarantees of the quality of any
-induced plan.  Additionally, the degree of supplied knowledge in HTNs
+One significant difference between HTNs and our planning system is that HTNs do not incorporate reward into their planning. Consequently, they lack any guarantees of the quality of any
+induced plan. Additionally, the degree of supplied knowledge in HTNs
 far exceeds that of affordances: HTNs require not only constraints for
 sub-tasks but a hierarchical framework of arbitrary
 complexity. Affordances require either simple symbolic knowledge, as
 illustrated in Table ~\ref{table:afford_kb_exp}, or a set of
 predicates for use as features and a means of generating candidate
 state spaces.
+
+% --- pHTN ---
+
+An extension to the HTN is the probabilistic Hierarchical Task Network (pHTN)~\cite{li2010learning}. In pHTNs, the underlying physics of the primitive actions are deterministic. The goal of pHTN planning is to find a sequence of deterministic primitive actions that satisfy the task, with the addition of matching user preferences for plans, which are expressed as probabilities for using different HTN methods. As a consequence, the probabilities in pHTNs are with regard to probabilistic search rather than planning in stochastic domains, as we do.
 
 % --- Temporal Logic ---
 
@@ -1033,10 +1043,13 @@ from experience.
 Our approach is related to preferred actions used by
 LAMA~\citep{richter10} in that our agent learns actions which are
 useful for a specific problem and expands those actions first.
-However our approach differsn in that it generalizes this knowledge
+However our approach differs in that it generalizes this knowledge
 across different planning problems, so that the preferred actions in
-one problem influence search in subsequant problems in the domain.
+one problem influence search in subsequent problems in the domain.
 
+% -- OO-MDPs --
+\subsection{Models}
+Our planning approach relies critically on the the ability of the OO-MDP to express properties of objects in a state, which is shared by other models such as First-Order MDPs (FOMDPs). As a consequence, a domain that can be well expressed by a FOMDP may also benefit from our planning approach. However FOMDPs are purely symbolic, while OO-MDPs can represent states with objects defined by numeric, relational, categorical, and string attributes. Moreover, OO-MDPs enable predicates to be defined that are evaluative of the state rather than attributes that define the state, which makes it easy to add high-level information without adding complexity to the state definition and transition dynamics to account for them. These abilities make OO-MDPs better-suited for the kind of robotic tasks in which we are interested, since it is common to have different objects with spatial properties that are best expressed with numeric values.
 
 
 % ====== Section: Conclusion ======
