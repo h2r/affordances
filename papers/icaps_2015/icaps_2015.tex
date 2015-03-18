@@ -62,9 +62,10 @@ accelerating planning in a variety of complex stochastic environments.
 Because these action priors depend on the current state and the goal,
 we refer to them as {\em affordances}.  Our framework allows
 affordances to be easily specified by an expert or to be learned from
-prior experience in related problems. Due to the large complexity of
+prior experience in related simpler problems than can be more easily solved
+with an uniformed planner. Due to the large complexity of
 the space, we use the video game Minecraft as a robot simulator in
-which an agent learns useful affordances from a set of training worlds
+which an agent learns useful affordances from a set of simple training worlds
 and then uses those affordances to successfully find solutions to
 otherwise intractable problems without them. We also use
 expert-provided affordances to accelerate planning in a robot cooking
@@ -88,9 +89,11 @@ cookies~\citep{bollini12}.)  When a robot is manipulating objects in
 an environment, an object can be placed anywhere in a large set of
 locations.  The size of the state space increases exponentially with
 the number of objects, which bounds the placement problems that the
-robot is able to expediently solve.  Depending on the reward function
+robot is able to expediently solve.  Depending on the goal
+%reward function
 (which is unknown before runtime), any of these states and actions may
-be relevant to the solution, but for any specific reward function,
+be relevant to the solution, but for any specific goal
+%reward function,
 most of them are irrelevant.  For instance, when making brownies, the
 oven and flour are important, while the soy sauce and saut\'{e} pan
 are not.  For a different task, such as stir-frying broccoli, the
@@ -127,7 +130,8 @@ Minecraft~\citep{minecraft}.
   agent's goal is to smelt the gold in the furnace while avoiding the
   lava.  Our agent is unable to solve the problem on the right before
   learning because the state/action space is too large (since it can
-  place the gold block anywhere).  After learning, it can quickly
+  place the gold block anywhere).  After learning on simple problems
+  like the one on the left, it can quickly
   solve the larger problem.\label{fig:example}}
 \end{figure}
 
@@ -166,14 +170,20 @@ representing useful planning knowledge. Our experiments demonstrate
 that affordances provide dramatic improvements for a variety of
 planning tasks compared to baselines in simulation, and are applicable
 across different state spaces.  Moreover, while manually provided
-affordances outperform baselines, affordances learned through
-experience yield even greater improvements.  We conduct experiments in
+affordances outperform baselines on difficult problems, our approach
+is able to learn affordances from experience on simple, tractable, 
+training problems that yield even greater performance on the difficult problems
+than manually provided affordances.
+%affordances learned from experience on
+%experience yield even greater improvements.  
+We conduct experiments in
 the game Minecraft, which has a very large state-action space, and on
 a real-world robotic cooking assistant.  Figure~\ref{fig:example}
 shows an example of two problems from the same domain in the game
-Minecraft; the agent learns on randomly generated problems and tests
-on new problems from the same domain that it has never previously
-encountered.  All associated code with this paper may be found at
+Minecraft; the agent learns on simple randomly generated problems
+(like the problem in the left image) and tests
+on new harder problems from the same domain that it has never previously
+encountered (like the problem in the right image).  All associated code with this paper may be found at
 \url{http://h2r.cs.brown.edu/affordances}.  \stnote{Make this link
   real.}
 
@@ -190,7 +200,7 @@ encountered.  All associated code with this paper may be found at
 
 
 We define affordances as formal knowledge added to a family of related
-Markov Decision Processes (MDP) from the same domain.  An MDP is a
+Markov Decision Processes (MDPs) from the same domain.  An MDP is a
 five-tuple: $\langle \mathcal{S}, \mathcal{A}, \mathcal{T},
 \mathcal{R}, \gamma \rangle$, where $\mathcal{S}$ is a state space;
 $\mathcal{A}$ is the agent's set of actions; $\mathcal{T}$ denotes
@@ -198,10 +208,12 @@ $\mathcal{T}(s' \mid s,a)$, the transition probability of an agent
 applying action $a \in \mathcal{A}$ in state $s \in \mathcal{S}$ and
 arriving in $s' \in \mathcal{S}$; $\mathcal{R}(s,a,s')$ denotes the
 reward received by the agent for applying action $a$ in state $s$ and
-transitioning to state $s'$; and $\gamma \in [0, 1)$ is a discount
+transitioning to state $s'$; and $\gamma \in [0, 1]$ is a discount
   factor that defines how much the agent prefers immediate rewards
   over future rewards (the agent prefers to maximize immediate rewards
-  as $\gamma$ decreases). 
+  as $\gamma$ decreases). MDPs may also include terminal states
+  that cause all action to cease once reached (such as in goal-directed
+  tasks).
 
 Our representation of affordances builds on Object-Oriented MDPs
 (OO-MDPs)~\citep{diuk08}.  An OO-MDP efficiently represents the state
@@ -209,11 +221,21 @@ of an MDP through the use of objects and predicates.  An OO-MDP state
 is a collection of objects, $O = \{o_1, \ldots, o_o \}$.  Each object
 $o_i$ belongs to a class, $c_j \in \{c_1, \ldots, c_c\}$. Every class
 has a set of attributes, $Att(c) = \{c.a_1, \ldots, c.a_a \}$, each of
-which has a domain, $Dom(c.a)$, of possible values. OO-MDPs enable
+which has a value domain, $Dom(c.a)$, of possible values. 
+
+OO-MDPs enable
 planners to use predicates over classes of objects. That is, the
 OO-MDP definition also includes a set of predicates $\mathcal{P}$ that
 operate on the state of objects to provide additional high-level
-information about the MDP state.
+information about the MDP state. %For a given
+%planning domain, OO-MDP objects often appear across tasks. 
+Since
+predicates operate on collections of objects, they generalize beyond
+specific states within the domain.  For instance, in Minecraft,
+a predicate checking the contents of the agent's inventory generalizes
+to many states across many Minecraft tasks. We capitalize on this generalization
+by using OO-MDP predicates as features for action
+pruning.  
 
 
 \begin{figure}
@@ -251,21 +273,57 @@ Robot has built a cube with edge length K.\\
 Robot has destroyed K blocks.\\
 }}
 }
-\caption{Part of the OO-MDP Domain for the Minecraft.\label{fig:oomdp}}
+\caption{Part of the OO-MDP Domain for Minecraft.\label{fig:oomdp}}
 \end{figure}
 
-OO-MDP predicates provide state space independence. For a given
-planning domain, OO-MDP objects often appear across tasks. Since
-predicates operate on collections of objects, they generalize beyond
-specific state spaces within the domain.  For instance, in Minecraft,
-a predicate checking the contents of the agent's inventory generalizes
-beyond any particular Minecraft task. We capitalize on this state
-space independence by using OO-MDP predicates as features for action
-pruning.  Figure~\ref{fig:oomdp} shows part of the definition of our
-OO-MDP for the Minecraft domain.
+%OO-MDP predicates provide state information that generalizes across states. For a given
+%planning domain, OO-MDP objects often appear across tasks. Since
+%predicates operate on collections of objects, they generalize beyond
+%specific states within the domain.  For instance, in Minecraft,
+%a predicate checking the contents of the agent's inventory generalizes
+%to many states across many Minecraft tasks. We capitalize on this generalization
+%by using OO-MDP predicates as features for action
+%pruning.  
+
+Following STRIPs-like terminology (in which a domain defines set objects,
+predicates, and actions, and a problem defines a goal condition and 
+initial state for a domain),
+we define a domain as an OO-MDP except for the reward function and terminal
+states; and a problem of the domain as the same OO-MDP with
+a reward function, terminal states, and an initial state. We are
+concerned with MDPs where the reward function is goal-directed, that
+is the agent receives a negative reward at each timestep that motivates
+it to reach the goal terminal state.  A goal, $G$ is
+defined by a reward function plus the set of terminal states.
+Figure~\ref{fig:oomdp} shows part of the OO-MDP domain definition
+for Minecraft that we used and the kinds of goals used in different
+Minecraft problems that we tested. Figure~\ref{fig:minecraft} shows
+three example initial states and goals for simple Minecraft problems.
+
+
+%The aim
+%of our approach is to learn knowledge about a domain from experience
+%that enables an agent to quickly infer a solution to a new problem in
+%the same domain that it has never previously encountered. 
+
+
+
+%Following STRIPs-like terminology, we define a domain as a family of
+%related MDPs with the same state space, action space, and transition
+%dynamics, but different reward functions, terminal states, and initial
+%states.  Analogously, a STRIPs domain becomes an MDP definition, except
+%for the reward function and terminal states; and the STRIPs problem
+%becomes a complete MDP with the same elements from the domain, a reward
+%function, set of terminal states, and an initial state.
+
+
+%STRIPs problem is a specific MDP with a known reward function, set
+%of terminal states, and an initial state.  
+
+
 
 % -- Figure: Minecraft pic --
-\begin{figure}[b]
+\begin{figure}[t]
 \centering
 \subfigure[Mine the gold and smelt it in the furnace]{
 \includegraphics[width=0.3\linewidth]{figures/smelt_labeled_small.jpg}}
@@ -273,23 +331,11 @@ OO-MDP for the Minecraft domain.
 \includegraphics[width=0.3\linewidth]{figures/mining_labeled.jpg}}
 \subfigure[Navigate to the goal location, avoiding lava.]{
 \includegraphics[width=0.3\linewidth]{figures/plane.jpg}}
-  \caption{Three different problems from the Minecraft domain}
+  \caption{Three different problems from the Minecraft domain.}
   \label{fig:minecraft}
 \end{figure}
 
-Following STRIPs-like terminology, we define a domain as a family of
-related MDPs with the same state space, action space, and transition
-dynamics, but different reward functions, terminal states, and initial
-states.  Analogously, a
-STRIPs problem is a specific MDP with a known reward function, set
-of terminal states, and an initial state.  We are
-concerned with MDPs where the reward function is goal-directed, that
-is the agent receives a negative reward at each timestep that motivates
-it to reach the goal terminal state.  A goal, $G$ is
-defined by a reward function plus the set of terminal states.  The aim
-of our approach is to learn knowledge about a domain from experience
-that enables an agent to quickly infer a solution to a new problem in
-the same domain that it has never previously encountered.
+
 
 
 % -- Subsection: Modeling the Optimal Actions --
@@ -308,7 +354,7 @@ where $Q^*_G(s,a)$ and $V^*_G(s)$ represent the optimal Q function and
 value function, respectively.
 
 We aim to learn a probability distribution over the optimality of each action
-for a given state ($s$), goal ($G$). Thus, we want to infer a Bernoulli
+for a given state ($s$) and goal ($G$). Thus, we want to infer a Bernoulli
 distribution for each action's optimality:
 % -- Equation: Master Equation --
 \begin{equation}
@@ -338,7 +384,7 @@ dramatically.  We rewrite Equation~\ref{eq:master}:
 % -- Equation: replace K --
 \begin{multline}
 \Pr(a_i \in \mathcal{A}^* \mid s, G)
-= \Pr(a_i \in \mathcal{A}^* \mid \delta_1 \ldots \delta_n).
+= \Pr(a_i \in \mathcal{A}^* \mid s, G, \delta_1 \ldots \delta_n).
 \end{multline}
 
 We introduce the indicator function $f$, which returns 1 if and only if $\delta_j$'s predicate is true in the provided state $s$, and $\delta_j$'s goal type is entailed by the agent's current goal, $G$:
@@ -825,7 +871,7 @@ that options and affordances provide complementary information.
 To assess affordances applied to a real-world robotic task, we created
 a cooking domain that requires the robot to choose helpful actions for
 a person following a recipe. The human participant and the robotic companion are each modeled as separate
-OO-MDPs. From the robot?s perspective, the human is just a stochastic element of its OO-MDP's
+OO-MDPs. From the robot's perspective, the human is just a stochastic element of its OO-MDP's
 transition dynamics.
 
 There were three spaces: human counter, robot counter, sink.  We had
@@ -989,7 +1035,7 @@ heuristics and affordances may even more greatly accelerate planning
 algorithms than either approach alone.
 
 % -- KnowRob --
-Previous approaches, such as KnowRob~\citep{tenorth2012knowledge,tenorth2009knowrob} have developed complex reasoning systems designed to integrate existing forms of knowledge from a variety of sources for use in robotics applications. These systems emphasize knowledge representation and processing rather than planning. KnowRob, in particular, works ``by exploiting existing sources of knowledge as much as possible?, as opposed to learning through simulation.
+Previous approaches, such as KnowRob~\citep{tenorth2012knowledge,tenorth2009knowrob} have developed complex reasoning systems designed to integrate existing forms of knowledge from a variety of sources for use in robotics applications. These systems emphasize knowledge representation and processing rather than planning. KnowRob, in particular, works ``by exploiting existing sources of knowledge as much as possible,'' as opposed to learning through simulation.
 
 % -- Subsection: Deterministic knowledge engineering approaches --
 \subsection{Deterministic Approaches}
@@ -1049,7 +1095,7 @@ one problem influence search in subsequent problems in the domain.
 
 % -- OO-MDPs --
 \subsection{Models}
-Our planning approach relies critically on the the ability of the OO-MDP to express properties of objects in a state, which is shared by other models such as First-Order MDPs (FOMDPs). As a consequence, a domain that can be well expressed by a FOMDP may also benefit from our planning approach. However FOMDPs are purely symbolic, while OO-MDPs can represent states with objects defined by numeric, relational, categorical, and string attributes. Moreover, OO-MDPs enable predicates to be defined that are evaluative of the state rather than attributes that define the state, which makes it easy to add high-level information without adding complexity to the state definition and transition dynamics to account for them. These abilities make OO-MDPs better-suited for the kind of robotic tasks in which we are interested, since it is common to have different objects with spatial properties that are best expressed with numeric values.
+Our planning approach relies critically on the the ability of the OO-MDP to express properties of objects in a state, which is shared by other models such as First-Order MDPs (FOMDPs)~\cite{boutilier2001symbolic}. As a consequence, a domain that can be well expressed by a FOMDP may also benefit from our planning approach. However FOMDPs are purely symbolic, while OO-MDPs can represent states with objects defined by numeric, relational, categorical, and string attributes. Moreover, OO-MDPs enable predicates to be defined that are evaluative of the state rather than attributes that define the state, which makes it easy to add high-level information without adding complexity to the state definition and transition dynamics to account for them. These abilities make OO-MDPs better-suited for the kind of robotic tasks in which we are interested, since it is common to have different objects with spatial properties that are best expressed with numeric values.
 
 
 % ====== Section: Conclusion ======
